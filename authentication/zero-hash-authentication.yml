@@ -1,0 +1,32 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/zero-hash-api-openapi.yml, openapi/zero-hash-connect-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: X-SCX-API-KEY
+  description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication)
+    for how to obtain keys.
+  sources:
+  - openapi/zero-hash-api-openapi.yml
+- name: apiPassphrase
+  type: apiKey
+  in: header
+  parameter: X-SCX-PASSPHRASE
+  description: The passphrase associated with your API key, set when the key was created.
+  sources:
+  - openapi/zero-hash-api-openapi.yml
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: JWT token with customers:token:issue scope
+  sources:
+  - openapi/zero-hash-connect-openapi.yml

@@ -1,0 +1,249 @@
+generated: '2026-08-05'
+method: searched
+source: https://www.npmjs.com/ registry search (@zerohash-sdk scope, zh-web-sdk), https://docs.zerohash.com/reference/sdk-overview
+notes: >-
+  zerohash ships its client libraries as a large family of scoped npm packages under @zerohash-sdk, one module per
+  embedded flow, in matched framework-agnostic JavaScript and React pairs, plus a Capacitor plugin for mobile and the
+  older monolithic zh-web-sdk (published from the seedcx GitHub organization). No first-party server-side SDK was
+  found on PyPI, Maven Central, NuGet, pkg.go.dev, RubyGems, Packagist or crates.io — the REST API is signed with
+  HMAC-SHA256 and integrated directly. `zero-python-sdk` on PyPI is an unrelated third-party project.
+registries_probed:
+- registry: npm
+  result: 32 first-party packages found
+- registry: pypi
+  result: no first-party package (zerohash, zero-hash, zerohash-sdk all 404)
+- registry: maven-central
+  result: none found
+- registry: nuget
+  result: none found
+- registry: pkg.go.dev
+  result: none found
+- registry: rubygems
+  result: none found
+- registry: packagist
+  result: none found
+- registry: crates.io
+  result: none found
+packages:
+- language: javascript
+  registry: npm
+  name: zh-web-sdk
+  version: 3.4.3
+  url: https://www.npmjs.com/package/zh-web-sdk
+  install: npm install zh-web-sdk
+  repository: https://github.com/seedcx/zh-web-sdk
+  official: true
+  description: ZeroHash Web SDK — the original monolithic browser SDK.
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/crypto-buy-js'
+  version: 1.17.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-buy-js
+  install: npm install @zerohash-sdk/crypto-buy-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/crypto-sell-js'
+  version: 1.12.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-sell-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/csp-crypto-sell-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/csp-crypto-sell-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/crypto-withdrawals-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-withdrawals-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/csp-crypto-withdrawals-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/csp-crypto-withdrawals-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/crypto-account-link-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-account-link-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/fiat-account-link-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fiat-account-link-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/fiat-deposits-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fiat-deposits-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/fiat-withdrawals-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fiat-withdrawals-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/csp-fiat-withdrawals-js'
+  version: 0.9.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/csp-fiat-withdrawals-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/fund-js'
+  version: 1.12.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fund-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/fund-withdrawals-js'
+  version: 0.10.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fund-withdrawals-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/onboarding-js'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/onboarding-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/profile-js'
+  version: 0.10.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/profile-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/travel-rule-js'
+  version: 0.3.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/travel-rule-js
+  official: true
+- language: javascript
+  registry: npm
+  name: '@zerohash-sdk/capacitor'
+  version: 1.0.4
+  url: https://www.npmjs.com/package/@zerohash-sdk/capacitor
+  official: true
+  description: Capacitor plugin for embedding the zerohash SDK modules in mobile apps.
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/crypto-buy-react'
+  version: 1.17.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-buy-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/crypto-sell-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-sell-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/csp-crypto-sell-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/csp-crypto-sell-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/crypto-withdrawals-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-withdrawals-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/csp-crypto-withdrawals-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/csp-crypto-withdrawals-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/crypto-account-link-react'
+  version: 1.10.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/crypto-account-link-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/fiat-account-link-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fiat-account-link-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/fiat-deposits-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fiat-deposits-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/fiat-withdrawals-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fiat-withdrawals-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/csp-fiat-withdrawals-react'
+  version: 0.9.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/csp-fiat-withdrawals-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/fund-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fund-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/fund-withdrawals-react'
+  version: 0.10.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/fund-withdrawals-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/onboarding-react'
+  version: 1.11.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/onboarding-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/profile-react'
+  version: 0.10.0
+  url: https://www.npmjs.com/package/@zerohash-sdk/profile-react
+  official: true
+- language: javascript
+  framework: react
+  registry: npm
+  name: '@zerohash-sdk/travel-rule-react'
+  version: 0.3.1
+  url: https://www.npmjs.com/package/@zerohash-sdk/travel-rule-react
+  official: true
+mobile:
+  docs: https://docs.zerohash.com/docs/mobile-sdks
+  approach: >-
+    Mobile integration is documented as a webview/iframe wrapper around the JavaScript modules, with per-platform
+    guides for Swift, Kotlin, React Native and Flutter, plus the @zerohash-sdk/capacitor plugin.
+  guides:
+  - https://docs.zerohash.com/reference/sdk-integration-with-mobile-apps-swift
+  - https://docs.zerohash.com/reference/sdk-integration-with-mobile-apps-kotlin
+  - https://docs.zerohash.com/reference/sdk-integration-with-mobile-apps-react-native
+  - https://docs.zerohash.com/reference/sdk-integration-with-mobile-apps-flutter

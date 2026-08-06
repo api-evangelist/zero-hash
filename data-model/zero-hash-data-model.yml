@@ -1,0 +1,269 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/zero-hash-api-openapi.yml
+docs: https://docs.zerohash.com/docs/terminology
+stats:
+  paths: 146
+  operations: 167
+  component_schemas: 334
+  tags: 27
+identifiers:
+  zrn: zerohash Resource Name — the canonical account identifier used across account, lock, divest and tenant operations.
+  participant_code: Always 6 uppercase alphanumeric characters; the participant primary key.
+  client_transfer_id: Caller-supplied transfer idempotency key, unique platform-wide for a rolling 72-hour window.
+  idempotency_key: Caller-supplied payout idempotency key, sent as the Idempotency-Key header.
+entities:
+- name: Participant
+  identifier: participant_code
+  description: Individual or entity onboarded onto the platform; the KYC/AML subject.
+  operations:
+  - GET /participants
+  - POST /participants/customers/new
+  - POST /participants/entity/new
+  - GET /participant/{participant_code}/full_info
+- name: Account
+  identifier: zrn / account_id
+  description: Balance-bearing account addressed by a zerohash Resource Name (ZRN), grouped by account_group and
+    labeled by account_label.
+  operations:
+  - GET /accounts
+  - POST /accounts
+  - GET /accounts/{zrn}/details
+  - PATCH /accounts/{zrn}
+- name: Asset
+  identifier: asset
+  description: Supported crypto or fiat asset symbol, with staking metadata.
+  operations:
+  - GET /assets
+  - GET /assets/{asset}/staking_info
+- name: Trade
+  identifier: trade_id
+  description: Executed trade submitted for settlement.
+  operations:
+  - POST /trades
+  - POST /trades/batch
+  - GET /trades/{trade_id}
+  - GET /trades
+- name: Quote
+  identifier: quote_id
+  description: Request-for-quote issued by the liquidity engine and then executed.
+  operations:
+  - POST /liquidity/rfq
+  - POST /liquidity/execute
+  - PATCH /liquidity/rfq
+- name: Order
+  identifier: order_id
+  description: CLOB order inserted, cancelled and searched through the orders API and the FIX gateway.
+  operations:
+  - POST /orders/v1/insert_order
+  - POST /orders/v1/cancel_order
+  - POST /orders/v1/search_orders
+- name: Execution
+  identifier: execution_id
+  description: Fill produced by a CLOB order or a portfolio-strategy run.
+  operations:
+  - POST /orders/v1/search_executions
+  - GET /strategies/executions
+  - GET /strategies/executions/{execution_id}
+- name: Deposit
+  identifier: deposit_id
+  description: Inbound fiat or crypto movement, including digital-asset deposit addresses and BOLT11/UMA rails.
+  operations:
+  - GET /deposits
+  - GET /deposits/crypto
+  - GET /deposits/crypto/{deposit_id}
+  - POST /deposits/digital_asset_addresses
+- name: Withdrawal
+  identifier: id
+  description: Outbound movement, modelled as a withdrawal request that is then executed.
+  operations:
+  - POST /withdrawals/requests
+  - POST /withdrawals/execute
+  - GET /withdrawals/requests/{id}
+  - GET /withdrawals/fiat_accounts
+- name: Transfer
+  identifier: id / client_transfer_id
+  description: Internal transfer between accounts, idempotent on client_transfer_id.
+  operations:
+  - POST /transfers
+  - GET /transfers
+  - GET /transfers/{id}
+- name: Movement
+  identifier: movement_id
+  description: Ledger movement recorded against an account.
+  operations:
+  - GET /movements
+  - GET /accounts/{account_id}/movements
+- name: Position
+  identifier: participant_id / platform_code
+  description: Aggregated position by participant or platform.
+  operations:
+  - GET /positions
+  - GET /positions/participant/{id}
+  - GET /positions/platform/{platform_code}
+- name: Payment
+  identifier: payment_id / transaction_id
+  description: Transact-side payment with RFQ, execute, retry, settlement and status resources.
+  operations:
+  - POST /payments
+  - POST /payments/rfq
+  - POST /payments/execute
+  - GET /payments/{payment_id}
+  - GET /payments/settlements
+- name: ExternalAccount
+  identifier: external_account_id
+  description: Linked external bank or wallet account used for payins and payouts.
+  operations:
+  - POST /payments/external_accounts
+  - GET /payments/external_accounts
+  - POST /payments/external_accounts/{external_account_id}/close
+- name: Payout
+  identifier: payout_id / idempotency_key
+  description: Single-API-call payout, idempotent on the Idempotency-Key header.
+  operations:
+  - POST /payouts
+  - GET /payouts
+- name: Stake
+  identifier: stake_id / unstake_id
+  description: Staking or unstaking position with rewards and status.
+  operations:
+  - POST /stakes
+  - GET /stakes/{participant_code}
+  - POST /stakes/unstake
+  - GET /stakes/{stake_id}/status
+- name: Strategy
+  identifier: strategy_id
+  description: Portfolio strategy with traders, operations and executions.
+  operations:
+  - POST /strategies
+  - GET /strategies/{strategy_id}
+  - POST /strategies/{strategy_id}/rebalance
+  - GET /strategies/traders
+- name: Trader
+  identifier: trader_id
+  description: Strategy trader profile.
+  operations:
+  - GET /strategies/traders
+  - GET /strategies/traders/{trader_id}
+  - PATCH /strategies/traders/{trader_id}
+- name: Jurisdiction
+  identifier: country / subdivision
+  description: Country and subdivision reference data used to evaluate onboarding eligibility.
+  operations:
+  - GET /jurisdiction/countries
+  - GET /jurisdiction/subdivisions
+  - POST /jurisdiction/evaluate_onboarding
+relationships:
+- from: Account
+  to: Participant
+  type: belongs_to
+  via: participant_code
+- from: Account
+  to: Asset
+  type: has_one
+  via: asset
+- from: Trade
+  to: Participant
+  type: has_many
+  via: parties / participant_code
+- from: Trade
+  to: Asset
+  type: has_one
+  via: symbol / underlying
+- from: Quote
+  to: Trade
+  type: has_one
+  via: quote_id resolved to trade_id on execute
+- from: Order
+  to: Execution
+  type: has_many
+  via: order_id
+- from: Deposit
+  to: Account
+  type: belongs_to
+  via: account_id / account_label
+- from: Withdrawal
+  to: Account
+  type: belongs_to
+  via: account_id
+- from: Withdrawal
+  to: ExternalAccount
+  type: has_one
+  via: fiat_account_id / digital_asset_address id
+- from: Transfer
+  to: Account
+  type: has_many
+  via: from and to account
+- from: Movement
+  to: Account
+  type: belongs_to
+  via: account_id
+- from: Payment
+  to: ExternalAccount
+  type: has_one
+  via: external_account_id
+- from: Payment
+  to: Participant
+  type: belongs_to
+  via: participant_code
+- from: Payout
+  to: ExternalAccount
+  type: has_one
+  via: external_account_id
+- from: Stake
+  to: Account
+  type: belongs_to
+  via: participant_code + asset
+- from: Strategy
+  to: Execution
+  type: has_many
+  via: strategy_id
+- from: Strategy
+  to: Trader
+  type: has_many
+  via: trader_id
+- from: Participant
+  to: Jurisdiction
+  type: has_one
+  via: country / subdivision
+most_referenced_id_fields:
+- field: participant_code
+  schemas: 56
+- field: account_label
+  schemas: 31
+- field: asset
+  schemas: 26
+- field: request_id
+  schemas: 22
+- field: jurisdiction_code
+  schemas: 18
+- field: account_group
+  schemas: 15
+- field: tax_id
+  schemas: 15
+- field: citizenship_code
+  schemas: 11
+- field: postal_code
+  schemas: 11
+- field: trade_id
+  schemas: 9
+- field: transaction_id
+  schemas: 7
+- field: withdrawal_request_id
+  schemas: 6
+- field: reference_id
+  schemas: 6
+- field: platform_code
+  schemas: 6
+- field: quote_id
+  schemas: 6
+- field: withdrawal_account_id
+  schemas: 6
+- field: external_account_id
+  schemas: 6
+- field: order_id
+  schemas: 5
+- field: client_withdrawal_request_id
+  schemas: 5
+- field: movement_id
+  schemas: 4

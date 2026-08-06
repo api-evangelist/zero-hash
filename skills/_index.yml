@@ -1,0 +1,45 @@
+generated: '2026-08-05'
+method: generated
+source: openapi/zero-hash-api-openapi.yml, conventions/zero-hash-conventions.yml, errors/zero-hash-problem-types.yml
+provider: Zero Hash
+api: zerohash API
+base_url: https://api.zerohash.com
+spec: openapi/zero-hash-api-openapi.yml
+note: >-
+  Packaged Agent Skills for the marquee zerohash flows. No provider-published AGENTS.md or skills bundle was found, so
+  these are generated. Every operation named in every skill was grepped out of the published OpenAPI — the spec
+  declares no operationIds for any of its 167 operations, so operations are addressed by HTTP method plus path
+  throughout, which is the only stable identifier the contract offers.
+shared_rules:
+  authentication: >-
+    X-SCX-API-KEY + X-SCX-PASSPHRASE + X-SCX-TIMESTAMP (within 60s of server time) + X-SCX-SIGNED (base64 HMAC-SHA256
+    over timestamp + method + route + body). Source IP must be on the per-environment allowlist.
+  tracing: Send X-Request-Id; the server echoes it. Reuse the same value across retries of one logical operation.
+  idempotency: >-
+    Idempotency-Key header on POST /payouts only (SHA-256 body hash; same key + different body returns 400).
+    client_transfer_id on POST /transfers, unique platform-wide for a rolling 72 hours. Everything else must be
+    protected by reading state back.
+  errors: application/json with an `error` string; not RFC 9457. 4xx are deterministic; 503 retryable; 502/504 indeterminate.
+  pagination: page / page_size query parameters.
+  testing: X-Simulator-Scenario header in the certification environment only.
+skills:
+- name: zero-hash-onboard-participant
+  file: zero-hash-onboard-participant.md
+  summary: Jurisdiction check, participant creation, KYC documents, approval polling, account creation.
+  operations: 13
+- name: zero-hash-rfq-trade
+  file: zero-hash-rfq-trade.md
+  summary: RFQ quote and execute, trade reconciliation, and the CLOB/convert-and-withdraw alternatives.
+  operations: 11
+- name: zero-hash-payout
+  file: zero-hash-payout.md
+  summary: External account linking, validate-mode dry run, idempotent single-call payout, settlement reconciliation.
+  operations: 9
+- name: zero-hash-crypto-withdrawal
+  file: zero-hash-crypto-withdrawal.md
+  summary: Address validation, network-fee locking, request-then-execute withdrawal, on-chain reconciliation.
+  operations: 11
+- name: zero-hash-account-funding
+  file: zero-hash-account-funding.md
+  summary: Deposit address generation, stablecoin deposit capture, fund RFQ and conversion, webhook reconciliation.
+  operations: 12

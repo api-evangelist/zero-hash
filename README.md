@@ -42,5 +42,24 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Zero Hash is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/zero-hash_stock/
+Zero Hash is a regulated digital-asset infrastructure provider that lets banks, brokerages, fintechs,
+payroll platforms and payment service providers embed crypto, stablecoin and tokenized-asset capability
+without holding licenses or running blockchain infrastructure themselves.
+
+- Website: https://zerohash.com/
+- Developer docs: https://docs.zerohash.com/
+- API reference: https://docs.zerohash.com/reference
+- Status: https://status.zerohash.com
+- Release notes: https://docs.zerohash.com/changelog
+- Security & compliance: https://zerohash.com/security
+- Trust center: https://trust.zerohash.com/
+
+## Public API surface captured in this profile
+
+- **zerohash API** — OpenAPI 3.1.0 (v1.7.0), 146 paths / 167 operations, HMAC-SHA256 request signing.
+- **zerohash Auth (Connect) API** — OpenAPI 3.0.3, OAuth 2.0 client-credentials token + session issuance.
+- **Private WebSocket API** — `wss://ws.zerohash.com`, balances and RFQ price topics.
+- **Webhooks** — 9 documented event topics with retry and de-duplication semantics.
+- **FIX 5.0 gateway** — CLOB order entry, drop copy and market data (documented, no downloadable dictionary).
+- **Embedded SDK modules** — 32 first-party npm packages under `@zerohash-sdk`, plus `zh-web-sdk`.
+

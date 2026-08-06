@@ -1,0 +1,97 @@
+generated: '2026-08-05'
+method: searched
+source: >-
+  https://docs.zerohash.com/docs/testnet-support-and-token-faucets,
+  https://docs.zerohash.com/docs/address-formats-for-testing-in-cert,
+  https://docs.zerohash.com/page/cert-environment-assets, openapi/zero-hash-api-openapi.yml
+name: Certification (CERT) environment
+self_serve: false
+access: >-
+  CERT access is granted as part of onboarding, not by self-service signup. Credentials are issued through the
+  certification client portal and every environment enforces its own IP allowlist, so a CERT integration cannot be
+  exercised from an arbitrary source address.
+environments:
+- mode: certification
+  api: https://api.cert.zerohash.com
+  api_eu: https://api.cert.zerohash.eu
+  websocket: wss://ws.cert.zerohash.com
+  portal: https://portal.cert.zerohash.com
+- mode: production
+  api: https://api.zerohash.com
+  api_eu: https://api.zerohash.eu
+  websocket: wss://ws.zerohash.com
+  portal: https://portal.zerohash.com
+key_model:
+  detail: >-
+    There is no test-vs-live key prefix. The same HMAC credential shape (X-SCX-API-KEY + X-SCX-PASSPHRASE + signed
+    X-SCX-SIGNED/X-SCX-TIMESTAMP) is used in both environments; separation is by hostname and by a separate key set
+    and IP allowlist per environment.
+  docs: https://docs.zerohash.com/docs/generate-api-keys
+scenario_simulation:
+  header: X-Simulator-Scenario
+  source: openapi/zero-hash-api-openapi.yml (components.parameters.SimulatorScenario)
+  detail: >-
+    Optional request header used to simulate specific success and failure scenarios in the certification environment.
+    It has no effect in production. The published spec declares it as a free-form string and does not enumerate the
+    scenario values, so the usable set requires the CERT documentation or an onboarded account.
+  verification_sessions_docs: https://docs.zerohash.com/docs/test-verification-sessions
+test_funds:
+  provided_by_zerohash: false
+  statement: '"Zerohash does not supply test tokens" — platforms fund CERT from public testnet faucets.'
+  testnets:
+  - asset: ADA
+    network: ADA Testnet
+    faucet: https://testnets.cardano.org/en/testnets/cardano/tools/faucet/
+  - asset: ALGO
+    network: ALGO Testnet
+    faucet: https://testnet.algoexplorer.io/dispenser
+  - asset: AVAX
+    network: Fuji
+    faucet: https://faucet.avax.network/
+  - asset: BCH
+    network: BCH Testnet
+    faucet: https://tbch.googol.cash/
+  - asset: BTC
+    network: BTC Testnet
+    faucet: https://bitcoinfaucet.uo1.net/send.php
+  - asset: DOGE
+    network: Doge Testnet
+    faucet: https://shibe.technology/
+  - asset: DOT
+    network: Westend
+    faucet: https://matrix.to/#/#westend_faucet:matrix.org
+  - asset: ETH
+    network: Sepolia
+    faucet: https://www.infura.io/faucet/sepolia
+  - asset: LINK.ETH
+    network: Sepolia
+    faucet: https://faucets.chain.link/
+  - asset: LTC
+    network: LTC Testnet
+    faucet: http://litecointf.salmen.website/
+  - asset: MATIC.POLYGON
+    network: Amoy
+    faucet: https://faucet.polygon.technology/
+  - asset: SOL
+    network: DevNet
+    faucet: https://solfaucet.com/
+  - asset: USDC
+    network: Sepolia / Amoy / Solana DevNet
+    faucet: https://faucet.circle.com/
+  - asset: USDT.ETH
+    network: Sepolia
+    faucet: https://gho.aave.com/faucet/
+  - asset: XRP
+    network: Ripple Testnet
+    faucet: https://xrpl.org/xrp-testnet-faucet.html
+reference_pages:
+- https://docs.zerohash.com/page/cert-environment-assets
+- https://docs.zerohash.com/page/certification-environment-instruments
+- https://docs.zerohash.com/docs/address-formats-for-testing-in-cert
+- https://docs.zerohash.com/docs/supported-address-formats
+gaps:
+- >-
+  No public sandbox — CERT requires an onboarded account and an allowlisted static IP, so an evaluating developer
+  cannot make a first call without a sales conversation.
+- >-
+  The X-Simulator-Scenario values are not enumerated in the published OpenAPI.

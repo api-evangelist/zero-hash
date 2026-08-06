@@ -1,23 +1,210 @@
 aid: zero-hash
 name: Zero Hash
-description: 'Zero Hash is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Zero Hash is a regulated digital-asset infrastructure provider that lets banks, brokerages, fintechs, payroll
+  platforms and payment service providers embed crypto, stablecoin and tokenized-asset capability without holding
+  licenses or running blockchain infrastructure themselves. The platform covers trading (RFQ liquidity and a central
+  limit order book reachable over REST and FIX 5.0), qualified custody, staking, rewards and portfolio strategies,
+  plus a Transact side that handles on/off ramps, account funding, payins, payouts, remittances and settlement across
+  100+ assets and 40+ chains. Participant onboarding, KYC, sanctions screening, jurisdiction evaluation and travel-rule
+  handling are exposed as first-class API resources, and a Tokenize product line covers a tokenization engine and
+  tokenization payment rails. Integration surfaces include a 167-operation REST API secured with HMAC-SHA256 request
+  signing, a private WebSocket feed for balances and RFQ prices, a FIX gateway for CLOB order entry and market data,
+  an outbound webhook catalog, and a large family of embeddable JavaScript/React SDK modules for buy, sell, onboarding,
+  funding, withdrawals and account linking.
+image: https://cdn.prod.website-files.com/68c59605946d2fed8ac8bcbd/6a0c76136695e559d8cffe0f_zerohash%20-%20512.png
 url: https://raw.githubusercontent.com/api-evangelist/zero-hash/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.21'
 created: '2026-08-05'
 modified: '2026-08-05'
 tags:
 - Company
-apis: []
+- crypto-infrastructure
+- digital-assets
+- stablecoins
+- payments
+- payouts
+- tokenization
+- custody
+- staking
+- settlement
+- embedded-finance
+- on-off-ramp
+- liquidity
+- fix-protocol
+- webhooks
+- websockets
+- kyc
+- compliance
+- remittances
+- agentic-finance
+apis:
+- name: zerohash API
+  description: >-
+    The core zerohash REST API — 167 operations across participants, accounts, assets, trades, liquidity (RFQ), the
+    central limit order book, deposits, withdrawals, transfers, positions, market data, payments, payins, payouts,
+    convert-and-withdraw, fund, staking, rewards, awards and portfolio strategies. Authenticated with HMAC-SHA256
+    request signing over X-SCX-API-KEY / X-SCX-SIGNED / X-SCX-TIMESTAMP / X-SCX-PASSPHRASE headers, with
+    per-environment IP allowlisting. Published as OpenAPI 3.1.0 v1.7.0 by the provider's own documentation host.
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - crypto-infrastructure
+  - digital-assets
+  - payments
+  - payouts
+  - custody
+  - staking
+  - liquidity
+  - settlement
+  - kyc
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Overlay
+    url: overlays/zero-hash-api-overlay.yaml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+- name: zerohash Auth (Connect) API
+  description: >-
+    Session and access-token API behind the zerohash Auth product for onchain account linking across custodial and
+    non-custodial wallets. Two operations — OAuth 2.0 client-credentials token issuance and session creation — secured
+    with a JWT bearer token carrying the customers:token:issue scope. The published OpenAPI 3.0.3 declares only the
+    sandbox server (api.sandbox.connect.xyz); it is documented on the zerohash docs host under the Connect category.
+  humanURL: https://docs.zerohash.com/reference/getaccesstoken
+  baseURL: https://api.sandbox.connect.xyz
+  tags:
+  - authentication
+  - account-linking
+  - digital-assets
+  - oauth2
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-connect-openapi.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- name: zerohash Private WebSocket API
+  description: >-
+    Authenticated WebSocket feed delivering a full account-balance snapshot on subscribe followed by incremental
+    balance-updated events, plus RFQ liquidity bid/ask price levels per subscribed symbol. Every message carries its
+    own HMAC-SHA256 signature, key, passphrase and timestamp; clients must ping every 20 seconds to hold the session.
+  humanURL: https://docs.zerohash.com/reference/private-websocket-api
+  baseURL: https://ws.zerohash.com
+  tags:
+  - websockets
+  - market-data
+  - digital-assets
+  properties:
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/private-websocket-api
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+common:
+- type: DomainSecurity
+  url: security/zero-hash-domain-security.yml
+- type: Website
+  url: https://zerohash.com/
+- type: DeveloperPortal
+  url: https://docs.zerohash.com/
+- type: Documentation
+  url: https://docs.zerohash.com/
+- type: APIReference
+  url: https://docs.zerohash.com/reference
+- type: GettingStarted
+  url: https://docs.zerohash.com/docs/getting-started
+- type: Support
+  url: https://zerohash.zendesk.com/hc/en-us
+- type: Blog
+  url: https://zerohash.com/blog
+- type: GitHubOrganization
+  url: https://github.com/seedcx
+- type: Pricing
+  url: https://zerohash.com/disclosures/pricing-and-fees
+- type: SignUp
+  url: https://zerohash.com/contact
+- type: Login
+  url: https://portal.zerohash.com
+- type: TermsOfService
+  url: https://docs.zerohash.com/page/terms-of-service
+- type: PrivacyPolicy
+  url: https://docs.zerohash.com/page/privacy-policy
+- type: StatusPage
+  url: https://status.zerohash.com
+- type: ChangeLog
+  url: changelog/zero-hash-changelog.yml
+- type: ReleaseNotes
+  url: https://docs.zerohash.com/changelog
+- type: Compliance
+  url: https://zerohash.com/security
+- type: TrustCenter
+  url: security/zero-hash-trust-center.yml
+- type: Security
+  url: security/zero-hash-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/zero-hash-vulnerability-disclosure.yml
+- type: SecurityTxt
+  url: well-known/zero-hash-security.txt
+- type: WellKnown
+  url: well-known/zero-hash-well-known.yml
+- type: LLMsTxt
+  url: llms/zero-hash-llms.txt
+- type: Packages
+  url: packages/zero-hash-packages.yml
+- type: SDKs
+  url: packages/zero-hash-packages.yml
+- type: Components
+  url: components/zero-hash-components.yml
+- type: Sandbox
+  url: sandbox/zero-hash-sandbox.yml
+- type: Conventions
+  url: conventions/zero-hash-conventions.yml
+- type: Idempotency
+  url: conventions/zero-hash-conventions.yml
+- type: Authentication
+  url: authentication/zero-hash-authentication.yml
+- type: OAuthScopes
+  url: scopes/zero-hash-scopes.yml
+- type: ErrorCatalog
+  url: errors/zero-hash-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/zero-hash-lifecycle.yml
+- type: Conformance
+  url: conformance/zero-hash-conformance.yml
+- type: DataModel
+  url: data-model/zero-hash-data-model.yml
+- type: Webhooks
+  url: asyncapi/zero-hash-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
-common:
-- type: Website
-  url: https://forgeglobal.com/zero-hash_stock/
+x-enrichment:
+  date: '2026-08-05'
+  status: enriched
+  artifacts_added: 30
+  pass: local-v1

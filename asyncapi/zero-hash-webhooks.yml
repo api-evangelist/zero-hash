@@ -1,0 +1,94 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.zerohash.com/reference/overview
+docs: https://docs.zerohash.com/reference/overview
+asyncapi_published: false
+note: >-
+  zerohash publishes no AsyncAPI document. It does publish a documented outbound webhook catalog and an authenticated
+  private WebSocket feed, both captured here as the provider's real event surface. Nothing in this file is inferred —
+  every event name and header is taken verbatim from the provider's webhook and WebSocket reference pages.
+webhooks:
+  configuration: >-
+    Webhook endpoints are not self-service. Platforms supply separate production and certification URLs to zerohash
+    through Slack or their relationship manager, and zerohash configures them within 2 business days.
+  security_docs: https://docs.zerohash.com/reference/webhook-security
+  headers:
+  - name: x-zh-hook-notification-id
+    meaning: Unique notification identifier — the consumer-side idempotency key.
+  - name: x-zh-hook-payload-type
+    meaning: The event type carried by this delivery.
+  ordering: >-
+    Delivery order is not guaranteed. Consumers must sequence on the payload `timestamp` field.
+  retries:
+    fast: Up to 4 additional retry attempts at 250ms intervals after the first failure.
+    backoff: 3 further attempts using exponential backoff.
+    terminal: The notification is dropped after retries are exhausted.
+  events:
+  - name: participant_status_changed
+    group: Participants
+    docs: https://docs.zerohash.com/reference/participant-status-updates
+  - name: participant_updated
+    group: Participants
+    docs: https://docs.zerohash.com/reference/participant-onboarding-status-update
+  - name: payment_status_changed
+    group: Payments
+    docs: https://docs.zerohash.com/reference/payments-status-changes
+  - name: deposit_fund_complete
+    group: Account Funding
+    docs: https://docs.zerohash.com/reference/fund-transaction-update
+  - name: external_account_status_changed
+    group: Payments
+    docs: https://docs.zerohash.com/reference/external-account-status-updates
+  - name: asset_mover_update
+    group: Assets
+    docs: https://docs.zerohash.com/reference/asset-price-change-updates
+  - name: account_balance.changed
+    group: Accounts
+    docs: https://docs.zerohash.com/reference/account-balance
+  - name: trade.status_changed
+    group: Trades
+    docs: https://docs.zerohash.com/reference/trade-status
+  - name: deposit.status_changed
+    group: Deposits
+    docs: https://docs.zerohash.com/reference/deposit-status-updates
+  documented_topic_pages:
+  - https://docs.zerohash.com/reference/customer-account-status-update
+  - https://docs.zerohash.com/reference/payins-transaction-updates
+  - https://docs.zerohash.com/reference/beta-payouts-webhooks
+  - https://docs.zerohash.com/reference/connect-webhooks
+  - https://docs.zerohash.com/reference/trade-strategy-executions
+  - https://docs.zerohash.com/reference/trade-strategy-operations
+  - https://docs.zerohash.com/reference/trade-strategy-traders
+websocket:
+  docs: https://docs.zerohash.com/reference/private-websocket-api
+  endpoints:
+  - environment: production
+    url: wss://ws.zerohash.com
+  - environment: certification
+    url: wss://ws.cert.zerohash.com
+  authentication: >-
+    Every message — subscribe, info and ping — carries its own credentials and a fresh HMAC-SHA256 signature in the
+    envelope (messageType, topic, body, key, passphrase, timestamp, signature).
+  keepalive: A ping must be sent every 20 seconds; clients must implement reconnection and resubscription.
+  topics:
+  - name: balances
+    docs: https://docs.zerohash.com/reference/balance-subscription
+    messages:
+    - initial-balance — full snapshot of account balances on subscribe
+    - balance-updated — incremental balance change
+  - name: prices
+    docs: https://docs.zerohash.com/reference/price-subscription
+    messages:
+    - price-update — RFQ liquidity bid/ask price levels for a subscribed symbol
+    note: Price data covers RFQ products only, not CLOB markets.
+  - name: available-symbols
+    docs: https://docs.zerohash.com/reference/listing-available-symbols
+fix:
+  docs: https://docs.zerohash.com/reference/central-limit-order-book
+  protocol: FIX 5.0
+  note: >-
+    A FIX gateway carries CLOB order entry, drop copy and market data (New Order Single, Cancel/Replace, Execution
+    Report 35=8, Market Data Request 35=V, Market Data Snapshot 35=W, Incremental Refresh 35=X, Security List 35=y).
+    Message layouts and reject reasons are documented as reference pages; no FIX XML dictionary is published for
+    download, so no machine-readable artifact could be harvested.
+  status_component: FIX Gateway (tracked on https://status.zerohash.com)

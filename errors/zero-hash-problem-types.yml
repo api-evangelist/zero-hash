@@ -1,0 +1,181 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/zero-hash-api-openapi.yml + https://docs.zerohash.com/docs/error-handling
+docs: https://docs.zerohash.com/docs/error-handling
+format: vendor-json
+envelope:
+  shape: JSON object carrying a human-readable "error" string; payin/authorization errors add typed fields such
+    as "missing_requirements" or "transaction_id".
+  problem_json: false
+  note: zerohash does not use RFC 9457 application/problem+json. Every documented error response is application/json.
+retry_policy:
+  docs: https://docs.zerohash.com/docs/error-handling
+  get: GET requests are universally safe to retry.
+  post_502_504: State is indeterminate — an idempotency check is required before retrying.
+  post_503: Safe to retry without an idempotence check.
+  backoff: Exponential backoff starting at 100-500ms.
+  named_safe_endpoints:
+  - POST /liquidity/execute
+  - POST /convert_withdraw/execute
+problems:
+- status: 400
+  title: Bad Request
+  occurrences: 156
+  common_description: Bad Request
+  schemas:
+  - Code400
+  - StakingValidationErrorResponse
+  example_operations:
+  - GET /time
+  - GET /index
+  - GET /assets
+  docs_guidance: The server could not understand the request, most likely due to invalid syntax.
+  retry: do-not-retry
+- status: 401
+  title: Unauthorized
+  occurrences: 1
+  common_description: 'The platform, jurisdiction, or asset is not enabled for the Pay product. The `{"error": ...}`
+    body is one of "Your Platform is not configured to use the Pay product", "The State you live in is not authorized
+    to use this product", or "Asset not enabled for pay".'
+  schemas: null
+  example_operations:
+  - POST /pay/rfq
+  docs_guidance: The server could not authenticate your request.
+  retry: do-not-retry
+- status: 403
+  title: Forbidden
+  occurrences: 156
+  common_description: Forbidden
+  schemas:
+  - Code403
+  - PayinsAuthorizationLimitError
+  - PayinsAuthorizationManualApprovalError
+  - PayinsTransactionNotAuthorizedError
+  example_operations:
+  - GET /time
+  - GET /index
+  - GET /assets
+  docs_guidance: You are not authorized to access the requested resource.
+  retry: do-not-retry
+- status: 404
+  title: Not Found
+  occurrences: 156
+  common_description: Not Found
+  schemas:
+  - Code404
+  example_operations:
+  - GET /time
+  - GET /index
+  - GET /assets
+  docs_guidance: The requested resource was not found.
+  retry: do-not-retry
+- status: 409
+  title: Conflict
+  occurrences: 2
+  common_description: Shopper KYC requirements are not met for this transaction.
+  schemas:
+  - PayinsAuthorizationKycError
+  example_operations:
+  - POST /pay/rfq
+  - POST /client_auth_token
+  docs_guidance: The request could not be completed due to a conflict with the current state.
+  retry: do-not-retry
+- status: 422
+  title: Unprocessable Entity
+  occurrences: 3
+  common_description: 'The transaction could not be authorized. The `{"error": ...}` body is either "Participant
+    is not authorized to transact" (the participant/merchant relationship or state precludes authorization) or "Transaction
+    not authorized" (the authorizer returned an unrecognized status).'
+  schemas:
+  - Code400
+  - PayinsTransactionNotAuthorizedError
+  example_operations:
+  - POST /payouts
+  - POST /pay/rfq
+  - POST /client_auth_token
+  docs_guidance: null
+  retry: do-not-retry
+- status: 500
+  title: Internal Server Error
+  occurrences: 156
+  common_description: Internal Server Error
+  schemas:
+  - Code500
+  example_operations:
+  - GET /time
+  - GET /index
+  - GET /assets
+  docs_guidance: The server has encountered an internal error.
+  retry: retry-with-backoff
+- status: 503
+  title: Service Unavailable
+  occurrences: 156
+  common_description: Service Unavailable
+  schemas:
+  - Code503
+  example_operations:
+  - GET /time
+  - GET /index
+  - GET /assets
+  docs_guidance: The server has encountered a transient internal error.
+  retry: safe-to-retry
+- status: 429
+  title: Too Many Requests
+  occurrences: 0
+  common_description: null
+  schemas: null
+  example_operations: []
+  docs_guidance: The client has triggered the Rate Limit thresholds.
+  retry: retry-with-backoff
+  note: Documented in the error-handling guide but not enumerated in the OpenAPI responses.
+- status: 502
+  title: Bad Gateway
+  occurrences: 0
+  common_description: null
+  schemas: null
+  example_operations: []
+  docs_guidance: There was a glitch in our internal infrastructure, or the request timed out.
+  retry: retry-with-idempotency-check
+  note: Documented in the error-handling guide but not enumerated in the OpenAPI responses.
+- status: 504
+  title: Gateway Timeout
+  occurrences: 0
+  common_description: null
+  schemas: null
+  example_operations: []
+  docs_guidance: There was a glitch in our internal infrastructure, or the request timed out.
+  retry: retry-with-idempotency-check
+  note: Documented in the error-handling guide but not enumerated in the OpenAPI responses.
+- status: 1020
+  title: Access Denied
+  occurrences: 0
+  common_description: null
+  schemas: null
+  example_operations: []
+  docs_guidance: Cloudflare firewall rule violation — the request was blocked at the edge (commonly a non-allowlisted
+    source IP).
+  retry: do-not-retry
+  note: A Cloudflare status documented in the zerohash error-handling guide, not an HTTP status.
+typed_error_schemas:
+- schema: PayinsAuthorizationKycError
+  status: 409
+  meaning: Shopper KYC requirements for this transaction are not met; missing_requirements[] lists the gaps.
+- schema: PayinsAuthorizationLimitError
+  status: 403
+  meaning: Shopper's daily or lifetime spend aggregate exceeded at the current authorization level; lifting requires
+    manual review.
+- schema: PayinsAuthorizationManualApprovalError
+  status: 403
+  meaning: Manual approval required, pending, or already in a terminal state for this transaction.
+- schema: PayinsTransactionNotAuthorizedError
+  status: 422
+  meaning: The transaction could not be authorized.
+- schema: ServiceUnavailableError
+  status: 503
+  meaning: Upstream authorization dependency unreachable; retry after the Retry-After header.
+- schema: ErrorCLOBGeneric
+  status: null
+  meaning: Generic error envelope used by the central-limit-order-book operations.
+- schema: StakingValidationErrorResponse
+  status: 400
+  meaning: Validation failure on a staking request.

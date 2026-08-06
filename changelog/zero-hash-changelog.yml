@@ -1,0 +1,42 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.zerohash.com/changelog
+url: https://docs.zerohash.com/changelog
+title: zerohash Release Notes
+scheme: dated-entries
+format: ReadMe changelog (dated posts, labeled added / improved / fixed)
+current_spec_version: '1.7.0'
+window: recent — 10 most recent entries captured; 51 changelog URLs are published in the docs sitemap
+entries:
+- date: '2026-08-03'
+  title: Auth - Beta Release
+- date: '2026-07-20'
+  title: 'Auth: Connect webhook fees, configurable asset precision, and staged exchange testing'
+  label: added
+- date: '2026-06-29'
+  title: USD1.ETH and WLFI.ETH now available across Trade and Transact
+  label: added
+- date: '2026-06-24'
+  title: New "Single API Call Payouts" API
+  additions:
+  - POST /payouts with an Idempotency-Key header
+- date: '2026-06-08'
+  title: HYPE, USDC.HYPE, and USDT.HYPE now available across Trade and Transact
+  label: added
+- date: '2026-05-29'
+  title: Standardized Error Codes for Account Funding, Payins Webhooks
+- date: '2026-05-27'
+  title: MON now available in NY
+  label: added
+- date: '2026-05-26'
+  title: Account Ownership Attestation
+- date: '2026-05-26'
+  title: New SDK Version 3.0.0
+  note: Major-version SDK release.
+- date: '2026-05-20'
+  title: Updated List of Prohibited, Restricted, and Permitted Higher Risk Jurisdictions (2026 Annual List Update)
+breaking_changes_flagged: none in the captured window
+observations: >-
+  Entries are overwhelmingly additive — new assets, new jurisdictions, new endpoints and SDK releases. No entry in the
+  captured window announces a removal, a breaking change, or a sunset date, which is consistent with the absence of a
+  published deprecation policy (see lifecycle/zero-hash-lifecycle.yml).

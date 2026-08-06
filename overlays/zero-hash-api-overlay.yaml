@@ -1,0 +1,65 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the zerohash API
+  version: 1.0.0
+extends: openapi/zero-hash-api-openapi.yml
+x-generated: '2026-08-05'
+x-method: generated
+x-source: openapi/zero-hash-api-openapi.yml
+x-note: >-
+  Non-destructive enhancement layer over the provider's published OpenAPI 3.1.0. It records the operating context the
+  spec omits — production and EU hosts (the document declares only the certification server), the external artifacts
+  this profile derived, and the contract gaps found during enrichment. It never rewrites the harvested document, and
+  it does not invent operationIds: the absence of operationIds across all 167 operations is recorded as a finding for
+  the provider, not patched over here.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apievangelist.com/providers/zero-hash
+    x-apievangelist-enriched: '2026-08-05'
+    x-artifacts:
+      authentication: authentication/zero-hash-authentication.yml
+      conventions: conventions/zero-hash-conventions.yml
+      errors: errors/zero-hash-problem-types.yml
+      data-model: data-model/zero-hash-data-model.yml
+      lifecycle: lifecycle/zero-hash-lifecycle.yml
+      sandbox: sandbox/zero-hash-sandbox.yml
+      webhooks: asyncapi/zero-hash-webhooks.yml
+      conformance: conformance/zero-hash-conformance.yml
+      packages: packages/zero-hash-packages.yml
+      components: components/zero-hash-components.yml
+- target: $.servers
+  update:
+  - url: https://api.zerohash.com
+    description: Production API server (US) — documented at https://docs.zerohash.com/docs/submit-first-api-call but
+      absent from the published OpenAPI servers list.
+  - url: https://api.zerohash.eu
+    description: Production API server (EU) — documented but absent from the published OpenAPI servers list.
+  - url: https://api.cert.zerohash.eu
+    description: Certification API server (EU) — documented but absent from the published OpenAPI servers list.
+- target: $.info
+  update:
+    x-contract-gaps:
+    - id: no-operation-ids
+      detail: >-
+        None of the 167 operations declares an operationId, so no stable machine identifier exists for any endpoint.
+        Every downstream artifact in this profile has to address operations by method plus path.
+      affected_operations: 167
+    - id: no-rate-limit-contract
+      detail: >-
+        HTTP 429 is described in the error-handling guide but is not enumerated in any operation's responses, and no
+        numeric limit or RateLimit-* / X-RateLimit-* response header is published.
+    - id: no-problem-details
+      detail: Errors are plain application/json with an `error` string; RFC 9457 application/problem+json is not used.
+    - id: single-server-declared
+      detail: >-
+        The published document declares only https://api.cert.zerohash.com, so a client generated straight from the
+        spec points at the certification environment.
+    - id: stale-download-link
+      detail: >-
+        info.description links to /zh-swagger.json for the JSON download; that URL returns HTTP 404 on
+        docs.zerohash.com as of 2026-08-05.
+    - id: no-deprecation-policy
+      detail: >-
+        One operation (GET /market_data/image/{path}) is marked deprecated, but no Sunset/Deprecation header support
+        or written deprecation policy exists to tell an integrator when it goes away.

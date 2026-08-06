@@ -1,0 +1,87 @@
+generated: '2026-08-05'
+method: searched
+source: >-
+  https://zerohash.com/security, https://trust.zerohash.com/, https://docs.zerohash.com/page/corporate-structure,
+  openapi/zero-hash-api-openapi.yml, openapi/zero-hash-connect-openapi.yml
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: openapi/zero-hash-api-openapi.yml declares openapi 3.1.0 with 146 paths and 167 operations.
+- id: openapi-3.0
+  conforms: true
+  evidence: openapi/zero-hash-connect-openapi.yml declares openapi 3.0.3.
+- id: asyncapi
+  conforms: false
+  evidence: No AsyncAPI document is published; the event surface is documented as prose webhook and WebSocket pages.
+- id: oauth2
+  conforms: partial
+  evidence: >-
+    The core REST API uses HMAC-signed API keys, not OAuth. The Connect (zerohash Auth) API exposes
+    POST /api/v1/oauth/token with grant_type=client_credentials and scoped JWTs, but declares the scheme as
+    http/bearer rather than an oauth2 securityScheme, so the flow is not machine-discoverable from the spec.
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration on any probed host (404 on zerohash.com and api.sandbox.connect.xyz).
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returns 404 on zerohash.com and api.sandbox.connect.xyz.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: All error responses are application/json with a plain `error` string; no application/problem+json.
+- id: rfc9116-security-txt
+  conforms: true
+  evidence: https://zerohash.com/.well-known/security.txt returns 200 with Contact, Expires, Canonical and Hiring.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header support documented; no deprecation policy published.
+- id: idempotency-keys
+  conforms: true
+  evidence: >-
+    Idempotency-Key header on POST /payouts with SHA-256 body-hash replay detection; client_transfer_id on
+    POST /transfers with a 72-hour uniqueness window.
+- id: pagination
+  conforms: true
+  evidence: Reusable page / page_size query parameters declared in components.parameters.
+- id: fix-5.0
+  conforms: true
+  evidence: >-
+    A FIX 5.0 gateway is documented for CLOB order entry, drop copy and market data, with per-message reference pages
+    (35=8 Execution Report, 35=V Market Data Request, 35=W Snapshot, 35=X Incremental Refresh, 35=y Security List).
+- id: iso-3166
+  conforms: true
+  evidence: >-
+    Jurisdiction resources use ISO 3166 countries and subdivisions; a dedicated ISO 3166 subdivision conversion guide
+    is published.
+- id: travel-rule
+  conforms: true
+  evidence: >-
+    A Travel Rule SDK module (@zerohash-sdk/travel-rule-js / -react) is published and travel-rule handling is part of
+    the participant/withdrawal flow.
+- id: x402
+  conforms: partial
+  evidence: >-
+    x402 is named in the Agentic Suite (beta) documentation and an x402 merchant-configuration guide is published;
+    no machine-readable x402 contract or endpoint was found.
+compliance_program:
+  published: true
+  page: https://zerohash.com/security
+  trust_center: https://trust.zerohash.com/
+  certifications:
+  - SOC 1 Type 2
+  - SOC 2 Type 1
+  - SOC 2 Type 2
+  - ISO/IEC 27001:2022
+  - Regulation SCI
+  - DORA
+  - GDPR
+  - CCPA
+  - 23 NYCRR 500
+  licensing:
+  - FinCEN-registered Money Services Business
+  - Money Transmitter licenses across 51 US jurisdictions
+  - New York State BitLicense (NYDFS), via zerohash liquidity services llc
+  - FINTRAC Money Services Business registration (Canada)
+  disclosures:
+  - https://docs.zerohash.com/page/us-licenses-and-disclosures
+  - https://docs.zerohash.com/page/corporate-structure
+  - https://docs.zerohash.com/page/new-york-bitlicense-risk-disclosure-and-complaint-procedure

@@ -1,0 +1,69 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/zero-hash-connect-openapi.yml
+docs: https://docs.zerohash.com/reference/startsession
+note: >-
+  The core zerohash REST API has no OAuth surface — it is authenticated with HMAC-signed API keys, so no scopes exist
+  for it. The scopes below belong to the Connect API behind the zerohash Auth product. They are real, published values
+  taken from the OpenAPI, but the spec models the token endpoint with an http/bearer securityScheme rather than an
+  oauth2 scheme with a flows block, so no authorizationUrl/tokenUrl scope map is machine-discoverable; the derive pass
+  therefore reads them from the operation contract instead.
+schemes:
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  source: openapi/zero-hash-connect-openapi.yml
+  description: JWT token with customers:token:issue scope.
+token_endpoint:
+  operation: POST /api/v1/oauth/token
+  operationId: getAccessToken
+  grant_type: client_credentials
+  parameters:
+  - client_id
+  - client_secret
+  - audience
+  - organization_id
+  response:
+    token_type: Bearer
+    expires_in: 86400
+scopes:
+- scope: customers:token:issue
+  level: organization
+  description: >-
+    Carried by the organization-level JWT returned from POST /api/v1/oauth/token; required to call POST /api/v1/sessions
+    and issue a user session token.
+  sources:
+  - openapi/zero-hash-connect-openapi.yml
+- scope: user:deposit:send
+  level: session
+  description: >-
+    Allows the session to initiate a deposit. deposit_details in the session body is optional when this scope is present.
+  sources:
+  - openapi/zero-hash-connect-openapi.yml
+- scope: user:withdrawal:request
+  level: session
+  description: >-
+    Allows the session to request a withdrawal. withdrawal_details in the session body is required when this scope is
+    present.
+  sources:
+  - openapi/zero-hash-connect-openapi.yml
+- scope: user:recovery:send
+  level: session
+  description: Allows the session to run the recovery flow.
+  sources:
+  - openapi/zero-hash-connect-openapi.yml
+session_tokens:
+  operation: POST /api/v1/sessions
+  operationId: startSession
+  expires_in: 3600
+  additional_headers:
+  - x-connect-client-id
+  - Signature
+  - timestamp
+  errors:
+    403: Forbidden — invalid scopes or signature validation failed.
+gaps:
+- The session `scopes` property is typed as a single string with an enum while the example passes an array; the
+  contract and the example disagree.
+- No scope or permission reference page was found on the docs host; these values exist only inside the OpenAPI.

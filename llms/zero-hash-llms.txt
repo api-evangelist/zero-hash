@@ -1,0 +1,117 @@
+# zerohash - The Operating System for Digital Money
+> Crypto, stablecoin, and tokenization infrastructure for banks, brokerages, and fintechs
+zerohash is a regulated infrastructure provider that enables seamless integration of crypto, stablecoins, and tokenized assets. Trusted by companies like Stripe, Interactive Brokers, Morgan Stanley, and Gusto to power on-chain services for millions of customers. $65B+ in transaction volume settled across 200+ jurisdictions with 99.9% uptime.
+
+## Company
+
+- [About zerohash](https://docs.zerohash.com/page/about-zero-hash): Company overview, corporate structure, and regulatory information
+- [Security & Compliance](https://zerohash.com/security): SOC 1/2, ISO certifications, GDPR, and regulatory framework
+- [Trust Center](https://trust.zerohash.com/): Security documentation and compliance posture
+- [Careers](https://zero-hash.breezy.hr/): Open positions at zerohash
+- [Press & News](https://zerohash.com/press): Latest announcements and media coverage
+- [Blog](https://zerohash.com/blog): Industry insights and product updates
+- [Events](https://zerohash.com/event/brokeragesummit): Upcoming events and conferences
+- [Contact Us](https://zerohash.com/contact): Get in touch with the zerohash team
+
+## Solutions by Industry
+
+- [Gaming Platforms](https://zerohash.com/solutions/gaming-platforms): Move player funds quickly across borders and around the clock
+- [Brokerages](https://zerohash.com/solutions/brokerages): Enable faster funding and modern asset trading
+- [Banks](https://zerohash.com/solutions/banks): Modernize payments and wealth management
+- [Payment Service Providers](https://zerohash.com/solutions/psp): Power faster cross-border payments and payouts
+- [Payroll](https://zerohash.com/solutions/payroll): Help employees and contractors get paid faster
+- [Tokenization Platforms](https://zerohash.com/solutions/tokenization-platforms): Make tokenized assets usable with real-time settlement
+
+## Products - Trade
+
+- [Buy/Sell](https://zerohash.com/products/buy-sell): Embeddable out-of-the-box crypto trading
+- [Staking](https://zerohash.com/products/staking): Offer secure token staking with enterprise-grade infrastructure
+- [Qualified Custody](https://zerohash.com/products/qualified-custody): Safeguard crypto and tokenized assets with MPC and multi-sig
+- [Incentives](https://zerohash.com/products/incentives): Boost engagement, loyalty and lifetime value with crypto rewards
+- [Lending Stack](https://zerohash.com/products/lending-stack): Lending infrastructure for enterprises
+- [Auth](https://zerohash.com/products/auth): Seamless onchain account linking across custodial and non-custodial wallets
+
+## Products - Transact
+
+- [Account Funding](https://zerohash.com/products/account-funding): Instantly fund accounts with USDC, USDT, PYUSD, RLUSD across 15+ chains
+- [Payins](https://zerohash.com/products/payins): Accept payments globally and instantaneously
+- [Payouts](https://zerohash.com/products/payouts): Instant payouts for speed and flexibility
+- [On & Off Ramp](https://zerohash.com/products/on-off-ramp): Seamless conversion between fiat and crypto
+- [Remittances](https://zerohash.com/products/remittance): Instant cross-border payments, 24/7/365
+
+## Products - Tokenize
+
+- [Tokenization Engine](https://zerohash.com/products/tokenization-engine): Create and manage tokenized assets across 8+ blockchains
+- [Tokenization Payment Rails](https://zerohash.com/products/tokenization-payment-rails): Unlock programmable and instant funding for tokenized securities
+
+## Developer Resources
+
+- [Documentation](https://docs.zerohash.com/): Complete developer portal
+- [Getting Started](https://docs.zerohash.com/docs/getting-started): Initial setup and platform creation guide
+- [API Reference](https://docs.zerohash.com/reference): Full API documentation
+- [Recipes](https://docs.zerohash.com/recipes): Step-by-step code examples
+- [Release Notes](https://docs.zerohash.com/changelog): Latest updates and changes
+- [API Status](https://status.zerohash.com): Real-time system status and uptime
+- [Generate API Keys](https://docs.zerohash.com/docs/generate-api-keys): How to create API keys via Client Portal
+- [Auth Network](https://docs.zerohash.com/docs/auth-network): Supported custodial and non-custodial accounts
+
+## Integration Guides
+
+- [Account Funding Integration Guide (SDK)](https://docs.zerohash.com/docs/fund-integration-guide-sdk): End-to-end guide for Account Funding product with SDK
+- [Account Funding Integration Guide (API)](https://docs.zerohash.com/docs/fund-integration-guide-onboarding-api-fund-sdk-sdk): Full API implementation for onboarding and funding
+- [Payouts Integration Guide](https://docs.zerohash.com/docs/payouts-integration-guide): Comprehensive payouts API guide
+- [Tokenization Payment Rails Guide](https://docs.zerohash.com/docs/tokenization-payment-rails): Stablecoin funding for tokenization platforms
+- [Enterprise Settlements](https://docs.zerohash.com/docs/enterprise-settlements): Enterprise settlement workflows
+- [Crypto Delivery Guide](https://docs.zerohash.com/docs/navigating-crypto-delivery-a-step-by-step-guide): Step-by-step crypto transaction guide
+- [Support FAQs](https://docs.zerohash.com/docs/faqs-for-platforms-support-team): Customer-facing material and support resources
+
+## Case Studies
+
+- [Remote](https://zerohash.com/casestudy/remote): Global payroll and contractor payments with stablecoins
+- [Félix](https://zerohash.com/casestudy/felix-casestudy): Remittance solutions for 60 million Latinos in the US
+- [Kalshi](https://zerohash.com/casestudy/kalshi): $25M in USDC deposits in 7 days for account funding
+- [MoneyLion](https://zerohash.com/casestudy/moneylion): Crypto investing and rewards for 150K+ customers in 6 months
+
+## Research & Reports
+
+- [2026 Stablecoin Momentum Report](https://zerohash.com/resources/the-2026-stablecoin-momentum-report): Latest industry research and stablecoin trends
+- [Brokerage Report](https://zerohash.com/resources/brokerage-report): How stablecoins are giving brokerages an edge
+- [Crypto and the Future of Wealth](https://zerohash.com/resources/crypto-and-the-future-of-wealth): The evolution of wealth management with crypto
+
+## Blog & Insights
+
+- [Building the Bridge to the Onchain Economy](https://zerohash.com/resources/building-the-bridge-to-the-onchain-economy-with-zero-hash): Infrastructure for the onchain economy
+- [The Stablecoin Wars - Who Wins?](https://zerohash.com/resources/the-stablecoin-wars-who-wins/): Analysis of the stablecoin ecosystem
+- [Why zerohash is a Trusted Circle Partner](https://zerohash.com/resources/accelerating-the-adoption-of-stablecoins/): Partnership with Circle and USDC
+- [Effortlessly Enable Lightning Transactions](https://zerohash.com/resources/effortlessly-enable-lightning-transactions/): Bitcoin Lightning Network integration
+- [zerohash Establishes UK Entity](https://zerohash.com/resources/news/zero-hash-establishes-uk-entity-and-appoints-laura-navaratnam-and-keith-grose-as-non-executive-directors/): UK expansion and leadership appointments
+
+## Legal & Compliance
+
+- [Legal Overview](https://docs.zerohash.com/page/legal): Terms, policies, and legal documents
+- [Corporate Structure](https://docs.zerohash.com/page/corporate-structure): Entity information and licensing details
+- [US Licenses & Disclosures](https://docs.zerohash.com/page/us-licenses-and-disclosures): State-by-state licensing information (51 jurisdictions)
+- [Privacy Policy](https://docs.zerohash.com/page/privacy-policy): How zerohash handles user data
+- [Terms of Service](https://docs.zerohash.com/page/terms-of-service): Service agreement terms
+- [NY BitLicense Risk Disclosure](https://docs.zerohash.com/page/new-york-bitlicense-risk-disclosure-and-complaint-procedure): New York regulatory compliance
+- [Complaints Procedure](https://zerohash.zendesk.com/hc/en-us/requests/new): How to file a complaint
+- [FAQ](https://docs.zerohash.com/page/faq): Frequently asked questions
+
+## Customer Portals
+
+- [US Portal](https://portal.zerohash.com): Access your zerohash account (United States)
+- [EU Portal](https://portal.zerohash.eu): Access your zerohash account (Europe)
+- [Cert Portal](https://portal.cert.zerohash.com): Testing environment portal
+
+## Support
+
+- Phone: (855) 744-7333
+- Email: [email protected]
+- [Help Center](https://zerohash.zendesk.com/hc/en-us): Support documentation and FAQs
+- Support Hours: 24/7 dedicated support
+
+## Social Media
+
+- [LinkedIn](https://www.linkedin.com/company/zerohash/): Company updates and news
+- [Twitter/X](https://x.com/ZeroHashX): Latest announcements
+- [YouTube](https://www.youtube.com/channel/UC8HvrzcqzbusQYyfzctl_VA): Video content and demos

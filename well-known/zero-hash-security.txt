@@ -1,0 +1,9 @@
+# You can disclose potential vulnerabilities or other security issues using the details outlined here.
+# We hope to provide recognition for findings through Bugcrowd.
+
+Contact: https://zerohash.com/vdp
+Contact: mailto:zerohash-vdp-ess@submit.bugcrowd.com
+Expires: 2027-03-20T14:00:00.000Z
+Preferred-Languages: en
+Canonical: https://zerohash.com/.well-known/security.txt
+Hiring: https://www.linkedin.com/company/zerohash/jobs/

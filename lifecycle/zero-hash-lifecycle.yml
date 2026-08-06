@@ -1,0 +1,73 @@
+generated: '2026-08-05'
+method: searched
+source: >-
+  https://status.zerohash.com, https://docs.zerohash.com/changelog, https://docs.zerohash.com/docs/assets-delisting,
+  openapi/zero-hash-api-openapi.yml
+versioning:
+  scheme: spec-versioned
+  current: '1.7.0'
+  detail: >-
+    The published OpenAPI carries info.version 1.7.0. The REST base path has no version segment; only the CLOB order
+    surface uses a /orders/v1/ prefix. No public API version-negotiation header or dated-version policy was found.
+  docs: https://docs.zerohash.com/reference
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  detail: >-
+    No API deprecation or sunset policy is published, and no RFC 8594 Sunset/Deprecation header support is documented.
+    Change communication happens through the dated release notes. An asset-delisting policy exists, but it governs
+    supported assets, not API surface lifecycle.
+  related: https://docs.zerohash.com/docs/assets-delisting
+deprecated_operations:
+- openapi/zero-hash-api-openapi.yml#GET /market_data/image/{path}
+sla:
+  url: null
+  published_uptime_claim: '99.99% (marketing claim on zerohash.com); 99.9% stated in the provider llms.txt'
+  note: No contractual SLA document is public; terms are referenced through the master services agreement.
+status_page:
+  url: https://status.zerohash.com
+  provider: Atlassian Statuspage
+  api: https://status.zerohash.com/api/v2/summary.json
+  components:
+  - Client Portal
+  - Core Resources
+  - Balance Subscription
+  - Price Subscription
+  - FIX Gateway
+  - REST Gateway
+  - PARTICIPANTS
+  - ONBOARDING
+  - TRANSACT
+  - TRADING
+  - PAYMENTS
+  - DEPOSIT & WITHDRAWAL
+  - ACCOUNT FUNDING
+  - CLOB
+  - PROFILE
+  - SDK
+  - Secondary Portal
+  - Web Applications
+  - Website
+changelog:
+  url: https://docs.zerohash.com/changelog
+  entries_published: 51
+  see_also: changelog/zero-hash-changelog.yml
+environments:
+- name: production (US)
+  api: https://api.zerohash.com
+  websocket: wss://ws.zerohash.com
+  portal: https://portal.zerohash.com
+- name: production (EU)
+  api: https://api.zerohash.eu
+  portal: https://portal.zerohash.eu
+- name: certification (US)
+  api: https://api.cert.zerohash.com
+  websocket: wss://ws.cert.zerohash.com
+  portal: https://portal.cert.zerohash.com
+- name: certification (EU)
+  api: https://api.cert.zerohash.eu
+support:
+  help_center: https://zerohash.zendesk.com/hc/en-us
+  hours: 24/7 dedicated support (per the provider llms.txt)
+  phone: (855) 744-7333

@@ -1,0 +1,104 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.zerohash.com/reference/sdk-overview
+docs: https://docs.zerohash.com/reference/sdk-modules
+notes: >-
+  The zerohash SDK is a library of embeddable, prebuilt UI modules rather than a server-side client. Each module is a
+  self-contained flow (buy, sell, onboard, fund, withdraw, link an account) rendered inside the platform's own
+  application and authorized by a short-lived client auth token. Modules ship in matched pairs — a framework-agnostic
+  JavaScript build and a React build — under the @zerohash-sdk npm scope, with a Capacitor plugin and per-platform
+  webview guides for mobile. Distinct from the REST API packages catalogued in packages/zero-hash-packages.yml.
+authorization:
+  docs: https://docs.zerohash.com/reference/sdk-authorization
+  flow: >-
+    The platform's backend calls POST /client-auth-token to mint a short-lived token scoped to a participant, hands it
+    to the browser, and the SDK module uses it; POST /revoke-auth-token invalidates it.
+  operations:
+  - POST /client-auth-token
+  - POST /revoke-auth-token
+  permissions_docs: https://docs.zerohash.com/reference/iframe-integration-permissions
+loaders:
+- name: '@zerohash-sdk/* (JavaScript)'
+  registry: npm
+  note: Framework-agnostic build of each module.
+- name: '@zerohash-sdk/*-react (React)'
+  registry: npm
+  note: React component build of each module.
+- name: '@zerohash-sdk/capacitor'
+  registry: npm
+  note: Capacitor plugin used to host the modules inside iOS/Android apps.
+- name: zh-web-sdk
+  registry: npm
+  note: Original monolithic browser SDK, still published (3.4.3).
+families:
+- family: Onboarding & Identity
+  docs: https://docs.zerohash.com/reference/sdk-modules-user-onboarding
+  components:
+  - name: User Onboarding
+    packages: ['@zerohash-sdk/onboarding-js', '@zerohash-sdk/onboarding-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-user-onboarding
+  - name: Onboarding Verification Results
+    docs: https://docs.zerohash.com/reference/sdk-modules-user-onboarding-verification-results
+  - name: Profile
+    packages: ['@zerohash-sdk/profile-js', '@zerohash-sdk/profile-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-profile
+  - name: Travel Rule
+    packages: ['@zerohash-sdk/travel-rule-js', '@zerohash-sdk/travel-rule-react']
+- family: Trading
+  components:
+  - name: Crypto Buy
+    packages: ['@zerohash-sdk/crypto-buy-js', '@zerohash-sdk/crypto-buy-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-crypto-buy
+  - name: Crypto Sell
+    packages: ['@zerohash-sdk/crypto-sell-js', '@zerohash-sdk/crypto-sell-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-crypto-sell
+  - name: CSP Crypto Sell
+    packages: ['@zerohash-sdk/csp-crypto-sell-js', '@zerohash-sdk/csp-crypto-sell-react']
+    note: Crypto-as-a-Service-Provider variant of the sell flow.
+- family: Funding & Deposits
+  components:
+  - name: Fund
+    packages: ['@zerohash-sdk/fund-js', '@zerohash-sdk/fund-react']
+    docs: https://docs.zerohash.com/reference/fund-sdk
+  - name: Fiat Deposits
+    packages: ['@zerohash-sdk/fiat-deposits-js', '@zerohash-sdk/fiat-deposits-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-fiat-deposits
+- family: Withdrawals
+  components:
+  - name: Crypto Withdrawals
+    packages: ['@zerohash-sdk/crypto-withdrawals-js', '@zerohash-sdk/crypto-withdrawals-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-crypto-withdrawals
+  - name: CSP Crypto Withdrawals
+    packages: ['@zerohash-sdk/csp-crypto-withdrawals-js', '@zerohash-sdk/csp-crypto-withdrawals-react']
+  - name: Fiat Withdrawals
+    packages: ['@zerohash-sdk/fiat-withdrawals-js', '@zerohash-sdk/fiat-withdrawals-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-fiat-withdrawals
+  - name: CSP Fiat Withdrawals
+    packages: ['@zerohash-sdk/csp-fiat-withdrawals-js', '@zerohash-sdk/csp-fiat-withdrawals-react']
+  - name: Fund Withdrawals
+    packages: ['@zerohash-sdk/fund-withdrawals-js', '@zerohash-sdk/fund-withdrawals-react']
+- family: Account Linking
+  components:
+  - name: Crypto Account Link
+    packages: ['@zerohash-sdk/crypto-account-link-js', '@zerohash-sdk/crypto-account-link-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-crypto-account-link
+  - name: Fiat Account Link
+    packages: ['@zerohash-sdk/fiat-account-link-js', '@zerohash-sdk/fiat-account-link-react']
+    docs: https://docs.zerohash.com/reference/sdk-modules-fiat-account-link
+  - name: zerohash-powered Plaid Link
+    docs: https://docs.zerohash.com/docs/zerohash-powered-plaid-link
+    note: Hosted bank-linking surface; no npm package of its own.
+hosted_surfaces:
+- name: Client Portal
+  url: https://portal.zerohash.com
+  note: Production tenant console — API key generation, user management, webhook and account administration.
+- name: EU Client Portal
+  url: https://portal.zerohash.eu
+- name: Certification Portal
+  url: https://portal.cert.zerohash.com
+  note: Test-environment console.
+- name: Recovery Portal
+  docs: https://docs.zerohash.com/docs/recovery-portal
+styling:
+  docs: https://docs.zerohash.com/docs/sdk-styling
+  note: Modules expose a documented theming/styling layer for host-brand alignment.

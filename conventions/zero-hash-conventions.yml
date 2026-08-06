@@ -1,0 +1,105 @@
+generated: '2026-08-05'
+method: searched
+source: >-
+  https://docs.zerohash.com/reference/api-authentication, https://docs.zerohash.com/docs/request-ids,
+  https://docs.zerohash.com/docs/error-handling, openapi/zero-hash-api-openapi.yml
+authentication:
+  style: hmac-signed-api-key
+  docs: https://docs.zerohash.com/reference/api-authentication
+  headers:
+  - name: X-SCX-API-KEY
+    meaning: Your API public key.
+  - name: X-SCX-SIGNED
+    meaning: Base64-encoded HMAC-SHA256 signature of the request.
+  - name: X-SCX-TIMESTAMP
+    meaning: Unix timestamp in seconds; must be within 60 seconds of server time.
+  - name: X-SCX-PASSPHRASE
+    meaning: Passphrase set when the API key was created.
+  signing_string: timestamp + HTTP method + route + request body, HMAC-SHA256 with the private key, base64-encoded.
+  network_controls: >-
+    CERT and PROD each maintain a separate IP allowlist managed by zerohash; static source IPs must be submitted per
+    environment. Optional per-API-key IP restrictions are available in the client portal.
+  see_also: authentication/zero-hash-authentication.yml
+idempotency:
+  supported: true
+  docs: https://docs.zerohash.com/docs/request-ids
+  mechanisms:
+  - name: Idempotency-Key header
+    scope: POST /payouts
+    required: Required when `validate` is omitted or false; ignored in validate mode.
+    semantics: >-
+      zerohash stores a SHA-256 hash of the canonicalized JSON body alongside the key. A replay with the same key but
+      a different body returns HTTP 400. GET /payouts also accepts idempotency_key as a lookup parameter.
+    source: openapi/zero-hash-api-openapi.yml (POST /payouts)
+  - name: client_transfer_id body field
+    scope: POST /transfers
+    required: Caller-supplied.
+    semantics: Must be unique across the entire platform for a rolling 72-hour period; also queryable on GET /transfers.
+    source: https://docs.zerohash.com/docs/request-ids
+  - name: quote_id replay
+    scope: POST /liquidity/execute, POST /convert_withdraw/execute
+    semantics: >-
+      Both are documented as safe to retry on 502/503/504; on a 404 the quote ID is used to look up whether the trade
+      already executed rather than re-submitting.
+    source: https://docs.zerohash.com/docs/error-handling
+  retry_guidance: >-
+    GET is always safe to retry. For POST, a 503 is safe to retry directly, while 502/504 leave state indeterminate
+    and require an idempotency check first. Use exponential backoff starting at 100-500ms.
+request_tracing:
+  header: X-Request-Id
+  case_sensitive: false
+  docs: https://docs.zerohash.com/docs/request-ids
+  behaviour: >-
+    Optional client-supplied request ID, declared as a reusable OpenAPI parameter. The server echoes X-REQUEST-ID in
+    the response header. Reuse the same request ID when retrying, log it client-side, and quote it to support.
+pagination:
+  style: page-number
+  parameters:
+  - name: page
+    in: query
+    meaning: Page number for pagination (starts at 1).
+  - name: page_size
+    in: query
+    meaning: Number of items per page.
+  source: openapi/zero-hash-api-openapi.yml (components.parameters.PageQuery, PageSizeQuery)
+filtering:
+  reusable_parameters:
+  - participant_code
+  - account_label
+  - asset
+  - underlying
+  - quoted_currency
+  note: Declared once in components.parameters and reused across list operations.
+versioning:
+  scheme: none-in-path
+  detail: >-
+    The REST API does not carry a version segment in its base path; the OpenAPI document itself is versioned
+    (info.version 1.7.0). The CLOB order-management surface is the exception and uses a /orders/v1/... prefix.
+  current_spec_version: 1.7.0
+  see_also: lifecycle/zero-hash-lifecycle.yml
+errors:
+  envelope: JSON object with a human-readable `error` string; typed payin/authorization errors add extra fields.
+  problem_json: false
+  docs: https://docs.zerohash.com/docs/error-handling
+  see_also: errors/zero-hash-problem-types.yml
+rate_limiting:
+  documented: partial
+  detail: >-
+    The error-handling guide documents HTTP 429 "The client has triggered the Rate Limit thresholds", but no numeric
+    limit, quota or rate-limit response header (X-RateLimit-*, RateLimit-*) is published, and 429 is not enumerated in
+    the OpenAPI responses. A Retry-After header is referenced only for the 503 authorization-service error.
+  headers_observed: []
+testing:
+  simulator_header: X-Simulator-Scenario
+  detail: >-
+    Optional header used to simulate specific success/failure scenarios in the certification environment; has no
+    effect in production.
+  see_also: sandbox/zero-hash-sandbox.yml
+webhooks:
+  headers:
+  - name: x-zh-hook-notification-id
+    meaning: Notification identifier used for consumer-side idempotency.
+  - name: x-zh-hook-payload-type
+    meaning: Event type of the payload.
+  ordering: Sequence events by the payload `timestamp` field, not by delivery order.
+  see_also: asyncapi/zero-hash-webhooks.yml

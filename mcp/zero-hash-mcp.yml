@@ -1,0 +1,103 @@
+generated: '2026-08-05'
+method: derived
+status: candidate
+source: openapi/zero-hash-api-openapi.yml
+searched:
+  result: none
+  probes:
+  - url: https://mcp.zerohash.com/
+    status: 000
+    note: DNS does not resolve.
+  - url: https://mcp.zerohash.com/mcp
+    status: 000
+    note: DNS does not resolve.
+  - url: https://api.zerohash.com/mcp
+    status: 403
+    note: Edge denies all anonymous requests to the production API host.
+  - url: https://zerohash.com/agentic
+    status: 404
+  - url: https://zerohash.com/llms.txt
+    status: 200
+    note: The provider llms.txt lists no MCP server.
+  registries: No zerohash server found in the public MCP registries or under @modelcontextprotocol on npm.
+  agentic_context: >-
+    zerohash does publish an Agentic Suite (beta) covering Hold / Move / Stream onchain money, Know Your Agent (KYA)
+    screening, session authorization with spend caps, a payments streaming engine, and x402 support. None of that is
+    exposed as an MCP server, and no agent-facing endpoint URL is documented.
+  agentic_docs:
+  - https://docs.zerohash.com/docs/agentic-suite-beta
+  - https://docs.zerohash.com/docs/know-your-agent
+  - https://docs.zerohash.com/docs/hold-onchain-money
+  - https://docs.zerohash.com/docs/move-onchain-money
+  - https://docs.zerohash.com/docs/stream-onchain-money
+  - https://docs.zerohash.com/docs/x402-merchant-configuration
+note: >-
+  NO MCP SERVER EXISTS. The tools below are a CANDIDATE shape derived from the published OpenAPI to show what a
+  zerohash MCP server could expose; they are not published, not callable, and carry no apis.yml MCPServer pointer.
+  Backing operations are referenced by method and path because the spec declares no operationIds.
+server:
+  name: zero-hash
+  transport: http
+  url: null
+  published: false
+tools:
+- name: list_assets
+  description: List supported assets and their staking metadata.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /assets
+- name: list_accounts
+  description: List balance-bearing accounts with filters for group, label, owner, asset and type.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /accounts
+- name: get_account
+  description: Retrieve one account by its zerohash Resource Name.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /accounts/{zrn}/details
+- name: list_participants
+  description: Query participants across the platform.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /participants
+- name: get_participant_kyc_status
+  description: Read a participant's KYC status.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /participant/{participant_code}/kyc_status
+- name: evaluate_onboarding_jurisdiction
+  description: Test whether a prospective participant's jurisdiction is permitted.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /jurisdiction/evaluate-onboarding
+- name: request_quote
+  description: Request an RFQ liquidity quote.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /liquidity/rfq
+- name: execute_quote
+  description: Execute a previously issued RFQ quote.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /liquidity/execute
+- name: list_trades
+  description: Query settled and pending trades.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /trades
+- name: get_positions
+  description: Read aggregated positions by participant or platform.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /positions
+- name: list_deposits
+  description: List fiat and crypto deposits.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /deposits
+- name: request_withdrawal
+  description: Create a withdrawal request.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /withdrawals/requests
+- name: execute_withdrawal
+  description: Execute an approved withdrawal request.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /withdrawals/execute
+- name: validate_withdrawal_address
+  description: Validate a destination blockchain address before withdrawing.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /withdrawals/validate_address
+- name: create_payout
+  description: Create a single-call payout, idempotent on the Idempotency-Key header.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /payouts
+- name: get_payment_status
+  description: Read the status of a payment.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /payments/status
+- name: get_market_data
+  description: Read OHLCV and symbol market data.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /market_data/ohlcv
+- name: create_stake
+  description: Stake an asset for a participant.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /stakes
+- name: list_strategies
+  description: List portfolio strategies.
+  source_operation: openapi/zero-hash-api-openapi.yml#GET /strategies
+- name: create_transfer
+  description: Move value between accounts, idempotent on client_transfer_id.
+  source_operation: openapi/zero-hash-api-openapi.yml#POST /transfers

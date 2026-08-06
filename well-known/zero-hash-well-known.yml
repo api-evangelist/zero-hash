@@ -1,0 +1,91 @@
+generated: '2026-08-05'
+method: searched
+source: live GET probes of every host in apis.yml and the OpenAPI servers[]
+hosts:
+- host: https://zerohash.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/plain; charset=utf-8
+    file: zero-hash-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 200
+    content_type: text/plain; charset=utf-8
+    file: ../llms/zero-hash-llms.txt
+- host: https://docs.zerohash.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+  - path: /sitemap.xml
+    status: 200
+    note: 624 URLs — 298 API reference pages, 228 guides, 51 changelog entries, 35 pages, 12 recipes.
+- host: https://api.zerohash.com
+  note: >-
+    Every anonymous request to the production API host is answered with HTTP 403 by the edge (Cloudflare) before
+    any path is evaluated, so no /.well-known/ document can be observed there. This is an access-control result,
+    not evidence that the documents are absent.
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+- host: https://api.cert.zerohash.com
+  note: Certification API host — same edge behaviour as production (403 to anonymous requests).
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+- host: https://api.sandbox.connect.xyz
+  note: The only server declared by the published Connect (zerohash Auth) OpenAPI.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+summary:
+  security_txt: true
+  llms_txt: true
+  openid_configuration: false
+  oauth_authorization_server: false
+  api_catalog: false
+  ai_plugin: false
+  agent_card: false
