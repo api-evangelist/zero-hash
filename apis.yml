@@ -41,28 +41,33 @@ tags:
 - remittances
 - agentic-finance
 apis:
-- name: zerohash API
+- name: zerohash Private WebSocket API
   description: >-
-    The core zerohash REST API — 167 operations across participants, accounts, assets, trades, liquidity (RFQ), the
-    central limit order book, deposits, withdrawals, transfers, positions, market data, payments, payins, payouts,
-    convert-and-withdraw, fund, staking, rewards, awards and portfolio strategies. Authenticated with HMAC-SHA256
-    request signing over X-SCX-API-KEY / X-SCX-SIGNED / X-SCX-TIMESTAMP / X-SCX-PASSPHRASE headers, with
-    per-environment IP allowlisting. Published as OpenAPI 3.1.0 v1.7.0 by the provider's own documentation host.
+    Authenticated WebSocket feed delivering a full account-balance snapshot on subscribe followed by incremental
+    balance-updated events, plus RFQ liquidity bid/ask price levels per subscribed symbol. Every message
+    carries its own HMAC-SHA256 signature, key, passphrase and timestamp; clients must ping every 20 seconds
+    to hold the session.
+  humanURL: https://docs.zerohash.com/reference/private-websocket-api
+  baseURL: https://ws.zerohash.com
+  tags:
+  - websockets
+  - market-data
+  - digital-assets
+  properties:
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/private-websocket-api
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+- aid: zero-hash:zero-hash-accounts-api
+  name: Zero Hash Accounts API
+  description: Create and Manage Accounts
   humanURL: https://docs.zerohash.com/reference
   baseURL: https://api.zerohash.com
   tags:
-  - crypto-infrastructure
-  - digital-assets
-  - payments
-  - payouts
-  - custody
-  - staking
-  - liquidity
-  - settlement
-  - kyc
+  - Accounts
   properties:
   - type: OpenAPI
-    url: openapi/zero-hash-api-openapi.yml
+    url: openapi/zero-hash-accounts-api-openapi.yml
   - type: Documentation
     url: https://docs.zerohash.com/
   - type: APIReference
@@ -77,51 +82,1007 @@ apis:
     url: errors/zero-hash-problem-types.yml
   - type: DataModel
     url: data-model/zero-hash-data-model.yml
-  - type: Overlay
-    url: overlays/zero-hash-api-overlay.yaml
   - type: Sandbox
     url: sandbox/zero-hash-sandbox.yml
   - type: Webhooks
     url: asyncapi/zero-hash-webhooks.yml
-- name: zerohash Auth (Connect) API
-  description: >-
-    Session and access-token API behind the zerohash Auth product for onchain account linking across custodial and
-    non-custodial wallets. Two operations — OAuth 2.0 client-credentials token issuance and session creation — secured
-    with a JWT bearer token carrying the customers:token:issue scope. The published OpenAPI 3.0.3 declares only the
-    sandbox server (api.sandbox.connect.xyz); it is documented on the zerohash docs host under the Connect category.
-  humanURL: https://docs.zerohash.com/reference/getaccesstoken
-  baseURL: https://api.sandbox.connect.xyz
-  tags:
-  - authentication
-  - account-linking
-  - digital-assets
-  - oauth2
-  properties:
-  - type: OpenAPI
-    url: openapi/zero-hash-connect-openapi.yml
   - type: APIReference
     url: https://docs.zerohash.com/reference/getaccesstoken
   - type: Documentation
     url: https://docs.zerohash.com/docs/auth-network
   - type: OAuthScopes
     url: scopes/zero-hash-scopes.yml
-- name: zerohash Private WebSocket API
-  description: >-
-    Authenticated WebSocket feed delivering a full account-balance snapshot on subscribe followed by incremental
-    balance-updated events, plus RFQ liquidity bid/ask price levels per subscribed symbol. Every message carries its
-    own HMAC-SHA256 signature, key, passphrase and timestamp; clients must ping every 20 seconds to hold the session.
-  humanURL: https://docs.zerohash.com/reference/private-websocket-api
-  baseURL: https://ws.zerohash.com
+- aid: zero-hash:zero-hash-assets-api
+  name: Zero Hash Assets API
+  description: View available assets
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
   tags:
-  - websockets
-  - market-data
-  - digital-assets
+  - Assets
   properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-assets-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
   - type: APIReference
-    url: https://docs.zerohash.com/reference/private-websocket-api
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
   - type: Webhooks
     url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-awards-api
+  name: Zero Hash Awards API
+  description: Awards Distribution Service
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Awards
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-awards-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-clob-api
+  name: Zero Hash CLOB API
+  description: Central Limit Order Book
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - CLOB
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-clob-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-convert-and-withdraw-api
+  name: Zero Hash Convert and Withdraw API
+  description: Convert and Withdraw Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Convert and Withdraw
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-convert-and-withdraw-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-customer-accounts-mta-api
+  name: Zero Hash Customer Accounts (MTA) API
+  description: Create and Manage Customer Accounts (MTA)
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Customer Accounts (MTA)
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-customer-accounts-mta-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-deposits-api
+  name: Zero Hash Deposits API
+  description: Create deposit addressed and monitor deposits to accounts
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Deposits
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-deposits-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-entity-participants-api
+  name: Zero Hash Entity Participants API
+  description: Create and Manage Entity Participants
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Entity Participants
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-entity-participants-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-fund-api
+  name: Zero Hash Fund API
+  description: Fund Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Fund
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-fund-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-index-api
+  name: Zero Hash Index API
+  description: Obtain the index price on an instrument
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Index
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-index-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-individual-participants-api
+  name: Zero Hash Individual Participants API
+  description: Create and Manage Individual Participants
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Individual Participants
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-individual-participants-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-liquidity-api
+  name: Zero Hash Liquidity API
+  description: Request For Quote and Execution Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Liquidity
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-liquidity-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-market-data-api
+  name: Zero Hash Market Data API
+  description: Market Data Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Market Data
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-market-data-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-movements-api
+  name: Zero Hash Movements API
+  description: The Movements API from Zero Hash — 1 operation(s) for movements.
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Movements
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-movements-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-organization-token-api
+  name: Zero Hash Organization Token API
+  description: The Organization Token API from Zero Hash — 1 operation(s) for organization token.
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Organization Token
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-organization-token-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-participant-jurisdictions-api
+  name: Zero Hash Participant Jurisdictions API
+  description: Participant jurisdiction endpoints
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Participant Jurisdictions
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-participant-jurisdictions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-payins-api
+  name: Zero Hash Payins API
+  description: Power your checkout with crypto and stablecoins
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Payins
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-payins-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-payments-api
+  name: Zero Hash Payments API
+  description: Payment Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-payments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-payouts-api
+  name: Zero Hash Payouts API
+  description: Crypto payouts
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Payouts
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-payouts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-positions-api
+  name: Zero Hash Positions API
+  description: Positions and Balances monitoring
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Positions
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-positions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-public-api
+  name: Zero Hash Public API
+  description: Basic API Endpoints
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Public
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-public-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-query-participants-api
+  name: Zero Hash Query Participants API
+  description: Generic Participant management endpoints
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Query Participants
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-query-participants-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-rewards-api
+  name: Zero Hash Rewards API
+  description: Rewards Distribution Service
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Rewards
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-rewards-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-sdk-authorization-api
+  name: Zero Hash SDK Authorization API
+  description: SDK Authorization Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - SDK Authorization
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-sdk-authorization-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-staking-api
+  name: Zero Hash Staking API
+  description: Staking, Unstaking and associated Rewards Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Staking
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-staking-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-trade-strategy-api
+  name: Zero Hash Trade Strategy API
+  description: The Trade Strategy API from Zero Hash — 13 operation(s) for trade strategy.
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Trade Strategy
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-trade-strategy-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-trades-api
+  name: Zero Hash Trades API
+  description: Trade Settlement Services
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Trades
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-trades-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-transfers-api
+  name: Zero Hash Transfers API
+  description: Initiate and monitor transfers between accounts
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Transfers
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-transfers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-user-token-api
+  name: Zero Hash User Token API
+  description: The User Token API from Zero Hash — 1 operation(s) for user token.
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - User Token
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-user-token-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
+- aid: zero-hash:zero-hash-withdrawals-api
+  name: Zero Hash Withdrawals API
+  description: Initiate and monitor withdrawals from accounts
+  humanURL: https://docs.zerohash.com/reference
+  baseURL: https://api.zerohash.com
+  tags:
+  - Withdrawals
+  properties:
+  - type: OpenAPI
+    url: openapi/zero-hash-withdrawals-api-openapi.yml
+  - type: Documentation
+    url: https://docs.zerohash.com/
+  - type: APIReference
+    url: https://docs.zerohash.com/reference
+  - type: Authentication
+    url: authentication/zero-hash-authentication.yml
+  - type: Conventions
+    url: conventions/zero-hash-conventions.yml
+  - type: Idempotency
+    url: conventions/zero-hash-conventions.yml
+  - type: ErrorCatalog
+    url: errors/zero-hash-problem-types.yml
+  - type: DataModel
+    url: data-model/zero-hash-data-model.yml
+  - type: Sandbox
+    url: sandbox/zero-hash-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/zero-hash-webhooks.yml
+  - type: APIReference
+    url: https://docs.zerohash.com/reference/getaccesstoken
+  - type: Documentation
+    url: https://docs.zerohash.com/docs/auth-network
+  - type: OAuthScopes
+    url: scopes/zero-hash-scopes.yml
 common:
+- type: MCPServer
+  url: mcp/zero-hash-mcp.yml
+- type: Overlay
+  url: overlays/zero-hash-api-overlay.yaml
 - type: DomainSecurity
   url: security/zero-hash-domain-security.yml
 - type: Website
