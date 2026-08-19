@@ -1,0 +1,236 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Trades API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Trades",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get trades",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/trades",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination (starts at 1)."
+              },
+              {
+                "name": "market_identifier_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades within a designated `market_identifier_code`."
+              },
+              {
+                "name": "omit_market_identifier_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades excluding those from a particular `market_identifier_code`."
+              },
+              {
+                "name": "platform_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades based on the specific `platform_code` where the trade execution took place."
+              },
+              {
+                "name": "omit_platform_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades based excluding those from a particular `platform_code`."
+              },
+              {
+                "name": "trade_state",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades based on their current `trade_state`."
+              },
+              {
+                "name": "settlement_state",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades based on their current `settlement_state`."
+              },
+              {
+                "name": "party_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades where the provided `party_code` is at least one of the counterparties to a trade in the `parties` array."
+              },
+              {
+                "name": "transaction_timestamp[gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades with a timestamp greater than the provided value, which can be defined in milliseconds or nanoseconds."
+              },
+              {
+                "name": "transaction_timestamp[gte]",
+                "value": "1678901234567",
+                "type": "query",
+                "description": "Filters for trades with a timestamp greater than or equal to the provided value, which can be defined in milliseconds or nanoseconds."
+              },
+              {
+                "name": "transaction_timestamp[e]",
+                "value": "1678901234567",
+                "type": "query",
+                "description": "Filters for trades with a timestamp equal to the provided value, which can be defined in milliseconds or nanoseconds."
+              },
+              {
+                "name": "transaction_timestamp[lt]",
+                "value": "1678901234567",
+                "type": "query",
+                "description": "Filters for trades with a timestamp less than the provided value, which can be defined in milliseconds or nanoseconds."
+              },
+              {
+                "name": "transaction_timestamp[lte]",
+                "value": "1678901234567",
+                "type": "query",
+                "description": "Filters for trades with a timestamp less than or equal to the provided value, which can be defined in milliseconds or nanoseconds."
+              },
+              {
+                "name": "client_trade_id",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades with the provided `client_trade_id` value.\nNote:\n - Platforms integrated to the zerohash RFQ systems, the `quote_id` from the RFQ will be saved as the `client_trade_id` once the quote has been executed.\n- Platforms integrated to the zerohash CLOB, the `execution_id` from the order trade execution will be saved as the `client_trade_id` on the resulting trade."
+              },
+              {
+                "name": "execution_id",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades with the provided `execution_id` in either party's `execution_id` field."
+              },
+              {
+                "name": "reporting_party",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades based on the `reporting_party` associated with each trade."
+              },
+              {
+                "name": "settlement_schedule",
+                "value": "",
+                "type": "query",
+                "description": "Filters for trades based on the `settlement_schedule` associated with each trade."
+              }
+            ]
+          },
+          "docs": "Returns trade details where the requestor is the Platform, either party associated with the trade, or the account group where the trade was settled. For the party information, the asset is the settlement currency (i.e asset RECEIVED). This means in the second you are receiving USD correctly, 00SCXM is receiving BTC. The \"sell\" side receives the quoted currency, the \"buy\" side receives the underlying. Our trade structure mirrors a typical back office trade report (FIX TradeCaptureReport) and we u"
+        },
+        {
+          "info": {
+            "name": "Submit trade",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/trades",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a trade for settlement that was matched and executed outside of zerohash."
+        },
+        {
+          "info": {
+            "name": "Submit batch of trades",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/trades/batch",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a batch of trades for settlement that was matched and executed outside of zerohash."
+        },
+        {
+          "info": {
+            "name": "Get trade",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/trades/:trade_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "trade_id",
+                "value": "",
+                "type": "path",
+                "description": "The zerohash generated ID associated with a trade"
+              }
+            ]
+          },
+          "docs": "Retrieves trade details for a specific trade."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

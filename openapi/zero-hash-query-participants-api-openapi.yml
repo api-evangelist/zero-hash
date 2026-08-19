@@ -1,0 +1,3185 @@
+openapi: 3.2.0
+info:
+  title: zerohash Query Participants API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Query Participants
+  description: Generic Participant management endpoints
+paths:
+  /participants:
+    get:
+      tags:
+      - Query Participants
+      summary: List participants
+      description: Returns a list of all participants to which you are associated.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodeQuery'
+      - $ref: '#/components/parameters/PageQuery'
+      - name: relationship_type
+        in: query
+        description: Filters for a specific `relationship_type`
+        required: false
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: Filters for a specific `email`
+        required: false
+        schema:
+          type: string
+      - name: minors
+        in: query
+        description: When set to the string `"true"`, restricts results to minor participants only.
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: entity_type
+        in: query
+        description: Filters entity participants by their declared entity type.
+        required: false
+        schema:
+          type: string
+          enum:
+          - corporation
+          - llc
+          - partnership
+          - sole_proprietorship
+          - individual
+      - name: status
+        in: query
+        description: Filters for a specific `status`
+        required: false
+        schema:
+          type: string
+          enum:
+          - submitted
+          - pending_approval
+          - approved
+          - rejected
+          - locked
+          - pending_unlock
+          - pending_disable
+          - disabled
+          - divested
+          - closed
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of participants with optional filters: relationship_type, email, status.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participants/{email}:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant
+      description: This endpoint returns a participant associated with an email address. It provides a dedicated and lightweight alternative to using the email query parameter within the `GET /participants` endpoint for filtering participants by `email`.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: email
+        in: path
+        description: participant email
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved participant. Matching the provided email address.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantByEmailResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/limits:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant limits
+      description: Allows the Platform to query Customer limits, broken out by transaction type, time period and asset.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      responses:
+        '200':
+          description: Successfully retrieved participant transaction limits including deposit, withdrawal, and trade limits by asset and time period
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantLimitsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/kyc_status:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant KYC status
+      description: This endpoint returns KYC Status information attached to a participant.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      responses:
+        '200':
+          description: Successfully retrieved participant KYC status. Including verification tier, status, and approval timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantKYCStatusResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/basic_info:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant basic info
+      description: This endpoint returns Participant basic info.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      responses:
+        '200':
+          description: Successfully retrieved participant basic information. Including participant code, name, type, and status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantBasicInfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/sanction_screening_info:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant sanction screening info
+      description: This endpoint returns Participant sanction screening info.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      responses:
+        '200':
+          description: Successfully retrieved participant sanction screening information. Including screening status, match results, and compliance verification timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantSanctionScreeningInfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/full_info:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant full info
+      description: This endpoint returns Participant full info.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      responses:
+        '200':
+          description: Successfully retrieved participant full information. Including all profile details, KYC status, limits, and account configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantFullInfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/full_info/document_metadata:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant document metadata
+      description: Returns a list of KYC document metadata for a participant. Does not include document contents or signed URLs.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      responses:
+        '200':
+          description: Successfully retrieved document metadata list. Returns an empty array if no documents exist for the participant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocumentMetadataResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/full_info/documents/{document_id}/download:
+    get:
+      tags:
+      - Query Participants
+      summary: Download participant document
+      description: Returns a single KYC document with a presigned S3 URL for downloading. The presigned URL expires after 15 minutes. Returns 404 if the document is not found or does not belong to the participant.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      - name: document_id
+        in: path
+        description: Unique identifier of the document to download. Returned by `GET /participant/{participant_code}/full_info/document_metadata` on each document entry.
+        required: true
+        schema:
+          type: string
+          example: e39e7b6a908e397dac50e461eb2d284820214ca2cb3c4aa9aeb9dfc1873332a0
+      responses:
+        '200':
+          description: Successfully retrieved document with presigned download URL. The signed_url field contains a presigned S3 URL valid for 15 minutes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocumentForDownloadResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /participant/{participant_code}/status_reason:
+    get:
+      tags:
+      - Query Participants
+      summary: Get participant status reason details
+      description: Returns detailed information about a participant's current status, including lock, disable, close, or divest reason codes along with compliance and KYC reasons when applicable. Availability is gated per platform; contact zerohash to enable for your platform.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/ParticipantCodePath'
+      responses:
+        '200':
+          description: Successfully retrieved participant status reason details. including the current status and the reason codes that apply for locked, disabled, closed, or divested participants.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetParticipantStatusReasonResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    GetParticipantByEmailResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: Unique participant code associated with the customer generated by zerohash. This is the identifier that will be used in all other endpoints to refer to this customer.
+              example: CUST01
+            email:
+              type: string
+              description: 'Customer email address, required.
+
+                Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
+              example: test@example.com
+    ParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: Unique participant code associated with the customer generated by zerohash. This is the identifier that will be used in all other endpoints to refer to this customer.
+          example: CUST01
+        participant_name:
+          type: string
+          description: Name of participant
+          example: robert test
+        email:
+          type: string
+          description: 'Customer email address, required.
+
+            Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
+          example: test@example.com
+        status:
+          type: string
+          description: The current status of the participant
+          example: approved
+        reason_code:
+          type: string
+          description: (optional) if the participant has changed statuses, the reason code will show `compliance_issue`, `user_request`, or `risk_cleared`
+          example: compliance_issue
+        jurisdiction_code:
+          type: string
+          description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
+          example: US-IL
+          enum:
+          - US-AL
+          - US-AK
+          - US-AZ
+          - US-AR
+          - US-CA
+          - US-CO
+          - US-CT
+          - US-DE
+          - US-FL
+          - US-GA
+          - US-HI
+          - US-ID
+          - US-IL
+          - US-IN
+          - US-IA
+          - US-KS
+          - US-KY
+          - US-LA
+          - US-ME
+          - US-MD
+          - US-MA
+          - US-MI
+          - US-MN
+          - US-MS
+          - US-MO
+          - US-MT
+          - US-NE
+          - US-NV
+          - US-NH
+          - US-NJ
+          - US-NM
+          - US-NY
+          - US-NC
+          - US-ND
+          - US-OH
+          - US-OK
+          - US-OR
+          - US-PA
+          - US-RI
+          - US-SC
+          - US-SD
+          - US-TN
+          - US-TX
+          - US-UT
+          - US-VT
+          - US-VA
+          - US-WA
+          - US-WV
+          - US-WI
+          - US-WY
+          - US-DC
+          - US-AS
+          - US-GU
+          - US-MP
+          - US-PR
+          - US-UM
+          - US-VI
+        limits:
+          type: array
+          description: The limits permitted for the participant
+          items:
+            $ref: '#/components/schemas/TransactionLimit'
+        updated_at:
+          type: number
+          minLength: 13
+          maxLength: 13
+          example: 1667504636159
+          description: Platform updated timestamp
+    AdditionalTaxResidence:
+      type: object
+      required:
+      - tax_id
+      - jurisdiction_code
+      properties:
+        tax_id:
+          type: string
+          description: Tax identification number for the additional tax residence
+        jurisdiction_code:
+          type: string
+          description: The ISO 3166-2 subdivision code that the participant resides in
+          example: US-IL
+    TransactionLimit:
+      type: object
+      properties:
+        type:
+          type: array
+          description: The actions that are restricted by the limit
+          items:
+            type: string
+          example:
+          - trades
+        period:
+          type: number
+          description: The period in hours on which the limit is applied. A period of 0 means a lifetime limit
+          example: 24
+        balance:
+          type: string
+          description: The current balance for the asset
+          example: '7500'
+        limit:
+          type: string
+          description: The limit represents the volume that is permitted over the period
+          example: '3000'
+        configured_limit:
+          type: string
+          description: The configured unencumbered limit value set for the asset
+          example: '5000'
+        asset:
+          type: string
+          description: The currency in which the limit is given
+          example: USD
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    PaginationMeta:
+      type: object
+      required:
+      - page
+      - total_pages
+      properties:
+        page:
+          type: number
+          description: Current page number (1-indexed)
+          minimum: 1
+          example: 1
+        page_size:
+          type: number
+          description: Number of items per page
+          minimum: 1
+          maximum: 100
+          example: 15
+        total_pages:
+          type: number
+          description: Total number of pages available
+          minimum: 0
+          example: 1
+    GetParticipantBasicInfoResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: Unique participant code.
+              example: ABCDEF
+            status:
+              type: string
+              description: The current status of the participant.
+              example: approved
+            action:
+              type: string
+              description: The most recent lifecycle action recorded for the participant (e.g. `update`, `approve`).
+              example: update
+            participant_type:
+              type: string
+              description: The type of participant.
+              example: INDIVIDUAL
+            name:
+              type: string
+              description: Name of the participant.
+              example: Jane Doe
+            email:
+              type: string
+              format: email
+              description: Email of the participant.
+              example: jane.doe@example.com
+            submission_method:
+              type: string
+              description: Channel through which the participant was submitted (e.g. `API`, `web`).
+              example: API
+            signed_timestamp:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds indicating when the participant accepted zerohash service agreements.
+              example: 1603378501286
+            created_at:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds indicating when the participant was created.
+              example: 1603378501286
+            last_updated:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds indicating when the participant record was last updated.
+              example: 1680643465352
+            jurisdiction_code:
+              type: string
+              example: US-IL
+              description: The ISO 3166-2 subdivision code that the customer resides in.
+    GetParticipantLimitsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: Unique participant code
+              example: CUST01
+            as_of:
+              type: number
+              description: Timestamp showing the exact query time in seconds since Unix epoch
+              example: 1703001600
+            limits:
+              type: array
+              description: The limits permitted for the participant
+              items:
+                $ref: '#/components/schemas/TransactionLimit'
+            tags:
+              type: array
+              items:
+                type: string
+              description: Tags associated with KYC Tier of Participant
+              example:
+              - kyc_tier_1
+    GetParticipantKYCStatusResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: Unique participant code
+              example: CUST01
+            idv:
+              type: string
+              description: Identity Verification Status
+              example: pass
+              enum:
+              - unknown
+              - pass
+              - fail
+              - not_applicable
+            liveness_check:
+              type: string
+              description: Biometric Identity Verification Status
+              example: pass
+              enum:
+              - unknown
+              - pass
+              - fail
+              - not_applicable
+            tax_id:
+              type: boolean
+              description: Participant has provided a Tax ID
+              example: true
+            edd:
+              type: boolean
+              description: Participant has provided information for Enhanced Due Diligence
+              example: true
+            edd_required:
+              type: boolean
+              description: Enhanced Due Diligence is required for the Participant and needs to be provided to move forward with onboarding
+              example: true
+            tags:
+              type: array
+              items:
+                type: string
+              description: Tags associated with KYC Tier of Participant
+              example:
+              - kyc_tier_1
+            participant_status:
+              type: string
+              description: The current status of the participant
+              example: approved
+            kyc_attempts:
+              type: number
+              description: The number of KYC attempts the participant has gone through
+              example: 1
+            email_screening:
+              type: string
+              enum:
+              - passed
+              - failed
+              - error
+              description: Whether the participant passed email screening
+              example: failed
+    GetParticipantStatusReasonResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: Unique participant code
+              example: CUST01
+            status:
+              type: string
+              description: The current status of the participant
+              example: locked
+            lock_reason:
+              type: string
+              description: Reason code for locked participants
+              example: compliance_issue
+            disable_reason:
+              type: string
+              description: Reason code for disabled participants
+              example: user_request
+            close_reason:
+              type: string
+              description: Reason code for closed participants
+              example: compliance_issue
+            divest_reason:
+              type: string
+              description: Reason code for divested participants
+              example: user_request
+            compliance_reasons:
+              type: array
+              items:
+                type: string
+              description: Array of compliance issue reason codes
+              enum:
+              - restricted_jurisdiction
+              - abandoned_escheat
+              - child_abuse_material
+              - darknet_market
+              - gambling
+              - illicit
+              - merchant
+              - mixer
+              - nft_marketplace
+              - scam
+              - terrorist_organization
+              - thief
+              - shielded
+              - victim_of_fraud_or_illicit_activity
+              - fraud
+              - cash_spike_incoming
+              - cash_spike_outgoing
+              - structured_transactions
+              - cannabis_name_match
+              - potential_elder_financial_exploitation
+              - other_aml_cft_illicit_activity
+              - sanctions_possible_match
+              - sanctions_confirmed_match
+              - politically_exposed_person_foreign
+              - politically_exposed_person_domestic
+              - other_cdd_issue
+              - other_financial_crimes
+              - referral_from_platform
+              - impossible_travel_rule
+              - multiple_incorrect_dob_rule
+              - blocklisted_pii
+              - referral_from_platform_imposter_scam
+              - referral_from_le
+              - other
+              - fincen_primary_ml_concern
+              - sanctions_direct
+              - sanctions_indirect
+              - other_high_risk_entity_exposure
+              - market_abuse_manipulation
+              - ach_return_unauthorized_transaction
+              - ach_return_insufficient_funds
+              - ach_return_other
+              - gsc_pep
+              - gsc_adverse_media
+              - deceased
+              - discontinued_customer
+              - edd_required
+              - kyc_refresh
+              example:
+              - fraud
+              - sanctions_confirmed_match
+            notes:
+              type: string
+              description: Additional notes about the participant status
+              example: Participant flagged for suspicious activity
+            case_number:
+              type: string
+              description: Case number associated with the participant status
+              example: CASE-2024-001
+            kyc_reasons:
+              type: array
+              items:
+                type: string
+              description: Array of KYC-related reason codes
+              example:
+              - identity_verification_failed
+    DocumentMetadataEntity:
+      type: object
+      properties:
+        document_id:
+          type: string
+          description: Unique identifier (SHA-256 hash) for the document.
+          example: e39e7b6a908e397dac50e461eb2d284820214ca2cb3c4aa9aeb9dfc1873332a0
+        file_name:
+          type: string
+          description: Original file name of the uploaded document.
+          example: passport.pdf
+        participant_code:
+          type: string
+          description: 'Unique alphanumeric code for the participant (format: 6 alphanumeric characters).'
+          example: ABCDEF
+        document_type:
+          $ref: '#/components/schemas/DocumentType'
+        id_front:
+          type: boolean
+          description: Indicates whether this is the front side of an ID document. Only present/applicable when the document is an identity document with front/back sides.
+        created_at:
+          type: number
+          format: int64
+          description: Unix timestamp in milliseconds indicating when the document was uploaded.
+          example: 1678901234567
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetParticipantsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantEntity'
+        count:
+          type: number
+          description: Total number of participants matching the filters.
+          example: 10
+      allOf:
+      - $ref: '#/components/schemas/PaginationMeta'
+    GetParticipantSanctionScreeningInfoResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: Unique participant code
+              example: CUST01
+            status:
+              type: string
+              description: The current status of the participant
+              example: approved
+            action:
+              type: string
+              description: The action taken
+              example: approved
+            user_email:
+              type: string
+              description: Identifier of the user who last acted on this participant. Typically an email address, but may be any opaque user identifier.
+              example: ops-user-1234
+            participant_type:
+              type: string
+              description: The type of participant.
+              example: INDIVIDUAL
+            name:
+              type: string
+              description: Full display name of the participant.
+              example: Jane Doe
+            first_name:
+              type: string
+              description: First name of the participant.
+              example: Jane
+            last_name:
+              type: string
+              description: Last name of the participant.
+              example: Doe
+            email:
+              type: string
+              format: email
+              description: Email of the participant.
+              example: jane.doe@example.com
+            contact_number:
+              type: string
+              description: Phone number of the business.
+              example: '15557778888'
+            website:
+              type: string
+              description: Website of the business.
+              example: www.test.com
+            address_one:
+              type: string
+              description: 'First line for the customer''s address.
+
+
+                Notes:
+
+                - The regular maximum length is 80 characters.
+
+                - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                - PO Box addresses are not accepted.'
+              example: 123 Main St.
+            address_two:
+              type: string
+              description: 'Extra information, like an apartment or suite number.
+
+
+                Notes:
+
+                - The regular maximum length is 50 characters.
+
+                - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                - PO Box addresses are not accepted.'
+              example: Suite 1000
+            city:
+              type: string
+              description: The city minor resides in
+              example: Chicago
+            postal_code:
+              type: string
+              description: Postal, or zip code, of the business, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+              example: '12345'
+            date_established:
+              type: string
+              description: Date the business was established. This should reflect government registration for the entity in the format `YYYY-MM-DD`
+              example: '1985-09-02'
+            legal_name:
+              type: string
+              description: Registered legal name of the entity. This should not be a DBA or DBA equivalent
+              example: Legal Name
+            entity_type:
+              type: string
+              enum:
+              - corporation
+              - llc
+              - partnership
+              - sole_proprietorship
+              - other
+              - non_profit
+              - public_or_semi_public_administrative
+              - trust
+              - cooperation
+              - company_with_limited_liability
+              - llc_c
+              - llc_s
+              - llc_p
+              - s_corporation
+              - c_corporation
+              - trust_estate
+              description: The type of business that is onboarding, must be one of the supported
+              example: partnership
+            state_or_province_of_organization:
+              type: string
+              example: IL
+            date_of_birth:
+              type: string
+              description: Date of birth of the participant
+              example: '1985-09-02'
+            submission_method:
+              type: string
+              description: The method of submission
+              example: web
+            signed_timestamp:
+              type: number
+              description: The time at which the business accepted zerohash services agreements
+              example: 1603378501286
+            created_at:
+              type: number
+              description: Creation timestamp
+              example: 1603378501286
+            last_updated:
+              type: number
+              description: Last update timestamp
+              example: 1680643465352
+            platform_updated_at:
+              type: number
+              description: Platform updated timestamp
+              example: 1603378501286
+            sanction_screening_timestamp:
+              type: number
+              description: "The time the sanctions screen was done\t"
+              example: 1603378501286
+            kyc_participant_track:
+              type: string
+              description: KYC track the participant was onboarded under (e.g. `vendor reliance`).
+              example: vendor reliance
+            jurisdiction_updated_at:
+              type: number
+              description: The timestamp at which the jurisdiction was updated
+              example: 1603378501286
+            subdomain:
+              type: string
+              description: Registered subdomain of the entity.
+              example: subdomain
+            jurisdiction_code:
+              type: string
+              example: US-IL
+              description: The ISO 3166-2 subdivision code that the customer resides in
+    GetParticipantFullInfoResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: Unique participant code
+              example: CUST01
+            status:
+              type: string
+              description: The current status of the participant
+              example: approved
+            action:
+              type: string
+              description: The action taken
+              example: approved
+            action_reason:
+              type: string
+              description: If the participant has changed statuses, the reason code will give more details like `compliance_issue`, `user_request`, or `risk_cleared`
+              example: compliance_issue
+            user_email:
+              type: string
+              description: Identifier of the user who last acted on this participant. Typically an email address, but may be any opaque user identifier.
+              example: ops-user-1234
+            participant_type:
+              type: string
+              description: The type of participant.
+              example: INDIVIDUAL
+            name:
+              type: string
+              description: Full display name of the participant.
+              example: Jane Doe
+            first_name:
+              type: string
+              description: First name of the participant.
+              example: Jane
+            last_name:
+              type: string
+              description: Last name of the participant.
+              example: Doe
+            email:
+              type: string
+              format: email
+              description: Email of the participant.
+              example: jane.doe@example.com
+            contact_number:
+              type: string
+              description: Phone number of the business.
+              example: '15557778888'
+            website:
+              type: string
+              description: Website of the business.
+              example: www.test.com
+            address_one:
+              type: string
+              description: 'First line for the customer''s address.
+
+
+                Notes:
+
+                - The regular maximum length is 80 characters.
+
+                - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                - PO Box addresses are not accepted.'
+              example: 123 Main St.
+            address_two:
+              type: string
+              description: 'Extra information, like an apartment or suite number.
+
+
+                Notes:
+
+                - The regular maximum length is 50 characters.
+
+                - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                - PO Box addresses are not accepted.'
+              example: Suite 1000
+            city:
+              type: string
+              description: The city minor resides in
+              example: Chicago
+            postal_code:
+              type: string
+              description: Postal, or zip code, of the business, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+              example: '12345'
+            date_established:
+              type: string
+              description: Date the business was established. This should reflect government registration for the entity in the format `YYYY-MM-DD`
+              example: '1985-09-02'
+            legal_name:
+              type: string
+              description: Registered legal name of the entity. This should not be a DBA or DBA equivalent
+              example: Legal Name
+            entity_type:
+              type: string
+              enum:
+              - corporation
+              - llc
+              - partnership
+              - sole_proprietorship
+              - other
+              - non_profit
+              - public_or_semi_public_administrative
+              - trust
+              - cooperation
+              - company_with_limited_liability
+              - llc_c
+              - llc_s
+              - llc_p
+              - s_corporation
+              - c_corporation
+              - trust_estate
+              description: The type of business that is onboarding, must be one of the supported
+              example: partnership
+            state_or_province_of_organization:
+              type: string
+              example: IL
+            date_of_birth:
+              type: string
+              description: Date of birth of the participant
+              example: '1985-09-02'
+            submission_method:
+              type: string
+              description: The method of submission
+              example: web
+            signed_timestamp:
+              type: number
+              description: The time at which the business accepted zerohash services agreements
+              example: 1603378501286
+            created_at:
+              type: number
+              description: Creation timestamp
+              example: 1603378501286
+            last_updated:
+              type: number
+              description: Last update timestamp
+              example: 1680643465352
+            platform_updated_at:
+              type: number
+              description: Platform updated timestamp
+              example: 1603378501286
+            kyc_timestamp:
+              type: number
+              description: The timestamp at which the KYC was completed
+              example: 1603378501286
+            sanction_screening_timestamp:
+              type: number
+              description: "The time the sanctions screen was done\t"
+              example: 1603378501286
+            kyc_participant_track:
+              type: string
+              description: KYC track the participant was onboarded under (e.g. `vendor reliance`).
+              example: vendor reliance
+            jurisdiction_updated_at:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds indicating when the jurisdiction was last updated.
+              example: 1731354732292
+            kyc_tier:
+              type: string
+              description: The KYC tier currently held by the participant (e.g. `FULL`, `LIGHT`).
+              example: FULL
+            subdomain:
+              type: string
+              description: Registered subdomain of the entity.
+              example: subdomain
+            jurisdiction_code:
+              type: string
+              example: US-IL
+              description: The ISO 3166-2 subdivision code that the customer resides in
+            id_number:
+              type: string
+              description: The ID number for the customer
+              example: '123456789'
+            id_number_type:
+              type: string
+              enum:
+              - ssn
+              - ein
+              - us_drivers_license
+              - us_passport
+              - us_passport_card
+              - us_permanent_resident_card
+              - us_border_crossing_card
+              - us_alien_card
+              - us_id_card
+              - non_us_passport
+              - non_us_other
+              - passport
+              - eu_drivers_license
+              - legal_entity_identifier
+              - chamber_of_commerce_number
+              - value_added_tax_number
+              - national_id
+              description: 'The type of ID number that is provided, must be one of the supported types. '
+              example: us_border_crossing_card
+            non_us_other_type:
+              type: string
+              description: A freeform string to describe the ID type that does not fit into the other predefined categories of ID types.
+              example: null
+            id_issuing_authority:
+              type: string
+              description: ISO-3166-1_A2 country code that issued the ID
+              example: null
+            non_us_entity_tax_id:
+              type: string
+              description: The tax identifier for a non-US entity
+              example: null
+            tax_id:
+              type: string
+              description: The national ID of the participant, e.g. a social security number.
+              example: 000-00-0000
+            kyc:
+              type: string
+              enum:
+              - pass
+              - fail
+              description: Whether the participant passed or failed KYC by vendor.
+              example: pass
+            onboarding_profile:
+              type: string
+              enum:
+              - kyc_track
+              - shopper
+              - originator_entity
+              - payouts_payor_ultimate
+              - payouts_beneficiary
+              description: Onboarding profile used to determine the participant's KYC track. Defaults to 'kyc_track' when omitted.
+              example: kyc_track
+            merchant_category_code:
+              type: string
+              description: ISO 18245 four-digit Merchant Category Code (MCC) that identifies the business activity of the entity. Accepted on entity create/update; zerohash derives `merchant_category_code_category` and `merchant_category_code_classification` from this value.
+              example: '5411'
+            merchant_category_code_category:
+              type: string
+              description: Human-readable category derived by zerohash from `merchant_category_code`. Returned in responses only; not accepted as input.
+              example: Grocery Stores, Supermarkets
+              readOnly: true
+            merchant_category_code_classification:
+              type: string
+              enum:
+              - transferable
+              - nontransferable
+              - food_vendor
+              description: Classification derived by zerohash from `merchant_category_code`, used to determine how the merchant is treated for downstream payment flows. Returned in responses only; not accepted as input.
+              example: transferable
+              readOnly: true
+            sanction_screening:
+              type: string
+              enum:
+              - pass
+              - fail
+              description: Whether the participant passed sanctions checks.
+              example: pass
+            idv:
+              type: string
+              enum:
+              - pass
+              - fail
+              description: Whether the participant passed or failed ID verification.
+              example: pass
+            liveness_check:
+              type: string
+              enum:
+              - pass
+              - fail
+              description: Whether the participant passed or failed a liveness check on their onboarding experience.
+              example: pass
+            employment_status:
+              type: string
+              enum:
+              - full_time
+              - part_time
+              - self_employed
+              - unemployed
+              - retired
+              - student
+              description: The employment status of the participant.
+              example: full_time
+            industry:
+              type: string
+              enum:
+              - adult_entertainment
+              - advertising_media_marketing
+              - agriculture
+              - arts_entertainment
+              - charity
+              - construction_manufacturing
+              - consulting
+              - consumer_products_services
+              - crypto_mining
+              - ecommerce
+              - education
+              - electronics
+              - fashion
+              - financial_services
+              - food_beverages
+              - government_agency
+              - insurance
+              - jewelry_gemstones
+              - law_enforcement
+              - legal_services
+              - mining_energy_chemicals
+              - online_gaming_gambling
+              - pharmaceuticals
+              - property_real_estate
+              - retail_wholesale
+              - transportation
+              - travel_car_hire
+              - weapons_defense_aerospace
+              - other
+              description: The industry in which the participant is employed.
+              example: adult_entertainment
+            source_of_funds:
+              type: string
+              enum:
+              - salary
+              - savings
+              - pension_retirement
+              - inheritance
+              - investment
+              - loan
+              - gift
+              - other
+              description: How the participant funds their account to support their trading activity.
+              example: salary
+            signed_agreements:
+              type: array
+              items:
+                type: object
+                required:
+                - type
+                - region
+                - signed_timestamp
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - fund_auto_convert
+                    - payment_services_terms
+                    - account_link
+                    - account_funding_payouts
+                    - account_funding_general
+                    - account_funding_pay
+                    - crypto_payouts_service_terms
+                    - staking
+                    - trust_agreement
+                    - zhllc_user_agreement_v1
+                    - zhllc_privacy_policy_v1
+                    - zhllc_regulatory_disclosures_v1
+                    - auth_user_services_agreement_v1
+                    - zhllc_payment_sender_terms_v1
+                    - zhllc_third_party_disclosures_v1
+                    - connect_privacy_policy_v1
+                    description: The type of the agreement signed
+                    example: user_agreement
+                  region:
+                    type: string
+                    enum:
+                    - worldwide
+                    - us
+                    - brazil
+                    - uk
+                    - eu
+                    description: The region for the signed agreement
+                    example: us
+                  signed_timestamp:
+                    type: number
+                    description: The UNIX timestamp (in milliseconds) when the Agreement was accepted by the participant. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
+                    example: 1603378501286
+            onboarded_location:
+              type: string
+              description: The location of a participant during onboarding, ISO 3166-2 standard
+              example: US-FL
+            salary:
+              type: string
+              enum:
+              - under_3500
+              - between_35001_and_75000
+              - between_75001_and_125000
+              - between_125001_and_200000
+              - over_200000
+              description: Salary of the participant.
+              example: under_3500
+              deprecated: true
+            savings_and_investments:
+              type: string
+              enum:
+              - under_10000
+              - between_10001_and_25000
+              - between_25001_and_50000
+              - between_50001_and_100000
+              - between_100001_and_250000
+              - over_250000
+              description: Savings and investments of the participant.
+              deprecated: true
+              example: under_10000
+            tx_equivalent_annual_volume:
+              type: string
+              enum:
+              - up_to_5k
+              - 5k_to_25k
+              - 25k_to_100k
+              - 100k_and_up
+              example: 25k_to_100k
+              description: The estimated total value of transactions the individual expects to process annually on the platform, in a specified currency (e.g., USD, EUR depends on region).
+              deprecated: true
+            gross_annual_income_amount:
+              type: string
+              enum:
+              - up_to_5k
+              - 5k_to_25k
+              - 25k_to_100k
+              - 100k_and_up
+              example: 25k_to_100k
+              description: The individual's total pre-tax income from all sources annually, in a currency (e.g., USD, EUR depends on region).
+            expected_usd_equivalent_daily_volume:
+              type: string
+              enum:
+              - under_1000
+              - between_1001_and_10000
+              - between_10001_and_100000
+              - over_100000
+              example: between_1001_and_10000
+              description: Expected USD equivalent daily volume.
+              deprecated: true
+            gross_annual_salary_amount:
+              type: string
+              description: The individual's gross annual salary amount, in a currency (e.g., USD, EUR depends on region).
+              example: '10000'
+            savings_and_investments_amount:
+              type: string
+              description: The individual's total amount of savings and investments, in a currency (e.g., USD, EUR depends on region).
+              example: '50000'
+            gross_annual_income:
+              type: string
+              description: The individual's total gross annual income amount, in a currency (e.g., USD, EUR depends on region).
+              example: '60000'
+            tx_usd_equivalent_monthly_amount:
+              type: string
+              description: The estimated total value of transactions the individual expects to process monthly on the platform, in USD.
+              example: '10000'
+            tx_usd_equivalent_annual_amount:
+              type: string
+              description: The estimated total value of transactions the individual expects to process annually on the platform, in USD.
+              example: '10000'
+            investor_category:
+              type: string
+              enum:
+              - restricted
+              - high_net_worth_individual
+              - certified_sophisticated_investor
+              description: Investor category of the participant
+              example: restricted
+            ip_address:
+              type: string
+              description: The IP address of the participant
+              example: 10.132.5.50
+            appropriateness_test_results:
+              type: array
+              description: The results of a participant to determining whether or not they have enough knowledge and experience to understand the risks associated with trading an instrument (in ZH case, crypto).
+              items:
+                type: object
+                required:
+                - result
+                - timestamp
+                properties:
+                  result:
+                    type: string
+                    enum:
+                    - pass
+                    - fail
+                    description: The results of the administered appropriateness test
+                    example: pass
+                  timestamp:
+                    type: string
+                    description: The date when the test result was generated
+                    example: '1985-09-02'
+            kyc_attempts:
+              type: number
+              description: The number of KYC attempts done by the participant.
+              example: 1
+            citizenship_code:
+              type: string
+              example: US
+              description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
+              enum:
+              - AD
+              - AE
+              - AF
+              - AG
+              - AI
+              - AL
+              - AM
+              - AO
+              - AQ
+              - AR
+              - AS
+              - AT
+              - AU
+              - AW
+              - AX
+              - AZ
+              - BA
+              - BB
+              - BD
+              - BE
+              - BF
+              - BG
+              - BH
+              - BI
+              - BJ
+              - BL
+              - BM
+              - BN
+              - BO
+              - BQ
+              - BR
+              - BS
+              - BT
+              - BV
+              - BW
+              - BY
+              - BZ
+              - CA
+              - CC
+              - CD
+              - CF
+              - CG
+              - CH
+              - CI
+              - CK
+              - CL
+              - CM
+              - CN
+              - CO
+              - CR
+              - CU
+              - CV
+              - CW
+              - CX
+              - CY
+              - CZ
+              - DE
+              - DJ
+              - DK
+              - DM
+              - DO
+              - DZ
+              - EC
+              - EE
+              - EG
+              - EH
+              - ER
+              - ES
+              - ET
+              - FI
+              - FJ
+              - FK
+              - FM
+              - FO
+              - FR
+              - GA
+              - GB
+              - GD
+              - GE
+              - GF
+              - GG
+              - GH
+              - GI
+              - GL
+              - GM
+              - GN
+              - GP
+              - GQ
+              - GR
+              - GS
+              - GT
+              - GU
+              - GW
+              - GY
+              - HK
+              - HM
+              - HN
+              - HR
+              - HT
+              - HU
+              - ID
+              - IE
+              - IL
+              - IM
+              - IN
+              - IO
+              - IQ
+              - IR
+              - IS
+              - IT
+              - JE
+              - JM
+              - JO
+              - JP
+              - KE
+              - KG
+              - KH
+              - KI
+              - KM
+              - KN
+              - KP
+              - KR
+              - KW
+              - KY
+              - KZ
+              - LA
+              - LB
+              - LC
+              - LI
+              - LK
+              - LR
+              - LS
+              - LT
+              - LU
+              - LV
+              - LY
+              - MA
+              - MC
+              - MD
+              - ME
+              - MF
+              - MG
+              - MH
+              - MK
+              - ML
+              - MM
+              - MN
+              - MO
+              - MP
+              - MQ
+              - MR
+              - MS
+              - MT
+              - MU
+              - MV
+              - MW
+              - MX
+              - MY
+              - MZ
+              - NA
+              - NC
+              - NE
+              - NF
+              - NG
+              - NI
+              - NL
+              - 'NO'
+              - NP
+              - NR
+              - NU
+              - NZ
+              - OM
+              - PA
+              - PE
+              - PF
+              - PG
+              - PH
+              - PK
+              - PL
+              - PM
+              - PN
+              - PR
+              - PS
+              - PT
+              - PW
+              - PY
+              - QA
+              - RE
+              - RO
+              - RS
+              - RW
+              - SA
+              - SB
+              - SC
+              - SD
+              - SE
+              - SG
+              - SH
+              - SI
+              - SJ
+              - SK
+              - SL
+              - SM
+              - SN
+              - SO
+              - SR
+              - SS
+              - ST
+              - SV
+              - SX
+              - SY
+              - SZ
+              - TC
+              - TD
+              - TF
+              - TG
+              - TH
+              - TJ
+              - TK
+              - TL
+              - TM
+              - TN
+              - TO
+              - TR
+              - TT
+              - TV
+              - TW
+              - TZ
+              - UA
+              - UG
+              - UM
+              - US
+              - UY
+              - UZ
+              - VA
+              - VC
+              - VE
+              - VG
+              - VI
+              - VN
+              - VU
+              - WF
+              - WS
+              - YE
+              - YT
+              - ZA
+              - ZM
+              - ZW
+            metadata:
+              type: object
+              properties: {}
+              description: Additional unstructured metadata
+              example: {}
+            email_screening:
+              type: string
+              enum:
+              - passed
+              - failed
+              - error
+              description: Whether the participant passed email screening
+              example: failed
+            tin_jurisdiction_reason:
+              type: string
+              enum:
+              - working_abroad
+              - studying_abroad
+              - dual_residency
+              - business_abroad
+              - real_estate_abroad
+              - other
+              description: Optional. Reason for the tax residence jurisdiction differing from the legal jurisdiction. Defaults to `unknown` if not provided.
+              example: working_abroad
+            tin_jurisdiction_other:
+              type: string
+              description: Optional. Free text explanation when `tin_jurisdiction_reason` is `other`.
+            additional_tax_residences:
+              type: array
+              maxItems: 25
+              items:
+                $ref: '#/components/schemas/AdditionalTaxResidence'
+              description: Optional. Additional tax residences when the participant has tax obligations in multiple jurisdictions. Maximum 25 items.
+            proof_of_address_coordinates:
+              type: object
+              description: GPS coordinates of the proof of address. Accepts both Decimal Degrees (DD) and Degrees/Minutes/Seconds (DMS) formats. Values are returned in DD format.
+              properties:
+                latitude:
+                  type: string
+                  description: Latitude. Accepts both Decimal Degrees (DD) and Degrees/Minutes/Seconds (DMS) formats. Values are returned in DD format.
+                  example: '51.511164'
+                longitude:
+                  type: string
+                  description: Longitude. Accepts both Decimal Degrees (DD) and Degrees/Minutes/Seconds (DMS) formats. Values are returned in DD format.
+                  example: '-0.083317'
+              required:
+              - latitude
+              - longitude
+              additionalProperties: false
+            w8_ben:
+              type: object
+              description: Wrapper sub-object holding W-8BEN tax certification data for a foreign (non-US) individual customer. Optional at the wrapper level.
+              properties:
+                ftin:
+                  type: string
+                  description: Foreign tax identification number issued by the participant's country of tax residence. Required unless `ftin_required = false`.
+                  example: AB123456C
+                ftin_required:
+                  type: boolean
+                  description: Whether the participant's country legally issues an FTIN. Required whenever the sub-object is present.
+                  example: true
+                reference_numbers:
+                  type: string
+                  description: Optional free-text reference numbers for the platform to connect the tax form to a specific account or financial record.
+                  example: REF-001
+                treaty_claim:
+                  type: object
+                  description: Treaty benefits claim block. Optional.
+                  properties:
+                    is_eligible:
+                      type: boolean
+                      description: Whether the participant is claiming reduced US withholding under a tax treaty. If `false` or omitted, the rest of the treaty block is ignored and no W-8 form is generated.
+                      example: true
+                    country:
+                      type: string
+                      description: Participant's country of tax residence whose treaty with the US is being invoked (ISO 3166-1 alpha-2). Required when `is_eligible = true`.
+                      example: GB
+                      enum:
+                      - AD
+                      - AE
+                      - AF
+                      - AG
+                      - AI
+                      - AL
+                      - AM
+                      - AO
+                      - AQ
+                      - AR
+                      - AS
+                      - AT
+                      - AU
+                      - AW
+                      - AX
+                      - AZ
+                      - BA
+                      - BB
+                      - BD
+                      - BE
+                      - BF
+                      - BG
+                      - BH
+                      - BI
+                      - BJ
+                      - BL
+                      - BM
+                      - BN
+                      - BO
+                      - BQ
+                      - BR
+                      - BS
+                      - BT
+                      - BV
+                      - BW
+                      - BY
+                      - BZ
+                      - CA
+                      - CC
+                      - CD
+                      - CF
+                      - CG
+                      - CH
+                      - CI
+                      - CK
+                      - CL
+                      - CM
+                      - CN
+                      - CO
+                      - CR
+                      - CU
+                      - CV
+                      - CW
+                      - CX
+                      - CY
+                      - CZ
+                      - DE
+                      - DJ
+                      - DK
+                      - DM
+                      - DO
+                      - DZ
+                      - EC
+                      - EE
+                      - EG
+                      - EH
+                      - ER
+                      - ES
+                      - ET
+                      - FI
+                      - FJ
+                      - FK
+                      - FM
+                      - FO
+                      - FR
+                      - GA
+                      - GB
+                      - GD
+                      - GE
+                      - GF
+                      - GG
+                      - GH
+                      - GI
+                      - GL
+                      - GM
+                      - GN
+                      - GP
+                      - GQ
+                      - GR
+                      - GS
+                      - GT
+                      - GU
+                      - GW
+                      - GY
+                      - HK
+                      - HM
+                      - HN
+                      - HR
+                      - HT
+                      - HU
+                      - ID
+                      - IE
+                      - IL
+                      - IM
+                      - IN
+                      - IO
+                      - IQ
+                      - IR
+                      - IS
+                      - IT
+                      - JE
+                      - JM
+                      - JO
+                      - JP
+                      - KE
+                      - KG
+                      - KH
+                      - KI
+                      - KM
+                      - KN
+                      - KP
+                      - KR
+                      - KW
+                      - KY
+                      - KZ
+                      - LA
+                      - LB
+                      - LC
+                      - LI
+                      - LK
+                      - LR
+                      - LS
+                      - LT
+                      - LU
+                      - LV
+                      - LY
+                      - MA
+                      - MC
+                      - MD
+                      - ME
+                      - MF
+                      - MG
+                      - MH
+                      - MK
+                      - ML
+                      - MM
+                      - MN
+                      - MO
+                      - MP
+                      - MQ
+                      - MR
+                      - MS
+                      - MT
+                      - MU
+                      - MV
+                      - MW
+                      - MX
+                      - MY
+                      - MZ
+                      - NA
+                      - NC
+                      - NE
+                      - NF
+                      - NG
+                      - NI
+                      - NL
+                      - 'NO'
+                      - NP
+                      - NR
+                      - NU
+                      - NZ
+                      - OM
+                      - PA
+                      - PE
+                      - PF
+                      - PG
+                      - PH
+                      - PK
+                      - PL
+                      - PM
+                      - PN
+                      - PR
+                      - PS
+                      - PT
+                      - PW
+                      - PY
+                      - QA
+                      - RE
+                      - RO
+                      - RS
+                      - RU
+                      - RW
+                      - SA
+                      - SB
+                      - SC
+                      - SD
+                      - SE
+                      - SG
+                      - SH
+                      - SI
+                      - SJ
+                      - SK
+                      - SL
+                      - SM
+                      - SN
+                      - SO
+                      - SR
+                      - SS
+                      - ST
+                      - SV
+                      - SX
+                      - SY
+                      - SZ
+                      - TC
+                      - TD
+                      - TF
+                      - TG
+                      - TH
+                      - TJ
+                      - TK
+                      - TL
+                      - TM
+                      - TN
+                      - TO
+                      - TR
+                      - TT
+                      - TV
+                      - TW
+                      - TZ
+                      - UA
+                      - UG
+                      - UM
+                      - US
+                      - UY
+                      - UZ
+                      - VA
+                      - VC
+                      - VE
+                      - VG
+                      - VI
+                      - VN
+                      - VU
+                      - WF
+                      - WS
+                      - YE
+                      - YT
+                      - ZA
+                      - ZM
+                      - ZW
+                    residence_certification:
+                      type: boolean
+                      description: Participant's on-form attestation that they are a tax resident of `country`. Must be `true` to claim treaty benefits. Required when `is_eligible = true`.
+                      example: true
+                    income_type:
+                      type: string
+                      enum:
+                      - royalties_other
+                      - business_profits
+                      description: 'Category of US-source income the claim applies to: `business_profits` covers trading gains and similar active income; `royalties_other` covers royalties and other passive income. Required when `is_eligible = true`. Accepted string tokens listed in enum; legacy numeric values still accepted for backward compatibility.'
+                      example: royalties_other
+                    withholding_rate:
+                      type: string
+                      description: Reduced rate granted by the treaty article, as a string percentage (e.g. "0", "10", "15"). Required when `is_eligible = true`.
+                      example: '15'
+                    article_paragraph:
+                      type: string
+                      description: Treaty article and paragraph authorizing the rate (e.g. "Article 12, paragraph 1"). Free text but should match the actual treaty section. Required when `is_eligible = true`.
+                      example: Article 12(2)
+                    additional_conditions:
+                      type: boolean
+                      description: Whether the participant asserts that extra conditions in the treaty article are met. Send `true` only if the participant has affirmatively confirmed. Required when `is_eligible = true`.
+                      example: false
+            w8_ben_e:
+              type: object
+              description: Wrapper sub-object holding W-8BEN-E tax certification data for a foreign (non-US) entity customer. Inherits all shared W-8 fields plus the entity-only fields below. Optional at the wrapper level.
+              properties:
+                tax_classification:
+                  type: string
+                  enum:
+                  - individual
+                  - corporation
+                  - partnership
+                  - simple_trust
+                  - complex_trust
+                  - grantor_trust
+                  - estate
+                  - central_bank_of_issue
+                  - foreign_government_controlled_entity
+                  - foreign_government_integral_part
+                  - tax_exempt_organization
+                  - private_foundation
+                  - international_organization
+                  description: Entity's IRS tax classification (e.g. corporation, partnership, trust variants, estate, tax-exempt organization). Required for W-8 form generation when `w8_ben_e` is present. Accepted string tokens listed in enum; legacy numeric values still accepted for backward compatibility.
+                  example: corporation
+                ftin:
+                  type: string
+                  description: Foreign tax identification number issued by the entity's country of tax residence. Required unless `ftin_required = false`.
+                  example: DE123456789
+                ftin_required:
+                  type: boolean
+                  description: Whether the entity's country legally issues an FTIN. Required whenever the sub-object is present.
+                  example: true
+                reference_numbers:
+                  type: string
+                  description: Optional free-text reference numbers for the platform to connect the tax form to a specific account or financial record.
+                  example: REF-002
+                treaty_claim:
+                  type: object
+                  description: Treaty benefits claim block. Optional.
+                  properties:
+                    is_eligible:
+                      type: boolean
+                      description: Whether the entity is claiming reduced US withholding under a tax treaty. If `false` or omitted, the rest of the treaty block is ignored and no W-8 form is generated.
+                      example: true
+                    country:
+                      type: string
+                      description: Entity's country of tax residence whose treaty with the US is being invoked (ISO 3166-1 alpha-2). Required when `is_eligible = true`.
+                      example: DE
+                      enum:
+                      - AD
+                      - AE
+                      - AF
+                      - AG
+                      - AI
+                      - AL
+                      - AM
+                      - AO
+                      - AQ
+                      - AR
+                      - AS
+                      - AT
+                      - AU
+                      - AW
+                      - AX
+                      - AZ
+                      - BA
+                      - BB
+                      - BD
+                      - BE
+                      - BF
+                      - BG
+                      - BH
+                      - BI
+                      - BJ
+                      - BL
+                      - BM
+                      - BN
+                      - BO
+                      - BQ
+                      - BR
+                      - BS
+                      - BT
+                      - BV
+                      - BW
+                      - BY
+                      - BZ
+                      - CA
+                      - CC
+                      - CD
+                      - CF
+                      - CG
+                      - CH
+                      - CI
+                      - CK
+                      - CL
+                      - CM
+                      - CN
+                      - CO
+                      - CR
+                      - CU
+                      - CV
+                      - CW
+                      - CX
+                      - CY
+                      - CZ
+                      - DE
+                      - DJ
+                      - DK
+                      - DM
+                      - DO
+                      - DZ
+                      - EC
+                      - EE
+                      - EG
+                      - EH
+                      - ER
+                      - ES
+                      - ET
+                      - FI
+                      - FJ
+                      - FK
+                      - FM
+                      - FO
+                      - FR
+                      - GA
+                      - GB
+                      - GD
+                      - GE
+                      - GF
+                      - GG
+                      - GH
+                      - GI
+                      - GL
+                      - GM
+                      - GN
+                      - GP
+                      - GQ
+                      - GR
+                      - GS
+                      - GT
+                      - GU
+                      - GW
+                      - GY
+                      - HK
+                      - HM
+                      - HN
+                      - HR
+                      - HT
+                      - HU
+                      - ID
+                      - IE
+                      - IL
+                      - IM
+                      - IN
+                      - IO
+                      - IQ
+                      - IR
+                      - IS
+                      - IT
+                      - JE
+                      - JM
+                      - JO
+                      - JP
+                      - KE
+                      - KG
+                      - KH
+                      - KI
+                      - KM
+                      - KN
+                      - KP
+                      - KR
+                      - KW
+                      - KY
+                      - KZ
+                      - LA
+                      - LB
+                      - LC
+                      - LI
+                      - LK
+                      - LR
+                      - LS
+                      - LT
+                      - LU
+                      - LV
+                      - LY
+                      - MA
+                      - MC
+                      - MD
+                      - ME
+                      - MF
+                      - MG
+                      - MH
+                      - MK
+                      - ML
+                      - MM
+                      - MN
+                      - MO
+                      - MP
+                      - MQ
+                      - MR
+                      - MS
+                      - MT
+                      - MU
+                      - MV
+                      - MW
+                      - MX
+                      - MY
+                      - MZ
+                      - NA
+                      - NC
+                      - NE
+                      - NF
+                      - NG
+                      - NI
+                      - NL
+                      - 'NO'
+                      - NP
+                      - NR
+                      - NU
+                      - NZ
+                      - OM
+                      - PA
+                      - PE
+                      - PF
+                      - PG
+                      - PH
+                      - PK
+                      - PL
+                      - PM
+                      - PN
+                      - PR
+                      - PS
+                      - PT
+                      - PW
+                      - PY
+                      - QA
+                      - RE
+                      - RO
+                      - RS
+                      - RU
+                      - RW
+                      - SA
+                      - SB
+                      - SC
+                      - SD
+                      - SE
+                      - SG
+                      - SH
+                      - SI
+                      - SJ
+                      - SK
+                      - SL
+                      - SM
+                      - SN
+                      - SO
+                      - SR
+                      - SS
+                      - ST
+                      - SV
+                      - SX
+                      - SY
+                      - SZ
+                      - TC
+                      - TD
+                      - TF
+                      - TG
+                      - TH
+                      - TJ
+                      - TK
+                      - TL
+                      - TM
+                      - TN
+                      - TO
+                      - TR
+                      - TT
+                      - TV
+                      - TW
+                      - TZ
+                      - UA
+                      - UG
+                      - UM
+                      - US
+                      - UY
+                      - UZ
+                      - VA
+                      - VC
+                      - VE
+                      - VG
+                      - VI
+                      - VN
+                      - VU
+                      - WF
+                      - WS
+                      - YE
+                      - YT
+                      - ZA
+                      - ZM
+                      - ZW
+                    residence_certification:
+                      type: boolean
+                      description: Entity's on-form attestation that it is a tax resident of `country`. Must be `true` to claim treaty benefits. Required when `is_eligible = true`.
+                      example: true
+                    income_type:
+                      type: string
+                      enum:
+                      - royalties_other
+                      - business_profits
+                      description: 'Category of US-source income the claim applies to: `business_profits` covers trading gains and similar active income; `royalties_other` covers royalties and other passive income. Required when `is_eligible = true`. Accepted string tokens listed in enum; legacy numeric values still accepted for backward compatibility.'
+                      example: business_profits
+                    withholding_rate:
+                      type: string
+                      description: Reduced rate granted by the treaty article, as a string percentage (e.g. "0", "10", "15"). Required when `is_eligible = true`.
+                      example: '0'
+                    article_paragraph:
+                      type: string
+                      description: Treaty article and paragraph authorizing the rate (e.g. "Article 7, paragraph 1"). Free text but should match the actual treaty section. Required when `is_eligible = true`.
+                      example: Article 7
+                    additional_conditions:
+                      type: boolean
+                      description: Whether the entity asserts that extra conditions in the treaty article are met. Send `true` only if the entity has affirmatively confirmed. Required when `is_eligible = true`.
+                      example: false
+                    requirements_certification:
+                      type: boolean
+                      description: Entity's on-form attestation that it derives the relevant income and meets all qualifying tests of the treaty provision. Must be `true` when an entity is claiming treaty benefits in order to generate a W-8 form. Required when `is_eligible = true`.
+                      example: true
+                    limitation_on_benefits:
+                      type: string
+                      enum:
+                      - government
+                      - tax_exempt_pension
+                      - other_tax_exempt_organization
+                      - publicly_traded_corporation
+                      - subsidiary
+                      - company_meets_erosion_test
+                      - company_meets_derivative_test
+                      - company_meets_business_test
+                      - favorable_determination
+                      - no_lob_article
+                      - other_article_paragraph
+                      description: Which Limitation on Benefits (LOB) clause the entity qualifies under. Required when `is_eligible = true`. Accepted string tokens listed in enum; legacy numeric values still accepted for backward compatibility.
+                      example: publicly_traded_corporation
+                    limitation_on_benefits_other:
+                      type: string
+                      description: Free-text describing the article and paragraph the entity is relying on. Required when (and only when) `limitation_on_benefits = other_article_paragraph`.
+                      example: ''
+            mailing_address:
+              type: object
+              description: Mailing address when different from permanent address
+              properties:
+                address_one:
+                  type: string
+                  example: 10 Downing Street
+                address_two:
+                  type: string
+                  example: Apt 2
+                city:
+                  type: string
+                  example: London
+                state:
+                  type: string
+                  example: England
+                postal_code:
+                  type: string
+                  example: SW1A 2AA
+                country:
+                  type: string
+                  description: ISO-3166-1-alpha-2
+                  example: GB
+                  enum:
+                  - AD
+                  - AE
+                  - AF
+                  - AG
+                  - AI
+                  - AL
+                  - AM
+                  - AO
+                  - AQ
+                  - AR
+                  - AS
+                  - AT
+                  - AU
+                  - AW
+                  - AX
+                  - AZ
+                  - BA
+                  - BB
+                  - BD
+                  - BE
+                  - BF
+                  - BG
+                  - BH
+                  - BI
+                  - BJ
+                  - BL
+                  - BM
+                  - BN
+                  - BO
+                  - BQ
+                  - BR
+                  - BS
+                  - BT
+                  - BV
+                  - BW
+                  - BY
+                  - BZ
+                  - CA
+                  - CC
+                  - CD
+                  - CF
+                  - CG
+                  - CH
+                  - CI
+                  - CK
+                  - CL
+                  - CM
+                  - CN
+                  - CO
+                  - CR
+                  - CU
+                  - CV
+                  - CW
+                  - CX
+                  - CY
+                  - CZ
+                  - DE
+                  - DJ
+                  - DK
+                  - DM
+                  - DO
+                  - DZ
+                  - EC
+                  - EE
+                  - EG
+                  - EH
+                  - ER
+                  - ES
+                  - ET
+                  - FI
+                  - FJ
+                  - FK
+                  - FM
+                  - FO
+                  - FR
+                  - GA
+                  - GB
+                  - GD
+                  - GE
+                  - GF
+                  - GG
+                  - GH
+                  - GI
+                  - GL
+                  - GM
+                  - GN
+                  - GP
+                  - GQ
+                  - GR
+                  - GS
+                  - GT
+                  - GU
+                  - GW
+                  - GY
+                  - HK
+                  - HM
+                  - HN
+                  - HR
+                  - HT
+                  - HU
+                  - ID
+                  - IE
+                  - IL
+                  - IM
+                  - IN
+                  - IO
+                  - IQ
+                  - IR
+                  - IS
+                  - IT
+                  - JE
+                  - JM
+                  - JO
+                  - JP
+                  - KE
+                  - KG
+                  - KH
+                  - KI
+                  - KM
+                  - KN
+                  - KP
+                  - KR
+                  - KW
+                  - KY
+                  - KZ
+                  - LA
+                  - LB
+                  - LC
+                  - LI
+                  - LK
+                  - LR
+                  - LS
+                  - LT
+                  - LU
+                  - LV
+                  - LY
+                  - MA
+                  - MC
+                  - MD
+                  - ME
+                  - MF
+                  - MG
+                  - MH
+                  - MK
+                  - ML
+                  - MM
+                  - MN
+                  - MO
+                  - MP
+                  - MQ
+                  - MR
+                  - MS
+                  - MT
+                  - MU
+                  - MV
+                  - MW
+                  - MX
+                  - MY
+                  - MZ
+                  - NA
+                  - NC
+                  - NE
+                  - NF
+                  - NG
+                  - NI
+                  - NL
+                  - 'NO'
+                  - NP
+                  - NR
+                  - NU
+                  - NZ
+                  - OM
+                  - PA
+                  - PE
+                  - PF
+                  - PG
+                  - PH
+                  - PK
+                  - PL
+                  - PM
+                  - PN
+                  - PR
+                  - PS
+                  - PT
+                  - PW
+                  - PY
+                  - QA
+                  - RE
+                  - RO
+                  - RS
+                  - RU
+                  - RW
+                  - SA
+                  - SB
+                  - SC
+                  - SD
+                  - SE
+                  - SG
+                  - SH
+                  - SI
+                  - SJ
+                  - SK
+                  - SL
+                  - SM
+                  - SN
+                  - SO
+                  - SR
+                  - SS
+                  - ST
+                  - SV
+                  - SX
+                  - SY
+                  - SZ
+                  - TC
+                  - TD
+                  - TF
+                  - TG
+                  - TH
+                  - TJ
+                  - TK
+                  - TL
+                  - TM
+                  - TN
+                  - TO
+                  - TR
+                  - TT
+                  - TV
+                  - TW
+                  - TZ
+                  - UA
+                  - UG
+                  - UM
+                  - US
+                  - UY
+                  - UZ
+                  - VA
+                  - VC
+                  - VE
+                  - VG
+                  - VI
+                  - VN
+                  - VU
+                  - WF
+                  - WS
+                  - YE
+                  - YT
+                  - ZA
+                  - ZM
+                  - ZW
+            chamber_of_commerce_number:
+              type: string
+              description: EU Chamber-of-Commerce registration number. Present only for EU NNP entities.
+              example: '12345678'
+            entity_source_of_funds:
+              type: string
+              enum:
+              - operating_revenues
+              - capital_investment
+              - debt_financing
+              - asset_sale
+              - crypto_activities
+              - investment_returns
+              - grants_and_subsidies
+              - other
+              description: The entity's declared source of funds. Present only for EU NNP entities.
+              example: operating_revenues
+            entity_source_of_funds_description:
+              type: string
+              description: Free-text description, required when entity_source_of_funds is `other`.
+              example: Grant funding from the EU innovation program
+            activity_locations:
+              type: array
+              items:
+                type: string
+              description: ISO 3166-1 alpha-2 country codes where the entity conducts business. Present only for EU NNP entities.
+              example:
+              - NL
+              - DE
+            is_complex_structure:
+              type: boolean
+              description: Whether the entity has a complex ownership structure requiring a legal opinion document. Present only for EU NNP entities.
+              example: false
+            entity_sub_type:
+              type: string
+              enum:
+              - trust_llc
+              - trust_sole_proprietorship
+              - trust_other
+              description: Sub-classification for trust entities. Present only when entity_type is a trust (EU NNP).
+              example: trust_llc
+            declaration_no_effective_control:
+              type: boolean
+              description: Attestation that no natural person has effective control over the entity. Present only for EU NNP entities.
+              example: true
+            declaration_no_effective_control_at:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds when the no-effective-control attestation was made.
+              example: 1678901234567
+            declaration_no_foreseeable_changes:
+              type: boolean
+              description: Attestation that no foreseeable changes to ownership/control exist. Present only for EU NNP entities.
+              example: true
+            declaration_no_foreseeable_changes_at:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds when the no-foreseeable-changes attestation was made.
+              example: 1678901234567
+            reason_for_business_relationship:
+              type: string
+              description: Free-form explanation of why the entity seeks a business relationship. Present only for EU NNP entities.
+              example: Cross-border settlement services
+            expected_annual_volume:
+              type: string
+              description: The entity's expected annual transaction volume tier. Present only for entities.
+              enum:
+              - under_100k
+              - between_100k_and_250k
+              - between_250k_and_500k
+              - over_500k
+              example: between_100k_and_250k
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    GetDocumentMetadataResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              description: 'Unique alphanumeric code for the participant (format: 6 alphanumeric characters).'
+              example: ABCDEF
+            documents:
+              type: array
+              description: Array of document metadata objects for the participant. Returns an empty array if no documents exist.
+              items:
+                $ref: '#/components/schemas/DocumentMetadataEntity'
+    GetDocumentForDownloadResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            document_id:
+              type: string
+              description: Unique identifier (SHA-256 hash) for the document.
+              example: e39e7b6a908e397dac50e461eb2d284820214ca2cb3c4aa9aeb9dfc1873332a0
+            file_name:
+              type: string
+              description: Original file name of the uploaded document.
+              example: passport.pdf
+            participant_code:
+              type: string
+              description: 'Unique alphanumeric code for the participant (format: 6 alphanumeric characters).'
+              example: ABCDEF
+            document_type:
+              $ref: '#/components/schemas/DocumentType'
+            id_front:
+              type: boolean
+              description: Indicates whether this is the front side of an ID document. Only present/applicable when the document is an identity document with front/back sides.
+            created_at:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds indicating when the document was uploaded.
+              example: 1678901234567
+            signed_url:
+              type: string
+              format: uri
+              description: Presigned S3 URL for downloading the document. Expires after 15 minutes.
+              example: https://s3.amazonaws.com/bucket/documents/abc123?X-Amz-Expires=900&...
+            mime_type:
+              type: string
+              description: MIME type of the document file.
+              example: application/pdf
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    DocumentType:
+      type: string
+      enum:
+      - articles_of_incorporation
+      - articles_of_organization
+      - business_license
+      - business_name_filing_document
+      - by_laws
+      - certificate_of_good_standing
+      - certificate_of_incorporation
+      - certificate_of_organization
+      - operating_agreement
+      - partnership_agreement
+      - proof_of_address
+      - proof_of_non_profit_status
+      - legacy_document
+      - miscellaneous
+      - ssn
+      - us_drivers_license
+      - us_passport
+      - us_passport_card
+      - us_permanent_resident_card
+      - us_border_crossing_card
+      - us_alien_card
+      - us_id_card
+      - non_us_passport
+      - non_us_other
+      - investor_category_agreement
+      - us_temporary_resident_card
+      - us_visa
+      - proof_of_income
+      - eu_passport
+      - eu_id_card
+      - eu_drivers_license
+      - eu_address_verification
+      - form_w9
+      - form_w8_ben
+      - form_w8_ben_e
+      - form_w8_imy
+      - form_w8_eci
+      - form_w8_exp
+      - form_w8_ce
+      - source_of_funds_for_purchase
+      - proof_of_employment_status
+      - proof_of_industry
+      - excerpt_of_the_chamber_of_commerce
+      - proof_of_residence
+      - articles_of_associations
+      - trust_agreement
+      - certificate_of_good_conduct_of_entrepreneur
+      - certificate_of_good_conduct_of_nnp
+      - source_of_funds
+      - financial_report
+      - certified_valid_id_of_control_person_and_beneficial_owner
+      - power_of_authorization
+      - official_proof_of_public_legal_entity_status
+      - id_of_submitter
+      - group_of_companies_chart_including_affiliated_foundation
+      - lei_certificate
+      - annual_accounts
+      - legal_opinion
+      - supporting_document
+      description: Type of KYC document.
+      example: us_passport
+  parameters:
+    ParticipantCodePath:
+      name: participant_code
+      in: path
+      description: Unique participant identifier. Always 6 uppercase alphanumeric characters.
+      required: true
+      schema:
+        type: string
+        pattern: ^[A-Z0-9]{6}$
+        example: ABCDEF
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    PageQuery:
+      name: page
+      in: query
+      description: Page number for pagination (starts at 1).
+      required: false
+      schema:
+        type: number
+        minimum: 1
+        example: 1
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    ParticipantCodeQuery:
+      name: participant_code
+      in: query
+      description: Filter by a specific participant code. Always 6 uppercase alphanumeric characters.
+      required: false
+      schema:
+        type: string
+        pattern: ^[A-Z0-9]{6}$
+        example: ABCDEF
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

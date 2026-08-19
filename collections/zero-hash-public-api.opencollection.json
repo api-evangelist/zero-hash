@@ -1,0 +1,37 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Public API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Public",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get server time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/time"
+          },
+          "docs": "Provides the current server time in seconds using Unix timestamp format."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

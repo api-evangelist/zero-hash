@@ -6,10 +6,10 @@ searched:
   result: none
   probes:
   - url: https://mcp.zerohash.com/
-    status: 000
+    status: 0
     note: DNS does not resolve.
   - url: https://mcp.zerohash.com/mcp
-    status: 000
+    status: 0
     note: DNS does not resolve.
   - url: https://api.zerohash.com/mcp
     status: 403
@@ -19,11 +19,12 @@ searched:
   - url: https://zerohash.com/llms.txt
     status: 200
     note: The provider llms.txt lists no MCP server.
-  registries: No zerohash server found in the public MCP registries or under @modelcontextprotocol on npm.
-  agentic_context: >-
-    zerohash does publish an Agentic Suite (beta) covering Hold / Move / Stream onchain money, Know Your Agent (KYA)
-    screening, session authorization with spend caps, a payments streaming engine, and x402 support. None of that is
-    exposed as an MCP server, and no agent-facing endpoint URL is documented.
+  registries: No zerohash server found in the public MCP registries or under @modelcontextprotocol on
+    npm.
+  agentic_context: zerohash does publish an Agentic Suite (beta) covering Hold / Move / Stream onchain
+    money, Know Your Agent (KYA) screening, session authorization with spend caps, a payments streaming
+    engine, and x402 support. None of that is exposed as an MCP server, and no agent-facing endpoint URL
+    is documented.
   agentic_docs:
   - https://docs.zerohash.com/docs/agentic-suite-beta
   - https://docs.zerohash.com/docs/know-your-agent
@@ -31,10 +32,10 @@ searched:
   - https://docs.zerohash.com/docs/move-onchain-money
   - https://docs.zerohash.com/docs/stream-onchain-money
   - https://docs.zerohash.com/docs/x402-merchant-configuration
-note: >-
-  NO MCP SERVER EXISTS. The tools below are a CANDIDATE shape derived from the published OpenAPI to show what a
-  zerohash MCP server could expose; they are not published, not callable, and carry no apis.yml MCPServer pointer.
-  Backing operations are referenced by method and path because the spec declares no operationIds.
+note: NO MCP SERVER EXISTS. The tools below are a CANDIDATE shape derived from the published OpenAPI to
+  show what a zerohash MCP server could expose; they are not published, not callable, and carry no apis.yml
+  MCPServer pointer. Backing operations are referenced by method and path because the spec declares no
+  operationIds.
 server:
   name: zero-hash
   transport: http
@@ -101,3 +102,9 @@ tools:
 - name: create_transfer
   description: Move value between accounts, idempotent on client_transfer_id.
   source_operation: openapi/zero-hash-api-openapi.yml#POST /transfers
+deployment:
+  mode: none
+  verified: derived
+  tools: 20
+  checked: '2026-08-12'
+  source: catalog MCP census

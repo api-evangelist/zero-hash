@@ -1,0 +1,529 @@
+{
+  "item": [
+    {
+      "id": "54340a2a-6d50-441e-a57f-f0bc5e86f97f",
+      "name": "Rewards",
+      "description": {
+        "content": "Rewards Distribution Service",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b08ca9c4-f885-4387-913b-d41ba73fb4ce",
+          "name": "Disperse rewards",
+          "request": {
+            "name": "Disperse rewards",
+            "description": {
+              "content": "Completes a transaction involving a designated asset and disperses rewards.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "rewards"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                "key": "X-Request-Id",
+                "value": "<uuid>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"underlying\": \"<string>\",\n  \"quoted_currency\": \"<string>\",\n  \"participant_code\": \"<string>\",\n  \"quantity\": \"<string>\",\n  \"total\": \"<string>\",\n  \"account_label\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2ef41c71-d476-49ea-989d-f0c24720fb79",
+              "name": "Successfully dispersed reward. Returns the executed quote, the booked trade identifiers, and the asset cost notional.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rewards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"participant_code\": \"CUST01\",\n  \"quantity\": \"1\",\n  \"total\": \"11430.90\",\n  \"account_label\": \"sub_account_test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n    \"quote\": {\n      \"request_id\": \"ce819fe8-b1d7-43bb-961c-e09ede0988d3\",\n      \"participant_code\": \"CUST01\",\n      \"quoted_currency\": \"USD\",\n      \"side\": \"buy\",\n      \"quantity\": \"1\",\n      \"price\": \"11430.90\",\n      \"quote_id\": \"32ad471b-824e-4f04-94ff-45c4439b4fe9\",\n      \"expire_ts\": 1568311649602,\n      \"account_group\": \"GRP001\",\n      \"account_label\": \"sub_account_test\",\n      \"obo_participant\": {\n        \"participant_code\": \"20XRLH\",\n        \"account_group\": \"WRD1K0\",\n        \"account_label\": \"general\"\n      },\n      \"total_notional\": \"2.00\",\n      \"underlying\": \"BTC\",\n      \"asset_cost_notional\": \"2.00\",\n      \"spread_notional\": \"2.12\",\n      \"spread_bps\": \"50\",\n      \"commission_notional\": \"5.00\",\n      \"commission_bps\": \"25\"\n    },\n    \"trade_id\": \"ba97133e-ab15-4c86-86c1-86671b8420bc\",\n    \"trade_ids_list\": [\n      \"22555492-50e4-4741-a632-2419a1f9a3f4\",\n      \"1ed1baf6-8a12-45bc-96db-4719cf2ddcab\"\n    ],\n    \"status\": \"Completed\",\n    \"asset_cost_notional\": \"3.00\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dbcf89ed-e80a-48f2-bb62-804c7a5c7b40",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rewards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"participant_code\": \"CUST01\",\n  \"quantity\": \"1\",\n  \"total\": \"11430.90\",\n  \"account_label\": \"sub_account_test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "794f0122-8812-4902-900b-b79eaf26cdc3",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rewards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"participant_code\": \"CUST01\",\n  \"quantity\": \"1\",\n  \"total\": \"11430.90\",\n  \"account_label\": \"sub_account_test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "590f99e0-75fb-47ad-9179-da720d9791b5",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rewards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"participant_code\": \"CUST01\",\n  \"quantity\": \"1\",\n  \"total\": \"11430.90\",\n  \"account_label\": \"sub_account_test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f0a5331-a527-44af-9803-2719a62d820b",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rewards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"participant_code\": \"CUST01\",\n  \"quantity\": \"1\",\n  \"total\": \"11430.90\",\n  \"account_label\": \"sub_account_test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "03658739-4c0b-43ce-b865-bd194e63a555",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rewards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"participant_code\": \"CUST01\",\n  \"quantity\": \"1\",\n  \"total\": \"11430.90\",\n  \"account_label\": \"sub_account_test\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d4adccce-a8eb-4756-8cb8-3f8923dadf9b",
+    "name": "zerohash Rewards API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

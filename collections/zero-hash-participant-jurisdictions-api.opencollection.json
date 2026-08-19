@@ -1,0 +1,105 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Participant Jurisdictions API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Participant Jurisdictions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List countries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/jurisdiction/countries",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Returns a list of ISO 3166-1-A2 country codes & country names."
+        },
+        {
+          "info": {
+            "name": "List subdivisions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/jurisdiction/subdivisions",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific country by ISO 3166-1-A2 code"
+              }
+            ]
+          },
+          "docs": "Returns a list of ISO 3166-2 subdivisions for the provided country."
+        },
+        {
+          "info": {
+            "name": "Evaluate participant onboarding",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/jurisdiction/evaluate-onboarding",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "jurisdiction_code",
+                "value": "",
+                "type": "query",
+                "description": "Verify whether the calling platform is permitted to onboard to the given jurisdiction or not"
+              }
+            ]
+          },
+          "docs": "Returns a status whether the onboarding operation is allowed or not."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

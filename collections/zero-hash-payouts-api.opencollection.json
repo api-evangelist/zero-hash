@@ -1,0 +1,90 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Payouts API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payouts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve payout state",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/payouts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payout_id",
+                "value": "",
+                "type": "query",
+                "description": "Public-facing payout identifier returned by `POST /payouts` (202 acknowledgement) and emitted on `payout.status_updated` webhooks. Mutually exclusive with `idempotency_key`."
+              },
+              {
+                "name": "idempotency_key",
+                "value": "",
+                "type": "query",
+                "description": "The `Idempotency-Key` value the caller supplied on the original `POST /payouts` submission. Useful for reconciliation when the POST response was lost mid-flight and the caller is unsure whether a payout was created. Mutually exclusive with `payout_id`."
+              }
+            ]
+          },
+          "docs": "Returns the current lifecycle state of a payout. Identify the payout by **exactly one** of `payout_id` or `idempotency_key` — supplying neither or both returns `400 Bad Request`. The response is lifecycle-only (PII-free); full per-resource details are fetched from the existing per-resource endpoints (`GET /participants/{code}`, `GET /payments/external_accounts/{id}`, `GET /payments/{payment_id}`) once the caller has the identifier. All queries are scoped to the caller's `platform_code`; a `payou"
+        },
+        {
+          "info": {
+            "name": "Submit or validate a payout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/payouts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "Idempotency-Key",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Single endpoint that drives the full payout lifecycle. The optional `validate` body field switches between two modes:\n\n- `validate: true` — runs the full pre-flight pipeline (schema, business-logic, and address-validity checks) with **no side effects**. Returns `200 OK` with body `{}` on success, `400 Bad Request` with `errors[]` on any validation failure, or `422 Unprocessable Entity` with `errors[]` if the payout asset is currently depegged. Nothing is persisted; no beneficiary, external accou"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

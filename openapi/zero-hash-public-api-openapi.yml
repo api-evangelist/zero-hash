@@ -1,0 +1,143 @@
+openapi: 3.2.0
+info:
+  title: zerohash Public API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Public
+  description: Basic API Endpoints
+paths:
+  /time:
+    get:
+      tags:
+      - Public
+      summary: Get server time
+      description: Provides the current server time in seconds using Unix timestamp format.
+      responses:
+        '200':
+          description: Current server time as a Unix epoch in seconds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTimeResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetTimeResponse:
+      type: object
+      properties:
+        epoch:
+          type: number
+          description: Current server time as a Unix timestamp in seconds.
+          example: 1550174574
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

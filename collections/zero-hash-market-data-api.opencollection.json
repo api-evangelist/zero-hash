@@ -1,0 +1,250 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Market Data API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Market Data",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List symbol data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/market_data/symbol_data",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "underlying",
+                "value": "",
+                "type": "query",
+                "description": "The underlying asset symbol for the requested market data. For example, `BTC` or `ETH`."
+              },
+              {
+                "name": "quoted_currency",
+                "value": "",
+                "type": "query",
+                "description": "Quoted currency symbol. For example, `USD` or `EUR`. This is the currency in which the price is quoted."
+              }
+            ]
+          },
+          "docs": "Retrieves a list of symbols and their market data."
+        },
+        {
+          "info": {
+            "name": "List OHLCV data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/market_data/ohlcv",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "underlying",
+                "value": "",
+                "type": "query",
+                "description": "Filter for underlying asset in the trading pair. E.g., `BTC` for `BTC/USD` related OHLCV data."
+              },
+              {
+                "name": "quoted_currency",
+                "value": "",
+                "type": "query",
+                "description": "Filter for quoted asset in the trading pair. E.g., `USD` for `BTC/USD` related OHLCV data."
+              },
+              {
+                "name": "limit",
+                "value": "100",
+                "type": "query",
+                "description": "Filter for maximum number of data points to be returned in a single request. Default is `50` if not specified."
+              },
+              {
+                "name": "data_end_date",
+                "value": "1780876800",
+                "type": "query",
+                "description": "Filter for objects before given timestamp. E.g., `1780876800` for June 8, 2026."
+              },
+              {
+                "name": "all_data",
+                "value": "false",
+                "type": "query",
+                "description": "Filter for all data available. Defaults to `false`. If set to `true`, `time_frame` is ignored and all available data is returned with `daily` granularity."
+              },
+              {
+                "name": "time_frame",
+                "value": "daily",
+                "type": "query",
+                "description": "Filter for `time_frame` of the OHLCV data. Required if `all_data` is not set to `true`. E.g., `daily` for daily OHLCV data."
+              }
+            ]
+          },
+          "docs": "Retrieves an list of historical data of open, high, low, close, underlying_volume and quoted_volume."
+        },
+        {
+          "info": {
+            "name": "List news articles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/market_data/news/latest",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "news_source",
+                "value": "",
+                "type": "query",
+                "description": "Sources (feeds) of news articles, options can be fetched from the response of `GET /news/feeds` endpoint."
+              },
+              {
+                "name": "categories",
+                "value": "",
+                "type": "query",
+                "description": "Categories of news articles, options can be fetched from the response of `GET /news/categories` endpoint."
+              },
+              {
+                "name": "exclude_categories",
+                "value": "",
+                "type": "query",
+                "description": "Categories of news articles to be excluded from result, options can be fetched from the response of `GET /news/categories` endpoint."
+              },
+              {
+                "name": "lookback",
+                "value": "",
+                "type": "query",
+                "description": "A lookback time defined as a UNIX timestamp, used to fetch articles from the given time."
+              },
+              {
+                "name": "language",
+                "value": "",
+                "type": "query",
+                "description": "Language of articles to be fetched. Format: `EN` (English) or `PT` (Portuguese)"
+              },
+              {
+                "name": "sort_by",
+                "value": "",
+                "type": "query",
+                "description": "Sorting order of news articles. Can be either `popular` or `latest`"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of market news articles filtered using given parameters."
+        },
+        {
+          "info": {
+            "name": "List news feeds",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/market_data/news/feeds",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieves a list of available market data feeds, which can be used to query articles."
+        },
+        {
+          "info": {
+            "name": "List categories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/market_data/news/categories",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieves a list of available market data categories, which can be used to query articles."
+        },
+        {
+          "info": {
+            "name": "Get image (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/market_data/image/:path",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Arbitrary sub-path of the image resource (e.g. `resources/news/64/12888774.jpeg`)."
+              }
+            ]
+          },
+          "docs": "Deprecated: this endpoint is no longer maintained and may be removed in a future release. Returns the binary content of an image at the given path (usually received from another Market Data endpoint). The image path is appended to the endpoint URL.\n\nExample:\n\n- For path: `/resources/news/64/12888774.jpeg`\n- Request: `GET /market_data/image/resources/news/64/12888774.jpeg`"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

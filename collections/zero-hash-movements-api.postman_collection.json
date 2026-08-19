@@ -1,0 +1,613 @@
+{
+  "item": [
+    {
+      "id": "9f8fc411-4438-4001-9338-978c287c56ee",
+      "name": "Movements",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7d9952ee-898e-4ed6-9696-d7933f505ee5",
+          "name": "List movements",
+          "request": {
+            "name": "List movements",
+            "description": {
+              "content": "Retrieves the history of each itemized movement that has been applied to all account(s) that the requesting platform has access to. Results are limited to the last 2 months",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "movements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<number>",
+                  "description": "Page number for pagination (starts at 1)."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<number>",
+                  "description": "Number of items per page for pagination. Default and maximum is 100"
+                },
+                {
+                  "disabled": false,
+                  "key": "parent_link_id",
+                  "value": "<string>",
+                  "description": "Filters for movements that are tagged with a specific `parent_link_id`."
+                },
+                {
+                  "disabled": false,
+                  "key": "movement_type",
+                  "value": "<string>",
+                  "description": "The type of the movement"
+                },
+                {
+                  "disabled": false,
+                  "key": "transfer_type",
+                  "value": "<string>",
+                  "description": "Filters for movements with a specific `transfer_type`."
+                },
+                {
+                  "disabled": false,
+                  "key": "account_id",
+                  "value": "<string>",
+                  "description": "This parameter enables the filtering of movements based on the associated `account_id`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "29428272-bcbb-4670-acf9-7ec0b81f77e6",
+              "name": "Paginated list of movements for the accounts the requesting platform has access to. Results are limited to the last 2 months.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "movements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "15"
+                    },
+                    {
+                      "key": "parent_link_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "movement_type",
+                      "value": "final_settlement"
+                    },
+                    {
+                      "key": "transfer_type",
+                      "value": "prefunded"
+                    },
+                    {
+                      "key": "account_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": [\n    {\n      \"movement_timestamp\": 1554395972174,\n      \"account_id\": \"ce819fe8-b1d7-43bb-961c-e09ede0988d3\",\n      \"movement_id\": \"ab938734-0aa6-4378-baa1-2cc56aeee757\",\n      \"movement_type\": \"final_settlement\",\n      \"transfer_type\": \"fund\",\n      \"deposit_reference_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"withdrawal_request_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"transfer_id\": \"78\",\n      \"parent_link_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"trade_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"change\": \"10000\",\n      \"origin\": \"rest_api\"\n    },\n    {\n      \"movement_timestamp\": 1554395972174,\n      \"account_id\": \"ce819fe8-b1d7-43bb-961c-e09ede0988d3\",\n      \"movement_id\": \"ab938734-0aa6-4378-baa1-2cc56aeee757\",\n      \"movement_type\": \"final_settlement\",\n      \"transfer_type\": \"revenue_capture\",\n      \"deposit_reference_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"withdrawal_request_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"transfer_id\": \"78\",\n      \"parent_link_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"trade_id\": \"3ad29e08-8b4f-435b-89aa-17b7a298b350\",\n      \"change\": \"10000\",\n      \"origin\": \"rest_api\"\n    }\n  ],\n  \"page\": 1,\n  \"total_pages\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ff802a18-bf66-4c2a-aa02-ac55c3f6a897",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "movements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "15"
+                    },
+                    {
+                      "key": "parent_link_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "movement_type",
+                      "value": "final_settlement"
+                    },
+                    {
+                      "key": "transfer_type",
+                      "value": "prefunded"
+                    },
+                    {
+                      "key": "account_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2761b615-52e2-42a6-ab4c-4d0abac452ac",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "movements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "15"
+                    },
+                    {
+                      "key": "parent_link_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "movement_type",
+                      "value": "final_settlement"
+                    },
+                    {
+                      "key": "transfer_type",
+                      "value": "prefunded"
+                    },
+                    {
+                      "key": "account_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "97da9131-b631-451a-8bf7-38f25abece29",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "movements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "15"
+                    },
+                    {
+                      "key": "parent_link_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "movement_type",
+                      "value": "final_settlement"
+                    },
+                    {
+                      "key": "transfer_type",
+                      "value": "prefunded"
+                    },
+                    {
+                      "key": "account_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1bf332c8-b2d2-4b1d-9a5a-6bb36482d429",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "movements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "15"
+                    },
+                    {
+                      "key": "parent_link_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "movement_type",
+                      "value": "final_settlement"
+                    },
+                    {
+                      "key": "transfer_type",
+                      "value": "prefunded"
+                    },
+                    {
+                      "key": "account_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "733ecb59-86ca-4363-920c-e130ac8b5bfe",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "movements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "15"
+                    },
+                    {
+                      "key": "parent_link_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "movement_type",
+                      "value": "final_settlement"
+                    },
+                    {
+                      "key": "transfer_type",
+                      "value": "prefunded"
+                    },
+                    {
+                      "key": "account_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "30fc4c4d-ef20-42b6-b89c-1fc08886dbae",
+    "name": "zerohash Movements API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

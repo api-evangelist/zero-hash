@@ -1,0 +1,420 @@
+openapi: 3.2.0
+info:
+  title: zerohash Assets API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Assets
+  description: View available assets
+paths:
+  /assets:
+    get:
+      tags:
+      - Assets
+      summary: List assets
+      description: Returns a list of all assets supported in the zerohash environment.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: stablecoin
+        in: query
+        description: Filter for assets based on whether they are classified as stablecoins
+        required: false
+        schema:
+          type: boolean
+      - name: chain_code
+        in: query
+        description: Filter assets by chain code
+        required: false
+        schema:
+          type: string
+      - name: symbol
+        in: query
+        description: Filter assets by symbol
+        required: false
+        schema:
+          type: string
+      - name: ny_allowed
+        in: query
+        description: Filter assets based on whether they are allowed for transactions in New York
+        required: false
+        schema:
+          type: boolean
+      - name: fund_enabled
+        in: query
+        description: Filters assets based on whether they are permitted for use with the Fund With Crypto API
+        required: false
+        schema:
+          type: boolean
+      - name: staking_enabled
+        in: query
+        description: Filters assets based on whether they are permitted for use with the Staking API
+        required: false
+        schema:
+          type: boolean
+      - name: deposit_address_creation
+        in: query
+        description: Filter assets by their deposit-address creation support level.
+        required: false
+        schema:
+          type: string
+          enum:
+          - institutional
+          - institutional_and_retail
+          - not_supported
+      responses:
+        '200':
+          description: Successfully retrieved list of assets matching the filter criteria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAssetsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /assets/{asset}/staking_info:
+    get:
+      tags:
+      - Assets
+      summary: Get asset staking information
+      description: Returns staking parameters for a specific asset including APY, activation periods, and unstaking details.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: asset
+        in: path
+        description: Asset symbol (e.g., ETH, BTC, SOL)
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Z0-9]+$
+          example: ETH
+      responses:
+        '200':
+          description: Staking information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAssetStakingInfoResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    GetAssetStakingInfoResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Request identifier
+          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
+        message:
+          type: object
+          properties:
+            stakeable_assets:
+              type: array
+              items:
+                $ref: '#/components/schemas/StakeableAssetInfoEntity'
+              description: List of stakeable assets with their information
+            last_updated:
+              type: string
+              format: date-time
+              description: Timestamp when staking info was last updated
+              example: '2025-08-24T15:30:00Z'
+    GetAssetsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetsResponseEntity'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    Network:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Network id
+          example: 1
+        label:
+          type: string
+          description: Network label
+          example: Solana
+        chain_code:
+          type: string
+          description: Network chain code
+          example: solana
+        short_code:
+          type: string
+          description: Network short code
+          example: SOL
+    AssetsResponseEntity:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: Asset code used thoughout the system
+          example: SOL
+        name:
+          type: string
+          description: Long-form name of the asset
+          example: Solana
+        chain_code:
+          type: string
+          description: The protocol the asset is listed on
+          example: solana
+        type:
+          type: string
+          description: Descriptor for the type of asset, `crypto` or `fiat`
+          example: crypto
+        model:
+          type: string
+          description: 'Record keeping model used by the asset: `none`, `utxo`, `account_based` or `tag`'
+          example: account_based
+        withdrawal_minimum:
+          type: string
+          description: The minimum amount that must be requested for a withdrawal
+          example: '0.000001'
+        stablecoin:
+          type: boolean
+          description: Denotes whether the asset is considered a stablecoin
+          example: false
+        precision:
+          type: number
+          description: number of decimal places supported for trade, quoting, and other aspects of asset interaction -- We support blockchain precision for customer trades
+          example: 9
+        tag_name:
+          type: string
+          description: 'Identifies the name of the tag of the asset: `none`, `memo`, `destination_tag`'
+          example: none
+        fee_asset:
+          type: string
+          description: The asset in which a fee is paid
+          example: ''
+        rfq_liquidity_enabled:
+          type: boolean
+          description: Asset that we offer liquidity for based in USD
+          example: true
+        custody_enabled:
+          type: boolean
+          description: Asset that we support custody for
+          example: true
+        deposit_address_creation:
+          type: string
+          description: 'Denotes support the creation of deposit adresses for institutional or retail customers: `institutional`, `institutional_and_retail` or `not_supported`'
+          example: none
+        deposits_on_chain_confirms:
+          type: number
+          description: Number of on-chain confirmations required before a deposit transaction is reflected on the zerohash ledger.
+          example: 0
+        ny_allowed:
+          type: boolean
+          description: Shows if transactions for an asset are allowed in New York
+          example: false
+        contract_address:
+          type: string
+          description: Token address if present on another chain
+          example: NA
+        fund_enabled:
+          type: boolean
+          description: Shows if the asset is allowed to be used in the Fund With Crypto API
+          example: false
+        depegged:
+          type: boolean
+          description: Shows if the asset is depegged in case of stablecoins
+        explorer_link:
+          type: string
+          description: Shows the block explorer link for the asset
+          example: https://explorer.solana.com/
+        ticker:
+          type: string
+          description: Asset identification
+          example: SOL
+        network:
+          $ref: '#/components/schemas/Network'
+        image_url:
+          type: string
+          description: The image URL for the icon of the asset
+          example: https://web-sdk.zerohash.com/icons/aave.svg
+        transaction_explorer_link:
+          type: string
+          description: Shows the block explorer link template for the asset
+          example: https://explorer.solana.com/tx/{{transaction}}
+        staking_enabled:
+          type: boolean
+          description: Shows if the asset is allowed to be used in the Staking API
+          example: false
+    StakeableAssetInfoEntity:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: Asset symbol
+          example: ETH
+        apy_net:
+          type: string
+          description: Annual percentage yield net of fees
+          example: '3.47'
+        activation_period_days:
+          type: integer
+          description: Number of days until stake becomes active
+          example: 2
+        payout_frequency:
+          type: string
+          description: Frequency of reward payouts
+          example: daily
+        unstaking_period_days:
+          type: integer
+          description: Number of days for unstaking cooldown period
+          example: 8
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

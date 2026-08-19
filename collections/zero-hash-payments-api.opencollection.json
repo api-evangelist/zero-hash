@@ -1,0 +1,504 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Payments API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List external accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/payments/external_accounts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participants",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of participant codes to filter on (e.g. `ABCDEF,DEMO01`)."
+              },
+              {
+                "name": "account_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific account_type"
+              },
+              {
+                "name": "account_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific account_status"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific page (pagination)"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the amount of external account objects returned"
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of external accounts linked to the calling platform, optionally filtered by participants, account type, or account status."
+        },
+        {
+          "info": {
+            "name": "Create external account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/payments/external_accounts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Links an external fiat or crypto account to a participant. Fiat accounts are linked via a Plaid processor token. Crypto account support requires the feature to be enabled on the calling platform."
+        },
+        {
+          "info": {
+            "name": "Close external account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/payments/external_accounts/:external_account_id/close",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "external_account_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the external account to close."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Closes an external account previously linked to a participant. After closure the account can no longer be used for new payments."
+        },
+        {
+          "info": {
+            "name": "List payments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/payments",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter for participant code"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific page (pagination)"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the amount of payments returned"
+              },
+              {
+                "name": "start_date",
+                "value": "",
+                "type": "query",
+                "description": "Unix timestamp in seconds. Returns payments created on or after this date."
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "type": "query",
+                "description": "Unix timestamp in seconds. Returns payments created on or before this date."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of payouts for the platform, optionally filtered by `participant_code` and a `start_date` / `end_date` window."
+        },
+        {
+          "info": {
+            "name": "Create payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/payments",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "X-Simulator-Scenario",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a fiat pre-fund/settlement or a crypto payout. The request body must match one of the four documented shapes; submitting both `total` and `quantity` on a payout is rejected."
+        },
+        {
+          "info": {
+            "name": "Get payment by id",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/payments/:payment_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payment_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the payout to fetch."
+              }
+            ]
+          },
+          "docs": "Fetches a single payout by its identifier, returning the current lifecycle status and on-chain details."
+        },
+        {
+          "info": {
+            "name": "List pending ACH settlements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/payments/settlements",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "start_date",
+                "value": "",
+                "type": "query",
+                "description": "Inclusive start of the query window as a Unix timestamp in seconds. Defaults to 2 days ago."
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "type": "query",
+                "description": "Inclusive end of the query window as a Unix timestamp in seconds. Defaults to now."
+              },
+              {
+                "name": "platform_code",
+                "value": "",
+                "type": "query",
+                "description": "Platform code to fetch pending settlements for."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific page (pagination)"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the amount of pending ACH transaction objects returned"
+              }
+            ]
+          },
+          "docs": "Retrieves pending ACH settlements for a specific platform. Used by the platform to reconcile the daily ACH settlement window."
+        },
+        {
+          "info": {
+            "name": "Retry a fiat payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/payments/:transaction_id/retry",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the fiat transaction to retry."
+              }
+            ]
+          },
+          "docs": "Retries a failed, cancelled, or returned fiat transaction whose linked trade has already terminated."
+        },
+        {
+          "info": {
+            "name": "List fiat transaction history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/payments/history",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant",
+                "value": "",
+                "type": "query",
+                "description": "Filter to a single participant code."
+              },
+              {
+                "name": "transaction_ids",
+                "value": "",
+                "type": "query",
+                "description": "Optional list of transaction identifiers to fetch. Repeat the query parameter for multiple ids (e.g. `?transaction_ids=id1&transaction_ids=id2`)."
+              },
+              {
+                "name": "transfer_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the given `transfer_type`"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific page (pagination)"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the amount of transaction objects will be returned per request"
+              }
+            ]
+          },
+          "docs": "Retrieves the historical fiat transactions (ACH / same-day ACH / wire / RTP) for the calling platform, with optional filters by participant, transfer type, or a set of transaction identifiers."
+        },
+        {
+          "info": {
+            "name": "List fiat transaction statuses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/payments/status",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "start_date",
+                "value": "",
+                "type": "query",
+                "description": "Inclusive start of the query window as a Unix timestamp in seconds."
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "type": "query",
+                "description": "Inclusive end of the query window as a Unix timestamp in seconds."
+              },
+              {
+                "name": "participant",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the given `participant` code"
+              },
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the given `transaction_id`"
+              },
+              {
+                "name": "trade_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the given `trade_id`"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the given `status` of the transaction"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific page (pagination)"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Filter for the amount of transaction status objects returned"
+              }
+            ]
+          },
+          "docs": "Retrieves fiat transaction status objects for the calling platform. Defaults: when `start_date`/`end_date` are omitted, the last day of transactions is returned; when `page`/`size` are omitted, the first 200 transactions are returned; omitting `participant` or `status` removes the respective filter."
+        },
+        {
+          "info": {
+            "name": "Request payment quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/payments/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves a quote for a payout. Exactly one of `quantity` or `total` must be supplied. The returned `quote_id` can be passed to `POST /payments/execute` before `expire_ts`."
+        },
+        {
+          "info": {
+            "name": "Execute payment quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/payments/execute",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes the quote identified by `quote_id` and creates the underlying fiat transaction. The quote must not have expired."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

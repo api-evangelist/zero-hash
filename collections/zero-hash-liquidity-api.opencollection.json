@@ -1,0 +1,184 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Liquidity API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Liquidity",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/liquidity/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "side",
+                "value": "",
+                "type": "query",
+                "description": "Allows platforms to specify the side of the quote"
+              },
+              {
+                "name": "underlying",
+                "value": "",
+                "type": "query",
+                "description": "Allows platforms to specify the underlying asset"
+              },
+              {
+                "name": "quoted_currency",
+                "value": "",
+                "type": "query",
+                "description": "Allows platforms to specify the quoted asset"
+              },
+              {
+                "name": "quantity",
+                "value": "",
+                "type": "query",
+                "description": "The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied."
+              },
+              {
+                "name": "total",
+                "value": "",
+                "type": "query",
+                "description": "The `total` of the `quoted_currency` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied."
+              },
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "The participant requesting a quote to buy or sell an asset"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "The account_label that's used to fund the trade"
+              },
+              {
+                "name": "spread",
+                "value": "",
+                "type": "query",
+                "description": "Optional custom spread in basis points applied to the quote. Requires the platform to be configured to pass spread through this endpoint."
+              },
+              {
+                "name": "commission",
+                "value": "",
+                "type": "query",
+                "description": "Optional custom commission in basis points applied to the quote. Mutually exclusive with `spread`; only available to platforms with `spread_as_commission` enabled."
+              },
+              {
+                "name": "quote_expiry",
+                "value": "",
+                "type": "query",
+                "description": "Optional quote expiration window. Feature-flag gated per platform."
+              }
+            ]
+          },
+          "docs": "Retrieves a quote for the purchase or sale of a given asset. Exactly one of `quantity` or `total` must be provided."
+        },
+        {
+          "info": {
+            "name": "Get quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/liquidity/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves a quote for the purchase or sale of a given asset. Exactly one of `quantity` or `total` must be supplied in the request body."
+        },
+        {
+          "info": {
+            "name": "Update quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/liquidity/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an active quote's `total` (and optionally its `fees`) before execution. The `quote_id` and new `total` are both required."
+        },
+        {
+          "info": {
+            "name": "Execute quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/liquidity/execute",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes the quote identified by `quote_id`. Returns the executed quote, the booked `trade_id`(s), and the trade status."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

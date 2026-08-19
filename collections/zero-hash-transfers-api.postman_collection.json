@@ -1,0 +1,1761 @@
+{
+  "item": [
+    {
+      "id": "b6177dd3-8224-4270-9c07-273a80d6838c",
+      "name": "Transfers",
+      "description": {
+        "content": "Initiate and monitor transfers between accounts",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d1c3737f-a205-479d-9f33-e47096126192",
+          "name": "List transfers",
+          "request": {
+            "name": "List transfers",
+            "description": {
+              "content": "Retrieves a list of objects containing information about transfers. This endpoint supports pagination and filtering based on the below parameters. Results are limited to the last 2 months.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "transfers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<number>",
+                  "description": "Filters for a specific page (pagination)"
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<number>",
+                  "description": "Filter for number of transfer objects to be included on each page"
+                },
+                {
+                  "disabled": false,
+                  "key": "to_participant_code",
+                  "value": "<string>",
+                  "description": "Filter for `to_participant_code` in receipt of the transfer"
+                },
+                {
+                  "disabled": false,
+                  "key": "from_participant_code",
+                  "value": "<string>",
+                  "description": "Filter for `from_participant_code` the transfer was sent from"
+                },
+                {
+                  "disabled": false,
+                  "key": "requested_timestamp[gt]",
+                  "value": "<number>",
+                  "description": "Filter for greater than a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "requested_timestamp[gte]",
+                  "value": "<number>",
+                  "description": "Filter for greater than or equal to a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "requested_timestamp[e]",
+                  "value": "<number>",
+                  "description": "Filter for equal to a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "requested_timestamp[lt]",
+                  "value": "<number>",
+                  "description": "Filter for less than a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "requested_timestamp[lte]",
+                  "value": "<number>",
+                  "description": "Filter for less than or equal to a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "client_transfer_id",
+                  "value": "<string>",
+                  "description": "Filter for `client_transfer_id` associated with the transfer"
+                },
+                {
+                  "disabled": false,
+                  "key": "from_account_group",
+                  "value": "<string>",
+                  "description": "Filter by the source account group of the transfer."
+                },
+                {
+                  "disabled": false,
+                  "key": "from_account_label",
+                  "value": "<string>",
+                  "description": "Filter by the source account label of the transfer."
+                },
+                {
+                  "disabled": false,
+                  "key": "to_account_group",
+                  "value": "<string>",
+                  "description": "Filter by the destination account group of the transfer."
+                },
+                {
+                  "disabled": false,
+                  "key": "to_account_label",
+                  "value": "<string>",
+                  "description": "Filter by the destination account label of the transfer."
+                },
+                {
+                  "disabled": false,
+                  "key": "currency",
+                  "value": "<string>",
+                  "description": "Filter by the asset code of the transfer, e.g. `USD`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cbba8ab1-bded-4733-9a09-1141d17c1832",
+              "name": "Successfully retrieved paginated list of transfers with optional filters: page, page_size, to_participant_code, from_participant_code, requested_timestamp filters, client_transfer_id.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "30"
+                    },
+                    {
+                      "key": "to_participant_code",
+                      "value": "CUST01"
+                    },
+                    {
+                      "key": "from_participant_code",
+                      "value": "CUST02"
+                    },
+                    {
+                      "key": "requested_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[gte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[e]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "client_transfer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "from_account_label",
+                      "value": "LABEL01"
+                    },
+                    {
+                      "key": "to_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "to_account_label",
+                      "value": "LABEL02"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BTC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": [\n    {\n      \"id\": 1152665,\n      \"created_at\": \"2026-05-04T11:58:50.115Z\",\n      \"updated_at\": \"2026-05-04T11:58:50.115Z\",\n      \"status\": \"approved\",\n      \"from_participant_code\": \"ABCDEF\",\n      \"from_account_group\": \"ABCDEF\",\n      \"from_account_label\": \"general\",\n      \"to_participant_code\": \"DEMO01\",\n      \"to_account_group\": \"ABCDEF\",\n      \"to_account_label\": \"general\",\n      \"asset\": \"USD\",\n      \"amount\": \"100.00\",\n      \"movement_id\": null,\n      \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n      \"admin_transfer\": false,\n      \"parent_link_id\": null,\n      \"parent_link_id_source\": \"LINK_SOURCE_PREFUNDED_TRANSFER\",\n      \"prefunded\": false\n    },\n    {\n      \"id\": 1152665,\n      \"created_at\": \"2026-05-04T11:58:50.115Z\",\n      \"updated_at\": \"2026-05-04T11:58:50.115Z\",\n      \"status\": \"approved\",\n      \"from_participant_code\": \"ABCDEF\",\n      \"from_account_group\": \"ABCDEF\",\n      \"from_account_label\": \"general\",\n      \"to_participant_code\": \"DEMO01\",\n      \"to_account_group\": \"ABCDEF\",\n      \"to_account_label\": \"general\",\n      \"asset\": \"USD\",\n      \"amount\": \"100.00\",\n      \"movement_id\": null,\n      \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n      \"admin_transfer\": false,\n      \"parent_link_id\": null,\n      \"parent_link_id_source\": \"LINK_SOURCE_PREFUNDED_TRANSFER\",\n      \"prefunded\": false\n    }\n  ],\n  \"page\": 1,\n  \"page_size\": 15,\n  \"total_pages\": 1,\n  \"count\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3342e346-92be-46a8-ab28-43243ae4a303",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "30"
+                    },
+                    {
+                      "key": "to_participant_code",
+                      "value": "CUST01"
+                    },
+                    {
+                      "key": "from_participant_code",
+                      "value": "CUST02"
+                    },
+                    {
+                      "key": "requested_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[gte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[e]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "client_transfer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "from_account_label",
+                      "value": "LABEL01"
+                    },
+                    {
+                      "key": "to_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "to_account_label",
+                      "value": "LABEL02"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BTC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9e7e7c2b-d3cb-40c3-ac91-17c7a825dc6c",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "30"
+                    },
+                    {
+                      "key": "to_participant_code",
+                      "value": "CUST01"
+                    },
+                    {
+                      "key": "from_participant_code",
+                      "value": "CUST02"
+                    },
+                    {
+                      "key": "requested_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[gte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[e]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "client_transfer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "from_account_label",
+                      "value": "LABEL01"
+                    },
+                    {
+                      "key": "to_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "to_account_label",
+                      "value": "LABEL02"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BTC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "da1ac132-4388-4f67-b86f-21100ea3c48c",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "30"
+                    },
+                    {
+                      "key": "to_participant_code",
+                      "value": "CUST01"
+                    },
+                    {
+                      "key": "from_participant_code",
+                      "value": "CUST02"
+                    },
+                    {
+                      "key": "requested_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[gte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[e]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "client_transfer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "from_account_label",
+                      "value": "LABEL01"
+                    },
+                    {
+                      "key": "to_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "to_account_label",
+                      "value": "LABEL02"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BTC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5a7e041-8775-49da-9632-f84f187aa78e",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "30"
+                    },
+                    {
+                      "key": "to_participant_code",
+                      "value": "CUST01"
+                    },
+                    {
+                      "key": "from_participant_code",
+                      "value": "CUST02"
+                    },
+                    {
+                      "key": "requested_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[gte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[e]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "client_transfer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "from_account_label",
+                      "value": "LABEL01"
+                    },
+                    {
+                      "key": "to_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "to_account_label",
+                      "value": "LABEL02"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BTC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6c4b5134-849e-49e3-9116-3f6df2f00db8",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "30"
+                    },
+                    {
+                      "key": "to_participant_code",
+                      "value": "CUST01"
+                    },
+                    {
+                      "key": "from_participant_code",
+                      "value": "CUST02"
+                    },
+                    {
+                      "key": "requested_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[gte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[e]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "requested_timestamp[lte]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "client_transfer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "from_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "from_account_label",
+                      "value": "LABEL01"
+                    },
+                    {
+                      "key": "to_account_group",
+                      "value": "PLAT01"
+                    },
+                    {
+                      "key": "to_account_label",
+                      "value": "LABEL02"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BTC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "94eb8e21-d281-4ac6-8930-c2b29987f588",
+          "name": "Create transfer",
+          "request": {
+            "name": "Create transfer",
+            "description": {
+              "content": "Create a new transfer request between your own accounts.\nTo submit transfers on behalf of others, you will require the `submits_platform_transfers_for` relationship. Transfer requests created via the API are automatically set to an `APPROVED` state.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "transfers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_participant_code\": \"<string>\",\n  \"from_account_group\": \"<string>\",\n  \"to_participant_code\": \"<string>\",\n  \"to_account_group\": \"<string>\",\n  \"asset\": \"<string>\",\n  \"amount\": \"<string>\",\n  \"from_account_label\": \"<string>\",\n  \"to_account_label\": \"<string>\",\n  \"client_transfer_id\": \"<string>\",\n  \"prefunded\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "17943028-15c7-45a5-a1b3-958515c62173",
+              "name": "Successfully created transfer request. Returns the created resource with generated IDs and timestamps.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from_participant_code\": \"ABCDEF\",\n  \"from_account_group\": \"ABCDEF\",\n  \"to_participant_code\": \"DEMO01\",\n  \"to_account_group\": \"ABCDEF\",\n  \"asset\": \"USD\",\n  \"amount\": \"20.1\",\n  \"from_account_label\": \"general\",\n  \"to_account_label\": \"general\",\n  \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n  \"prefunded\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"id\": 1152665,\n    \"created_at\": \"2026-05-04T11:58:50.115Z\",\n    \"updated_at\": \"2026-05-04T11:58:50.115Z\",\n    \"status\": \"approved\",\n    \"from_participant_code\": \"ABCDEF\",\n    \"from_account_group\": \"ABCDEF\",\n    \"from_account_label\": \"general\",\n    \"to_participant_code\": \"DEMO01\",\n    \"to_account_group\": \"ABCDEF\",\n    \"to_account_label\": \"general\",\n    \"asset\": \"USD\",\n    \"amount\": \"100.00\",\n    \"movement_id\": null,\n    \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n    \"admin_transfer\": false,\n    \"parent_link_id\": null,\n    \"parent_link_id_source\": \"LINK_SOURCE_PREFUNDED_TRANSFER\",\n    \"prefunded\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "36545698-cff6-43d2-a74a-3441f6687b66",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from_participant_code\": \"ABCDEF\",\n  \"from_account_group\": \"ABCDEF\",\n  \"to_participant_code\": \"DEMO01\",\n  \"to_account_group\": \"ABCDEF\",\n  \"asset\": \"USD\",\n  \"amount\": \"20.1\",\n  \"from_account_label\": \"general\",\n  \"to_account_label\": \"general\",\n  \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n  \"prefunded\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6051ca01-8b61-4f35-96f4-3f73982a18b2",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from_participant_code\": \"ABCDEF\",\n  \"from_account_group\": \"ABCDEF\",\n  \"to_participant_code\": \"DEMO01\",\n  \"to_account_group\": \"ABCDEF\",\n  \"asset\": \"USD\",\n  \"amount\": \"20.1\",\n  \"from_account_label\": \"general\",\n  \"to_account_label\": \"general\",\n  \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n  \"prefunded\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5f02386c-cc29-4d92-b0c4-60e3b056df41",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from_participant_code\": \"ABCDEF\",\n  \"from_account_group\": \"ABCDEF\",\n  \"to_participant_code\": \"DEMO01\",\n  \"to_account_group\": \"ABCDEF\",\n  \"asset\": \"USD\",\n  \"amount\": \"20.1\",\n  \"from_account_label\": \"general\",\n  \"to_account_label\": \"general\",\n  \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n  \"prefunded\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "60afe3a3-3892-4c7d-8280-bf8c4e9144e0",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from_participant_code\": \"ABCDEF\",\n  \"from_account_group\": \"ABCDEF\",\n  \"to_participant_code\": \"DEMO01\",\n  \"to_account_group\": \"ABCDEF\",\n  \"asset\": \"USD\",\n  \"amount\": \"20.1\",\n  \"from_account_label\": \"general\",\n  \"to_account_label\": \"general\",\n  \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n  \"prefunded\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c86dcd4e-a0fa-48b8-9968-25c7721620c0",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"from_participant_code\": \"ABCDEF\",\n  \"from_account_group\": \"ABCDEF\",\n  \"to_participant_code\": \"DEMO01\",\n  \"to_account_group\": \"ABCDEF\",\n  \"asset\": \"USD\",\n  \"amount\": \"20.1\",\n  \"from_account_label\": \"general\",\n  \"to_account_label\": \"general\",\n  \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n  \"prefunded\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7a7a55a5-1c13-471d-8f8e-ef3362765aef",
+          "name": "Get transfer",
+          "request": {
+            "name": "Get transfer",
+            "description": {
+              "content": "Retrieves a single transfer made to or from your participant, or to or from your platform's account group.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "transfers",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Filter for id assigned to a transfer request"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "777527b2-f7cb-4b50-afea-a2fd17b2054e",
+              "name": "Successfully retrieved transfer by ID.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Filter for id assigned to a transfer request"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"id\": 1152665,\n    \"created_at\": \"2026-05-04T11:58:50.115Z\",\n    \"updated_at\": \"2026-05-04T11:58:50.115Z\",\n    \"status\": \"approved\",\n    \"from_participant_code\": \"ABCDEF\",\n    \"from_account_group\": \"ABCDEF\",\n    \"from_account_label\": \"general\",\n    \"to_participant_code\": \"DEMO01\",\n    \"to_account_group\": \"ABCDEF\",\n    \"to_account_label\": \"general\",\n    \"asset\": \"USD\",\n    \"amount\": \"100.00\",\n    \"movement_id\": null,\n    \"client_transfer_id\": \"e6afed46-301e-46ee-a339-e897e9855c3a\",\n    \"admin_transfer\": false,\n    \"parent_link_id\": null,\n    \"parent_link_id_source\": \"LINK_SOURCE_PREFUNDED_TRANSFER\",\n    \"prefunded\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "68f0a203-e7c5-4522-8594-58be071422c0",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Filter for id assigned to a transfer request"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2a4cc72b-1bdb-472d-a233-7779bff50f97",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Filter for id assigned to a transfer request"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "855add37-988c-487e-9100-014d237aee33",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Filter for id assigned to a transfer request"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c19cb73a-7653-45ed-9726-518f0c31a0be",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Filter for id assigned to a transfer request"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d1639c46-711c-4c3e-b154-b0b36dada5b5",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "transfers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Filter for id assigned to a transfer request"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "8a7caf2b-4c59-408d-9d14-079d651b0c68",
+    "name": "zerohash Transfers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

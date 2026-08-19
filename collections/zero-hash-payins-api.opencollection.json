@@ -1,0 +1,261 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Payins API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payins",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Request a payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/pay/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "\nRetrieves a quote for a pay event for a given participant code and asset.\nThe response includes a deposit address and rate at which a subsequent on-chain deposit will be honored.\n\nThe quote has an expiry timestamp (`price_expire_ts`) — for volatile assets, the platform must execute the deposit before this time,\nor a new quote can be requested for the same payment to refresh the price.\nFor stablecoins, `price_expire_ts` will be `null`.\n\nThe `request_id` you send (via the `X-Request-Id` header) i"
+        },
+        {
+          "info": {
+            "name": "Refresh a payin quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/pay/:id/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The transaction ID (UUID) returned from the original POST /pay/rfq call"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "\nRefreshes an existing pay quote identified by its transaction ID.\nThis is used when a previously issued quote is near to expire and the platform wants a new rate for the same deposit address.\nAlready expired quotes can't be refreshed.\n\nThe response format is identical to `POST /pay/rfq` — it returns an updated rate, expiry timestamp, and the same deposit address.\n  "
+        },
+        {
+          "info": {
+            "name": "List payin transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/pay/transactions",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter by participant code (6-character alphanumeric)"
+              },
+              {
+                "name": "transaction_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific transaction ID (UUID format)"
+              },
+              {
+                "name": "client_reference_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by client-provided reference ID. This filter may not be available for all platforms. Contact support if you need access."
+              },
+              {
+                "name": "pay_asset",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the underlying crypto asset (e.g., BTC, ETH, USDC)"
+              },
+              {
+                "name": "deposit_address",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the deposit address provided by zerohash for this payment."
+              },
+              {
+                "name": "success",
+                "value": "",
+                "type": "query",
+                "description": "Filters transactions by successful status. This is a boolean field, please specify either `true` or `false`"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number (1-indexed, max 5 digits)"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "The number of results returned per page, with a maximum of 50 transactions per page"
+              },
+              {
+                "name": "deposit_timestamp_gte",
+                "value": "",
+                "type": "query",
+                "description": "Deposit timestamp greater than or equal to this value (inclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+              },
+              {
+                "name": "deposit_timestamp_gt",
+                "value": "",
+                "type": "query",
+                "description": "Deposit timestamp strictly greater than this value (exclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+              },
+              {
+                "name": "deposit_timestamp_lt",
+                "value": "",
+                "type": "query",
+                "description": "Deposit timestamp strictly less than this value (exclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+              },
+              {
+                "name": "deposit_timestamp_lte",
+                "value": "",
+                "type": "query",
+                "description": "Deposit timestamp less than or equal to this value (inclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+              },
+              {
+                "name": "merchant_participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter by merchant participant code."
+              }
+            ]
+          },
+          "docs": "\nRetrieves a paginated list of pay transactions for the authenticated platform.\nResults can be filtered by participant, asset, deposit status, and timestamps.\nEach deposit also emits a `crypto_pay_status_changed` webhook when it settles or fails.\n\n**Note:** Some filtering capabilities may not be available for all platforms. Contact support if you need access to additional filters.\n  "
+        },
+        {
+          "info": {
+            "name": "Get payin authorization limits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/pay/limits",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "End-user participant code (6-character alphanumeric)."
+              },
+              {
+                "name": "merchant_participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Optional merchant participant code. When supplied, the response also includes `merchant_totals` (volume totals aggregated against that merchant). The authenticated platform must operate for the merchant or the request is rejected."
+              }
+            ]
+          },
+          "docs": "\nRetrieves the current authorization level, per-window limits, and volume totals for an\nend-user participant on the authenticated platform. Optionally scoped to a specific\nmerchant when `merchant_participant_code` is supplied (the authenticated platform must\noperate for that merchant).\n  "
+        },
+        {
+          "info": {
+            "name": "Cancel a pending manual approval",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cert.zerohash.com/pay/:id/approval",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Transaction id of the manual approval to cancel."
+              },
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "End-user participant (shopper) code whose approval to cancel."
+              },
+              {
+                "name": "merchant_code",
+                "value": "",
+                "type": "query",
+                "description": "Merchant participant code associated with the approval. Defaults to the authenticated platform code when omitted."
+              }
+            ]
+          },
+          "docs": "\nCancels a pending or approved manual approval for a Tier 4 payin transaction,\nsetting it to REJECTED state.\n\nUse this endpoint when a platform or shopper wants to withdraw a transaction\nthat is awaiting compliance review. Once cancelled, the transaction cannot\nbe reinstated — a new `POST /pay/rfq` must be issued.\n\nThe `merchant_code` query parameter is optional. When omitted, the\nauthenticated platform code is used as the merchant identifier.\n  "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

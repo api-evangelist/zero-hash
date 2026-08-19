@@ -1,0 +1,1642 @@
+openapi: 3.2.0
+info:
+  title: zerohash Deposits API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Deposits
+  description: Create deposit addressed and monitor deposits to accounts
+paths:
+  /deposits/crypto:
+    get:
+      tags:
+      - Deposits
+      summary: List crypto deposits
+      description: Retrieves a paginated list of blockchain deposits. Filter by deposit IDs, account IDs, transaction hashes, assets, states, and timestamps.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: deposit_ids
+        in: query
+        description: Filter by one or more deposit IDs
+        required: false
+        schema:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      - name: account_ids
+        in: query
+        description: Filter by one or more account IDs
+        required: false
+        schema:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      - name: transaction_hashes
+        in: query
+        description: Filter by one or more transaction hashes
+        required: false
+        schema:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      - name: assets
+        in: query
+        description: Filter by one or more asset codes (e.g. BTC, ETH)
+        required: false
+        schema:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      - name: states
+        in: query
+        description: Filter by one or more deposit states
+        required: false
+        schema:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      - name: state_reasons
+        in: query
+        description: Filter by one or more state reasons (e.g. `required_travel_rule_info`). Use with `states=PENDING_COMPLIANCE_REVIEW` to list deposits held for Travel Rule review.
+        required: false
+        schema:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+      - name: travel_rule_status
+        in: query
+        description: Convenience filter for Travel Rule status. `pending` returns all deposits currently held awaiting Travel Rule verification (equivalent to `states=PENDING_COMPLIANCE_REVIEW&state_reasons=required_travel_rule_info`).
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+      - name: from_timestamp
+        in: query
+        description: Filter deposits from this timestamp (inclusive)
+        required: false
+        schema:
+          type: string
+      - name: to_timestamp
+        in: query
+        description: Filter deposits up to this timestamp (inclusive)
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return (1-999)
+        required: false
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: Pagination cursor for the next page of results
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCryptoDepositsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits/crypto/{deposit_id}:
+    get:
+      tags:
+      - Deposits
+      summary: Get crypto deposit by ID
+      description: Retrieves a single blockchain deposit by its unique deposit ID.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: deposit_id
+        in: path
+        description: The unique identifier of the deposit
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCryptoDepositByIdResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits/digital_asset_addresses:
+    post:
+      tags:
+      - Deposits
+      summary: Create deposit address
+      description: Creates a deposit address for a given asset.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Details for creating a deposit address, including participant code, asset, and network.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDigitalAssetAddressesBody'
+      responses:
+        '200':
+          description: Successfully created deposit address. Returns the created resource with generated IDs and timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDigitalAssetAddressesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    get:
+      tags:
+      - Deposits
+      summary: List deposit addresses
+      description: Retrieves a list of addresses associated with your platform.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: participant_code
+        in: query
+        description: The participant whose deposit addresses should be returned. Must either match the calling platform or be a customer of the calling platform.
+        required: true
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 6
+          example: ABCDEF
+      - name: asset
+        in: query
+        description: Filter by asset. When omitted, addresses for all assets the participant holds are returned.
+        required: false
+        schema:
+          $ref: '#/components/schemas/Asset'
+      - name: inactivity_interval
+        in: query
+        description: Only return addresses that have been inactive for at least this many days (1–1825).
+        required: false
+        schema:
+          type: number
+          minimum: 1
+          maximum: 1825
+          example: 30
+      - name: limit
+        in: query
+        description: Maximum number of addresses to return (1–100). Defaults to `1`.
+        required: false
+        schema:
+          type: number
+          minimum: 1
+          maximum: 100
+          example: 30
+          default: 1
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of deposit addresses with optional filters: participant_code, asset, inactivity_interval, limit.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDigitalAddressesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    patch:
+      tags:
+      - Deposits
+      summary: Update address owner
+      description: 'Assigns a new owner to a digital wallet address. '
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Details for updating address ownership, including the addresses and new participant code.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDigitalAssetAddressesBody'
+      responses:
+        '200':
+          description: Successfully updated digital asset address ownership. Returns the updated resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchDigitalAssetAddressesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits/bolt11:
+    post:
+      tags:
+      - Deposits
+      summary: Create a BOLT11 invoice for deposit
+      description: Creates a Lightning Network invoice (BOLT11) to deposit funds to the informed participant account.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Details for creating a BOLT11 Lightning Network invoice, including participant code, amount, and description.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBOLT11Body'
+      responses:
+        '200':
+          description: Successfully created BOLT11 Lightning Network invoice. Returns the created resource with generated IDs and timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBOLT11Response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits/bolt11/test_payment:
+    post:
+      tags:
+      - Deposits
+      summary: Create a test payment for a BOLT11 deposit invoice
+      description: Simulate a payment of BOLT11 invoice deposit generated by /deposits/bolt11. (CERT only)
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Details for simulating a test payment, including the BOLT11 invoice payment request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBOLT11TestPaymentBody'
+      responses:
+        '200':
+          description: Successfully simulated test payment for BOLT11 invoice.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits/fund:
+    post:
+      tags:
+      - Deposits
+      summary: Fund account
+      description: Funds a specified fiat account in the zerohash CERT environment. This is helpful when automating end-to-end testing or manually validating a feature. Not available in production.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Details of the fiat account to fund, including participant code, asset, and amount.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDepositsFundBody'
+      responses:
+        '201':
+          description: Successfully funded fiat account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDepositsFundResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits:
+    get:
+      tags:
+      - Deposits
+      summary: List deposits
+      description: Retrieves a paginated list of deposits made by you and your customers. Results are limited to the last 2 months.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/AssetQuery'
+      - name: include_customer_deposits
+        in: query
+        description: Include deposits made by customers of your platform. Defaults to `true`. Ignored when `participant_code` is provided — a participant-scoped request always excludes customer deposits.
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          default: 'true'
+          example: 'true'
+      - $ref: '#/components/parameters/ParticipantCodeQuery'
+      - $ref: '#/components/parameters/AccountLabelQuery'
+      - name: settle_timestamp[gt]
+        in: query
+        description: Filter for deposits whose settlement timestamp (Unix milliseconds) is strictly greater than the value.
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+          example: '1678901234567'
+      - name: settle_timestamp[gte]
+        in: query
+        description: Filter for deposits whose settlement timestamp (Unix milliseconds) is greater than or equal to the value.
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+          example: '1678901234567'
+      - name: settle_timestamp[lt]
+        in: query
+        description: Filter for deposits whose settlement timestamp (Unix milliseconds) is strictly less than the value.
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+          example: '1678901234567'
+      - name: settle_timestamp[lte]
+        in: query
+        description: Filter for deposits whose settlement timestamp (Unix milliseconds) is less than or equal to the value.
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+          example: '1678901234567'
+      - name: settle_timestamp[e]
+        in: query
+        description: Filter for deposits whose settlement timestamp (Unix milliseconds) equals the value exactly.
+        required: false
+        schema:
+          type: string
+          pattern: ^[0-9]+$
+          example: '1678901234567'
+      - name: parent_link_id_source
+        in: query
+        description: Filter deposits by the source system that originated the parent link (e.g. `rest_api`, `sdk`).
+        required: false
+        schema:
+          type: string
+          example: rest_api
+      responses:
+        '200':
+          description: Paginated list of deposits, optionally filtered by `asset`, `participant_code`, `account_label`, `settle_timestamp`, or `parent_link_id_source`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDepositsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits/fiat_accounts:
+    get:
+      tags:
+      - Deposits
+      summary: List fiat accounts
+      description: Retrieves a list of all fiat accounts. You must include your participant_code in the reference field with any deposit to ensure that funds can be allocated correctly to your participant.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      responses:
+        '200':
+          description: Successfully retrieved paginated list of fiat accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFiatAccountsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /deposits/uma:
+    post:
+      tags:
+      - Deposits
+      summary: Create UMA address
+      description: Creates an UMA address for a given participant.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Details for creating a UMA address, including participant code and username.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUMAAddressBody'
+      responses:
+        '201':
+          description: Successfully created UMA address. Returns the created resource with generated IDs and timestamps.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    get:
+      tags:
+      - Deposits
+      summary: List UMA addresses
+      description: Retrieves a list of UMA addresses associated with your platform.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: participant_code
+        in: query
+        description: Filters for all addresses associated with a participant_code
+        required: false
+        schema:
+          type: string
+      - name: page_size
+        in: query
+        description: Limits the number of addresses returned in the response
+        required: false
+        schema:
+          type: number
+          minimum: 1
+          maximum: 1000
+          example: 10
+          default: 10
+      - name: offset
+        in: query
+        description: Skips over the specified number of addresses in the response
+        required: false
+        schema:
+          type: number
+          minimum: 1
+          example: 0
+          default: 0
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of UMA addresses with optional filters: participant_code, page_size, offset.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUMAAddressesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    patch:
+      tags:
+      - Deposits
+      summary: Update UMA address
+      description: Updates an UMA username for a given participant.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Details for updating a UMA address, including participant code and new username.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchUMAAddressBody'
+      responses:
+        '200':
+          description: Successfully updated UMA address. Returns the updated resource.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  parameters:
+    AccountLabelQuery:
+      name: account_label
+      in: query
+      description: Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history.
+      required: false
+      schema:
+        type: string
+        example: general
+    AssetQuery:
+      name: asset
+      in: query
+      description: Filter by asset code (e.g., BTC, USD, ETH)
+      required: false
+      schema:
+        $ref: '#/components/schemas/Asset'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    PageQuery:
+      name: page
+      in: query
+      description: Page number for pagination (starts at 1).
+      required: false
+      schema:
+        type: number
+        minimum: 1
+        example: 1
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    ParticipantCodeQuery:
+      name: participant_code
+      in: query
+      description: Filter by a specific participant code. Always 6 uppercase alphanumeric characters.
+      required: false
+      schema:
+        type: string
+        pattern: ^[A-Z0-9]{6}$
+        example: ABCDEF
+  schemas:
+    PostBOLT11Response:
+      type: object
+      properties:
+        encoded_invoice:
+          type: string
+          description: The encoded BOLT11 invoice the payer should pay to credit the deposit.
+          example: lnbcrt2u1pndp4y5pp5hgh2...
+        expiration:
+          type: string
+          format: date-time
+          description: The expiration timestamp in RFC3339 format.
+          example: '2026-05-04T12:45:00Z'
+      required:
+      - encoded_invoice
+      - expiration
+    GetFiatAccountsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          description: Map of fiat asset code to the list of deposit accounts available for that asset. Keys present depend on the environment and the requesting participant — possible keys include `USD`, `EUR`, `GBP`, `JPY`, `CAD`, `MXN`.
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FiatAccountEntity'
+          example:
+            USD:
+            - type: united_states_wire
+              shortName: Cross River Bank
+              bankName: Cross River Bank
+              bankPhysicalAddress: 885 Teaneck Road, Teaneck, NJ 07666
+              accountNumber: '120275918106'
+              routingNumber: 021214891
+              recipientName: Zero Hash LLC Customer Trust
+              recipientPhysicalAddress: 327 N. Aberdeen St., FL 1, Chicago, IL 60607
+              reference: ABCDEF
+              allowedWireTypes:
+              - retail
+              - institutional
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    StateTransitionEntity:
+      type: object
+      properties:
+        fromState:
+          type: string
+          description: Previous state
+          example: pending_settlement
+        toState:
+          type: string
+          description: New state
+          example: confirmed
+        timestamp:
+          type: string
+          description: Transition timestamp in RFC3339 format
+          example: '2024-01-01T00:00:00Z'
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    PostDepositsFundBody:
+      type: object
+      additionalProperties: false
+      properties:
+        participant_code:
+          type: string
+          description: A participant linked to your platform whose fiat account should be funded.
+          example: ABCDEF
+        asset:
+          type: string
+          description: The fiat asset to fund (e.g. `USD`). Must be a supported fiat currency.
+          example: USD
+        amount:
+          type: string
+          description: The amount to fund. Must have at most two decimal places.
+          pattern: ^\d*\.?\d{0,2}$
+          example: '1.00'
+        account_label:
+          type: string
+          description: Optional account label to fund. Defaults to `general` when omitted. Specify `account_label` when funding a rewards or awards float account.
+          example: general
+      required:
+      - participant_code
+      - asset
+      - amount
+    UMAAddressEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The participant that owns the UMA address.
+          example: ABCDEF
+        platform_code:
+          type: string
+          description: The platform the participant belongs to.
+          example: ABCDEF
+        platform_uma_domain:
+          type: string
+          description: The UMA domain operated by zerohash for this platform. The full UMA address is `{username}@{platform_uma_domain}`.
+          example: uma-server.zerohash.com
+        username:
+          type: string
+          description: The UMA username, including the leading dollar-sign prefix.
+          example: $username
+        name:
+          type: string
+          description: The participant's display name.
+          example: Jane Doe
+        email:
+          type: string
+          format: email
+          description: The participant's email address.
+          example: jane.doe@example.com
+    CryptoDepositEntity:
+      type: object
+      properties:
+        depositId:
+          type: string
+          description: Unique identifier for the deposit
+          example: dep_abc123
+        accountId:
+          type: string
+          description: Account ID the deposit belongs to
+          example: 80289ce5-072b-4739-929d-dcc5ccc542f3
+        participantCode:
+          type: string
+          description: Participant code of the deposit owner
+          example: ABC123
+        transactionHash:
+          type: string
+          description: Blockchain transaction hash
+          example: '0x408482348dcb0e0331a9148d50f8c76db08138f63fb1586fcfc45200a91ccc5f'
+        asset:
+          type: string
+          description: Asset code (e.g. BTC, ETH)
+          example: BTC
+        amount:
+          type: string
+          description: Deposit amount
+          example: '1.5'
+        sourceAddress:
+          type: string
+          description: Source blockchain address
+          example: 0x73dFE6E1696FB1cf4648B954aB608a593a382B8G
+        receivedAddress:
+          type: string
+          description: Receiving blockchain address
+          example: '0xB38CeBE03b2b6705744795F36921DE27c70A7C62'
+        state:
+          type: string
+          description: Current deposit state
+          example: confirmed
+        timestamp:
+          type: string
+          description: Deposit timestamp in RFC3339 format
+          example: '2024-01-01T00:00:00Z'
+        stateReason:
+          type: string
+          nullable: true
+          description: Machine-readable reason the deposit is in its current state (e.g. `required_travel_rule_info`).
+          example: required_travel_rule_info
+        travelRuleStatus:
+          type: string
+          enum:
+          - not_required
+          - allowed
+          - action_required
+          - processing
+          - blocked
+          - unknown
+          - pending
+          - completed
+          description: Travel Rule status for the deposit, derived for the deposit operation. `allowed` — the address ownership account is approved, no restriction; `action_required` — the customer must submit ownership data (call `GET /travel-rule/status?intention_action=deposit` for the fields to collect); `processing` — submitted or being collected, under Compliance review (no user action); `blocked` — cannot proceed (limit or revoked account); `unknown` — the ownership account status could not be determined; `not_required` — deposit not subject to Travel Rule. `pending` / `completed` are legacy values still returned while the rollout flag is off.
+        travelRuleCollectionDeadline:
+          type: string
+          format: date-time
+          nullable: true
+          description: Deadline by which Travel Rule information must be submitted. RFC3339 timestamp. Only present when the deposit is held for Travel Rule (state_reason = required_travel_rule_info). Computed as the PENDING_COMPLIANCE_REVIEW transition timestamp + 48h. Absent for deposits not subject to Travel Rule collection.
+          example: '2026-06-11T09:26:42Z'
+        notional:
+          type: object
+          nullable: true
+          description: Notional value of the deposit captured at compliance-evaluation time. Present only when a EUR price was available at detection time; absent otherwise. Used for EU TFR cumulative €1,000 threshold tracking.
+          properties:
+            value:
+              type: string
+              description: Notional value of the deposit at detection time.
+              example: '46000.00'
+            rate:
+              type: string
+              description: Price per unit of asset at detection time. `rate × amount = value`. Stored for compliance auditability.
+              example: '92000.00'
+            quotedAsset:
+              type: string
+              description: Asset the value and rate are quoted in.
+              example: EUR
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/StateTransitionEntity'
+          description: State transition history
+    PostDigitalAssetAddressesResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/DigitalAddressesEntity'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    PatchDigitalAssetAddressesBody:
+      type: object
+      properties:
+        address:
+          type: string
+          description: The digital wallet address
+          example: '0xAED01C776d98303eE080D25A21f0a42D94a86D9c'
+        participant_code:
+          type: string
+          description: The participant code of the new owner of the wallet
+          example: ABCDEF
+        blockchain:
+          type: string
+          description: The blockchain network the address belongs to
+          example: ETH
+          enum:
+          - ethereum
+          - avalanche
+          - arbitrum
+          - optimism
+          - polygon
+      required:
+      - address
+      - participant_code
+      - blockchain
+    FiatAccountEntity:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - united_states_wire
+          - international_wire
+          - internal_transfer
+          description: The type of the fiat account. `united_states_wire` is used for domestic US wire instructions; `international_wire` is used for wires sent from outside the US; `internal_transfer` is used for platform-internal transfers.
+          example: united_states_wire
+        shortName:
+          type: string
+          description: Short, display-friendly name of the bank.
+          example: BMO Harris
+        bankName:
+          type: string
+          description: Full legal name of the bank.
+          example: BMO Harris Bank N.A.
+        bankPhysicalAddress:
+          type: string
+          description: Physical address of the bank.
+          example: 115 S LaSalle, 18W, Chicago, IL 60603
+        accountNumber:
+          type: string
+          description: zerohash's account number at the bank.
+          example: 440-554-4
+        routingNumber:
+          type: string
+          description: Routing (ABA) number of the bank. Only returned for `united_states_wire` accounts.
+          example: 021214891
+        swift:
+          type: string
+          description: SWIFT/BIC code of the bank. Only returned for `international_wire` accounts.
+          example: HATRUS44
+        recipientName:
+          type: string
+          description: Name the wire should be addressed to.
+          example: Zero Hash LLC
+        recipientPhysicalAddress:
+          type: string
+          description: Physical address of the recipient.
+          example: 327 N. Aberdeen St., FL 1, Chicago, IL 60607
+        reference:
+          type: string
+          description: Your participant code. Must be included in the wire reference/memo field so the deposit can be allocated to your account.
+          example: ABCDEF
+        correspondentBankName:
+          type: string
+          description: Correspondent bank name. Only returned for `international_wire` accounts when a correspondent is required.
+        correspondentBranchName:
+          type: string
+          description: Correspondent branch name. Only returned for `international_wire` accounts when a correspondent is required.
+        correspondentBranchAddress:
+          type: string
+          description: Correspondent branch address. Only returned for `international_wire` accounts when a correspondent is required.
+        correspondentSwift:
+          type: string
+          description: Correspondent bank SWIFT/BIC. Only returned for `international_wire` accounts when a correspondent is required.
+        correspondentAccountNumber:
+          type: string
+          description: zerohash's account number at the correspondent bank. Only returned for `international_wire` accounts when a correspondent is required.
+        allowedWireTypes:
+          type: array
+          items:
+            type: string
+            enum:
+            - retail
+            - institutional
+          description: The types of wires allowed for this bank account.
+          example:
+          - retail
+          - institutional
+      required:
+      - type
+      - shortName
+      - bankName
+      - accountNumber
+      - recipientName
+      - reference
+    DepositResponseEntity:
+      type: object
+      properties:
+        settle_timestamp:
+          type: number
+          format: int64
+          description: Unix timestamp in milliseconds indicating when the deposit was credited to the participant. This also matches the `movement_timestamp` on the corresponding movement.
+          example: 1590663417000
+        account_id:
+          type: string
+          format: uuid
+          description: Unique identifier (UUID v4) for the account the deposit was credited to.
+          example: 80289ce5-072b-4739-929d-dcc5ccc542f3
+        movement_id:
+          type: string
+          format: uuid
+          description: Unique identifier (UUID v4) for the movement created by this deposit.
+          example: 21bdbb11-712f-4cb7-a178-4f277c80cde0
+        participant_code:
+          type: string
+          description: The participant that was credited with the deposit.
+          example: ABCDEF
+        account_group:
+          type: string
+          description: The account group associated with the account that received the deposit (e.g. `00SCXM` for the zerohash house account group).
+          example: 00SCXM
+        account_label:
+          type: string
+          description: The account label under the participant that received the deposit.
+          example: general
+        asset:
+          type: string
+          description: The asset code of the deposit (e.g. `BTC`, `USD`).
+          example: BTC
+        amount:
+          type: string
+          description: The amount that was deposited into the account.
+          example: '4.0000'
+        reference_id:
+          type: string
+          description: An external identifier associated with the deposit. Context-specific depending on the asset and source — for fiat this is typically the wire/ACH reference, for crypto it is the on-chain transaction ID.
+          example: 408482348dcb0e0331a9148d50f8c76db08138f63fb1586fcfc45200a91ccc5f
+        source:
+          type: string
+          nullable: true
+          description: The bank from which the fiat deposit was made or the blockchain address from which the crypto deposit came. Returns `null` when the upstream service does not report a source (e.g. some fiat deposits).
+          example: 0x73dFE6E1696FB1cf4648B954aB608a593a382B8G
+        received_address:
+          type: string
+          nullable: true
+          description: The deposit address that received the funds. Returns `null` for fiat deposits and for crypto deposits where no receive address is recorded.
+          example: '0xB38CeBE03b2b6705744795F36921DE27c70A7C62'
+        run_id:
+          type: string
+          description: Identifier for the settlement run that booked the deposit.
+          example: '12613'
+        state_reason:
+          type: string
+          nullable: true
+          description: 'Machine-readable reason the deposit is in its current state. Populated for blockchain deposits held for Travel Rule verification: `required_travel_rule_info` — awaiting TR resolution; `travel_rule_info_received` — resolved successfully; `travel_rule_info_timeout` — 48h timer expired. Absent for fiat deposits and blockchain deposits not subject to Travel Rule.'
+          example: required_travel_rule_info
+        travel_rule_status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - not_required
+          description: Human-readable Travel Rule status. Always present for blockchain deposits. `pending` — deposit is held awaiting TR verification; `completed` — TR resolved (info received or 48h timer elapsed); `not_required` — deposit never entered a TR-hold state. Absent for fiat deposits.
+    PatchDigitalAssetAddressesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalAddressesEntity'
+    PostDepositsFundEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The participant whose account was funded.
+          example: ABCDEF
+        asset:
+          type: string
+          description: The asset code that was deposited (e.g. `USD`).
+          example: USD
+        amount:
+          type: string
+          description: The amount that was deposited into the account.
+          example: '1.00'
+        account_label:
+          type: string
+          description: The account label that received the deposit.
+          example: general
+        account_group:
+          type: string
+          description: The account group that received the deposit. Matches the calling platform’s participant code.
+          example: ABCDEF
+        account_type:
+          type: string
+          description: The account type the deposit was credited to. Always `available` for `/deposits/fund`.
+          example: available
+          enum:
+          - available
+          - collateral
+          - payable
+          - receivable
+          - collateral_deficiency
+          - staked
+        reference_id:
+          type: string
+          format: uuid
+          description: Server-generated UUID v4 that uniquely identifies this funding request.
+          example: 21bdbb11-712f-4cb7-a178-4f277c80cde0
+    DigitalAddressesEntity:
+      type: object
+      properties:
+        created_at:
+          type: number
+          format: int64
+          description: Unix timestamp in milliseconds indicating when the address was created.
+          example: 1590663417000
+        address:
+          type: string
+          description: The digital wallet address.
+          example: 2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG
+        participant_code:
+          type: string
+          description: The participant that owns the address.
+          example: ABCDEF
+        platform_code:
+          type: string
+          description: The platform the participant belongs to.
+          example: ABCDEF
+        asset:
+          type: string
+          description: The asset code the address is valid for (e.g. `BTC`, `USDC.ETH`).
+          example: BTC
+        account_label:
+          type: string
+          description: The account label the address is associated with. Addresses created before `account_label` was introduced return an empty string.
+          example: general
+    PatchUMAAddressBody:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The participant code to create an address for
+          example: CUST01
+        previous_username:
+          type: string
+          description: The username displayed on the UMA address excluding the domain
+          example: $john
+        new_username:
+          type: string
+          description: The username displayed on the UMA address excluding the domain
+          example: $bob
+      required:
+      - participant_code
+      - previous_username
+      - new_username
+    GetDigitalAddressesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalAddressesEntity'
+    GetDepositsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepositResponseEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 15
+        total_pages:
+          type: number
+          example: 1
+        count:
+          type: number
+          example: 1
+    GetCryptoDepositByIdResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/CryptoDepositEntity'
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostUMAAddressBody:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The participant code to create an address for
+          example: CUST01
+        username:
+          type: string
+          description: The username displayed on the UMA address excluding the domain
+          example: $john
+      required:
+      - participant_code
+      - username
+    Asset:
+      type: string
+      description: The list of assets available in the certification environment
+      example: USD
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    PostBOLT11TestPaymentBody:
+      type: object
+      properties:
+        encoded_invoice:
+          type: string
+          description: The encoded invoice generated by /deposits/bolt11 endpoint
+          example: lnbcrt2u1pndp4y5pp5hgh2...
+      required:
+      - encoded_invoice
+    GetUMAAddressesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/UMAAddressEntity'
+        total:
+          type: number
+          example: 1
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    GetCryptoDepositsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/CryptoDepositEntity'
+        pagination:
+          $ref: '#/components/schemas/CryptoDepositsPaginationEntity'
+    PostDigitalAssetAddressesBody:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The participant to create the address for. Must either match the calling platform or be a customer of the calling platform.
+          example: ABCDEF
+        asset:
+          type: string
+          description: The asset symbol to create a deposit address for (e.g. `BTC`, `USDC.ETH`).
+          example: BTC
+        account_label:
+          type: string
+          description: Account label the address should be associated with. Defaults to `general` when omitted. Case sensitive; must match the letters-numbers-`_`-`-`-`:` pattern and be at most 40 characters.
+          example: general
+          maxLength: 40
+      required:
+      - participant_code
+      - asset
+    PostBOLT11Body:
+      type: object
+      properties:
+        amount:
+          type: string
+          description: The amount that should be deposited. Max precision of 8 decimals (one satoshi)
+          example: '1.00000001'
+        participant_code:
+          type: string
+          description: The participant code to have the deposit credited to
+          example: CUST01
+        account_label:
+          type: string
+          description: The `account_label` associated with the participant account. This parameter is case sensitive.
+          example: general
+        test_mode:
+          type: boolean
+          description: For CERT enviroiment, this flag indicates whether the invoice will be used internally to simulate a payment using our /deposits/bolt11/test_payment endpoint. If set to true, the invoice is not available to be payed at a external TESTNET lightning service.
+          example: true
+        test_type:
+          type: string
+          description: For CERT environment, this field indicates the type of test to be simulated. If test_mode is set to false, this field is ignored". If not provided, Default is `deposit`.
+          example: deposit
+          enum:
+          - deposit
+          - withdrawal
+        test_memo:
+          type: string
+          description: For CERT environment, set a memo string to mark the test invoice. If test_mode is set to false, test_memo is ignored
+          example: invoice_test_12345
+      required:
+      - amount
+      - participant_code
+    PostDepositsFundResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/PostDepositsFundEntity'
+    CryptoDepositsPaginationEntity:
+      type: object
+      properties:
+        limit:
+          type: number
+          description: Maximum results per page
+          example: 50
+        nextCursor:
+          type: string
+          description: Cursor for the next page of results
+          example: base64cursor...
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

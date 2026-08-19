@@ -1,0 +1,235 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Entity Participants API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Entity Participants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create entity customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/participants/entity/new",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits an entity customer to be affiliated with your platform. Your platform will need to be configured properly before you can use this endpoint."
+        },
+        {
+          "info": {
+            "name": "Update entity customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/participants/entity/:participant_code",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an entity customer affiliated with your platform. Your platform will need to be configured properly before you can use this endpoint."
+        },
+        {
+          "info": {
+            "name": "Update entity user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/participants/entity/:participant_code/users/:user_code",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              },
+              {
+                "name": "user_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier related to the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update one or more fields of an existing Entity user (Control Person, Beneficial Owner, or Board Member). This is a partial update endpoint - only the fields provided in the request body will be updated.\n\n**Important notes:**\n\n**Platform configuration:**\n- Your platform must be properly configured before using this endpoint.\n\n**PII changes and document requirements:**\n- When users are updated with new identifying information (such as `first_name`, `last_name`, `date_of_birth`, or `citizenship_co"
+        },
+        {
+          "info": {
+            "name": "Submit entity documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/participants/entity/documents",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a business document on behalf of an entity, or an identity document on behalf of a control person or a beneficial owner of the entity, if you operate a platform on zerohash.\n\n**EU NNP onboarding.** For an entity onboarded through an EU-region platform, the required document set is `lei_certificate`, `excerpt_of_the_chamber_of_commerce`, `annual_accounts`, and `power_of_authorization` (a power of attorney or a board resolution authorising the submitter). When the entity was created with `"
+        },
+        {
+          "info": {
+            "name": "Get participant user basic info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/basic_info/cp_bo",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "This endpoint returns Participant User basic info."
+        },
+        {
+          "info": {
+            "name": "Get participant user sanction screening info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/sanction_screening_info/cp_bo",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "This endpoint returns Participant User sanction screening info."
+        },
+        {
+          "info": {
+            "name": "Get participant user full info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/full_info/cp_bo",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "This endpoint returns Participant User full info."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

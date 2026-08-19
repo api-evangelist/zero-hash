@@ -1,0 +1,85 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Movements API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Movements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List movements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/movements",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination (starts at 1)."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Number of items per page for pagination. Default and maximum is 100"
+              },
+              {
+                "name": "parent_link_id",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements that are tagged with a specific `parent_link_id`."
+              },
+              {
+                "name": "movement_type",
+                "value": "",
+                "type": "query",
+                "description": "The type of the movement"
+              },
+              {
+                "name": "transfer_type",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements with a specific `transfer_type`."
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "query",
+                "description": "This parameter enables the filtering of movements based on the associated `account_id`."
+              }
+            ]
+          },
+          "docs": "Retrieves the history of each itemized movement that has been applied to all account(s) that the requesting platform has access to. Results are limited to the last 2 months"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

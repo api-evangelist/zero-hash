@@ -1,0 +1,574 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Withdrawals API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Withdrawals",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get withdrawal requests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/requests",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for withdrawal request by a specific `participant_code`"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific page (pagination)"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific withdrawal status. Must be provided in upper case."
+              },
+              {
+                "name": "gas_price",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific `gas_price` value. Applies only to ERC-20 withdrawals."
+              },
+              {
+                "name": "client_withdrawal_request_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter for client withdrawal request id"
+              },
+              {
+                "name": "requested_timestamp[gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for withdrawal requests whose `requested_timestamp` is greater than the given Unix timestamp (in milliseconds)."
+              },
+              {
+                "name": "requested_timestamp[gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for withdrawal requests whose `requested_timestamp` is greater than or equal to the given Unix timestamp (in milliseconds)."
+              },
+              {
+                "name": "requested_timestamp[e]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for withdrawal requests whose `requested_timestamp` equals the given Unix timestamp (in milliseconds)."
+              },
+              {
+                "name": "requested_timestamp[lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for withdrawal requests whose `requested_timestamp` is less than the given Unix timestamp (in milliseconds)."
+              },
+              {
+                "name": "requested_timestamp[lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for withdrawal requests whose `requested_timestamp` is less than or equal to the given Unix timestamp (in milliseconds)."
+              },
+              {
+                "name": "on_chain_status",
+                "value": "",
+                "type": "query",
+                "description": "Filter for on-chain status"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter for a specific account label"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of all withdrawal requests created by users as part of your participant. Results are limited to the last 2 months."
+        },
+        {
+          "info": {
+            "name": "Create withdrawal request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/withdrawals/requests",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates new withdrawal requests to be settled. Withdrawal requests created through the API go directly into an APPROVED state. \nTo retrieve withdrawal account IDs use the `GET /withdrawals/digital_asset_addresses` and `GET /withdrawals/fiat_accounts` endpoints."
+        },
+        {
+          "info": {
+            "name": "Get withdrawal request",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/requests/:id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Withdrawal request id"
+              }
+            ]
+          },
+          "docs": "Retrieves a specific withdrawal request by `id` associated with your participant or platform."
+        },
+        {
+          "info": {
+            "name": "Delete withdrawal request",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cert.zerohash.com/withdrawals/requests/:id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "withdrawal request id"
+              }
+            ]
+          },
+          "docs": "Rejects a pending withdrawal request."
+        },
+        {
+          "info": {
+            "name": "Execute withdrawal",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/withdrawals/execute",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes a withdrawal that has been previously quoted."
+        },
+        {
+          "info": {
+            "name": "Request UMA Withdrawal",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/withdrawals/uma",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Requests a withdrawal to an UMA address (on Lightning Network)."
+        },
+        {
+          "info": {
+            "name": "Performs an UMA lookup prior to initiating a withdrawal",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/umalookup/:recipient",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "recipient",
+                "value": "$satoshi@vasp.com",
+                "type": "path",
+                "description": "The full UMA address of the withdrawal recipient."
+              }
+            ]
+          },
+          "docs": "Verifies UMA address of a recipient and returns details of supported receiving currencies` (on Lightning Network)."
+        },
+        {
+          "info": {
+            "name": "Get withdrawal addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/digital_asset_addresses",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for withdrawal addresses by a specific `participant_code`"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific page (pagination)"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of all withdrawal addresses created by users as part of your participant."
+        },
+        {
+          "info": {
+            "name": "Get withdrawal address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/digital_asset_addresses/:id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "withdrawal account id"
+              }
+            ]
+          },
+          "docs": "Retrieves a specific crypto withdrawal account associated with your participant or platform."
+        },
+        {
+          "info": {
+            "name": "Get withdrawal quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/locked_network_fee",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "The participant the withdrawal will be debited from. 6-character alphanumeric code."
+              },
+              {
+                "name": "account_group",
+                "value": "",
+                "type": "query",
+                "description": "The `account_group` for the source account. Defaults to the caller's `participant_code` when omitted."
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "The `account_label` for the source account. Defaults to `general` when omitted."
+              },
+              {
+                "name": "asset",
+                "value": "",
+                "type": "query",
+                "description": "The asset code of the asset being withdrawn, e.g. BTC."
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "The requested withdrawal amount. Required (and must be positive) unless `max_amount` is `true`."
+              },
+              {
+                "name": "max_amount",
+                "value": "",
+                "type": "query",
+                "description": "When `true`, zerohash will generate a withdrawal for the full available balance of `asset` in the source account; in that case `amount` can be omitted. Defaults to `false`. Accepted as the string `\"true\"` or `\"false\"`."
+              },
+              {
+                "name": "withdrawal_account_id",
+                "value": "",
+                "type": "query",
+                "description": "The `withdrawal_account_id` of the whitelisted destination account. Required when `withdrawal_address` is not provided."
+              },
+              {
+                "name": "withdrawal_address",
+                "value": "",
+                "type": "query",
+                "description": "The on-chain address that will receive the crypto asset. Required when `withdrawal_account_id` is not provided."
+              },
+              {
+                "name": "destination_tag",
+                "value": "",
+                "type": "query",
+                "description": "The destination tag or memo ID associated with the transaction. Required when the asset is EOS, XLM, or XRP and `no_destination_tag` is `false`."
+              },
+              {
+                "name": "no_destination_tag",
+                "value": "",
+                "type": "query",
+                "description": "Whether the destination address requires a destination tag. Required for tag-based assets (EOS, XLM, XRP). zerohash requires `no_destination_tag` to be `false` for EOS. Accepted as the string `\"true\"` or `\"false\"`."
+              }
+            ]
+          },
+          "docs": "Returns a locked network fee quote for a planned crypto withdrawal. The returned `withdrawal_quote_id` is valid for 30 seconds and must be passed to POST /withdrawals/execute to complete the withdrawal. Exactly one of `withdrawal_account_id` or `withdrawal_address` must be supplied; if `max_amount` is `false` (the default), `amount` is required."
+        },
+        {
+          "info": {
+            "name": "Get fiat accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/fiat_accounts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieves a list of all whitelisted fiat withdrawal accounts.\nFiat accounts are currently whitelisted via the Client Portal only."
+        },
+        {
+          "info": {
+            "name": "Get fiat account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/fiat_accounts/:id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Withdrawal account id"
+              }
+            ]
+          },
+          "docs": "Retrieves a specific fiat withdrawal account that has been whitelisted."
+        },
+        {
+          "info": {
+            "name": "Get network fee estimate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/estimate_network_fee",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "underlying",
+                "value": "",
+                "type": "query",
+                "description": "the underlying asset for the quote"
+              },
+              {
+                "name": "quoted_currency",
+                "value": "",
+                "type": "query",
+                "description": "the quoted asset for the quote"
+              },
+              {
+                "name": "amount",
+                "value": "",
+                "type": "query",
+                "description": "the amount of the `underlying` currency"
+              },
+              {
+                "name": "destination_address",
+                "value": "",
+                "type": "query",
+                "description": "The destination_address is the receiving address for the withdrawal request"
+              },
+              {
+                "name": "contract_call",
+                "value": "",
+                "type": "query",
+                "description": "In a future release, this field will denote if the destination address is a smart contract address. False is the only acceptable value for now."
+              }
+            ]
+          },
+          "docs": "Returns a withdrawal estimation for a given asset."
+        },
+        {
+          "info": {
+            "name": "Validate address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/withdrawals/validate_address",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "asset",
+                "value": "",
+                "type": "query",
+                "description": "The asset symbol"
+              },
+              {
+                "name": "address",
+                "value": "",
+                "type": "query",
+                "description": "The address to validate"
+              },
+              {
+                "name": "destination_tag",
+                "value": "",
+                "type": "query",
+                "description": "Used for tag based assets"
+              }
+            ]
+          },
+          "docs": "Checks whether a withdrawal address is valid for a given asset. For tag-based assets (e.g. XRP, XLM, EOS), also validates whether a destination tag or memo is required."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,2936 @@
+{
+  "item": [
+    {
+      "id": "2005d783-d0d7-4c5c-b1c7-0eef15d3de98",
+      "name": "Payins",
+      "description": {
+        "content": "Power your checkout with crypto and stablecoins",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "88616ed1-6a2d-4422-ae64-130f65f04fd1",
+          "name": "Request a payin quote",
+          "request": {
+            "name": "Request a payin quote",
+            "description": {
+              "content": "\nRetrieves a quote for a pay event for a given participant code and asset.\nThe response includes a deposit address and rate at which a subsequent on-chain deposit will be honored.\n\nThe quote has an expiry timestamp (`price_expire_ts`) — for volatile assets, the platform must execute the deposit before this time,\nor a new quote can be requested for the same payment to refresh the price.\nFor stablecoins, `price_expire_ts` will be `null`.\n\nThe `request_id` you send (via the `X-Request-Id` header) is the idempotency key for this endpoint: re-submitting the same `request_id` returns the existing active quote — same `transaction_id`, deposit address, and rate — instead of creating a new one.\n\nUse the returned `transaction_id` as the path parameter when calling `POST /pay/{id}/rfq` to refresh a quote.\n\nAfter the on-chain deposit settles or fails, a `crypto_pay_status_changed` webhook reports the outcome (`success` + `status_reason_code`).\n  ",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pay",
+                "rfq"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participant_code\": \"<string>\",\n  \"pay_asset\": \"<string>\",\n  \"quoted_total\": \"<string>\",\n  \"quoted_currency\": \"<string>\",\n  \"account_label\": \"<string>\",\n  \"client_reference_id\": \"<string>\",\n  \"merchant_participant_code\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2aba1fbd-cd2e-4f16-96dc-d432832c6e86",
+              "name": "Pay quote created successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n    \"participant_code\": \"ABCDEF\",\n    \"pay_asset\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"quoted_total\": \"100.00\",\n    \"underlying_quantity\": \"0.00152307\",\n    \"rate\": \"65658.42\",\n    \"price_expire_ts\": 1712757000000,\n    \"deposit_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n    \"transaction_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"client_reference_id\": \"order-12345\",\n    \"is_static\": false,\n    \"merchant_participant_code\": \"MERCH01\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "95aa79ee-3808-4a80-9427-22be6b79e90c",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "faa674a6-ae7a-4bc9-ac5e-7a617eb831e8",
+              "name": "The platform, jurisdiction, or asset is not enabled for the Pay product. The `{\"error\": ...}` body is one of \"Your Platform is not configured to use the Pay product\", \"The State you live in is not authorized to use this product\", or \"Asset not enabled for pay\".",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4fb7980-1491-4692-833b-31741738fb6e",
+              "name": "The transaction is not authorized. Possible causes: manual approval is required before this transaction can proceed (Level 4 shoppers — the body contains a transaction_id identifying the approval review), or the shopper has exceeded their daily spend limit at the current authorization level. A generic `{\"error\":\"Transaction not authorized\"}` body is returned when the transaction is hard-denied (no remediation).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Manual approval required for this transaction\",\n  \"transaction_id\": \"txn_01HZF7QWXJ8XK3VYNS6TKDM4G2\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f38cf54-f4f0-4543-a830-3c9922f3f539",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "792bae70-383f-436d-8d88-e0e48840fa49",
+              "name": "Shopper KYC requirements are not met for this transaction.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Shopper KYC requirements for this transaction are not met\",\n  \"missing_requirements\": [\n    \"first_name\",\n    \"last_name\",\n    \"date_of_birth\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7ad18810-a34a-49db-b5f0-32d1fbfbce48",
+              "name": "The transaction could not be authorized. The `{\"error\": ...}` body is either \"Participant is not authorized to transact\" (the participant/merchant relationship or state precludes authorization) or \"Transaction not authorized\" (the authorizer returned an unrecognized status).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Transaction not authorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f41b4c24-6889-446e-bf21-41e960acda52",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d22edd00-539c-49ca-aaa6-84d77e4d3271",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"pay_asset\": \"BTC\",\n  \"quoted_total\": \"100.00\",\n  \"quoted_currency\": \"USD\",\n  \"account_label\": \"pay\",\n  \"client_reference_id\": \"order-12345\",\n  \"merchant_participant_code\": \"MERCH01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "054453bd-c9f3-454a-af25-cedfd565b49a",
+          "name": "Refresh a payin quote",
+          "request": {
+            "name": "Refresh a payin quote",
+            "description": {
+              "content": "\nRefreshes an existing pay quote identified by its transaction ID.\nThis is used when a previously issued quote is near to expire and the platform wants a new rate for the same deposit address.\nAlready expired quotes can't be refreshed.\n\nThe response format is identical to `POST /pay/rfq` — it returns an updated rate, expiry timestamp, and the same deposit address.\n  ",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pay",
+                ":id",
+                "rfq"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) The transaction ID (UUID) returned from the original POST /pay/rfq call"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participant_code\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "40dcf8fa-3e8a-42fb-bccc-29bd1519c0e3",
+              "name": "Pay quote refreshed successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The transaction ID (UUID) returned from the original POST /pay/rfq call"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n    \"participant_code\": \"ABCDEF\",\n    \"pay_asset\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"quoted_total\": \"100.00\",\n    \"underlying_quantity\": \"0.00152307\",\n    \"rate\": \"65658.42\",\n    \"price_expire_ts\": 1712757000000,\n    \"deposit_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n    \"transaction_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"client_reference_id\": \"order-12345\",\n    \"is_static\": false,\n    \"merchant_participant_code\": \"MERCH01\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7c78e14e-9e77-44dd-8588-cb687694fe81",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The transaction ID (UUID) returned from the original POST /pay/rfq call"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ee1a8413-7d10-4613-83da-0e9af54c0650",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The transaction ID (UUID) returned from the original POST /pay/rfq call"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "845a031c-e125-460d-a56f-5127f26af759",
+              "name": "Transaction not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The transaction ID (UUID) returned from the original POST /pay/rfq call"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Transaction not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c22eb4de-a805-480c-888d-b87ca99d6242",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The transaction ID (UUID) returned from the original POST /pay/rfq call"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96e27028-de3b-49a9-9e6f-732d0c25f0b1",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) The transaction ID (UUID) returned from the original POST /pay/rfq call"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1a00d166-01e8-4cd4-a38a-d9d427e59662",
+          "name": "List payin transactions",
+          "request": {
+            "name": "List payin transactions",
+            "description": {
+              "content": "\nRetrieves a paginated list of pay transactions for the authenticated platform.\nResults can be filtered by participant, asset, deposit status, and timestamps.\nEach deposit also emits a `crypto_pay_status_changed` webhook when it settles or fails.\n\n**Note:** Some filtering capabilities may not be available for all platforms. Contact support if you need access to additional filters.\n  ",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pay",
+                "transactions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "participant_code",
+                  "value": "<string>",
+                  "description": "Filter by participant code (6-character alphanumeric)"
+                },
+                {
+                  "disabled": false,
+                  "key": "transaction_id",
+                  "value": "<string>",
+                  "description": "Filter by specific transaction ID (UUID format)"
+                },
+                {
+                  "disabled": false,
+                  "key": "client_reference_id",
+                  "value": "<string>",
+                  "description": "Filter by client-provided reference ID. This filter may not be available for all platforms. Contact support if you need access."
+                },
+                {
+                  "disabled": false,
+                  "key": "pay_asset",
+                  "value": "<string>",
+                  "description": "Filter by the underlying crypto asset (e.g., BTC, ETH, USDC)"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_address",
+                  "value": "<string>",
+                  "description": "Filter by the deposit address provided by zerohash for this payment."
+                },
+                {
+                  "disabled": false,
+                  "key": "success",
+                  "value": "<string>",
+                  "description": "Filters transactions by successful status. This is a boolean field, please specify either `true` or `false`"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "Page number (1-indexed, max 5 digits)"
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<string>",
+                  "description": "The number of results returned per page, with a maximum of 50 transactions per page"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_gte",
+                  "value": "<string>",
+                  "description": "Deposit timestamp greater than or equal to this value (inclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_gt",
+                  "value": "<string>",
+                  "description": "Deposit timestamp strictly greater than this value (exclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_lt",
+                  "value": "<string>",
+                  "description": "Deposit timestamp strictly less than this value (exclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_lte",
+                  "value": "<string>",
+                  "description": "Deposit timestamp less than or equal to this value (inclusive). Unix milliseconds (13-19 digits). This filter may not be available for all platforms. Contact support if you need access."
+                },
+                {
+                  "disabled": false,
+                  "key": "merchant_participant_code",
+                  "value": "<string>",
+                  "description": "Filter by merchant participant code."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "03ae6bd0-9a39-42ae-ad50-ea373104fa39",
+              "name": "List of pay transactions with pagination metadata",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "client_reference_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pay_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"pay_asset\": \"BTC\",\n      \"rate\": \"65658.42\",\n      \"quoted_currency\": \"USD\",\n      \"source_address\": \"0xA32A6aA6a3B87b49BeaB01393e2020C3C191CD61\",\n      \"deposit_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n      \"quantity\": \"0.00152307\",\n      \"notional\": \"100.00\",\n      \"success\": true,\n      \"status_reason\": \"\",\n      \"status_reason_code\": \"AMOUNT_ABOVE_MAXIMUM\",\n      \"fund_timestamp\": 1712756400000,\n      \"deposit_timestamp\": 1712756700000,\n      \"transaction_id\": \"0x408482348dcb0e0331a9148d50f8c76db08138f63fb1586fcfc45200a91ccc5f\",\n      \"account_label\": \"pay\",\n      \"fund_id\": \"29e6d7b8-d604-4212-86ee-998fef35505e\",\n      \"is_first_deposit\": false,\n      \"raw_fee_bps\": \"50\",\n      \"deposit_fee_bps\": \"50\",\n      \"raw_fee_notional\": \"0.50\",\n      \"deposit_fee_notional\": \"0.50\",\n      \"deposited_asset\": \"BTC\",\n      \"reference_id\": \"order-12345\",\n      \"source\": {\n        \"type\": \"CUSTODIAL\",\n        \"integration\": \"coinbase\"\n      },\n      \"deposit_fee_type\": \"flat\",\n      \"fee_tier_breakdown\": [\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"100.00\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"0.40\"\n        },\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"100.00\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"0.40\"\n        }\n      ],\n      \"merchant_participant_code\": \"MERCH01\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"pay_asset\": \"BTC\",\n      \"rate\": \"65658.42\",\n      \"quoted_currency\": \"USD\",\n      \"source_address\": \"0xA32A6aA6a3B87b49BeaB01393e2020C3C191CD61\",\n      \"deposit_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n      \"quantity\": \"0.00152307\",\n      \"notional\": \"100.00\",\n      \"success\": true,\n      \"status_reason\": \"\",\n      \"status_reason_code\": \"AMOUNT_ABOVE_MAXIMUM\",\n      \"fund_timestamp\": 1712756400000,\n      \"deposit_timestamp\": 1712756700000,\n      \"transaction_id\": \"0x408482348dcb0e0331a9148d50f8c76db08138f63fb1586fcfc45200a91ccc5f\",\n      \"account_label\": \"pay\",\n      \"fund_id\": \"29e6d7b8-d604-4212-86ee-998fef35505e\",\n      \"is_first_deposit\": false,\n      \"raw_fee_bps\": \"50\",\n      \"deposit_fee_bps\": \"50\",\n      \"raw_fee_notional\": \"0.50\",\n      \"deposit_fee_notional\": \"0.50\",\n      \"deposited_asset\": \"BTC\",\n      \"reference_id\": \"order-12345\",\n      \"source\": {\n        \"type\": \"CUSTODIAL\",\n        \"integration\": \"coinbase\"\n      },\n      \"deposit_fee_type\": \"flat\",\n      \"fee_tier_breakdown\": [\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"100.00\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"0.40\"\n        },\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"100.00\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"0.40\"\n        }\n      ],\n      \"merchant_participant_code\": \"MERCH01\"\n    }\n  ],\n  \"page\": 1,\n  \"page_size\": 50,\n  \"total_pages\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "95518031-7e7d-46da-843a-a8eb55b90b28",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "client_reference_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pay_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "42d60396-2c3a-4265-bec1-0a1e1921230f",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "client_reference_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pay_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "14e5c4c3-26f0-42b9-8a9c-bca13ef69d7b",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "client_reference_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pay_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e334535-1148-4d3a-834f-f1ddd70c6774",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "client_reference_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pay_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9fc26ed3-5944-44cc-8462-365f5e50c7be",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "client_reference_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pay_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b788c808-21ee-452c-83d5-e1c58b08766d",
+          "name": "Get payin authorization limits",
+          "request": {
+            "name": "Get payin authorization limits",
+            "description": {
+              "content": "\nRetrieves the current authorization level, per-window limits, and volume totals for an\nend-user participant on the authenticated platform. Optionally scoped to a specific\nmerchant when `merchant_participant_code` is supplied (the authenticated platform must\noperate for that merchant).\n  ",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pay",
+                "limits"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "participant_code",
+                  "value": "<string>",
+                  "description": "(Required) End-user participant code (6-character alphanumeric)."
+                },
+                {
+                  "disabled": false,
+                  "key": "merchant_participant_code",
+                  "value": "<string>",
+                  "description": "Optional merchant participant code. When supplied, the response also includes `merchant_totals` (volume totals aggregated against that merchant). The authenticated platform must operate for the merchant or the request is rejected."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f25e4c26-59de-4fa1-9345-aedf67e33d71",
+              "name": "Platform and (optionally) merchant payin limits.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"test-request-id\",\n    \"participant_code\": \"SHOPP1\",\n    \"merchant_participant_code\": \"MERCH1\",\n    \"merchant_classification\": \"NON-TRANSFERABLE-3\",\n    \"current_level\": 2,\n    \"current_limits\": [\n      {\n        \"limit\": \"1000.00\",\n        \"spent\": \"250.00\",\n        \"remaining\": \"750.00\",\n        \"window\": \"daily\"\n      },\n      {\n        \"limit\": \"1000.00\",\n        \"spent\": \"250.00\",\n        \"remaining\": \"750.00\",\n        \"window\": \"daily\"\n      }\n    ],\n    \"platform_totals\": [\n      {\n        \"window\": \"daily\",\n        \"currency\": \"USD\",\n        \"total_amount\": \"5000.00\",\n        \"transaction_count\": 12\n      },\n      {\n        \"window\": \"daily\",\n        \"currency\": \"USD\",\n        \"total_amount\": \"5000.00\",\n        \"transaction_count\": 12\n      }\n    ],\n    \"merchant_totals\": [\n      {\n        \"window\": \"daily\",\n        \"currency\": \"USD\",\n        \"total_amount\": \"5000.00\",\n        \"transaction_count\": 12\n      },\n      {\n        \"window\": \"daily\",\n        \"currency\": \"USD\",\n        \"total_amount\": \"5000.00\",\n        \"transaction_count\": 12\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8e17bc4-a4d2-4ba3-9dc9-655dd45b8d40",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ecfae6fc-51e3-47c0-acd5-68ec09f98c68",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7410970c-30fd-4b29-aeca-cca05b705863",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "134063ed-26eb-4af5-afa1-530a6190964d",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f120b95-4960-418d-ab08-0fec489d9b93",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_participant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f996e561-66ab-45a3-81ab-492b52e1c56c",
+          "name": "Cancel a pending manual approval",
+          "request": {
+            "name": "Cancel a pending manual approval",
+            "description": {
+              "content": "\nCancels a pending or approved manual approval for a Tier 4 payin transaction,\nsetting it to REJECTED state.\n\nUse this endpoint when a platform or shopper wants to withdraw a transaction\nthat is awaiting compliance review. Once cancelled, the transaction cannot\nbe reinstated — a new `POST /pay/rfq` must be issued.\n\nThe `merchant_code` query parameter is optional. When omitted, the\nauthenticated platform code is used as the merchant identifier.\n  ",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pay",
+                ":id",
+                "approval"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "participant_code",
+                  "value": "<string>",
+                  "description": "(Required) End-user participant (shopper) code whose approval to cancel."
+                },
+                {
+                  "disabled": false,
+                  "key": "merchant_code",
+                  "value": "<string>",
+                  "description": "Merchant participant code associated with the approval. Defaults to the authenticated platform code when omitted."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Transaction id of the manual approval to cancel."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f91e4b92-6454-41bc-a342-a69b9a2b5a05",
+              "name": "Approval successfully cancelled.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "approval"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Transaction id of the manual approval to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2048ab2e-3511-428e-b861-7852f91cec07",
+              "name": "Approval is already in a terminal state (FINALIZED or REJECTED) and cannot be cancelled (authorizer FAILED_PRECONDITION). The body carries the error message.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "approval"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Transaction id of the manual approval to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c00a3718-7feb-4630-9424-84e18ca469b8",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "approval"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Transaction id of the manual approval to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "11c6ec33-abbe-4698-840a-4ebbb983426a",
+              "name": "No cancellable approval found for the given transaction ID and participant.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "approval"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Transaction id of the manual approval to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3c7bdf3-500b-47c6-ae22-c52147264a78",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "approval"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Transaction id of the manual approval to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7181e66-4565-4f1d-9166-8cdd65aee741",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pay",
+                    ":id",
+                    "approval"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "merchant_code",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Transaction id of the manual approval to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f16f99d5-4489-4734-bc42-8a003ce6be52",
+    "name": "zerohash Payins API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

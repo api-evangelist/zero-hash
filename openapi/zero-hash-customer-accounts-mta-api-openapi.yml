@@ -1,0 +1,1592 @@
+openapi: 3.2.0
+info:
+  title: zerohash Customer Accounts (MTA) Customer Accounts (MTA) API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Customer Accounts (MTA)
+  description: Create and Manage Customer Accounts (MTA)
+paths:
+  /accounts:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Create customer account
+      description: Creates a new customer account. The pair (`participant_code`, `account_label`) is unique per participant and is used as idempotency check rather than `X-Request-Id`; submitting the same pair a second time returns an error rather than creating a duplicate.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Request body containing the customer account details to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCustomerAccountRequest'
+      responses:
+        '202':
+          description: "Creating a customer account is an asynchronous process that does several operations in the background after the response is returned. \n Customers are advised to listen to the `customer_account_status_changed` webhook event to be notified when the account is active and ready to use."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}:
+    patch:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Update customer account
+      description: 'Updates prefunded and tier values for an existing customer account. '
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to add advisor to. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: New prefunded and tier values for the account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerAccountBody'
+      responses:
+        '202':
+          description: "Customer account updated successfully. Updating an existing customer account is an asynchronous process that does several operations in the background after the response is returned. \n Customers are advised to listen to the `customer_account_status_changed` webhook event to be notified when the account is active and ready to use."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/details:
+    get:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Get account details
+      description: Retrieves customer account details
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: "Get customer account by account zrn, assigned to the account at creation by zerohash. \nFormat: `zrn:zh:eu:account:customer:<uuid>`."
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved customer account details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/lock:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Lock customer account
+      description: Locks an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to lock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request body containing the reason and metadata for locking the customer account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LockCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to lock the customer account accepted. The lock is applied asynchronously; clients should listen for the `customer_account_status_changed` webhook event to observe the new state.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/unlock:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Unlock customer account
+      description: Unlocks an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to unlock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request body containing the reason and metadata for unlocking the customer account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnlockCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to unlock the customer account accepted. The unlock is applied asynchronously; clients should listen for the `customer_account_status_changed` webhook event to observe the new state.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/withdraw_lock:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Withdraw lock customer account
+      description: Locks withdrawals for an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to withdraw lock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request body containing the reason and metadata for withdraw locking the customer account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawLockCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to withdraw-lock the customer account accepted. The withdraw lock is applied asynchronously; clients should listen for the `customer_account_status_changed` webhook event to observe the new state.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/withdraw_unlock:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Withdraw unlock customer account
+      description: Unlocks withdrawals for an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to withdraw unlock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request body containing the reason and metadata for withdraw unlocking the customer account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawUnlockCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to withdraw-unlock the customer account accepted. The withdraw unlock is applied asynchronously; clients should listen for the `customer_account_status_changed` webhook event to observe the new state.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/divest:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Divest customer account
+      description: Divests an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to divest. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request body containing the reason and metadata for divesting the customer account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DivestCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to divest the customer account accepted. Divestment is applied asynchronously; clients should listen for the `customer_account_status_changed` webhook event to observe the new state.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/advisors:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Add advisor to customer account
+      description: Adds an advisor to an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to add advisor to. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Advisor information to add to the account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddAdvisorToCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to add the advisor to the customer account accepted. The change is applied asynchronously.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/tenants:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Add tenant to customer account
+      description: Adds a tenant to an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to add tenant to. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Tenant information to add to the account
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddTenantToCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to add the tenant to the customer account accepted. The change is applied asynchronously.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/advisors/{financial_advisor}:
+    delete:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Remove advisor from customer account
+      description: Removes an advisor from an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to remove advisor from. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      - name: financial_advisor
+        in: path
+        description: 'The financial advisor identifier to remove from the customer account. '
+        required: true
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 6
+        example: ADV001
+      responses:
+        '202':
+          description: Request to remove the advisor from the customer account accepted. The change is applied asynchronously.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/tenants/{tenant}:
+    delete:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Remove tenant from customer account
+      description: Removes a tenant from an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to remove tenant from. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+          pattern: ^zrn:zh:[a-z]{2}:account:customer:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+        example: zrn:zh:eu:account:customer:fcb1a806-0096-49c7-ac53-6e3daf2b58c5
+      - name: tenant
+        in: path
+        description: The participant code of the tenant to remove from the customer account. The participant code must be 6 characters long.
+        required: true
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 6
+        example: PLAT01
+      responses:
+        '202':
+          description: Request to remove the tenant from the customer account accepted. The change is applied asynchronously.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{zrn}/close:
+    post:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Close customer account
+      description: Closes an existing customer account
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: 'The ZRN of the customer account to close. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`'
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request body containing the reason and metadata for closing the customer account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloseCustomerAccountBody'
+      responses:
+        '202':
+          description: Request to close the customer account accepted. Closure is applied asynchronously; clients should listen for the `customer_account_status_changed` webhook event to observe the new state.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty JSON object.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /account/{zrn}/status_reason:
+    get:
+      tags:
+      - Customer Accounts (MTA)
+      summary: Get customer account status reason
+      description: This endpoint returns detailed information about customer account status, including lock reason codes. This endpoint is disabled by default and enabled per platform using feature flags.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: zrn
+        in: path
+        description: The customer account identifier to get status reason details for
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Customer account status reason details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCustomerAccountStatusReasonBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    AddTenantToCustomerAccountBody:
+      type: object
+      required:
+      - participant_code
+      properties:
+        participant_code:
+          type: string
+          description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+          minLength: 1
+          maxLength: 6
+          pattern: ^[a-zA-Z0-9_-]+$
+          example: PART01
+    CustomerAccountResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            zrn:
+              type: string
+              description: The unique zerohash Account Identifier.
+              example: zrn:zh:us:accounts:customer:c761fc96-5c44-40d4-8eb2-3fcd5d06754b
+            participant_code:
+              type: string
+              description: The `participant_code` is the primary account holder.
+              example: PAR001
+            platform_code:
+              type: string
+              description: The code of the platform associated with the newly created account.
+              example: PLAT01
+            prefunded:
+              type: boolean
+              description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+              example: false
+            account_label:
+              type: string
+              description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+              example: custom-account-label
+            account_group:
+              type: string
+              description: The group that the account is a part of
+              example: XYZ456
+            type:
+              type: string
+              enum:
+              - individual
+              - business
+              - jtic
+              - jtwros
+              - trust
+              - utma
+              description: The account type associated with the account
+              example: individual
+            tier:
+              type: string
+              enum:
+              - lite
+              - pro
+              - bronze
+              - silver
+              - gold
+              description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+              example: pro
+            status:
+              type: string
+              enum:
+              - open
+              - locked
+              - withdraw_locked
+              - divesting
+              - closed
+              description: The status of the customer account
+              example: open
+            tenants:
+              type: array
+              items:
+                type: string
+              description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+              example:
+              - PAR002
+            financial_advisors:
+              type: array
+              items:
+                type: string
+              description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+              example:
+              - PAR003
+    AddAdvisorToCustomerAccountBody:
+      type: object
+      required:
+      - participant_code
+      properties:
+        participant_code:
+          type: string
+          description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+          minLength: 1
+          maxLength: 6
+          pattern: ^[a-zA-Z0-9_-]+$
+          example: PART01
+    CloseCustomerAccountBody:
+      type: object
+      properties: {}
+    PostCustomerAccountRequest:
+      oneOf:
+      - type: object
+        title: Individual Customer Account
+        description: The `individual` account type is for accounts owned by an individual. This is the most common account type and is suitable for most use cases.
+        properties:
+          participant_code:
+            type: string
+            description: The `participant_code` is the primary account holder.
+            example: PAR001
+          account_label:
+            type: string
+            description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+            example: custom-account-label
+          prefunded:
+            type: boolean
+            description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+            example: false
+          tier:
+            type: string
+            enum:
+            - lite
+            - pro
+            - bronze
+            - silver
+            - gold
+            description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+            example: pro
+          type:
+            type: string
+            enum:
+            - individual
+            description: The account type associated with the account
+            example: individual
+          tenants:
+            type: array
+            items:
+              type: string
+            description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR002
+          financial_advisors:
+            type: array
+            items:
+              type: string
+            description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR003
+        required:
+        - participant_code
+        - account_label
+        - type
+        - tier
+        - prefunded
+      - type: object
+        title: Business Customer Account
+        description: The `business` account type is for accounts owned by a business entity. This type is suitable for organizations and companies.
+        properties:
+          participant_code:
+            type: string
+            description: The `participant_code` is the primary account holder.
+            example: PAR001
+          account_label:
+            type: string
+            description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+            example: custom-account-label
+          prefunded:
+            type: boolean
+            description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+            example: false
+          tier:
+            type: string
+            enum:
+            - lite
+            - pro
+            - bronze
+            - silver
+            - gold
+            description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+            example: pro
+          type:
+            type: string
+            enum:
+            - business
+            description: The account type associated with the account
+            example: business
+          tenants:
+            type: array
+            items:
+              type: string
+            description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR002
+          financial_advisors:
+            type: array
+            items:
+              type: string
+            description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR003
+        required:
+        - participant_code
+        - account_label
+        - type
+        - tier
+        - prefunded
+        - tenants
+      - type: object
+        title: Joint Tenant in Common Account
+        description: The `jtic` account type is for accounts owned by multiple individuals. This type is suitable for shared ownership scenarios.
+        properties:
+          participant_code:
+            type: string
+            description: The `participant_code` is the primary account holder.
+            example: PAR001
+          account_label:
+            type: string
+            description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+            example: custom-account-label
+          prefunded:
+            type: boolean
+            description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+            example: false
+          tier:
+            type: string
+            enum:
+            - lite
+            - pro
+            - bronze
+            - silver
+            - gold
+            description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+            example: pro
+          type:
+            type: string
+            enum:
+            - jtic
+            description: The account type associated with the account
+            example: jtic
+          tenants:
+            type: array
+            items:
+              type: string
+            description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR002
+          financial_advisors:
+            type: array
+            items:
+              type: string
+            description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR003
+        required:
+        - participant_code
+        - account_label
+        - type
+        - tier
+        - prefunded
+        - tenants
+      - type: object
+        title: Joint Tenant With Right of Survivorship Account
+        description: The `jtwros` account type is for jointly-owned accounts where ownership passes to the surviving tenant(s) upon death of another.
+        properties:
+          participant_code:
+            type: string
+            description: The `participant_code` is the primary account holder.
+            example: PAR001
+          account_label:
+            type: string
+            description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+            example: custom-account-label
+          prefunded:
+            type: boolean
+            description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+            example: false
+          tier:
+            type: string
+            enum:
+            - lite
+            - pro
+            - bronze
+            - silver
+            - gold
+            description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+            example: pro
+          type:
+            type: string
+            enum:
+            - jtwros
+            description: The account type associated with the account
+            example: jtwros
+          tenants:
+            type: array
+            items:
+              type: string
+            description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR002
+          financial_advisors:
+            type: array
+            items:
+              type: string
+            description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR003
+        required:
+        - participant_code
+        - account_label
+        - type
+        - tier
+        - prefunded
+        - tenants
+      - type: object
+        title: Trust Account
+        description: The `trust` account type is for accounts owned by a trust entity. This type is suitable for managing assets on behalf of beneficiaries.
+        properties:
+          participant_code:
+            type: string
+            description: The `participant_code` is the primary account holder.
+            example: PAR001
+          account_label:
+            type: string
+            description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+            example: custom-account-label
+          prefunded:
+            type: boolean
+            description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+            example: false
+          tier:
+            type: string
+            enum:
+            - lite
+            - pro
+            - bronze
+            - silver
+            - gold
+            description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+            example: pro
+          type:
+            type: string
+            enum:
+            - trust
+            description: The account type associated with the account
+            example: trust
+          tenants:
+            type: array
+            items:
+              type: string
+            description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR002
+          financial_advisors:
+            type: array
+            items:
+              type: string
+            description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR003
+        required:
+        - participant_code
+        - account_label
+        - type
+        - tier
+        - prefunded
+        - tenants
+      - type: object
+        title: UTMA Account
+        description: The `utma` account type is for accounts owned by a UTMA entity. This type is suitable for managing assets on behalf of beneficiaries.
+        properties:
+          participant_code:
+            type: string
+            description: The `participant_code` is the primary account holder.
+            example: PAR001
+          account_label:
+            type: string
+            description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+            example: custom-account-label
+          prefunded:
+            type: boolean
+            description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+            example: false
+          tier:
+            type: string
+            enum:
+            - lite
+            - pro
+            - bronze
+            - silver
+            - gold
+            description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+            example: pro
+          type:
+            type: string
+            enum:
+            - utma
+            description: The account type associated with the account
+            example: utma
+          tenants:
+            type: array
+            items:
+              type: string
+            description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR002
+          financial_advisors:
+            type: array
+            items:
+              type: string
+            description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR003
+        required:
+        - participant_code
+        - account_label
+        - type
+        - tier
+        - prefunded
+        - tenants
+      - type: object
+        title: Customer Account - All Fields
+        description: All accepted fields for creating a customer account. The `type` field determines which fields are required.
+        properties:
+          participant_code:
+            type: string
+            description: The `participant_code` is the primary account holder.
+            example: PAR001
+          account_label:
+            type: string
+            description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+            example: custom-account-label
+          prefunded:
+            type: boolean
+            description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+            example: false
+          tier:
+            type: string
+            enum:
+            - lite
+            - pro
+            - bronze
+            - silver
+            - gold
+            description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+            example: pro
+          type:
+            type: string
+            enum:
+            - individual
+            - business
+            - jtic
+            - jtwros
+            - trust
+            - utma
+            description: The account type associated with the account
+            example: individual
+          tenants:
+            type: array
+            items:
+              type: string
+            description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR002
+          financial_advisors:
+            type: array
+            items:
+              type: string
+            description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+            example:
+            - PAR003
+        required:
+        - participant_code
+        - account_label
+        - type
+        - tier
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    WithdrawLockCustomerAccountBody:
+      type: object
+      title: Withdraw Lock Customer Account Request Body
+      description: Request body for withdraw-locking a customer account. Withdraw-locking an account prevents any new withdrawal requests from being created on the account, but does not impact the ability to create trades or deposits. This is typically used as a precautionary measure when suspicious activity is detected on an account, in order to prevent potential funds outflows while an investigation is conducted.
+      properties: {}
+    UnlockCustomerAccountBody:
+      type: object
+      properties: {}
+    WithdrawUnlockCustomerAccountBody:
+      type: object
+      title: Withdraw Unlock Customer Account Request Body
+      description: Request body for withdraw-unlocking a customer account. Withdraw-unlocking an account removes the restriction on creating new withdrawal requests on the account. This is typically used to lift a withdraw-lock that was previously placed on an account as a precautionary measure when suspicious activity was detected, after the investigation has concluded and any issues have been resolved.
+      properties: {}
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    GetCustomerAccountStatusReasonBody:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            zrn:
+              type: string
+              description: Customer account ZRN
+              example: zrn:zh:us:accounts:customer:c761fc96-5c44-40d4-8eb2-3fcd5d06754b
+            participant_code:
+              type: string
+              description: Unique participant code
+              example: CUST01
+            platform_code:
+              type: string
+              description: The code of the platform
+              example: PLAT01
+            account_label:
+              type: string
+              description: The account label associated with the account
+              example: account-label
+            type:
+              type: string
+              enum:
+              - individual
+              - business
+              - jtic
+              - jtwros
+              - trust
+              - utma
+              description: The account type
+              example: individual
+            tier:
+              type: string
+              enum:
+              - lite
+              - pro
+              - bronze
+              - silver
+              - gold
+              description: The account tier
+              example: gold
+            status:
+              type: string
+              enum:
+              - open
+              - closed
+              - locked
+              - withdraw_locked
+              - divesting
+              description: The current status of the customer account
+              example: locked
+            author_type:
+              type: string
+              enum:
+              - customer
+              - system
+              - admin
+              - platform
+              description: The type of author who performed the last action
+              example: admin
+            reason:
+              type: string
+              enum:
+              - unknown
+              - user_request
+              - compliance_issue
+              - ach
+              - deprecated_policy
+              - minor_attained_age_of_majority
+              - policy_rule_matched
+              description: Reason code for the account status change
+              example: compliance_issue
+            compliance_reasons:
+              type: array
+              items:
+                type: string
+                enum:
+                - restricted_jurisdiction
+                - abandoned_escheat
+                - child_abuse_material
+                - darknet_market
+                - gambling
+                - illicit
+                - merchant
+                - mixer
+                - nft_marketplace
+                - scam
+                - terrorist_organization
+                - thief
+                - shielded
+                - victim_of_fraud_or_illicit_activity
+                - fraud
+                - cash_spike_incoming
+                - cash_spike_outgoing
+                - structured_transactions
+                - cannabis_name_match
+                - potential_elder_financial_exploitation
+                - other_aml_cft_illicit_activity
+                - sanctions_possible_match
+                - sanctions_confirmed_match
+                - politically_exposed_person_foreign
+                - politically_exposed_person_domestic
+                - other_cdd_issue
+                - other_financial_crimes
+                - referral_from_platform
+                - impossible_travel_rule
+                - multiple_incorrect_dob_rule
+                - blocklisted_pii
+                - referral_from_platform_imposter_scam
+                - referral_from_le
+                - other
+                - fincen_primary_ml_concern
+                - sanctions_direct
+                - sanctions_indirect
+                - other_high_risk_entity_exposure
+                - market_abuse_manipulation
+                - ach_return_unauthorized_transaction
+                - ach_return_insufficient_funds
+                - ach_return_other
+                - gsc_pep
+                - gsc_adverse_media
+                - deceased
+                - discontinued_customer
+                - edd_required
+                - kyc_refresh
+              description: Array of compliance issue reason codes
+              example:
+              - fraud
+              - sanctions_confirmed_match
+            notes:
+              type: string
+              description: Additional notes about the account status
+              example: Account flagged for suspicious activity
+            case_number:
+              type: string
+              description: Case number associated with the account status
+              example: CASE-2024-001
+            tenants:
+              type: array
+              items:
+                type: string
+              description: Tenants are the second owners of account
+              example:
+              - PAR002
+            financial_advisors:
+              type: array
+              items:
+                type: string
+              description: Financial advisors of the account
+              example:
+              - PAR003
+    DivestCustomerAccountBody:
+      type: object
+      title: Divest Customer Account Request Body
+      description: Request body for divesting a customer account. Divesting an account initiates the process of liquidating the account's assets and closing the account. This is typically used when an account is being closed or transferred to another entity.
+      properties: {}
+    LockCustomerAccountBody:
+      type: object
+      properties: {}
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    UpdateCustomerAccountBody:
+      type: object
+      properties:
+        prefunded:
+          type: boolean
+          description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+          example: false
+        tier:
+          type: string
+          enum:
+          - lite
+          - pro
+          - bronze
+          - silver
+          - gold
+          description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+          example: pro
+      required:
+      - tier
+      - prefunded
+  parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

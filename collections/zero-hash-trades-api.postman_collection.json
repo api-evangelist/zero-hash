@@ -1,0 +1,2296 @@
+{
+  "item": [
+    {
+      "id": "81560bf5-7233-4ab7-96dd-d66061234fa6",
+      "name": "Trades",
+      "description": {
+        "content": "Trade Settlement Services",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6fc95a1d-cc29-4a37-b747-becb07b2cde6",
+          "name": "Submit trade",
+          "request": {
+            "name": "Submit trade",
+            "description": {
+              "content": "Submits a trade for settlement that was matched and executed outside of zerohash.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "trades"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_trade_id\": \"<string>\",\n  \"trade_reporter\": \"<string>\",\n  \"platform_code\": \"<string>\",\n  \"symbol\": \"<string>\",\n  \"product_type\": \"<string>\",\n  \"trade_type\": \"<string>\",\n  \"trade_price\": \"<string>\",\n  \"physical_delivery\": \"<boolean>\",\n  \"transaction_timestamp\": \"<number>\",\n  \"parties_anonymous\": \"<boolean>\",\n  \"parties\": [\n    {\n      \"participant_code\": \"<string>\",\n      \"side\": \"<string>\",\n      \"asset\": \"<string>\",\n      \"amount\": \"<string>\",\n      \"liquidity_indicator\": \"<string>\",\n      \"client_order_id\": \"<string>\",\n      \"order_id\": \"<string>\",\n      \"obligations_outstanding_timestamp\": \"<number>\",\n      \"current_obligations_met_timestamp\": \"<number>\",\n      \"settlement_state\": \"<string>\",\n      \"execution_id\": \"<string>\",\n      \"settling\": \"<boolean>\",\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"<string>\",\n      \"trader\": \"<string>\",\n      \"zrn\": \"<string>\",\n      \"manual_order_indicator\": \"<string>\"\n    },\n    {\n      \"participant_code\": \"<string>\",\n      \"side\": \"<string>\",\n      \"asset\": \"<string>\",\n      \"amount\": \"<string>\",\n      \"liquidity_indicator\": \"<string>\",\n      \"client_order_id\": \"<string>\",\n      \"order_id\": \"<string>\",\n      \"obligations_outstanding_timestamp\": \"<number>\",\n      \"current_obligations_met_timestamp\": \"<number>\",\n      \"settlement_state\": \"<string>\",\n      \"execution_id\": \"<string>\",\n      \"settling\": \"<boolean>\",\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"<string>\",\n      \"trader\": \"<string>\",\n      \"zrn\": \"<string>\",\n      \"manual_order_indicator\": \"<string>\"\n    }\n  ],\n  \"batch_trade_id\": \"<string>\",\n  \"trade_reporter_code\": \"<string>\",\n  \"reporting_party\": \"<string>\",\n  \"settlement_schedule\": \"<string>\",\n  \"market_identifier_code\": \"<string>\",\n  \"trade_quantity\": \"<string>\",\n  \"trade_state\": \"<string>\",\n  \"accepted_timestamp\": \"<number>\",\n  \"defaulted_timestamp\": \"<number>\",\n  \"settled_timestamp\": \"<number>\",\n  \"comment\": \"<string>\",\n  \"last_update\": \"<number>\",\n  \"settlement_price_index_id\": \"<string>\",\n  \"contract_size\": \"<number>\",\n  \"underlying\": \"<string>\",\n  \"quoted_currency\": \"<string>\",\n  \"settlement_timestamp\": \"<number>\",\n  \"expiry_timestamp\": \"<number>\",\n  \"bank_fee\": \"<string>\",\n  \"spread_notional\": \"<string>\",\n  \"spread_bps\": \"<string>\",\n  \"issuer_fee_rate\": \"<string>\",\n  \"issuer_fee_amount\": \"<string>\",\n  \"issuer_fee_payor_type\": \"<string>\",\n  \"origin\": \"<string>\",\n  \"session_id\": \"<string>\",\n  \"payment_processor\": {\n    \"name\": \"<string>\",\n    \"id\": \"<string>\"\n  },\n  \"fees\": [\n    {\n      \"name\": \"<string>\",\n      \"amount\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"amount\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5b972180-36a2-444e-9b0b-8809d1695075",
+              "name": "Successfully created trade. Returns the created resource with generated IDs and timestamps.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter\": \"user@00SCXM.com\",\n  \"platform_code\": \"PLAT01\",\n  \"symbol\": \"BTC/USD\",\n  \"product_type\": \"spot\",\n  \"trade_type\": \"regular\",\n  \"trade_price\": \"10000\",\n  \"physical_delivery\": true,\n  \"transaction_timestamp\": 2554408627334,\n  \"parties_anonymous\": true,\n  \"parties\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    }\n  ],\n  \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter_code\": \"00SCXM\",\n  \"reporting_party\": \"<string>\",\n  \"settlement_schedule\": \"ABCDEF\",\n  \"market_identifier_code\": \"SCXM\",\n  \"trade_quantity\": \"1.0\",\n  \"trade_state\": \"<string>\",\n  \"accepted_timestamp\": 2554408627334,\n  \"defaulted_timestamp\": 2554408627334,\n  \"settled_timestamp\": 2554408627334,\n  \"comment\": \"OTC trade executed via phone instruction\",\n  \"last_update\": 2554408627334,\n  \"settlement_price_index_id\": null,\n  \"contract_size\": \"<number>\",\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"settlement_timestamp\": 2554408627334,\n  \"expiry_timestamp\": 2554408627334,\n  \"bank_fee\": \"1.00\",\n  \"spread_notional\": \"2.50\",\n  \"spread_bps\": \"100\",\n  \"issuer_fee_rate\": null,\n  \"issuer_fee_amount\": null,\n  \"issuer_fee_payor_type\": null,\n  \"origin\": \"rest_api\",\n  \"session_id\": \"20260504115000\",\n  \"payment_processor\": {\n    \"name\": \"checkout.out\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"string\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"platform_code\": \"PLAT01\",\n    \"market_identifier_code\": \"SCXM\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"active\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": 5177.289790424099,\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"1.9920\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"2.0000\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ],\n    \"trade_id\": \"78260d47-336e-4253-b800-d528894253b2\",\n    \"total_notional\": \"50.00\",\n    \"asset_cost_notional\": \"48.30\",\n    \"network_fee_notional\": null,\n    \"network_fee_quantity\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "be12dfe9-1030-4ae8-a462-0bd175d2de3e",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter\": \"user@00SCXM.com\",\n  \"platform_code\": \"PLAT01\",\n  \"symbol\": \"BTC/USD\",\n  \"product_type\": \"spot\",\n  \"trade_type\": \"regular\",\n  \"trade_price\": \"10000\",\n  \"physical_delivery\": true,\n  \"transaction_timestamp\": 2554408627334,\n  \"parties_anonymous\": true,\n  \"parties\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    }\n  ],\n  \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter_code\": \"00SCXM\",\n  \"reporting_party\": \"<string>\",\n  \"settlement_schedule\": \"ABCDEF\",\n  \"market_identifier_code\": \"SCXM\",\n  \"trade_quantity\": \"1.0\",\n  \"trade_state\": \"<string>\",\n  \"accepted_timestamp\": 2554408627334,\n  \"defaulted_timestamp\": 2554408627334,\n  \"settled_timestamp\": 2554408627334,\n  \"comment\": \"OTC trade executed via phone instruction\",\n  \"last_update\": 2554408627334,\n  \"settlement_price_index_id\": null,\n  \"contract_size\": \"<number>\",\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"settlement_timestamp\": 2554408627334,\n  \"expiry_timestamp\": 2554408627334,\n  \"bank_fee\": \"1.00\",\n  \"spread_notional\": \"2.50\",\n  \"spread_bps\": \"100\",\n  \"issuer_fee_rate\": null,\n  \"issuer_fee_amount\": null,\n  \"issuer_fee_payor_type\": null,\n  \"origin\": \"rest_api\",\n  \"session_id\": \"20260504115000\",\n  \"payment_processor\": {\n    \"name\": \"checkout.out\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7d646d8-544f-4d41-b9a6-a58a9f17f2b4",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter\": \"user@00SCXM.com\",\n  \"platform_code\": \"PLAT01\",\n  \"symbol\": \"BTC/USD\",\n  \"product_type\": \"spot\",\n  \"trade_type\": \"regular\",\n  \"trade_price\": \"10000\",\n  \"physical_delivery\": true,\n  \"transaction_timestamp\": 2554408627334,\n  \"parties_anonymous\": true,\n  \"parties\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    }\n  ],\n  \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter_code\": \"00SCXM\",\n  \"reporting_party\": \"<string>\",\n  \"settlement_schedule\": \"ABCDEF\",\n  \"market_identifier_code\": \"SCXM\",\n  \"trade_quantity\": \"1.0\",\n  \"trade_state\": \"<string>\",\n  \"accepted_timestamp\": 2554408627334,\n  \"defaulted_timestamp\": 2554408627334,\n  \"settled_timestamp\": 2554408627334,\n  \"comment\": \"OTC trade executed via phone instruction\",\n  \"last_update\": 2554408627334,\n  \"settlement_price_index_id\": null,\n  \"contract_size\": \"<number>\",\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"settlement_timestamp\": 2554408627334,\n  \"expiry_timestamp\": 2554408627334,\n  \"bank_fee\": \"1.00\",\n  \"spread_notional\": \"2.50\",\n  \"spread_bps\": \"100\",\n  \"issuer_fee_rate\": null,\n  \"issuer_fee_amount\": null,\n  \"issuer_fee_payor_type\": null,\n  \"origin\": \"rest_api\",\n  \"session_id\": \"20260504115000\",\n  \"payment_processor\": {\n    \"name\": \"checkout.out\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c3a4dcd4-bf97-4681-88dd-8b2fe835f8da",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter\": \"user@00SCXM.com\",\n  \"platform_code\": \"PLAT01\",\n  \"symbol\": \"BTC/USD\",\n  \"product_type\": \"spot\",\n  \"trade_type\": \"regular\",\n  \"trade_price\": \"10000\",\n  \"physical_delivery\": true,\n  \"transaction_timestamp\": 2554408627334,\n  \"parties_anonymous\": true,\n  \"parties\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    }\n  ],\n  \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter_code\": \"00SCXM\",\n  \"reporting_party\": \"<string>\",\n  \"settlement_schedule\": \"ABCDEF\",\n  \"market_identifier_code\": \"SCXM\",\n  \"trade_quantity\": \"1.0\",\n  \"trade_state\": \"<string>\",\n  \"accepted_timestamp\": 2554408627334,\n  \"defaulted_timestamp\": 2554408627334,\n  \"settled_timestamp\": 2554408627334,\n  \"comment\": \"OTC trade executed via phone instruction\",\n  \"last_update\": 2554408627334,\n  \"settlement_price_index_id\": null,\n  \"contract_size\": \"<number>\",\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"settlement_timestamp\": 2554408627334,\n  \"expiry_timestamp\": 2554408627334,\n  \"bank_fee\": \"1.00\",\n  \"spread_notional\": \"2.50\",\n  \"spread_bps\": \"100\",\n  \"issuer_fee_rate\": null,\n  \"issuer_fee_amount\": null,\n  \"issuer_fee_payor_type\": null,\n  \"origin\": \"rest_api\",\n  \"session_id\": \"20260504115000\",\n  \"payment_processor\": {\n    \"name\": \"checkout.out\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "827c3e12-532c-40ff-83e5-bf6f397aa98c",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter\": \"user@00SCXM.com\",\n  \"platform_code\": \"PLAT01\",\n  \"symbol\": \"BTC/USD\",\n  \"product_type\": \"spot\",\n  \"trade_type\": \"regular\",\n  \"trade_price\": \"10000\",\n  \"physical_delivery\": true,\n  \"transaction_timestamp\": 2554408627334,\n  \"parties_anonymous\": true,\n  \"parties\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    }\n  ],\n  \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter_code\": \"00SCXM\",\n  \"reporting_party\": \"<string>\",\n  \"settlement_schedule\": \"ABCDEF\",\n  \"market_identifier_code\": \"SCXM\",\n  \"trade_quantity\": \"1.0\",\n  \"trade_state\": \"<string>\",\n  \"accepted_timestamp\": 2554408627334,\n  \"defaulted_timestamp\": 2554408627334,\n  \"settled_timestamp\": 2554408627334,\n  \"comment\": \"OTC trade executed via phone instruction\",\n  \"last_update\": 2554408627334,\n  \"settlement_price_index_id\": null,\n  \"contract_size\": \"<number>\",\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"settlement_timestamp\": 2554408627334,\n  \"expiry_timestamp\": 2554408627334,\n  \"bank_fee\": \"1.00\",\n  \"spread_notional\": \"2.50\",\n  \"spread_bps\": \"100\",\n  \"issuer_fee_rate\": null,\n  \"issuer_fee_amount\": null,\n  \"issuer_fee_payor_type\": null,\n  \"origin\": \"rest_api\",\n  \"session_id\": \"20260504115000\",\n  \"payment_processor\": {\n    \"name\": \"checkout.out\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85f96a9e-cd6d-4281-b951-fb3136c99ad8",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter\": \"user@00SCXM.com\",\n  \"platform_code\": \"PLAT01\",\n  \"symbol\": \"BTC/USD\",\n  \"product_type\": \"spot\",\n  \"trade_type\": \"regular\",\n  \"trade_price\": \"10000\",\n  \"physical_delivery\": true,\n  \"transaction_timestamp\": 2554408627334,\n  \"parties_anonymous\": true,\n  \"parties\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"side\": \"buy\",\n      \"asset\": \"BTC\",\n      \"amount\": \"0.00001\",\n      \"liquidity_indicator\": \"removed\",\n      \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n      \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"obligations_outstanding_timestamp\": 2554408627334,\n      \"current_obligations_met_timestamp\": 2554408627334,\n      \"settlement_state\": \"settled\",\n      \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n      \"settling\": false,\n      \"account_label\": \"general\",\n      \"collateral_percentage\": \"<string>\",\n      \"account_profile\": \"nonprefunded\",\n      \"trader\": \"ABCDEF\",\n      \"zrn\": null,\n      \"manual_order_indicator\": \"manual\"\n    }\n  ],\n  \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n  \"trade_reporter_code\": \"00SCXM\",\n  \"reporting_party\": \"<string>\",\n  \"settlement_schedule\": \"ABCDEF\",\n  \"market_identifier_code\": \"SCXM\",\n  \"trade_quantity\": \"1.0\",\n  \"trade_state\": \"<string>\",\n  \"accepted_timestamp\": 2554408627334,\n  \"defaulted_timestamp\": 2554408627334,\n  \"settled_timestamp\": 2554408627334,\n  \"comment\": \"OTC trade executed via phone instruction\",\n  \"last_update\": 2554408627334,\n  \"settlement_price_index_id\": null,\n  \"contract_size\": \"<number>\",\n  \"underlying\": \"BTC\",\n  \"quoted_currency\": \"USD\",\n  \"settlement_timestamp\": 2554408627334,\n  \"expiry_timestamp\": 2554408627334,\n  \"bank_fee\": \"1.00\",\n  \"spread_notional\": \"2.50\",\n  \"spread_bps\": \"100\",\n  \"issuer_fee_rate\": null,\n  \"issuer_fee_amount\": null,\n  \"issuer_fee_payor_type\": null,\n  \"origin\": \"rest_api\",\n  \"session_id\": \"20260504115000\",\n  \"payment_processor\": {\n    \"name\": \"checkout.out\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "56b642ba-d91f-4c64-bf0c-d0ef18191901",
+          "name": "Get trades",
+          "request": {
+            "name": "Get trades",
+            "description": {
+              "content": "Returns trade details where the requestor is the Platform, either party associated with the trade, or the account group where the trade was settled. For the party information, the asset is the settlement currency (i.e asset RECEIVED). This means in the second you are receiving USD correctly, 00SCXM is receiving BTC. The \"sell\" side receives the quoted currency, the \"buy\" side receives the underlying. Our trade structure mirrors a typical back office trade report (FIX TradeCaptureReport) and we use the concept of settlement currency for the sides to help keep our system agnostic of symbol definitions. Results are limited to the last 2 months",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "trades"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "account_label",
+                  "value": "<string>",
+                  "description": "Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<number>",
+                  "description": "Page number for pagination (starts at 1)."
+                },
+                {
+                  "disabled": false,
+                  "key": "market_identifier_code",
+                  "value": "<string>",
+                  "description": "Filters for trades within a designated `market_identifier_code`."
+                },
+                {
+                  "disabled": false,
+                  "key": "omit_market_identifier_code",
+                  "value": "<string>",
+                  "description": "Filters for trades excluding those from a particular `market_identifier_code`."
+                },
+                {
+                  "disabled": false,
+                  "key": "platform_code",
+                  "value": "<string>",
+                  "description": "Filters for trades based on the specific `platform_code` where the trade execution took place."
+                },
+                {
+                  "disabled": false,
+                  "key": "omit_platform_code",
+                  "value": "<string>",
+                  "description": "Filters for trades based excluding those from a particular `platform_code`."
+                },
+                {
+                  "disabled": false,
+                  "key": "trade_state",
+                  "value": "<string>",
+                  "description": "Filters for trades based on their current `trade_state`."
+                },
+                {
+                  "disabled": false,
+                  "key": "settlement_state",
+                  "value": "<string>",
+                  "description": "Filters for trades based on their current `settlement_state`."
+                },
+                {
+                  "disabled": false,
+                  "key": "party_code",
+                  "value": "<string>",
+                  "description": "Filters for trades where the provided `party_code` is at least one of the counterparties to a trade in the `parties` array."
+                },
+                {
+                  "disabled": false,
+                  "key": "transaction_timestamp[gt]",
+                  "value": "<number>",
+                  "description": "Filters for trades with a timestamp greater than the provided value, which can be defined in milliseconds or nanoseconds."
+                },
+                {
+                  "disabled": false,
+                  "key": "transaction_timestamp[gte]",
+                  "value": "<number>",
+                  "description": "Filters for trades with a timestamp greater than or equal to the provided value, which can be defined in milliseconds or nanoseconds."
+                },
+                {
+                  "disabled": false,
+                  "key": "transaction_timestamp[e]",
+                  "value": "<number>",
+                  "description": "Filters for trades with a timestamp equal to the provided value, which can be defined in milliseconds or nanoseconds."
+                },
+                {
+                  "disabled": false,
+                  "key": "transaction_timestamp[lt]",
+                  "value": "<number>",
+                  "description": "Filters for trades with a timestamp less than the provided value, which can be defined in milliseconds or nanoseconds."
+                },
+                {
+                  "disabled": false,
+                  "key": "transaction_timestamp[lte]",
+                  "value": "<number>",
+                  "description": "Filters for trades with a timestamp less than or equal to the provided value, which can be defined in milliseconds or nanoseconds."
+                },
+                {
+                  "disabled": false,
+                  "key": "client_trade_id",
+                  "value": "<string>",
+                  "description": "Filters for trades with the provided `client_trade_id` value.\nNote:\n - Platforms integrated to the zerohash RFQ systems, the `quote_id` from the RFQ will be saved as the `client_trade_id` once the quote has been executed.\n- Platforms integrated to the zerohash CLOB, the `execution_id` from the order trade execution will be saved as the `client_trade_id` on the resulting trade."
+                },
+                {
+                  "disabled": false,
+                  "key": "execution_id",
+                  "value": "<string>",
+                  "description": "Filters for trades with the provided `execution_id` in either party's `execution_id` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "reporting_party",
+                  "value": "<string>",
+                  "description": "Filters for trades based on the `reporting_party` associated with each trade."
+                },
+                {
+                  "disabled": false,
+                  "key": "settlement_schedule",
+                  "value": "<string>",
+                  "description": "Filters for trades based on the `settlement_schedule` associated with each trade."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6ee5fe82-37db-44ce-b6e6-e040f7dceb97",
+              "name": "Successfully retrieved paginated list of trades with optional filters: participant_code, asset, underlying, account_label, market_identifier_code, platform_code, trade_state, settlement_state, party_code, transaction_timestamp, client_trade_id, execution_id, reporting_party, settlement_schedule.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "account_label",
+                      "value": "general"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "trade_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "party_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[e]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lt]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "client_trade_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "execution_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reporting_party",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_schedule",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": [\n    {\n      \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"trade_reporter\": \"user@00SCXM.com\",\n      \"trade_reporter_code\": \"00SCXM\",\n      \"reporting_party\": \"string\",\n      \"settlement_schedule\": \"ABCDEF\",\n      \"platform_code\": \"PLAT01\",\n      \"market_identifier_code\": \"SCXM\",\n      \"symbol\": \"BTC/USD\",\n      \"product_type\": \"spot\",\n      \"trade_type\": \"regular\",\n      \"trade_price\": \"10000\",\n      \"trade_quantity\": \"1.0\",\n      \"trade_state\": \"terminated\",\n      \"physical_delivery\": true,\n      \"transaction_timestamp\": 2554408627334,\n      \"accepted_timestamp\": 2554408627334,\n      \"defaulted_timestamp\": 2554408627334,\n      \"settled_timestamp\": 2554408627334,\n      \"comment\": \"OTC trade executed via phone instruction\",\n      \"last_update\": 2554408627334,\n      \"parties_anonymous\": true,\n      \"settlement_price_index_id\": null,\n      \"contract_size\": 8500.982226301758,\n      \"underlying\": \"BTC\",\n      \"quoted_currency\": \"USD\",\n      \"settlement_timestamp\": 2554408627334,\n      \"expiry_timestamp\": 2554408627334,\n      \"bank_fee\": \"1.00\",\n      \"spread_notional\": \"2.50\",\n      \"spread_bps\": \"100\",\n      \"issuer_fee_rate\": null,\n      \"issuer_fee_amount\": null,\n      \"issuer_fee_payor_type\": null,\n      \"origin\": \"rest_api\",\n      \"parties\": [\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"0.1059\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        },\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"1.2146\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        }\n      ],\n      \"session_id\": \"20260504115000\",\n      \"payment_processor\": {\n        \"name\": \"checkout.out\",\n        \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n      },\n      \"fees\": [\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        },\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        }\n      ],\n      \"trade_id\": \"78260d47-336e-4253-b800-d528894253b2\",\n      \"total_notional\": \"50.00\",\n      \"asset_cost_notional\": \"48.30\",\n      \"network_fee_notional\": null,\n      \"network_fee_quantity\": null\n    },\n    {\n      \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"trade_reporter\": \"user@00SCXM.com\",\n      \"trade_reporter_code\": \"00SCXM\",\n      \"reporting_party\": \"string\",\n      \"settlement_schedule\": \"ABCDEF\",\n      \"platform_code\": \"PLAT01\",\n      \"market_identifier_code\": \"SCXM\",\n      \"symbol\": \"BTC/USD\",\n      \"product_type\": \"spot\",\n      \"trade_type\": \"regular\",\n      \"trade_price\": \"10000\",\n      \"trade_quantity\": \"1.0\",\n      \"trade_state\": \"terminated\",\n      \"physical_delivery\": true,\n      \"transaction_timestamp\": 2554408627334,\n      \"accepted_timestamp\": 2554408627334,\n      \"defaulted_timestamp\": 2554408627334,\n      \"settled_timestamp\": 2554408627334,\n      \"comment\": \"OTC trade executed via phone instruction\",\n      \"last_update\": 2554408627334,\n      \"parties_anonymous\": true,\n      \"settlement_price_index_id\": null,\n      \"contract_size\": 2102.0988961109665,\n      \"underlying\": \"BTC\",\n      \"quoted_currency\": \"USD\",\n      \"settlement_timestamp\": 2554408627334,\n      \"expiry_timestamp\": 2554408627334,\n      \"bank_fee\": \"1.00\",\n      \"spread_notional\": \"2.50\",\n      \"spread_bps\": \"100\",\n      \"issuer_fee_rate\": null,\n      \"issuer_fee_amount\": null,\n      \"issuer_fee_payor_type\": null,\n      \"origin\": \"rest_api\",\n      \"parties\": [\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"2.0000\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        },\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"1.9958\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        }\n      ],\n      \"session_id\": \"20260504115000\",\n      \"payment_processor\": {\n        \"name\": \"checkout.out\",\n        \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n      },\n      \"fees\": [\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        },\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        }\n      ],\n      \"trade_id\": \"78260d47-336e-4253-b800-d528894253b2\",\n      \"total_notional\": \"50.00\",\n      \"asset_cost_notional\": \"48.30\",\n      \"network_fee_notional\": null,\n      \"network_fee_quantity\": null\n    }\n  ],\n  \"page\": 1,\n  \"page_size\": 15,\n  \"total_pages\": 1,\n  \"count\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "04b3cbed-8c63-46bb-a846-f6704a5e139e",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "account_label",
+                      "value": "general"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "trade_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "party_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[e]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lt]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "client_trade_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "execution_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reporting_party",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_schedule",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "010fe2ce-a10b-4787-a674-8da8eaaaadff",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "account_label",
+                      "value": "general"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "trade_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "party_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[e]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lt]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "client_trade_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "execution_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reporting_party",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_schedule",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e2529c10-e09e-4f66-9605-44f8c1bab980",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "account_label",
+                      "value": "general"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "trade_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "party_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[e]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lt]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "client_trade_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "execution_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reporting_party",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_schedule",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8747c59b-ca7e-405c-abd3-cd6f0b83c797",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "account_label",
+                      "value": "general"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "trade_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "party_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[e]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lt]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "client_trade_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "execution_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reporting_party",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_schedule",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b5564f8-b03b-4bc6-9fce-161735ed7b48",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "account_label",
+                      "value": "general"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_market_identifier_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "omit_platform_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "trade_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_state",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "party_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gt]",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "transaction_timestamp[gte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[e]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lt]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "transaction_timestamp[lte]",
+                      "value": "1678901234567"
+                    },
+                    {
+                      "key": "client_trade_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "execution_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reporting_party",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "settlement_schedule",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "408c1543-ea4c-4702-90ef-af4140e8d4bd",
+          "name": "Submit batch of trades",
+          "request": {
+            "name": "Submit batch of trades",
+            "description": {
+              "content": "Submits a batch of trades for settlement that was matched and executed outside of zerohash.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "trades",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"client_trade_id\": \"<string>\",\n    \"trade_reporter\": \"<string>\",\n    \"platform_code\": \"<string>\",\n    \"symbol\": \"<string>\",\n    \"product_type\": \"<string>\",\n    \"trade_type\": \"<string>\",\n    \"trade_price\": \"<string>\",\n    \"physical_delivery\": \"<boolean>\",\n    \"transaction_timestamp\": \"<number>\",\n    \"parties_anonymous\": \"<boolean>\",\n    \"parties\": [\n      {\n        \"participant_code\": \"<string>\",\n        \"side\": \"<string>\",\n        \"asset\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"liquidity_indicator\": \"<string>\",\n        \"client_order_id\": \"<string>\",\n        \"order_id\": \"<string>\",\n        \"obligations_outstanding_timestamp\": \"<number>\",\n        \"current_obligations_met_timestamp\": \"<number>\",\n        \"settlement_state\": \"<string>\",\n        \"execution_id\": \"<string>\",\n        \"settling\": \"<boolean>\",\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"<string>\",\n        \"trader\": \"<string>\",\n        \"zrn\": \"<string>\",\n        \"manual_order_indicator\": \"<string>\"\n      },\n      {\n        \"participant_code\": \"<string>\",\n        \"side\": \"<string>\",\n        \"asset\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"liquidity_indicator\": \"<string>\",\n        \"client_order_id\": \"<string>\",\n        \"order_id\": \"<string>\",\n        \"obligations_outstanding_timestamp\": \"<number>\",\n        \"current_obligations_met_timestamp\": \"<number>\",\n        \"settlement_state\": \"<string>\",\n        \"execution_id\": \"<string>\",\n        \"settling\": \"<boolean>\",\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"<string>\",\n        \"trader\": \"<string>\",\n        \"zrn\": \"<string>\",\n        \"manual_order_indicator\": \"<string>\"\n      }\n    ],\n    \"batch_trade_id\": \"<string>\",\n    \"trade_reporter_code\": \"<string>\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"<string>\",\n    \"market_identifier_code\": \"<string>\",\n    \"trade_quantity\": \"<string>\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": \"<number>\",\n    \"defaulted_timestamp\": \"<number>\",\n    \"settled_timestamp\": \"<number>\",\n    \"comment\": \"<string>\",\n    \"last_update\": \"<number>\",\n    \"settlement_price_index_id\": \"<string>\",\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"<string>\",\n    \"quoted_currency\": \"<string>\",\n    \"settlement_timestamp\": \"<number>\",\n    \"expiry_timestamp\": \"<number>\",\n    \"bank_fee\": \"<string>\",\n    \"spread_notional\": \"<string>\",\n    \"spread_bps\": \"<string>\",\n    \"issuer_fee_rate\": \"<string>\",\n    \"issuer_fee_amount\": \"<string>\",\n    \"issuer_fee_payor_type\": \"<string>\",\n    \"origin\": \"<string>\",\n    \"session_id\": \"<string>\",\n    \"payment_processor\": {\n      \"name\": \"<string>\",\n      \"id\": \"<string>\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"<string>\",\n        \"amount\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"amount\": \"<string>\"\n      }\n    ]\n  },\n  {\n    \"client_trade_id\": \"<string>\",\n    \"trade_reporter\": \"<string>\",\n    \"platform_code\": \"<string>\",\n    \"symbol\": \"<string>\",\n    \"product_type\": \"<string>\",\n    \"trade_type\": \"<string>\",\n    \"trade_price\": \"<string>\",\n    \"physical_delivery\": \"<boolean>\",\n    \"transaction_timestamp\": \"<number>\",\n    \"parties_anonymous\": \"<boolean>\",\n    \"parties\": [\n      {\n        \"participant_code\": \"<string>\",\n        \"side\": \"<string>\",\n        \"asset\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"liquidity_indicator\": \"<string>\",\n        \"client_order_id\": \"<string>\",\n        \"order_id\": \"<string>\",\n        \"obligations_outstanding_timestamp\": \"<number>\",\n        \"current_obligations_met_timestamp\": \"<number>\",\n        \"settlement_state\": \"<string>\",\n        \"execution_id\": \"<string>\",\n        \"settling\": \"<boolean>\",\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"<string>\",\n        \"trader\": \"<string>\",\n        \"zrn\": \"<string>\",\n        \"manual_order_indicator\": \"<string>\"\n      },\n      {\n        \"participant_code\": \"<string>\",\n        \"side\": \"<string>\",\n        \"asset\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"liquidity_indicator\": \"<string>\",\n        \"client_order_id\": \"<string>\",\n        \"order_id\": \"<string>\",\n        \"obligations_outstanding_timestamp\": \"<number>\",\n        \"current_obligations_met_timestamp\": \"<number>\",\n        \"settlement_state\": \"<string>\",\n        \"execution_id\": \"<string>\",\n        \"settling\": \"<boolean>\",\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"<string>\",\n        \"trader\": \"<string>\",\n        \"zrn\": \"<string>\",\n        \"manual_order_indicator\": \"<string>\"\n      }\n    ],\n    \"batch_trade_id\": \"<string>\",\n    \"trade_reporter_code\": \"<string>\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"<string>\",\n    \"market_identifier_code\": \"<string>\",\n    \"trade_quantity\": \"<string>\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": \"<number>\",\n    \"defaulted_timestamp\": \"<number>\",\n    \"settled_timestamp\": \"<number>\",\n    \"comment\": \"<string>\",\n    \"last_update\": \"<number>\",\n    \"settlement_price_index_id\": \"<string>\",\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"<string>\",\n    \"quoted_currency\": \"<string>\",\n    \"settlement_timestamp\": \"<number>\",\n    \"expiry_timestamp\": \"<number>\",\n    \"bank_fee\": \"<string>\",\n    \"spread_notional\": \"<string>\",\n    \"spread_bps\": \"<string>\",\n    \"issuer_fee_rate\": \"<string>\",\n    \"issuer_fee_amount\": \"<string>\",\n    \"issuer_fee_payor_type\": \"<string>\",\n    \"origin\": \"<string>\",\n    \"session_id\": \"<string>\",\n    \"payment_processor\": {\n      \"name\": \"<string>\",\n      \"id\": \"<string>\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"<string>\",\n        \"amount\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"amount\": \"<string>\"\n      }\n    ]\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "711bdfc2-6485-4cec-85e3-e7d539bcaf75",
+              "name": "Successfully created batch of trades. Returns the created resource with generated IDs and timestamps.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  },\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": [\n    {\n      \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"trade_reporter\": \"user@00SCXM.com\",\n      \"trade_reporter_code\": \"00SCXM\",\n      \"reporting_party\": \"string\",\n      \"settlement_schedule\": \"ABCDEF\",\n      \"platform_code\": \"PLAT01\",\n      \"market_identifier_code\": \"SCXM\",\n      \"symbol\": \"BTC/USD\",\n      \"product_type\": \"spot\",\n      \"trade_type\": \"regular\",\n      \"trade_price\": \"10000\",\n      \"trade_quantity\": \"1.0\",\n      \"trade_state\": \"active\",\n      \"physical_delivery\": true,\n      \"transaction_timestamp\": 2554408627334,\n      \"accepted_timestamp\": 2554408627334,\n      \"defaulted_timestamp\": 2554408627334,\n      \"settled_timestamp\": 2554408627334,\n      \"comment\": \"OTC trade executed via phone instruction\",\n      \"last_update\": 2554408627334,\n      \"parties_anonymous\": true,\n      \"settlement_price_index_id\": null,\n      \"contract_size\": 6893.523262125824,\n      \"underlying\": \"BTC\",\n      \"quoted_currency\": \"USD\",\n      \"settlement_timestamp\": 2554408627334,\n      \"expiry_timestamp\": 2554408627334,\n      \"bank_fee\": \"1.00\",\n      \"spread_notional\": \"2.50\",\n      \"spread_bps\": \"100\",\n      \"issuer_fee_rate\": null,\n      \"issuer_fee_amount\": null,\n      \"issuer_fee_payor_type\": null,\n      \"origin\": \"rest_api\",\n      \"parties\": [\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"0.6451\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        },\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"2.0000\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        }\n      ],\n      \"session_id\": \"20260504115000\",\n      \"payment_processor\": {\n        \"name\": \"checkout.out\",\n        \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n      },\n      \"fees\": [\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        },\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        }\n      ],\n      \"trade_id\": \"78260d47-336e-4253-b800-d528894253b2\",\n      \"total_notional\": \"50.00\",\n      \"asset_cost_notional\": \"48.30\",\n      \"network_fee_notional\": null,\n      \"network_fee_quantity\": null\n    },\n    {\n      \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n      \"trade_reporter\": \"user@00SCXM.com\",\n      \"trade_reporter_code\": \"00SCXM\",\n      \"reporting_party\": \"string\",\n      \"settlement_schedule\": \"ABCDEF\",\n      \"platform_code\": \"PLAT01\",\n      \"market_identifier_code\": \"SCXM\",\n      \"symbol\": \"BTC/USD\",\n      \"product_type\": \"spot\",\n      \"trade_type\": \"regular\",\n      \"trade_price\": \"10000\",\n      \"trade_quantity\": \"1.0\",\n      \"trade_state\": \"terminated\",\n      \"physical_delivery\": true,\n      \"transaction_timestamp\": 2554408627334,\n      \"accepted_timestamp\": 2554408627334,\n      \"defaulted_timestamp\": 2554408627334,\n      \"settled_timestamp\": 2554408627334,\n      \"comment\": \"OTC trade executed via phone instruction\",\n      \"last_update\": 2554408627334,\n      \"parties_anonymous\": true,\n      \"settlement_price_index_id\": null,\n      \"contract_size\": 2487.0195964567456,\n      \"underlying\": \"BTC\",\n      \"quoted_currency\": \"USD\",\n      \"settlement_timestamp\": 2554408627334,\n      \"expiry_timestamp\": 2554408627334,\n      \"bank_fee\": \"1.00\",\n      \"spread_notional\": \"2.50\",\n      \"spread_bps\": \"100\",\n      \"issuer_fee_rate\": null,\n      \"issuer_fee_amount\": null,\n      \"issuer_fee_payor_type\": null,\n      \"origin\": \"rest_api\",\n      \"parties\": [\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"0.6418\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        },\n        {\n          \"participant_code\": \"ABCDEF\",\n          \"side\": \"buy\",\n          \"asset\": \"BTC\",\n          \"amount\": \"0.00001\",\n          \"liquidity_indicator\": \"removed\",\n          \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n          \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"obligations_outstanding_timestamp\": 2554408627334,\n          \"current_obligations_met_timestamp\": 2554408627334,\n          \"settlement_state\": \"settled\",\n          \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n          \"settling\": false,\n          \"account_label\": \"general\",\n          \"collateral_percentage\": \"0.0506\",\n          \"account_profile\": \"nonprefunded\",\n          \"trader\": \"ABCDEF\",\n          \"zrn\": null,\n          \"manual_order_indicator\": \"manual\"\n        }\n      ],\n      \"session_id\": \"20260504115000\",\n      \"payment_processor\": {\n        \"name\": \"checkout.out\",\n        \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n      },\n      \"fees\": [\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        },\n        {\n          \"name\": \"sample\",\n          \"amount\": \"1.95\"\n        }\n      ],\n      \"trade_id\": \"78260d47-336e-4253-b800-d528894253b2\",\n      \"total_notional\": \"50.00\",\n      \"asset_cost_notional\": \"48.30\",\n      \"network_fee_notional\": null,\n      \"network_fee_quantity\": null\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3240835e-90c8-454b-817b-05d705363e4d",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  },\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6510c491-6f9f-4e77-888f-38855ac1f1aa",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  },\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a2428855-8a26-485a-95ee-dc88fa79dc70",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  },\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "efe6216f-db9b-402b-bf45-f4f6e9890c65",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  },\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0e6f4ce0-08a2-4e3d-ae1b-c379ec67bde4",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  },\n  {\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"platform_code\": \"PLAT01\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"<string>\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"<string>\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"market_identifier_code\": \"SCXM\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"<string>\",\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": \"<number>\",\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "094684db-dfb9-41d8-9d39-249f091f6320",
+          "name": "Get trade",
+          "request": {
+            "name": "Get trade",
+            "description": {
+              "content": "Retrieves trade details for a specific trade.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "trades",
+                ":trade_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "trade_id",
+                  "description": "(Required) The zerohash generated ID associated with a trade"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3e5d0f57-2f0f-4707-b8cf-6b901e0b905c",
+              "name": "Successfully retrieved trade. Including amounts, prices, settlement details, and counterparty information.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    ":trade_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "trade_id",
+                      "description": "(Required) The zerohash generated ID associated with a trade"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"batch_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"client_trade_id\": \"f2f14251-e296-42ac-9bc7-01c9186b9219\",\n    \"trade_reporter\": \"user@00SCXM.com\",\n    \"trade_reporter_code\": \"00SCXM\",\n    \"reporting_party\": \"string\",\n    \"settlement_schedule\": \"ABCDEF\",\n    \"platform_code\": \"PLAT01\",\n    \"market_identifier_code\": \"SCXM\",\n    \"symbol\": \"BTC/USD\",\n    \"product_type\": \"spot\",\n    \"trade_type\": \"regular\",\n    \"trade_price\": \"10000\",\n    \"trade_quantity\": \"1.0\",\n    \"trade_state\": \"accepted\",\n    \"physical_delivery\": true,\n    \"transaction_timestamp\": 2554408627334,\n    \"accepted_timestamp\": 2554408627334,\n    \"defaulted_timestamp\": 2554408627334,\n    \"settled_timestamp\": 2554408627334,\n    \"comment\": \"OTC trade executed via phone instruction\",\n    \"last_update\": 2554408627334,\n    \"parties_anonymous\": true,\n    \"settlement_price_index_id\": null,\n    \"contract_size\": 7597.798789075045,\n    \"underlying\": \"BTC\",\n    \"quoted_currency\": \"USD\",\n    \"settlement_timestamp\": 2554408627334,\n    \"expiry_timestamp\": 2554408627334,\n    \"bank_fee\": \"1.00\",\n    \"spread_notional\": \"2.50\",\n    \"spread_bps\": \"100\",\n    \"issuer_fee_rate\": null,\n    \"issuer_fee_amount\": null,\n    \"issuer_fee_payor_type\": null,\n    \"origin\": \"rest_api\",\n    \"parties\": [\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"2.0000\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      },\n      {\n        \"participant_code\": \"ABCDEF\",\n        \"side\": \"buy\",\n        \"asset\": \"BTC\",\n        \"amount\": \"0.00001\",\n        \"liquidity_indicator\": \"removed\",\n        \"client_order_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n        \"order_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"obligations_outstanding_timestamp\": 2554408627334,\n        \"current_obligations_met_timestamp\": 2554408627334,\n        \"settlement_state\": \"settled\",\n        \"execution_id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\",\n        \"settling\": false,\n        \"account_label\": \"general\",\n        \"collateral_percentage\": \"2.0000\",\n        \"account_profile\": \"nonprefunded\",\n        \"trader\": \"ABCDEF\",\n        \"zrn\": null,\n        \"manual_order_indicator\": \"manual\"\n      }\n    ],\n    \"session_id\": \"20260504115000\",\n    \"payment_processor\": {\n      \"name\": \"checkout.out\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"fees\": [\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      },\n      {\n        \"name\": \"sample\",\n        \"amount\": \"1.95\"\n      }\n    ],\n    \"trade_id\": \"78260d47-336e-4253-b800-d528894253b2\",\n    \"total_notional\": \"50.00\",\n    \"asset_cost_notional\": \"48.30\",\n    \"network_fee_notional\": null,\n    \"network_fee_quantity\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5bc96ee9-0fa3-4d86-8780-8335fbf5a71f",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    ":trade_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "trade_id",
+                      "description": "(Required) The zerohash generated ID associated with a trade"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2c8bdd6-7e27-49be-8da8-114838f341f4",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    ":trade_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "trade_id",
+                      "description": "(Required) The zerohash generated ID associated with a trade"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7f4f3473-cf75-4f5e-8cd2-00aae15a4252",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    ":trade_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "trade_id",
+                      "description": "(Required) The zerohash generated ID associated with a trade"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0c09d5e6-67f1-461f-a1e2-8d666e62128c",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    ":trade_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "trade_id",
+                      "description": "(Required) The zerohash generated ID associated with a trade"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6047e69a-8b5f-4304-b750-9fcd27452774",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "trades",
+                    ":trade_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "trade_id",
+                      "description": "(Required) The zerohash generated ID associated with a trade"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "2cec5fb7-040b-459a-83f7-81d5a2136d10",
+    "name": "zerohash Trades API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

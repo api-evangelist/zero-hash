@@ -1,0 +1,3592 @@
+{
+  "item": [
+    {
+      "id": "5d164f19-ff87-4104-ba0c-aef6dc70b271",
+      "name": "CLOB",
+      "description": {
+        "content": "Central Limit Order Book",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "09745d3d-f4fc-490a-8edf-0eeeeab04397",
+          "name": "Create account (CLOB)",
+          "request": {
+            "name": "Create account (CLOB)",
+            "description": {
+              "content": "Creates a new trading account on the CLOB. This is only relevant to our Central Limit Order Book (CLOB).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "clob",
+                "accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participant_code\": \"<string>\",\n  \"prefunded\": \"<boolean>\",\n  \"account_label\": \"<string>\",\n  \"account_tier\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2ec13922-76a2-4b8f-adde-6809320dfd9f",
+              "name": "CLOB account creation accepted. The returned resource reflects the account created on the trading engine.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"prefunded\": true,\n  \"account_label\": \"general\",\n  \"account_tier\": \"bronze\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"participant_code\": \"ABCDEF\",\n    \"account_group\": \"PLT001\",\n    \"account_label\": \"general\",\n    \"prefunded\": true,\n    \"account_tier\": \"bronze\",\n    \"customer_account_urn\": \"\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f9f3838b-5298-4504-bef6-3264d0736ee2",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"prefunded\": true,\n  \"account_label\": \"general\",\n  \"account_tier\": \"bronze\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a79bf6e1-830a-427c-8b25-19ae3c6d9aa8",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"prefunded\": true,\n  \"account_label\": \"general\",\n  \"account_tier\": \"bronze\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8d0b0bd3-cd25-4dd0-a4bc-09ba2ebf5083",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"prefunded\": true,\n  \"account_label\": \"general\",\n  \"account_tier\": \"bronze\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9bce3642-b3af-4bfc-b882-c57d14e13718",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"prefunded\": true,\n  \"account_label\": \"general\",\n  \"account_tier\": \"bronze\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "645b7a78-792a-406b-a038-c6c661028041",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"prefunded\": true,\n  \"account_label\": \"general\",\n  \"account_tier\": \"bronze\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "02cd0ab0-479b-42f6-9c47-0e78c716a5f9",
+          "name": "List accounts (CLOB)",
+          "request": {
+            "name": "List accounts (CLOB)",
+            "description": {
+              "content": "Retrieve a paginated list of your CLOB trading accounts. This is only relevant to our Central Limit Order Book (CLOB).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "clob",
+                "accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "participant_code",
+                  "value": "<string>",
+                  "description": "Filter results to a single participant code."
+                },
+                {
+                  "disabled": false,
+                  "key": "account_label",
+                  "value": "<string>",
+                  "description": "Filter results to a single account label."
+                },
+                {
+                  "disabled": false,
+                  "key": "prefunded",
+                  "value": "<string>",
+                  "description": "Filter results to prefunded (`true`) or non-prefunded (`false`) accounts."
+                },
+                {
+                  "disabled": false,
+                  "key": "account_tier",
+                  "value": "<string>",
+                  "description": "Filter results to a single account tier."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number to fetch. Must be a positive integer. Defaults to 1 when omitted."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "933f5cf2-6e6a-4248-8da8-e278e9ecd0a6",
+              "name": "Successfully retrieved the paginated list of CLOB accounts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "prefunded",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_tier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"accounts\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"account_group\": \"PLT001\",\n      \"account_label\": \"general\",\n      \"prefunded\": true,\n      \"account_tier\": \"bronze\",\n      \"customer_account_urn\": \"\"\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"account_group\": \"PLT001\",\n      \"account_label\": \"general\",\n      \"prefunded\": true,\n      \"account_tier\": \"bronze\",\n      \"customer_account_urn\": \"\"\n    }\n  ],\n  \"next_page\": 0\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b11f834e-8678-49dd-b055-4dd39ab7c0f3",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "prefunded",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_tier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63a7270a-0ff0-4874-8ef7-cb3c53078ec2",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "prefunded",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_tier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "718a2ff8-0d64-4cd5-84be-9d5273d1edab",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "prefunded",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_tier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d9a0c6ec-8570-481f-8657-2714a5027d0a",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "prefunded",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_tier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0ee7933-8974-4406-a8ab-a6a66fce4723",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "prefunded",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_tier",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "29b9c009-bf6a-485f-9dfc-329b3c198497",
+          "name": "Update CLOB account",
+          "request": {
+            "name": "Update CLOB account",
+            "description": {
+              "content": "Updates `prefunded` and/or `account_tier` attributes of an account on the CLOB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "clob",
+                "accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_label\": \"<string>\",\n  \"prefunded\": \"<boolean>\",\n  \"account_tier\": \"<string>\",\n  \"participant_code\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ef693b86-2e08-47ac-8ac9-cb36932f452b",
+              "name": "CLOB account update accepted. Returns the updated attributes of the account.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_label\": \"general\",\n  \"prefunded\": true,\n  \"account_tier\": \"silver\",\n  \"participant_code\": \"CUST01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"account_label\": \"general\",\n  \"prefunded\": true,\n  \"account_tier\": \"silver\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd219cd8-1876-4cd1-9002-edcd658a19d8",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_label\": \"general\",\n  \"prefunded\": true,\n  \"account_tier\": \"silver\",\n  \"participant_code\": \"CUST01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8a5fb5de-3789-4ed7-80e6-34d2ac9102d4",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_label\": \"general\",\n  \"prefunded\": true,\n  \"account_tier\": \"silver\",\n  \"participant_code\": \"CUST01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c87c14a7-07c4-4ed3-aac1-a7e588a39e12",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_label\": \"general\",\n  \"prefunded\": true,\n  \"account_tier\": \"silver\",\n  \"participant_code\": \"CUST01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd34b903-6892-4b90-9b50-2fca5759d22a",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_label\": \"general\",\n  \"prefunded\": true,\n  \"account_tier\": \"silver\",\n  \"participant_code\": \"CUST01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3f437d2b-ae7a-4f61-b730-e2ff55953359",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clob",
+                    "accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account_label\": \"general\",\n  \"prefunded\": true,\n  \"account_tier\": \"silver\",\n  \"participant_code\": \"CUST01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "50fbaa6f-d86f-4a6d-8ed7-38f8d66b7be0",
+          "name": "Get account balance",
+          "request": {
+            "name": "Get account balance",
+            "description": {
+              "content": "Returns a snapshot of an account balance and buying power on the CLOB matching the given filters.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "get_account_balance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"user\": \"<string>\",\n  \"currency\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "eb6c666e-531f-4054-8a3b-947d61a42c49",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "get_account_balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n  \"user\": \"<string>\",\n  \"currency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"balance\": \"547280.56\",\n  \"capital_requirement\": \"0\",\n  \"excess_capital\": \"547280.56\",\n  \"buying_power\": \"547280.56\",\n  \"securities\": {},\n  \"total_security_notional_value\": \"0\",\n  \"total_security_available_value\": \"0\",\n  \"open_orders\": \"0\",\n  \"alternate_capital_requirement_currency\": \"\",\n  \"alternate_capital_requirement\": \"\",\n  \"unsettled_funds\": \"0\",\n  \"margin_requirement\": \"0\",\n  \"update_time\": \"2024-04-19T22:48:56.383Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6d4f0617-f2f3-4987-b4e4-f5a1ebbb760e",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "get_account_balance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n  \"user\": \"<string>\",\n  \"currency\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c6ae97f2-6c96-4ebf-9565-66e73ecec7f8",
+          "name": "List account balances",
+          "request": {
+            "name": "List account balances",
+            "description": {
+              "content": "Returns a snapshotted list  balances and buying for an account power on the CLOB matching the given filter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "list_account_balances"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"user\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "820c6e21-6f66-4f93-95cb-c13bec13a6ff",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "list_account_balances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"balances\": {\n    \"ETH\": {\n      \"balance\": \"0.018\",\n      \"capital_requirement\": \"0\",\n      \"excess_capital\": \"0.018\",\n      \"buying_power\": \"0.018\",\n      \"securities\": {},\n      \"total_security_notional_value\": \"0\",\n      \"total_security_available_value\": \"0\",\n      \"open_orders\": \"0\",\n      \"alternate_capital_requirement_currency\": \"\",\n      \"alternate_capital_requirement\": \"\",\n      \"unsettled_funds\": \"0\",\n      \"margin_requirement\": \"0\",\n      \"update_time\": \"2026-05-25T13:08:04.873152350Z\"\n    },\n    \"USD\": {\n      \"balance\": \"924.1967811856\",\n      \"capital_requirement\": \"0\",\n      \"excess_capital\": \"924.1967811856\",\n      \"buying_power\": \"924.1967811856\",\n      \"securities\": {},\n      \"total_security_notional_value\": \"0\",\n      \"total_security_available_value\": \"0\",\n      \"open_orders\": \"0\",\n      \"alternate_capital_requirement_currency\": \"\",\n      \"alternate_capital_requirement\": \"\",\n      \"unsettled_funds\": \"0\",\n      \"margin_requirement\": \"0\",\n      \"update_time\": \"2026-05-25T13:08:04.873152350Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2657d0a6-ce63-4975-9bc8-b93b75a4616a",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "list_account_balances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "32a68af7-b9c8-4abd-807e-da4a9e0b6b9e",
+          "name": "List open orders",
+          "request": {
+            "name": "List open orders",
+            "description": {
+              "content": "Returns snapshot of working orders the CLOB matching the given filters.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "get_open_orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accounts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"user\": \"<string>\",\n  \"symbols\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d8841b9b-1dd5-492a-a884-37851ae9d6f4",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "get_open_orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"PAR001\",\n    \"PAR001\"\n  ],\n  \"user\": \"<string>\",\n  \"symbols\": [\n    \"ETH/USD\",\n    \"ETH/USD\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"orders\": [\n    {\n      \"id\": \"51H5D2K2A00M\",\n      \"type\": \"ORDER_TYPE_LIMIT\",\n      \"side\": \"SIDE_BUY\",\n      \"order_qty\": \"200000\",\n      \"symbol\": \"ETH/USD\",\n      \"clord_id\": \"1245567889\",\n      \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n      \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n      \"user\": \"firms/{zerohash}/users/{platform_code}\",\n      \"cum_qty\": \"0\",\n      \"avg_px\": \"0\",\n      \"leaves_qty\": \"200000\",\n      \"state\": \"ORDER_STATE_NEW\",\n      \"participant\": \"firms/F-PLAT01/users/CUST01\",\n      \"price\": \"420000\",\n      \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"stop_price\": \"0\",\n      \"min_qty\": \"0\",\n      \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n      \"all_or_none\": false,\n      \"cross_id\": \"\",\n      \"host_cross_id\": \"\",\n      \"submitting_participant\": \"\",\n      \"client_account_id\": \"\",\n      \"client_participant_id\": \"\",\n      \"parent_order_id\": \"\",\n      \"commissions_basis_points\": \"40\",\n      \"participate_dont_initiate\": false,\n      \"cash_order_qty\": \"0\",\n      \"symbol_sub_type\": \"\",\n      \"strict_limit\": false,\n      \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n      \"collateral_memo\": \"Fully Collateralized\",\n      \"priority_weight\": \"0\",\n      \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n      \"context\": {\n        \"any_context\": {},\n        \"fix_context\": {\n          \"begin_string\": \"FIXT.1.1\",\n          \"target_comp_id\": \"C-F-PLAT01-1\",\n          \"sender_comp_id\": \"ZERO\",\n          \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"security_type\": \"\",\n          \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"sender_sub_id\": \"CUST01\",\n          \"sender_location_id\": \"\",\n          \"on_behalf_of_comp_id\": \"\",\n          \"on_behalf_of_sub_id\": \"\"\n        },\n        \"service_name\": \"\"\n      },\n      \"best_limit\": false,\n      \"immediately_executable_limit\": false,\n      \"block_trade_indicator\": false,\n      \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n      \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n      \"price_to_quantity_filled\": {},\n      \"commission_notional_total_collected\": \"10\",\n      \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n      \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n      \"ignore_price_validity_checks\": false,\n      \"transaction_booked_time\": \"2006-03-13T17:04:53.710Z\",\n      \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"price_scale\": \"100\",\n      \"fractional_quantity_scale\": \"100000000\",\n      \"maker_commissions_basis_points\": \"0\",\n      \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n    },\n    {\n      \"id\": \"51H5D2K2A00M\",\n      \"type\": \"ORDER_TYPE_LIMIT\",\n      \"side\": \"SIDE_BUY\",\n      \"order_qty\": \"200000\",\n      \"symbol\": \"ETH/USD\",\n      \"clord_id\": \"1245567889\",\n      \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n      \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n      \"user\": \"firms/F-{platform_code}/users/{account_label}\",\n      \"cum_qty\": \"0\",\n      \"avg_px\": \"0\",\n      \"leaves_qty\": \"200000\",\n      \"state\": \"ORDER_STATE_NEW\",\n      \"participant\": \"firms/F-PLAT01/users/CUST01\",\n      \"price\": \"420000\",\n      \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"stop_price\": \"0\",\n      \"min_qty\": \"0\",\n      \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n      \"all_or_none\": false,\n      \"cross_id\": \"\",\n      \"host_cross_id\": \"\",\n      \"submitting_participant\": \"\",\n      \"client_account_id\": \"\",\n      \"client_participant_id\": \"\",\n      \"parent_order_id\": \"\",\n      \"commissions_basis_points\": \"40\",\n      \"participate_dont_initiate\": false,\n      \"cash_order_qty\": \"0\",\n      \"symbol_sub_type\": \"\",\n      \"strict_limit\": false,\n      \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n      \"collateral_memo\": \"Fully Collateralized\",\n      \"priority_weight\": \"0\",\n      \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n      \"context\": {\n        \"any_context\": {},\n        \"fix_context\": {\n          \"begin_string\": \"FIXT.1.1\",\n          \"target_comp_id\": \"C-F-PLAT01-1\",\n          \"sender_comp_id\": \"ZERO\",\n          \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"security_type\": \"\",\n          \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"sender_sub_id\": \"CUST01\",\n          \"sender_location_id\": \"\",\n          \"on_behalf_of_comp_id\": \"\",\n          \"on_behalf_of_sub_id\": \"\"\n        },\n        \"service_name\": \"\"\n      },\n      \"best_limit\": false,\n      \"immediately_executable_limit\": false,\n      \"block_trade_indicator\": false,\n      \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n      \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n      \"price_to_quantity_filled\": {},\n      \"commission_notional_total_collected\": \"10\",\n      \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n      \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n      \"ignore_price_validity_checks\": false,\n      \"transaction_booked_time\": \"1983-05-01T05:22:40.306Z\",\n      \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"price_scale\": \"100\",\n      \"fractional_quantity_scale\": \"100000000\",\n      \"maker_commissions_basis_points\": \"0\",\n      \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cea9d58d-64ee-4c5b-895d-c1e12432b9bb",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "get_open_orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"PAR001\",\n    \"PAR001\"\n  ],\n  \"user\": \"<string>\",\n  \"symbols\": [\n    \"ETH/USD\",\n    \"ETH/USD\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a47ea3ab-09d2-421c-8d88-5141ecbdd593",
+          "name": "List orders",
+          "request": {
+            "name": "List orders",
+            "description": {
+              "content": "Search for orders places on the CLOB matching the given filters.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "search_orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accounts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"user\": \"<string>\",\n  \"client_account_id\": \"<string>\",\n  \"client_participant_id\": \"<string>\",\n  \"clord_id\": \"<string>\",\n  \"cross_id\": \"<string>\",\n  \"end_time\": \"<dateTime>\",\n  \"host_cross_id\": \"<string>\",\n  \"order_id\": \"<string>\",\n  \"order_state_filter\": \"<string>\",\n  \"page_size\": \"<integer>\",\n  \"page_token\": \"<string>\",\n  \"parent_order_id\": \"<string>\",\n  \"side\": \"<string>\",\n  \"start_time\": \"<dateTime>\",\n  \"symbol\": \"<string>\",\n  \"symbol_sub_type\": \"<string>\",\n  \"type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a31d21d2-a455-4864-99f2-c16f9652826f",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "search_orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"firms/F-{platform_code}/accounts/{account_label}\",\n    \"firms/F-{platform_code}/accounts/{account_label}\"\n  ],\n  \"user\": \"<string>\",\n  \"client_account_id\": \"\",\n  \"client_participant_id\": \"\",\n  \"clord_id\": \"1245567889\",\n  \"cross_id\": \"\",\n  \"end_time\": \"2023-01-01T00:00:00Z\",\n  \"host_cross_id\": \"\",\n  \"order_id\": \"51H5D2K2A00M\",\n  \"order_state_filter\": \"ORDER_STATE_NEW\",\n  \"page_size\": 100,\n  \"page_token\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"parent_order_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"side\": \"SIDE_BUY\",\n  \"start_time\": \"2023-01-01T00:00:00Z\",\n  \"symbol\": \"ETH/USD\",\n  \"symbol_sub_type\": \"SYMBOL_SUB_TYPE_UNDEFINED\",\n  \"type\": \"ORDER_TYPE_LIMIT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"next_page_token\": \"string\",\n  \"order\": [\n    {\n      \"id\": \"51H5D2K2A00M\",\n      \"type\": \"ORDER_TYPE_LIMIT\",\n      \"side\": \"SIDE_BUY\",\n      \"order_qty\": \"200000\",\n      \"symbol\": \"ETH/USD\",\n      \"clord_id\": \"1245567889\",\n      \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n      \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n      \"user\": \"firms/F-{platform_code}/users/{participant_code}\",\n      \"cum_qty\": \"0\",\n      \"avg_px\": \"0\",\n      \"leaves_qty\": \"200000\",\n      \"state\": \"ORDER_STATE_NEW\",\n      \"participant\": \"firms/F-PLAT01/users/CUST01\",\n      \"price\": \"420000\",\n      \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"stop_price\": \"0\",\n      \"min_qty\": \"0\",\n      \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n      \"all_or_none\": false,\n      \"cross_id\": \"\",\n      \"host_cross_id\": \"\",\n      \"submitting_participant\": \"\",\n      \"client_account_id\": \"\",\n      \"client_participant_id\": \"\",\n      \"parent_order_id\": \"\",\n      \"commissions_basis_points\": \"40\",\n      \"participate_dont_initiate\": false,\n      \"cash_order_qty\": \"0\",\n      \"symbol_sub_type\": \"\",\n      \"strict_limit\": false,\n      \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n      \"collateral_memo\": \"Fully Collateralized\",\n      \"priority_weight\": \"0\",\n      \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n      \"context\": {\n        \"any_context\": {},\n        \"fix_context\": {\n          \"begin_string\": \"FIXT.1.1\",\n          \"target_comp_id\": \"C-F-PLAT01-1\",\n          \"sender_comp_id\": \"ZERO\",\n          \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"security_type\": \"\",\n          \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"sender_sub_id\": \"CUST01\",\n          \"sender_location_id\": \"\",\n          \"on_behalf_of_comp_id\": \"\",\n          \"on_behalf_of_sub_id\": \"\"\n        },\n        \"service_name\": \"\"\n      },\n      \"best_limit\": false,\n      \"immediately_executable_limit\": false,\n      \"block_trade_indicator\": false,\n      \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n      \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n      \"price_to_quantity_filled\": {},\n      \"commission_notional_total_collected\": \"10\",\n      \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n      \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n      \"ignore_price_validity_checks\": false,\n      \"transaction_booked_time\": \"1963-07-09T12:41:37.884Z\",\n      \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"price_scale\": \"100\",\n      \"fractional_quantity_scale\": \"100000000\",\n      \"maker_commissions_basis_points\": \"0\",\n      \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n    },\n    {\n      \"id\": \"51H5D2K2A00M\",\n      \"type\": \"ORDER_TYPE_LIMIT\",\n      \"side\": \"SIDE_BUY\",\n      \"order_qty\": \"200000\",\n      \"symbol\": \"ETH/USD\",\n      \"clord_id\": \"1245567889\",\n      \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n      \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n      \"user\": \"firms/F-{platform_code}/users/{participant_code}\",\n      \"cum_qty\": \"0\",\n      \"avg_px\": \"0\",\n      \"leaves_qty\": \"200000\",\n      \"state\": \"ORDER_STATE_NEW\",\n      \"participant\": \"firms/F-PLAT01/users/CUST01\",\n      \"price\": \"420000\",\n      \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"stop_price\": \"0\",\n      \"min_qty\": \"0\",\n      \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n      \"all_or_none\": false,\n      \"cross_id\": \"\",\n      \"host_cross_id\": \"\",\n      \"submitting_participant\": \"\",\n      \"client_account_id\": \"\",\n      \"client_participant_id\": \"\",\n      \"parent_order_id\": \"\",\n      \"commissions_basis_points\": \"40\",\n      \"participate_dont_initiate\": false,\n      \"cash_order_qty\": \"0\",\n      \"symbol_sub_type\": \"\",\n      \"strict_limit\": false,\n      \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n      \"collateral_memo\": \"Fully Collateralized\",\n      \"priority_weight\": \"0\",\n      \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n      \"context\": {\n        \"any_context\": {},\n        \"fix_context\": {\n          \"begin_string\": \"FIXT.1.1\",\n          \"target_comp_id\": \"C-F-PLAT01-1\",\n          \"sender_comp_id\": \"ZERO\",\n          \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"security_type\": \"\",\n          \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"sender_sub_id\": \"CUST01\",\n          \"sender_location_id\": \"\",\n          \"on_behalf_of_comp_id\": \"\",\n          \"on_behalf_of_sub_id\": \"\"\n        },\n        \"service_name\": \"\"\n      },\n      \"best_limit\": false,\n      \"immediately_executable_limit\": false,\n      \"block_trade_indicator\": false,\n      \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n      \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n      \"price_to_quantity_filled\": {},\n      \"commission_notional_total_collected\": \"10\",\n      \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n      \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n      \"ignore_price_validity_checks\": false,\n      \"transaction_booked_time\": \"1975-11-23T01:24:07.503Z\",\n      \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"price_scale\": \"100\",\n      \"fractional_quantity_scale\": \"100000000\",\n      \"maker_commissions_basis_points\": \"0\",\n      \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cb7061aa-cce8-41c0-8b92-60133fe23d7e",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "search_orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"firms/F-{platform_code}/accounts/{account_label}\",\n    \"firms/F-{platform_code}/accounts/{account_label}\"\n  ],\n  \"user\": \"<string>\",\n  \"client_account_id\": \"\",\n  \"client_participant_id\": \"\",\n  \"clord_id\": \"1245567889\",\n  \"cross_id\": \"\",\n  \"end_time\": \"2023-01-01T00:00:00Z\",\n  \"host_cross_id\": \"\",\n  \"order_id\": \"51H5D2K2A00M\",\n  \"order_state_filter\": \"ORDER_STATE_NEW\",\n  \"page_size\": 100,\n  \"page_token\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"parent_order_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"side\": \"SIDE_BUY\",\n  \"start_time\": \"2023-01-01T00:00:00Z\",\n  \"symbol\": \"ETH/USD\",\n  \"symbol_sub_type\": \"SYMBOL_SUB_TYPE_UNDEFINED\",\n  \"type\": \"ORDER_TYPE_LIMIT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "88ce2af4-7cf0-481c-add1-3e5526a6e4a9",
+          "name": "Get order executions",
+          "request": {
+            "name": "Get order executions",
+            "description": {
+              "content": "Search for order executions on the CLOB matching the given filters. This endpoint returns all the executions for the given filters, and is paginated. \nNote: This executions means all the events that has been triggered for your orders on the CLOB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "search_executions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accounts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"user\": \"<string>\",\n  \"client_account_id\": \"<string>\",\n  \"client_participant_id\": \"<string>\",\n  \"clord_id\": \"<string>\",\n  \"end_time\": \"<dateTime>\",\n  \"newest_first\": \"<boolean>\",\n  \"order_id\": \"<string>\",\n  \"page_size\": \"<integer>\",\n  \"page_token\": \"<string>\",\n  \"parent_order_id\": \"<string>\",\n  \"start_time\": \"<dateTime>\",\n  \"symbol\": \"<string>\",\n  \"symbol_sub_type\": \"<string>\",\n  \"types\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "065fd144-0642-41e9-9f61-f43c34477d9c",
+              "name": "A successful response.(streaming responses)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "search_executions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"CUST01-label\",\n    \"CUST01-label\"\n  ],\n  \"user\": \"<string>\",\n  \"client_account_id\": \"08155fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"client_participant_id\": \"981d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"clord_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"end_time\": \"2023-01-01T00:00:00Z\",\n  \"newest_first\": true,\n  \"order_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"page_size\": 100,\n  \"page_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\",\n  \"parent_order_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"start_time\": \"2023-01-01T00:00:00Z\",\n  \"symbol\": \"AAPL\",\n  \"symbol_sub_type\": \"STK\",\n  \"types\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"eof\": false,\n  \"executions\": [\n    {\n      \"aggressor\": true,\n      \"commission_notional_collected\": \"100.00\",\n      \"id\": \"90VSYQ3YJ076\",\n      \"last_px\": \"100.00\",\n      \"last_shares\": \"10\",\n      \"leg_prices\": [\n        {\n          \"anchor\": true,\n          \"px\": \"100.00\",\n          \"qty\": \"10\",\n          \"reference_px\": \"100.00\",\n          \"side\": \"SIDE_BUY\",\n          \"symbol\": \"BTC/USD\"\n        },\n        {\n          \"anchor\": true,\n          \"px\": \"100.00\",\n          \"qty\": \"10\",\n          \"reference_px\": \"100.00\",\n          \"side\": \"SIDE_BUY\",\n          \"symbol\": \"BTC/USD\"\n        }\n      ],\n      \"order\": {\n        \"id\": \"51H5D2K2A00M\",\n        \"type\": \"ORDER_TYPE_LIMIT\",\n        \"side\": \"SIDE_BUY\",\n        \"order_qty\": \"200000\",\n        \"symbol\": \"ETH/USD\",\n        \"clord_id\": \"1245567889\",\n        \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n        \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n        \"user\": \"firms/{zerohash}/users/{platform_code}\",\n        \"cum_qty\": \"0\",\n        \"avg_px\": \"0\",\n        \"leaves_qty\": \"200000\",\n        \"state\": \"ORDER_STATE_NEW\",\n        \"participant\": \"firms/F-PLAT01/users/CUST01\",\n        \"price\": \"420000\",\n        \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n        \"stop_price\": \"0\",\n        \"min_qty\": \"0\",\n        \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n        \"all_or_none\": false,\n        \"cross_id\": \"\",\n        \"host_cross_id\": \"\",\n        \"submitting_participant\": \"\",\n        \"client_account_id\": \"\",\n        \"client_participant_id\": \"\",\n        \"parent_order_id\": \"\",\n        \"commissions_basis_points\": \"40\",\n        \"participate_dont_initiate\": false,\n        \"cash_order_qty\": \"0\",\n        \"symbol_sub_type\": \"\",\n        \"strict_limit\": false,\n        \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n        \"collateral_memo\": \"Fully Collateralized\",\n        \"priority_weight\": \"0\",\n        \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n        \"context\": {\n          \"any_context\": {},\n          \"fix_context\": {\n            \"begin_string\": \"FIXT.1.1\",\n            \"target_comp_id\": \"C-F-PLAT01-1\",\n            \"sender_comp_id\": \"ZERO\",\n            \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"security_type\": \"\",\n            \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"sender_sub_id\": \"CUST01\",\n            \"sender_location_id\": \"\",\n            \"on_behalf_of_comp_id\": \"\",\n            \"on_behalf_of_sub_id\": \"\"\n          },\n          \"service_name\": \"\"\n        },\n        \"best_limit\": false,\n        \"immediately_executable_limit\": false,\n        \"block_trade_indicator\": false,\n        \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n        \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n        \"price_to_quantity_filled\": {},\n        \"commission_notional_total_collected\": \"10\",\n        \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n        \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n        \"ignore_price_validity_checks\": false,\n        \"transaction_booked_time\": \"1978-08-17T04:56:07.222Z\",\n        \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n        \"price_scale\": \"100\",\n        \"fractional_quantity_scale\": \"100000000\",\n        \"maker_commissions_basis_points\": \"0\",\n        \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n      },\n      \"order_reject_reason\": \"ORDER_REJECT_REASON_UNDEFINED\",\n      \"text\": \"string\",\n      \"trace_id\": \"string\",\n      \"trade_id\": \"string\",\n      \"transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"type\": \"EXECUTION_TYPE_NEW\",\n      \"unsolicited_cancel_reason\": \"UNSOLICITED_CXL_REASON_CONNECTION_LOSS\"\n    },\n    {\n      \"aggressor\": true,\n      \"commission_notional_collected\": \"100.00\",\n      \"id\": \"90VSYQ3YJ076\",\n      \"last_px\": \"100.00\",\n      \"last_shares\": \"10\",\n      \"leg_prices\": [\n        {\n          \"anchor\": true,\n          \"px\": \"100.00\",\n          \"qty\": \"10\",\n          \"reference_px\": \"100.00\",\n          \"side\": \"SIDE_BUY\",\n          \"symbol\": \"BTC/USD\"\n        },\n        {\n          \"anchor\": true,\n          \"px\": \"100.00\",\n          \"qty\": \"10\",\n          \"reference_px\": \"100.00\",\n          \"side\": \"SIDE_BUY\",\n          \"symbol\": \"BTC/USD\"\n        }\n      ],\n      \"order\": {\n        \"id\": \"51H5D2K2A00M\",\n        \"type\": \"ORDER_TYPE_LIMIT\",\n        \"side\": \"SIDE_BUY\",\n        \"order_qty\": \"200000\",\n        \"symbol\": \"ETH/USD\",\n        \"clord_id\": \"1245567889\",\n        \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n        \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n        \"user\": \"firms/{zerohash}/users/{platform_code}\",\n        \"cum_qty\": \"0\",\n        \"avg_px\": \"0\",\n        \"leaves_qty\": \"200000\",\n        \"state\": \"ORDER_STATE_NEW\",\n        \"participant\": \"firms/F-PLAT01/users/CUST01\",\n        \"price\": \"420000\",\n        \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n        \"stop_price\": \"0\",\n        \"min_qty\": \"0\",\n        \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n        \"all_or_none\": false,\n        \"cross_id\": \"\",\n        \"host_cross_id\": \"\",\n        \"submitting_participant\": \"\",\n        \"client_account_id\": \"\",\n        \"client_participant_id\": \"\",\n        \"parent_order_id\": \"\",\n        \"commissions_basis_points\": \"40\",\n        \"participate_dont_initiate\": false,\n        \"cash_order_qty\": \"0\",\n        \"symbol_sub_type\": \"\",\n        \"strict_limit\": false,\n        \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n        \"collateral_memo\": \"Fully Collateralized\",\n        \"priority_weight\": \"0\",\n        \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n        \"context\": {\n          \"any_context\": {},\n          \"fix_context\": {\n            \"begin_string\": \"FIXT.1.1\",\n            \"target_comp_id\": \"C-F-PLAT01-1\",\n            \"sender_comp_id\": \"ZERO\",\n            \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"security_type\": \"\",\n            \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"sender_sub_id\": \"CUST01\",\n            \"sender_location_id\": \"\",\n            \"on_behalf_of_comp_id\": \"\",\n            \"on_behalf_of_sub_id\": \"\"\n          },\n          \"service_name\": \"\"\n        },\n        \"best_limit\": false,\n        \"immediately_executable_limit\": false,\n        \"block_trade_indicator\": false,\n        \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n        \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n        \"price_to_quantity_filled\": {},\n        \"commission_notional_total_collected\": \"10\",\n        \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n        \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n        \"ignore_price_validity_checks\": false,\n        \"transaction_booked_time\": \"1983-02-08T10:02:53.890Z\",\n        \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n        \"price_scale\": \"100\",\n        \"fractional_quantity_scale\": \"100000000\",\n        \"maker_commissions_basis_points\": \"0\",\n        \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n      },\n      \"order_reject_reason\": \"ORDER_REJECT_REASON_UNDEFINED\",\n      \"text\": \"string\",\n      \"trace_id\": \"string\",\n      \"trade_id\": \"string\",\n      \"transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n      \"type\": \"EXECUTION_TYPE_NEW\",\n      \"unsolicited_cancel_reason\": \"UNSOLICITED_CXL_REASON_CONNECTION_LOSS\"\n    }\n  ],\n  \"next_page_token\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "52a74baf-e85c-45fb-8a16-daef1aa84ea7",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "search_executions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"CUST01-label\",\n    \"CUST01-label\"\n  ],\n  \"user\": \"<string>\",\n  \"client_account_id\": \"08155fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"client_participant_id\": \"981d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"clord_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"end_time\": \"2023-01-01T00:00:00Z\",\n  \"newest_first\": true,\n  \"order_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"page_size\": 100,\n  \"page_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\",\n  \"parent_order_id\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n  \"start_time\": \"2023-01-01T00:00:00Z\",\n  \"symbol\": \"AAPL\",\n  \"symbol_sub_type\": \"STK\",\n  \"types\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bbdbacbf-4ade-4e96-b01d-9ae15f0ad84b",
+          "name": "Create order subscription",
+          "request": {
+            "name": "Create order subscription",
+            "description": {
+              "content": "Create a subscription to receive updates on working orders.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "create_order_subscription"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accounts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"user\": \"<string>\",\n  \"subscription_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "25bad00b-ed8b-4a8a-9c04-065aaea54b77",
+              "name": "A successful response.(streaming responses)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "create_order_subscription"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"user\": \"<string>\",\n  \"subscription_id\": \"subscription-id\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"details\": [\n      {\n        \"type_url\": \"string\",\n        \"value\": \"string\"\n      },\n      {\n        \"type_url\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"grpc_code\": 4002,\n    \"http_code\": 2765,\n    \"http_status\": \"string\",\n    \"message\": \"string\"\n  },\n  \"result\": {\n    \"heartbeat\": {},\n    \"processed_sent_time\": \"1970-07-31T08:50:17.442Z\",\n    \"session_id\": \"session-id\",\n    \"snapshot\": {\n      \"orders\": [\n        {\n          \"id\": \"51H5D2K2A00M\",\n          \"type\": \"ORDER_TYPE_LIMIT\",\n          \"side\": \"SIDE_BUY\",\n          \"order_qty\": \"200000\",\n          \"symbol\": \"ETH/USD\",\n          \"clord_id\": \"1245567889\",\n          \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n          \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n          \"user\": \"firms/{zerohash}/users/{platform_code}\",\n          \"cum_qty\": \"0\",\n          \"avg_px\": \"0\",\n          \"leaves_qty\": \"200000\",\n          \"state\": \"ORDER_STATE_NEW\",\n          \"participant\": \"firms/F-PLAT01/users/CUST01\",\n          \"price\": \"420000\",\n          \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n          \"stop_price\": \"0\",\n          \"min_qty\": \"0\",\n          \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n          \"all_or_none\": false,\n          \"cross_id\": \"\",\n          \"host_cross_id\": \"\",\n          \"submitting_participant\": \"\",\n          \"client_account_id\": \"\",\n          \"client_participant_id\": \"\",\n          \"parent_order_id\": \"\",\n          \"commissions_basis_points\": \"40\",\n          \"participate_dont_initiate\": false,\n          \"cash_order_qty\": \"0\",\n          \"symbol_sub_type\": \"\",\n          \"strict_limit\": false,\n          \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n          \"collateral_memo\": \"Fully Collateralized\",\n          \"priority_weight\": \"0\",\n          \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n          \"context\": {\n            \"any_context\": {},\n            \"fix_context\": {\n              \"begin_string\": \"FIXT.1.1\",\n              \"target_comp_id\": \"C-F-PLAT01-1\",\n              \"sender_comp_id\": \"ZERO\",\n              \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n              \"security_type\": \"\",\n              \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n              \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n              \"sender_sub_id\": \"CUST01\",\n              \"sender_location_id\": \"\",\n              \"on_behalf_of_comp_id\": \"\",\n              \"on_behalf_of_sub_id\": \"\"\n            },\n            \"service_name\": \"\"\n          },\n          \"best_limit\": false,\n          \"immediately_executable_limit\": false,\n          \"block_trade_indicator\": false,\n          \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n          \"price_to_quantity_filled\": {},\n          \"commission_notional_total_collected\": \"10\",\n          \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n          \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n          \"ignore_price_validity_checks\": false,\n          \"transaction_booked_time\": \"1971-07-06T14:49:44.748Z\",\n          \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n          \"price_scale\": \"100\",\n          \"fractional_quantity_scale\": \"100000000\",\n          \"maker_commissions_basis_points\": \"0\",\n          \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n        },\n        {\n          \"id\": \"51H5D2K2A00M\",\n          \"type\": \"ORDER_TYPE_LIMIT\",\n          \"side\": \"SIDE_BUY\",\n          \"order_qty\": \"200000\",\n          \"symbol\": \"ETH/USD\",\n          \"clord_id\": \"1245567889\",\n          \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n          \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n          \"user\": \"firms/F-{platform_code}/users/{participant_code}\",\n          \"cum_qty\": \"0\",\n          \"avg_px\": \"0\",\n          \"leaves_qty\": \"200000\",\n          \"state\": \"ORDER_STATE_NEW\",\n          \"participant\": \"firms/F-PLAT01/users/CUST01\",\n          \"price\": \"420000\",\n          \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n          \"stop_price\": \"0\",\n          \"min_qty\": \"0\",\n          \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n          \"all_or_none\": false,\n          \"cross_id\": \"\",\n          \"host_cross_id\": \"\",\n          \"submitting_participant\": \"\",\n          \"client_account_id\": \"\",\n          \"client_participant_id\": \"\",\n          \"parent_order_id\": \"\",\n          \"commissions_basis_points\": \"40\",\n          \"participate_dont_initiate\": false,\n          \"cash_order_qty\": \"0\",\n          \"symbol_sub_type\": \"\",\n          \"strict_limit\": false,\n          \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n          \"collateral_memo\": \"Fully Collateralized\",\n          \"priority_weight\": \"0\",\n          \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n          \"context\": {\n            \"any_context\": {},\n            \"fix_context\": {\n              \"begin_string\": \"FIXT.1.1\",\n              \"target_comp_id\": \"C-F-PLAT01-1\",\n              \"sender_comp_id\": \"ZERO\",\n              \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n              \"security_type\": \"\",\n              \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n              \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n              \"sender_sub_id\": \"CUST01\",\n              \"sender_location_id\": \"\",\n              \"on_behalf_of_comp_id\": \"\",\n              \"on_behalf_of_sub_id\": \"\"\n            },\n            \"service_name\": \"\"\n          },\n          \"best_limit\": false,\n          \"immediately_executable_limit\": false,\n          \"block_trade_indicator\": false,\n          \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n          \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n          \"price_to_quantity_filled\": {},\n          \"commission_notional_total_collected\": \"10\",\n          \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n          \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n          \"ignore_price_validity_checks\": false,\n          \"transaction_booked_time\": \"1975-03-17T09:02:34.161Z\",\n          \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n          \"price_scale\": \"100\",\n          \"fractional_quantity_scale\": \"100000000\",\n          \"maker_commissions_basis_points\": \"0\",\n          \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n        }\n      ]\n    },\n    \"update\": {\n      \"cancel_reject\": {\n        \"clord_id\": \"string\",\n        \"is_replace\": false,\n        \"order_id\": \"string\",\n        \"reject_reason\": \"string\",\n        \"text\": \"string\",\n        \"transact_time\": \"1955-02-02T12:11:05.231Z\"\n      },\n      \"executions\": [\n        {\n          \"aggressor\": true,\n          \"commission_notional_collected\": \"100.00\",\n          \"id\": \"90VSYQ3YJ076\",\n          \"last_px\": \"100.00\",\n          \"last_shares\": \"10\",\n          \"leg_prices\": [\n            {\n              \"anchor\": true,\n              \"px\": \"100.00\",\n              \"qty\": \"10\",\n              \"reference_px\": \"100.00\",\n              \"side\": \"SIDE_BUY\",\n              \"symbol\": \"BTC/USD\"\n            },\n            {\n              \"anchor\": true,\n              \"px\": \"100.00\",\n              \"qty\": \"10\",\n              \"reference_px\": \"100.00\",\n              \"side\": \"SIDE_BUY\",\n              \"symbol\": \"BTC/USD\"\n            }\n          ],\n          \"order\": {\n            \"id\": \"51H5D2K2A00M\",\n            \"type\": \"ORDER_TYPE_LIMIT\",\n            \"side\": \"SIDE_BUY\",\n            \"order_qty\": \"200000\",\n            \"symbol\": \"ETH/USD\",\n            \"clord_id\": \"1245567889\",\n            \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n            \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n            \"user\": \"firms/{zerohash}/users/{platform_code}\",\n            \"cum_qty\": \"0\",\n            \"avg_px\": \"0\",\n            \"leaves_qty\": \"200000\",\n            \"state\": \"ORDER_STATE_NEW\",\n            \"participant\": \"firms/F-PLAT01/users/CUST01\",\n            \"price\": \"420000\",\n            \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n            \"stop_price\": \"0\",\n            \"min_qty\": \"0\",\n            \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n            \"all_or_none\": false,\n            \"cross_id\": \"\",\n            \"host_cross_id\": \"\",\n            \"submitting_participant\": \"\",\n            \"client_account_id\": \"\",\n            \"client_participant_id\": \"\",\n            \"parent_order_id\": \"\",\n            \"commissions_basis_points\": \"40\",\n            \"participate_dont_initiate\": false,\n            \"cash_order_qty\": \"0\",\n            \"symbol_sub_type\": \"\",\n            \"strict_limit\": false,\n            \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n            \"collateral_memo\": \"Fully Collateralized\",\n            \"priority_weight\": \"0\",\n            \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n            \"context\": {\n              \"any_context\": {},\n              \"fix_context\": {\n                \"begin_string\": \"FIXT.1.1\",\n                \"target_comp_id\": \"C-F-PLAT01-1\",\n                \"sender_comp_id\": \"ZERO\",\n                \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n                \"security_type\": \"\",\n                \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n                \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n                \"sender_sub_id\": \"CUST01\",\n                \"sender_location_id\": \"\",\n                \"on_behalf_of_comp_id\": \"\",\n                \"on_behalf_of_sub_id\": \"\"\n              },\n              \"service_name\": \"\"\n            },\n            \"best_limit\": false,\n            \"immediately_executable_limit\": false,\n            \"block_trade_indicator\": false,\n            \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n            \"price_to_quantity_filled\": {},\n            \"commission_notional_total_collected\": \"10\",\n            \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n            \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n            \"ignore_price_validity_checks\": false,\n            \"transaction_booked_time\": \"1993-08-28T06:00:40.561Z\",\n            \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n            \"price_scale\": \"100\",\n            \"fractional_quantity_scale\": \"100000000\",\n            \"maker_commissions_basis_points\": \"0\",\n            \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n          },\n          \"order_reject_reason\": \"ORDER_REJECT_REASON_UNDEFINED\",\n          \"text\": \"string\",\n          \"trace_id\": \"string\",\n          \"trade_id\": \"string\",\n          \"transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n          \"type\": \"EXECUTION_TYPE_NEW\",\n          \"unsolicited_cancel_reason\": \"UNSOLICITED_CXL_REASON_CONNECTION_LOSS\"\n        },\n        {\n          \"aggressor\": true,\n          \"commission_notional_collected\": \"100.00\",\n          \"id\": \"90VSYQ3YJ076\",\n          \"last_px\": \"100.00\",\n          \"last_shares\": \"10\",\n          \"leg_prices\": [\n            {\n              \"anchor\": true,\n              \"px\": \"100.00\",\n              \"qty\": \"10\",\n              \"reference_px\": \"100.00\",\n              \"side\": \"SIDE_BUY\",\n              \"symbol\": \"BTC/USD\"\n            },\n            {\n              \"anchor\": true,\n              \"px\": \"100.00\",\n              \"qty\": \"10\",\n              \"reference_px\": \"100.00\",\n              \"side\": \"SIDE_BUY\",\n              \"symbol\": \"BTC/USD\"\n            }\n          ],\n          \"order\": {\n            \"id\": \"51H5D2K2A00M\",\n            \"type\": \"ORDER_TYPE_LIMIT\",\n            \"side\": \"SIDE_BUY\",\n            \"order_qty\": \"200000\",\n            \"symbol\": \"ETH/USD\",\n            \"clord_id\": \"1245567889\",\n            \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n            \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n            \"user\": \"firms/F-{platform_code}/users/{account_label}\",\n            \"cum_qty\": \"0\",\n            \"avg_px\": \"0\",\n            \"leaves_qty\": \"200000\",\n            \"state\": \"ORDER_STATE_NEW\",\n            \"participant\": \"firms/F-PLAT01/users/CUST01\",\n            \"price\": \"420000\",\n            \"insert_time\": \"2025-09-11T18:07:22.155905574Z\",\n            \"stop_price\": \"0\",\n            \"min_qty\": \"0\",\n            \"create_time\": \"2025-09-11T18:07:22.152425620Z\",\n            \"all_or_none\": false,\n            \"cross_id\": \"\",\n            \"host_cross_id\": \"\",\n            \"submitting_participant\": \"\",\n            \"client_account_id\": \"\",\n            \"client_participant_id\": \"\",\n            \"parent_order_id\": \"\",\n            \"commissions_basis_points\": \"40\",\n            \"participate_dont_initiate\": false,\n            \"cash_order_qty\": \"0\",\n            \"symbol_sub_type\": \"\",\n            \"strict_limit\": false,\n            \"risk_check_time\": \"2025-09-11T18:07:22.155871055Z\",\n            \"collateral_memo\": \"Fully Collateralized\",\n            \"priority_weight\": \"0\",\n            \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n            \"context\": {\n              \"any_context\": {},\n              \"fix_context\": {\n                \"begin_string\": \"FIXT.1.1\",\n                \"target_comp_id\": \"C-F-PLAT01-1\",\n                \"sender_comp_id\": \"ZERO\",\n                \"orig_clord_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n                \"security_type\": \"\",\n                \"target_sub_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n                \"target_location_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n                \"sender_sub_id\": \"CUST01\",\n                \"sender_location_id\": \"\",\n                \"on_behalf_of_comp_id\": \"\",\n                \"on_behalf_of_sub_id\": \"\"\n              },\n              \"service_name\": \"\"\n            },\n            \"best_limit\": false,\n            \"immediately_executable_limit\": false,\n            \"block_trade_indicator\": false,\n            \"last_trade_id\": \"1f19d5e1-344b-4aac-b737-a467be69e4fe\",\n            \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n            \"price_to_quantity_filled\": {},\n            \"commission_notional_total_collected\": \"10\",\n            \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n            \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n            \"ignore_price_validity_checks\": false,\n            \"transaction_booked_time\": \"1993-01-01T11:17:51.234Z\",\n            \"last_transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n            \"price_scale\": \"100\",\n            \"fractional_quantity_scale\": \"100000000\",\n            \"maker_commissions_basis_points\": \"0\",\n            \"manual_order_indicator\": \"MANUAL_ORDER_INDICATOR_MANUAL\"\n          },\n          \"order_reject_reason\": \"ORDER_REJECT_REASON_UNDEFINED\",\n          \"text\": \"string\",\n          \"trace_id\": \"string\",\n          \"trade_id\": \"string\",\n          \"transact_time\": \"2025-09-11T18:07:22.155905574Z\",\n          \"type\": \"EXECUTION_TYPE_NEW\",\n          \"unsolicited_cancel_reason\": \"UNSOLICITED_CXL_REASON_CONNECTION_LOSS\"\n        }\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d71c1e7-47e1-42d5-9026-3e4e65228878",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "create_order_subscription"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"accounts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"user\": \"<string>\",\n  \"subscription_id\": \"subscription-id\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c0fd73a6-44b4-4530-ba2a-668fee6ff2e0",
+          "name": "Market data subscription",
+          "request": {
+            "name": "Market data subscription",
+            "description": {
+              "content": "Subscribe to market data for CLOB instrument.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "create_market_data_subscription"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"depth\": \"<integer>\",\n  \"snapshotOnly\": \"<boolean>\",\n  \"symbols\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"unaggregated\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "dc312f2d-1213-4abf-86dd-fa15d2e5e645",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "create_market_data_subscription"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"depth\": \"<integer>\",\n  \"snapshotOnly\": true,\n  \"symbols\": [\n    \"BTC/USD\",\n    \"BTC/USD\"\n  ],\n  \"unaggregated\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": 0,\n    \"details\": [\n      {\n        \"@type\": \"string\"\n      },\n      {\n        \"@type\": \"string\"\n      }\n    ],\n    \"message\": \"string\"\n  },\n  \"result\": {\n    \"heartbeat\": {},\n    \"update\": {\n      \"bids\": [\n        {\n          \"px\": \"11265651\",\n          \"qty\": \"44649217\",\n          \"symbolSubType\": \"\"\n        },\n        {\n          \"px\": \"11265651\",\n          \"qty\": \"44649217\",\n          \"symbolSubType\": \"\"\n        }\n      ],\n      \"offers\": [\n        {\n          \"px\": \"10223023\",\n          \"qty\": \"192335645\",\n          \"symbolSubType\": \"\"\n        },\n        {\n          \"px\": \"10223023\",\n          \"qty\": \"192335645\",\n          \"symbolSubType\": \"\"\n        }\n      ],\n      \"bookHidden\": true,\n      \"state\": \"INSTRUMENT_STATE_CLOSED\",\n      \"stats\": {\n        \"closePx\": \"11225624\",\n        \"closeSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"highPx\": \"11225624\",\n        \"highSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"indicativeOpenPx\": \"11225624\",\n        \"indicativeOpenSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"lastTradePx\": \"11229296\",\n        \"lastTradeQty\": \"11227248\",\n        \"lastTradeSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"lowPx\": \"11225624\",\n        \"lowSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"notionalTraded\": \"1392987124878\",\n        \"notionalSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"openInterest\": \"0\",\n        \"openInterestSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"openPx\": \"13929873\",\n        \"openSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"settlementPreliminaryFlag\": true,\n        \"settlementPriceCalculationMethod\": \"SETTLEMENT_PRICE_CALCULATION_METHOD_UNSET\",\n        \"settlementPx\": \"139298712\",\n        \"settlementSetTime\": \"2025-07-08T11:35:10.379Z\",\n        \"sharesTraded\": \"48728312\",\n        \"tradingReferencePx\": \"139298712\",\n        \"tradingReferenceSetTime\": \"2025-07-08T11:35:10.379Z\"\n      },\n      \"symbol\": \"BTC/USD\",\n      \"transactTime\": \"2025-07-08T11:35:10.379Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a194bb98-1412-4d96-b553-ea937e84d74c",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "create_market_data_subscription"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"depth\": \"<integer>\",\n  \"snapshotOnly\": true,\n  \"symbols\": [\n    \"BTC/USD\",\n    \"BTC/USD\"\n  ],\n  \"unaggregated\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "98d7ae59-2216-4217-a0a3-8fb6ee0abb47",
+          "name": "Submit order",
+          "request": {
+            "name": "Submit order",
+            "description": {
+              "content": "Submit a new order to the CLOB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "insert_order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account\": \"<string>\",\n  \"user\": \"<string>\",\n  \"all_or_none\": \"<boolean>\",\n  \"best_limit\": \"<boolean>\",\n  \"cash_order_qty\": \"<string>\",\n  \"client_account_id\": \"<string>\",\n  \"client_participant_id\": \"<string>\",\n  \"clord_id\": \"<string>\",\n  \"good_till_time\": \"<dateTime>\",\n  \"ignore_price_validity_checks\": \"<boolean>\",\n  \"immediately_executable_limit\": \"<boolean>\",\n  \"min_qty\": \"<string>\",\n  \"order_capacity\": \"<string>\",\n  \"order_qty\": \"<string>\",\n  \"participate_dont_initiate\": \"<boolean>\",\n  \"price\": \"<string>\",\n  \"quote\": \"<string>\",\n  \"self_match_prevention_id\": \"<string>\",\n  \"self_match_prevention_instruction\": \"<string>\",\n  \"session_id\": \"<string>\",\n  \"side\": \"<string>\",\n  \"stop_price\": \"<string>\",\n  \"strict_limit\": \"<boolean>\",\n  \"symbol\": \"<string>\",\n  \"symbol_sub_type\": \"<string>\",\n  \"time_in_force\": \"<string>\",\n  \"trigger_method\": \"<string>\",\n  \"type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "388b782a-b84b-4022-a4e8-9c4bd78530aa",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "insert_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n  \"user\": \"<string>\",\n  \"all_or_none\": false,\n  \"best_limit\": false,\n  \"cash_order_qty\": \"0\",\n  \"client_account_id\": \"\",\n  \"client_participant_id\": \"\",\n  \"clord_id\": \"1245567889\",\n  \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n  \"ignore_price_validity_checks\": false,\n  \"immediately_executable_limit\": false,\n  \"min_qty\": \"0\",\n  \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n  \"order_qty\": \"200000\",\n  \"participate_dont_initiate\": false,\n  \"price\": \"420000\",\n  \"quote\": \"<string>\",\n  \"self_match_prevention_id\": \"<string>\",\n  \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n  \"session_id\": \"string\",\n  \"side\": \"SIDE_BUY\",\n  \"stop_price\": \"0\",\n  \"strict_limit\": false,\n  \"symbol\": \"ETH/USD\",\n  \"symbol_sub_type\": \"\",\n  \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n  \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n  \"type\": \"ORDER_TYPE_LIMIT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"order_id\": \"4RHK6N1G05ZF\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b668d9e-28f1-4a4d-99cc-d3c4dba71d25",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "insert_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"account\": \"firms/F-PLAT01/accounts/CUST01-customlabel\",\n  \"user\": \"<string>\",\n  \"all_or_none\": false,\n  \"best_limit\": false,\n  \"cash_order_qty\": \"0\",\n  \"client_account_id\": \"\",\n  \"client_participant_id\": \"\",\n  \"clord_id\": \"1245567889\",\n  \"good_till_time\": \"2025-09-12T18:07:22.155905574Z\",\n  \"ignore_price_validity_checks\": false,\n  \"immediately_executable_limit\": false,\n  \"min_qty\": \"0\",\n  \"order_capacity\": \"ORDER_CAPACITY_INDIVIDUAL\",\n  \"order_qty\": \"200000\",\n  \"participate_dont_initiate\": false,\n  \"price\": \"420000\",\n  \"quote\": \"<string>\",\n  \"self_match_prevention_id\": \"<string>\",\n  \"self_match_prevention_instruction\": \"SELF_MATCH_PREVENTION_INSTRUCTION_UNDEFINED\",\n  \"session_id\": \"string\",\n  \"side\": \"SIDE_BUY\",\n  \"stop_price\": \"0\",\n  \"strict_limit\": false,\n  \"symbol\": \"ETH/USD\",\n  \"symbol_sub_type\": \"\",\n  \"time_in_force\": \"TIME_IN_FORCE_GOOD_TILL_CANCEL\",\n  \"trigger_method\": \"CONDITION_TRIGGER_METHOD_UNDEFINED\",\n  \"type\": \"ORDER_TYPE_LIMIT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d769a6cb-bd37-4ac2-975e-a54fd61919ad",
+          "name": "Cancel order",
+          "request": {
+            "name": "Cancel order",
+            "description": {
+              "content": "Cancel an order on the CLOB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "cancel_order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clord_id\": \"<string>\",\n  \"order_id\": \"<string>\",\n  \"symbol\": \"<string>\",\n  \"user\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fc674c5e-5c69-4bf7-ae1f-8143f48fcf2b",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "cancel_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clord_id\": \"1245567889\",\n  \"order_id\": \"51H5D2K2A00M\",\n  \"symbol\": \"ETH/USD\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8ae4134-f4ce-405b-bc1f-495d7fbb7442",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "cancel_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"clord_id\": \"1245567889\",\n  \"order_id\": \"51H5D2K2A00M\",\n  \"symbol\": \"ETH/USD\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c3ab9ae9-a560-4711-a2bb-a3159c951c40",
+          "name": "List instruments",
+          "request": {
+            "name": "List instruments",
+            "description": {
+              "content": "List all instruments available on the CLOB.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "list_instruments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page_size\": \"<integer>\",\n  \"page_token\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"symbols\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2868696a-4dd8-4f4b-9459-9a11a2ae50ba",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "list_instruments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"page_size\": 10,\n  \"page_token\": \"page-token\",\n  \"product_id\": \"product-id\",\n  \"symbols\": [\n    \"BTC/USD\",\n    \"BTC/USD\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"instruments\": [\n    {\n      \"symbol\": \"BTC/USD\",\n      \"tick_size\": 0.01,\n      \"base_currency\": \"USD\",\n      \"multiplier\": 1,\n      \"minimum_trade_qty\": \"1\",\n      \"start_date\": {\n        \"year\": 1970,\n        \"month\": 1,\n        \"day\": 1\n      },\n      \"expiration_date\": 7339.602307898785,\n      \"termination_date\": 6910.454926627272,\n      \"description\": \"Bitcoin USD Spot\",\n      \"clearing_house\": \"firms/Zero-Hash-LLC\",\n      \"minimum_unaffiliated_firms\": \"0\",\n      \"forex_attributes\": {\n        \"base_currency\": \"BTC\",\n        \"quote_currency\": \"USD\"\n      },\n      \"non_tradable\": false,\n      \"product_id\": \"BTC\",\n      \"price_limit\": {\n        \"low\": \"0\",\n        \"high\": \"0\",\n        \"low_set\": false,\n        \"high_set\": false,\n        \"relative_low\": \"0.6\",\n        \"relative_high\": \"0.6\",\n        \"relative_low_set\": false,\n        \"relative_high_set\": false\n      },\n      \"order_size_limit\": {\n        \"low\": \"0\",\n        \"high\": \"0\",\n        \"low_set\": false,\n        \"high_set\": false,\n        \"total_notional_low\": \"10000000000\",\n        \"total_notional_high\": \"5000000000000000\",\n        \"total_notional_low_set\": true,\n        \"total_notional_high_set\": true\n      },\n      \"cross_order_resting_duration\": 6900.864132569416,\n      \"expiration_time\": 5455.680830498208,\n      \"trade_settlement_period\": \"1\",\n      \"fractional_qty_scale\": \"100000000\",\n      \"metadata\": {},\n      \"state\": \"INSTRUMENT_STATE_OPEN\",\n      \"position_limit\": \"0\",\n      \"last_trade_date\": 7845.616615672369,\n      \"last_trade_time\": 5050.567957193938,\n      \"price_scale\": \"100\"\n    },\n    {\n      \"symbol\": \"BTC/USD\",\n      \"tick_size\": 0.01,\n      \"base_currency\": \"USD\",\n      \"multiplier\": 1,\n      \"minimum_trade_qty\": \"1\",\n      \"start_date\": {\n        \"year\": 1970,\n        \"month\": 1,\n        \"day\": 1\n      },\n      \"expiration_date\": 7476.4740596533165,\n      \"termination_date\": 8983.671318473505,\n      \"description\": \"Bitcoin USD Spot\",\n      \"clearing_house\": \"firms/Zero-Hash-LLC\",\n      \"minimum_unaffiliated_firms\": \"0\",\n      \"forex_attributes\": {\n        \"base_currency\": \"BTC\",\n        \"quote_currency\": \"USD\"\n      },\n      \"non_tradable\": false,\n      \"product_id\": \"BTC\",\n      \"price_limit\": {\n        \"low\": \"0\",\n        \"high\": \"0\",\n        \"low_set\": false,\n        \"high_set\": false,\n        \"relative_low\": \"0.6\",\n        \"relative_high\": \"0.6\",\n        \"relative_low_set\": false,\n        \"relative_high_set\": false\n      },\n      \"order_size_limit\": {\n        \"low\": \"0\",\n        \"high\": \"0\",\n        \"low_set\": false,\n        \"high_set\": false,\n        \"total_notional_low\": \"10000000000\",\n        \"total_notional_high\": \"5000000000000000\",\n        \"total_notional_low_set\": true,\n        \"total_notional_high_set\": true\n      },\n      \"cross_order_resting_duration\": 1146.020267038349,\n      \"expiration_time\": 7722.048453324836,\n      \"trade_settlement_period\": \"1\",\n      \"fractional_qty_scale\": \"100000000\",\n      \"metadata\": {},\n      \"state\": \"INSTRUMENT_STATE_OPEN\",\n      \"position_limit\": \"0\",\n      \"last_trade_date\": 3492.01697841509,\n      \"last_trade_time\": 670.218809407217,\n      \"price_scale\": \"100\"\n    }\n  ],\n  \"next_page_token\": \"643538bb35cbd2a93099ae14\",\n  \"eof\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "539e1b06-6690-47c7-98b4-200a61113149",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "list_instruments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"page_size\": 10,\n  \"page_token\": \"page-token\",\n  \"product_id\": \"product-id\",\n  \"symbols\": [\n    \"BTC/USD\",\n    \"BTC/USD\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3f4b3618-d848-4952-89d1-0c2642aa7a6f",
+          "name": "Get trade stats",
+          "request": {
+            "name": "Get trade stats",
+            "description": {
+              "content": "Get trade stats for a given instrument.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "v1",
+                "get_trade_stats"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bars\": \"<number>\",\n  \"end_time\": \"<string>\",\n  \"start_time\": \"<string>\",\n  \"symbol\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d75410d1-4056-45fa-a522-d2002d6ce7ca",
+              "name": "A successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "get_trade_stats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bars\": 0,\n  \"end_time\": \"2024-04-19T22:48:56.383Z\",\n  \"start_time\": \"2024-04-19T22:48:56.383Z\",\n  \"symbol\": \"BTC/USD\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"bar_end_time\": [\n    \"2024-04-19T22:48:56.387Z\",\n    \"2024-04-19T22:48:56.387Z\"\n  ],\n  \"bar_start_time\": [\n    \"2024-04-19T22:48:56.387Z\",\n    \"2024-04-19T22:48:56.387Z\"\n  ],\n  \"bars\": [\n    {\n      \"cleared_notional\": \"string\",\n      \"cleared_trade_count\": \"string\",\n      \"cleared_volume\": \"string\",\n      \"first\": \"string\",\n      \"high\": \"string\",\n      \"last\": \"string\",\n      \"low\": \"string\",\n      \"notional\": \"string\",\n      \"total_trade_count\": \"string\",\n      \"volume\": \"string\"\n    },\n    {\n      \"cleared_notional\": \"string\",\n      \"cleared_trade_count\": \"string\",\n      \"cleared_volume\": \"string\",\n      \"first\": \"string\",\n      \"high\": \"string\",\n      \"last\": \"string\",\n      \"low\": \"string\",\n      \"notional\": \"string\",\n      \"total_trade_count\": \"string\",\n      \"volume\": \"string\"\n    }\n  ],\n  \"stats\": {\n    \"cleared_notional\": \"100000\",\n    \"cleared_trade_count\": \"500\",\n    \"cleared_volume\": \"2001020\",\n    \"first\": \"100000\",\n    \"high\": \"150000\",\n    \"last\": \"120000\",\n    \"low\": \"100002\",\n    \"notional\": \"10000\",\n    \"total_trade_count\": \"500\",\n    \"volume\": \"200000\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f05fd492-ccbf-4dd6-8cec-ad37db5c86b4",
+              "name": "An error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "v1",
+                    "get_trade_stats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bars\": 0,\n  \"end_time\": \"2024-04-19T22:48:56.383Z\",\n  \"start_time\": \"2024-04-19T22:48:56.383Z\",\n  \"symbol\": \"BTC/USD\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 0,\n  \"details\": [\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    },\n    {\n      \"type_url\": \"string\",\n      \"value\": \"string\"\n    }\n  ],\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d5cac11e-fcf3-44ee-892c-0b8cef30a8e7",
+    "name": "zerohash CLOB API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

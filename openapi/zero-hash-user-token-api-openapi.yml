@@ -1,0 +1,227 @@
+openapi: 3.2.0
+info:
+  title: Connect User Token API
+  description: Session management endpoint for Connect API
+  version: 1.0.0
+servers:
+- url: https://api.sandbox.connect.xyz
+  description: Sandbox Environment
+tags:
+- name: User Token
+paths:
+  /api/v1/sessions:
+    post:
+      tags:
+      - User Token
+      summary: Initialize session
+      description: Create a new session and receive a JWT for authenticated API requests.
+      operationId: startSession
+      x-group:
+        name: Invoke SDK
+      servers:
+      - url: https://api.sandbox.connect.xyz
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: x-connect-client-id
+        in: header
+        required: true
+        description: Client ID that must match the organization ID in the JWT token
+        schema:
+          type: string
+      - name: Signature
+        in: header
+        required: true
+        description: Request signature for validation (required for most organizations)
+        schema:
+          type: string
+      - name: timestamp
+        in: header
+        required: true
+        description: Timestamp used for signature validation
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartSessionRequest'
+            example:
+              request_id: 550e8400-e29b-41d4-a716-446655440000
+              account:
+                reference_id: 07NVS8
+              session:
+                metadata:
+                  organization_metadata: test-01-10-001
+                  user_agent: Mozilla/5.0...
+                  ip_address: 192.168.1.1
+                withdrawal_details:
+                  asset: BTC
+                  network: bitcoin
+                  amount: '0.001'
+                  account_label: Main Account
+                deposit_details:
+                  account_label: Main Account
+              scopes:
+              - user:deposit:send
+              - user:recovery:send
+              - user:withdrawal:request
+      responses:
+        '200':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartSessionResponse'
+              example:
+                jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                expires_in: 3600
+        '400':
+          description: Bad Request - Invalid input parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid or missing JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden - Invalid scopes or signature validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    StartSessionRequest:
+      type: object
+      required:
+      - account
+      - session
+      properties:
+        request_id:
+          type: string
+          description: Optional request ID. If not provided, a UUID will be generated automatically
+          example: 550e8400-e29b-41d4-a716-446655440000
+        account:
+          $ref: '#/components/schemas/Account'
+        session:
+          $ref: '#/components/schemas/Session'
+          description: 'Session configuration. Note: withdrawal_details is required when ''user:withdrawal:request'' is in scopes. deposit_details is optional when ''user:deposit:send'' is in scopes.'
+        scopes:
+          type: string
+          enum:
+          - user:deposit:send
+          - user:recovery:send
+          - user:withdrawal:request
+          description: List of scopes for the session
+          example:
+          - user:deposit:send
+          - user:recovery:send
+          - user:withdrawal:request
+    WithdrawalDetails:
+      type: object
+      required:
+      - asset
+      - network
+      - amount
+      properties:
+        asset:
+          type: string
+          description: The asset to withdraw
+          example: BTC
+        network:
+          type: string
+          description: The blockchain network for the withdrawal
+          example: bitcoin
+        amount:
+          type: string
+          description: The amount to withdraw
+          example: '0.001'
+        account_label:
+          type: string
+          description: Optional label to identify the account
+          example: Main Account
+      description: Required when scope includes 'user:withdrawal:request'
+    Session:
+      type: object
+      properties:
+        metadata:
+          type: object
+          description: Additional session metadata as key-value pairs
+          additionalProperties: true
+          example:
+            organization_metadata: test-01-10-001
+            user_agent: Mozilla/5.0...
+            ip_address: 192.168.1.1
+        withdrawal_details:
+          $ref: '#/components/schemas/WithdrawalDetails'
+        deposit_details:
+          $ref: '#/components/schemas/DepositDetails'
+    DepositDetails:
+      type: object
+      properties:
+        account_label:
+          type: string
+          description: Optional label to identify the account
+          example: Main Account
+      description: Optional when scope includes 'user:deposit:send'
+    StartSessionResponse:
+      type: object
+      required:
+      - jwt
+      - expires_in
+      properties:
+        jwt:
+          type: string
+          description: JWT token for the created session
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        expires_in:
+          type: integer
+          format: int64
+          description: Token expiration time in seconds
+          example: 3600
+    Account:
+      type: object
+      required:
+      - reference_id
+      properties:
+        reference_id:
+          type: string
+          description: External reference ID for the account
+          example: 07NVS8
+    Error:
+      type: object
+      required:
+      - error
+      - code
+      - message
+      properties:
+        error:
+          type: string
+          description: Error type
+        code:
+          type: integer
+          description: gRPC error code
+        message:
+          type: string
+          description: Human-readable error message
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token with customers:token:issue scope
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true

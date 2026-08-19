@@ -1,0 +1,1258 @@
+openapi: 3.2.0
+info:
+  title: zerohash Market Data API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Market Data
+  description: Market Data Services
+paths:
+  /market_data/symbol_data:
+    get:
+      tags:
+      - Market Data
+      summary: List symbol data
+      description: Retrieves a list of symbols and their market data.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: underlying
+        in: query
+        description: The underlying asset symbol for the requested market data. For example, `BTC` or `ETH`.
+        required: true
+        allowEmptyValue: false
+        schema:
+          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+      - name: quoted_currency
+        in: query
+        description: Quoted currency symbol. For example, `USD` or `EUR`. This is the currency in which the price is quoted.
+        required: true
+        allowEmptyValue: false
+        schema:
+          $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+      responses:
+        '200':
+          description: 'Market data for the requested underlying/quoted pairs. Structured as an array of `[underlyingSymbol, { marketDataMap: [[quotedSymbol, SymbolData], ...] }]` tuples.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSymbolDataResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /market_data/ohlcv:
+    get:
+      tags:
+      - Market Data
+      summary: List OHLCV data
+      description: Retrieves an list of historical data of open, high, low, close, underlying_volume and quoted_volume.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: underlying
+        in: query
+        description: Filter for underlying asset in the trading pair. E.g., `BTC` for `BTC/USD` related OHLCV data.
+        required: true
+        schema:
+          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+      - name: quoted_currency
+        in: query
+        description: Filter for quoted asset in the trading pair. E.g., `USD` for `BTC/USD` related OHLCV data.
+        required: true
+        schema:
+          $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+      - name: limit
+        in: query
+        description: Filter for maximum number of data points to be returned in a single request. Default is `50` if not specified.
+        required: false
+        example: '100'
+        schema:
+          type: string
+      - name: data_end_date
+        in: query
+        description: Filter for objects before given timestamp. E.g., `1780876800` for June 8, 2026.
+        required: false
+        example: '1780876800'
+        schema:
+          type: string
+      - name: all_data
+        in: query
+        description: Filter for all data available. Defaults to `false`. If set to `true`, `time_frame` is ignored and all available data is returned with `daily` granularity.
+        required: false
+        example: false
+        schema:
+          type: boolean
+      - name: time_frame
+        in: query
+        description: Filter for `time_frame` of the OHLCV data. Required if `all_data` is not set to `true`. E.g., `daily` for daily OHLCV data.
+        required: true
+        example: daily
+        schema:
+          type: string
+          enum:
+          - minute
+          - hourly
+          - daily
+      responses:
+        '200':
+          description: Historical OHLCV series for the requested underlying/quoted pair.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOHLCVResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /market_data/news/latest:
+    get:
+      tags:
+      - Market Data
+      summary: List news articles
+      description: Retrieves a list of market news articles filtered using given parameters.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: news_source
+        in: query
+        description: Sources (feeds) of news articles, options can be fetched from the response of `GET /news/feeds` endpoint.
+        required: false
+        schema:
+          type: string
+          enum:
+          - coindesk
+          - coindesk_es
+          - bitcoinmagazine
+          - coingape
+          - blockworks
+          - dailyhodl
+          - cryptoslate
+          - decrypt
+          - cryptopotato
+          - cryptobriefing
+          - theblock
+          - bitcoin.com
+          - newsbtc
+          - utoday
+          - bitcoinist
+          - coinpedia
+          - crypto_watch_com_br
+          - coinrepublic
+          - chaintimes
+          - ambcrypto_es
+          - cryptonewsreview
+          - ccn
+          - financemagnates
+          - espaciobit
+          - cointelegraph_fr
+          - ethnews.com
+          - cryptovest
+          - cryptoinsider
+          - coinspeaker
+          - coinjoker
+          - cointelligence
+          - okexinsights
+          - cryptocoremedia
+          - bitcoinerx
+          - criptonoticias
+          - weisscrypto
+          - cryptonaute
+          - coinpaprika
+          - cointurken
+          - coinpaper
+          - bloomberg_crypto_
+          - thecryptobasic
+          - coinotag
+          - cryptointelligence
+          - bitcoincore
+          - diariobitcoin
+          - bitcoinworld
+          - blokt
+          - ambcrypto
+          - cointelegraph_es
+          - cointelegraph
+          - financialtimes_crypto_
+          - seekingalpha
+          - bitdegree
+          - trustnodes
+          - timestabloid
+          - krakenblog
+          - investing_comcryptoopinionandanalysis
+          - forbes
+          - finbold
+          - bitzo
+          - cryptoast
+          - bitfinexblog
+          - ethereumfoundation
+          - invezz
+          - investing_comcryptonews
+          - huobi
+          - cryptonewsz
+          - zerohash
+          - coinquora
+          - coinacademy
+          - cryptonews
+          - cryptocoinnews
+          - journalducoin
+          - cryptodaily
+          - chainwire
+          - coinotag
+          - themerkle
+          - cointurk
+          - zycrypto
+          - cryptopolitan
+          - bitcoinsistemi
+          - cardanoofficialblog
+          - btcpulse
+          - thecoinrise
+          - cryptoknowmics
+          - crypto_news
+          - tipranks
+          - beincrypto
+          - thedefiant
+          - thenewscrypto
+          - ccdata
+          - cryptoglobe
+          - nft_news
+          - coincu
+          - cryptonewsfr
+          - coinnounce
+          - livebitcoinnews
+          - timesnext
+          - ethereumworldnews
+          - vauld_insights
+          - cryptonomist
+          - chaindd
+          - dailycoin
+          - 99bitcoins
+          - yahoofinance
+          example: coindesk
+      - name: categories
+        in: query
+        description: Categories of news articles, options can be fetched from the response of `GET /news/categories` endpoint.
+        required: false
+        schema:
+          type: string
+          enum:
+          - TIA
+          - APT
+          - RON
+          - ALGO
+          - LINK
+          - MATIC
+          - DOT
+          - EGLD
+          - ZRX
+          - LTC
+          - BTC
+          - DOGE
+          - SOL
+          - MKR
+          - AAVE
+          - XRP
+          - SUI
+          - BCH
+          - XLM
+          - ETH
+          - NEAR
+          - ETC
+          - TON
+          - SHIB
+          - USDC
+          - BNB
+          - GRT
+          - DAI
+          - SEI
+          - TRX
+          - KNC
+          - ATOM
+          - FIL
+          - ADA
+          - XTZ
+          - COMP
+          - LUNA
+          - AVAX
+          - SAND
+          - UNI
+          - HBAR
+          - USDT
+          example: BTC
+      - name: exclude_categories
+        in: query
+        description: Categories of news articles to be excluded from result, options can be fetched from the response of `GET /news/categories` endpoint.
+        required: false
+        schema:
+          type: string
+          enum:
+          - TIA
+          - APT
+          - RON
+          - ALGO
+          - LINK
+          - MATIC
+          - DOT
+          - EGLD
+          - ZRX
+          - LTC
+          - BTC
+          - DOGE
+          - SOL
+          - MKR
+          - AAVE
+          - XRP
+          - SUI
+          - BCH
+          - XLM
+          - ETH
+          - NEAR
+          - ETC
+          - TON
+          - SHIB
+          - USDC
+          - BNB
+          - GRT
+          - DAI
+          - SEI
+          - TRX
+          - KNC
+          - ATOM
+          - FIL
+          - ADA
+          - XTZ
+          - COMP
+          - LUNA
+          - AVAX
+          - SAND
+          - UNI
+          - HBAR
+          - USDT
+          example: BTC
+      - name: lookback
+        in: query
+        description: A lookback time defined as a UNIX timestamp, used to fetch articles from the given time.
+        required: false
+        schema:
+          type: string
+          example: '1654041600'
+      - name: language
+        in: query
+        description: 'Language of articles to be fetched. Format: `EN` (English) or `PT` (Portuguese)'
+        required: false
+        schema:
+          type: string
+          enum:
+          - EN
+          - PT
+          - ES
+          - FR
+          - JP
+          - TR
+          example: EN
+      - name: sort_by
+        in: query
+        description: Sorting order of news articles. Can be either `popular` or `latest`
+        required: false
+        schema:
+          type: string
+          enum:
+          - popular
+          - latest
+          example: latest
+      responses:
+        '200':
+          description: Successfully retrieved list of market news articles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLatestNewsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /market_data/news/feeds:
+    get:
+      tags:
+      - Market Data
+      summary: List news feeds
+      description: Retrieves a list of available market data feeds, which can be used to query articles.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      responses:
+        '200':
+          description: Successfully retrieved list of available news feeds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNewsFeedsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /market_data/news/categories:
+    get:
+      tags:
+      - Market Data
+      summary: List categories
+      description: Retrieves a list of available market data categories, which can be used to query articles.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      responses:
+        '200':
+          description: Successfully retrieved list of available news categories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNewsCategoriesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /market_data/image/{path}:
+    get:
+      tags:
+      - Market Data
+      summary: Get image (deprecated)
+      deprecated: true
+      description: 'Deprecated: this endpoint is no longer maintained and may be removed in a future release. Returns the binary content of an image at the given path (usually received from another Market Data endpoint). The image path is appended to the endpoint URL.
+
+
+        Example:
+
+
+        - For path: `/resources/news/64/12888774.jpeg`
+
+        - Request: `GET /market_data/image/resources/news/64/12888774.jpeg`'
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: path
+        in: path
+        required: true
+        description: Arbitrary sub-path of the image resource (e.g. `resources/news/64/12888774.jpeg`).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Raw image bytes for the requested resource.
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    LiquidityEnabledQuotedCurrency:
+      type: string
+      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      example: USD
+      enum:
+      - USD
+      - EUR
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetNewsFeedsResponse:
+      type: array
+      description: List of available news feeds.
+      items:
+        $ref: '#/components/schemas/GetNewsFeed'
+    DecimalValue:
+      type: object
+      description: Decimal value represented as a stringified number.
+      properties:
+        value:
+          type: string
+          example: '24774.07'
+    GetNewsFeed:
+      properties:
+        key:
+          description: Name of news feed
+          type: string
+          example: examplekey
+        newsSource:
+          example: exampleSource
+          description: Source of news feed
+          type: string
+        img:
+          example: /images/news/default/example.png
+          description: The image URL for the market data
+          type: string
+        language:
+          example: EN
+          description: Language of the article, English (EN) or Portuguese (PT)
+          type: string
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetLatestNewsResponse:
+      type: array
+      description: List of market news articles.
+      items:
+        $ref: '#/components/schemas/GetLatestNewsArticle'
+    OHLCVResponseEntity:
+      type: object
+      properties:
+        time:
+          type: number
+          description: Unix timestamp in seconds marking the start of this data point.
+          example: 1682899200
+        high:
+          type: number
+          description: Highest price of the requested pair for this period of time
+          example: 28151.81
+        low:
+          type: number
+          description: Lowest price of the requested pair for this period of time
+          example: 27940.52
+        open:
+          type: number
+          description: Price of the requested pair at the start of this period of time
+          example: 28086.19
+        underlying_volume:
+          type: number
+          description: Total amount of the underlying currency traded into the quoted currency during this period of time (in units of the underlying currency)
+          example: 2900.51
+        quoted_volume:
+          type: number
+          description: Total amount of the quoted currency traded into the underlying currency during this period of time (in units of the quoted currency)
+          example: 81300199.13
+        close:
+          type: number
+          description: Price of the requested pair at the end of this period of time
+          example: 27952.92
+        average_transaction_price:
+          type: number
+          description: Average transaction price (in units of the quoted currency)
+          example: 28029.6220768072
+    GetNewsCategory:
+      properties:
+        categoryName:
+          description: Name of news category
+          type: string
+          example: DOGE
+        wordsAssociatedWithCategoryList:
+          description: Additional words associated with each category
+          type: array
+          example:
+          - DOGE
+          - DOGECOIN
+    GetSymbolData:
+      type: object
+      properties:
+        underlyingSymbol:
+          type: string
+          example: BTC
+          description: Underlying symbol in the pair.
+        quotedSymbol:
+          type: string
+          example: USD
+          description: Quoted symbol in the pair.
+        price:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Most recent symbol price.
+        lastTimestamp:
+          description: Order book last update timestamp. Protobuf Timestamp split into `seconds` and `nanos`.
+          type: object
+          properties:
+            seconds:
+              type: number
+              example: 1684928
+            nanos:
+              type: number
+              example: 819000000
+        median:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Median price.
+        lastVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Most recent trade volume stated in the quoted currency.
+        lastUnderlyingVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Most recent trade volume stated in the underlying.
+        lastTradeId:
+          type: string
+          example: '286032218'
+          description: Most recent trade ID
+        dayUnderlyingVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Day volume stated in the underlying.
+        dayQuotedVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Day volume stated in the quoted currency.
+        h24UnderlyingVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h volume stated in the underlying.
+        h24QuotedVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h volume stated in the quoted currency.
+        dayOpen:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Open price for the day.
+        dayHigh:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: High price for the day.
+        dayLow:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Low price for the day.
+        h24Open:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h opening price.
+        h24High:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h high price.
+        h24Low:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h low price.
+        hourUnderlyingVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Hour volume stated in the underlying.
+        hourQuotedVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Hour volume stated in the quoted currency.
+        hourOpen:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Hour opening price.
+        hourHigh:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Hour high price.
+        hourLow:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Hour low price.
+        h24Change:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h price change.
+        h24PctChange:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h percent change.
+        dayChange:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Daily price change.
+        dayPctChange:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Daily percent change.
+        hourChange:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Hour price change.
+        hourPctChange:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Hour percent change.
+        supply:
+          type: number
+          example: 19382375
+          description: Total supply for the underlying.
+        mktcap:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Total market capitalization stated in the quoted currency.
+        circulatingSupply:
+          type: number
+          example: 19382375
+          description: The current supply of coins available to the public.
+        circulatingSupplyMktcap:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Market cap based on circulating supply, stated in the quoted currency.
+        h24UnderlyingTotalVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h total volume stated in the underlying.
+        h24QuotedTotalVolume:
+          allOf:
+          - $ref: '#/components/schemas/DecimalValue'
+          description: Rolling 24h total volume stated in the quoted currency.
+        imageUrl:
+          type: string
+          example: //media/37746251/btc.png
+          description: Image URL for the underlying asset.
+    GetLatestNewsArticle:
+      properties:
+        published_on:
+          description: Timestamp when the article was published
+          type: object
+          properties:
+            seconds:
+              type: number
+              example: 1684928
+            nanos:
+              type: number
+              example: 819000000
+          example:
+            seconds: 1684928
+            nanos: 819000000
+        image_url:
+          example: /resources/news/21/example.jpeg
+          description: The image URL for the market data
+          type: string
+        title:
+          example: Example Title
+          description: ' Article title'
+          type: string
+        url:
+          example: https://www.externalsource.com/all/article_url/
+          description: Link to news article
+          type: string
+        body:
+          example: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur
+          description: Text of the article
+          type: string
+        tagsList:
+          description: Associated tags
+          type: array
+          example:
+          - All
+        language:
+          example: EN
+          description: English (EN) or Portuguese (PT)
+          type: string
+        up_votes:
+          example: 2
+          description: 'Number of upvotes for article '
+          type: number
+        down_votes:
+          example: 5
+          description: 'Number of downvotes for article     '
+          type: number
+        categoriesList:
+          description: Associated categories with the article
+          type: array
+          example:
+          - MARKET|BTC
+        sourceInfo:
+          description: Information about the source of the article
+          type: object
+          example:
+            name: ExampleSource
+            img: /images/news/default/example.png
+            language: EN
+        source:
+          example: exampleSource
+          description: Source of the article
+          type: string
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    LiquidityEnabledUnderlyingCurrency:
+      type: string
+      description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
+      example: BTC
+      enum:
+      - USDC.OPTIMISM
+      - USDC.SUI
+      - DOT
+      - FIL
+      - PYUSD.ETH
+      - TRX
+      - ZRX
+      - DAI.ETH
+      - USDC.WORLDCHAIN
+      - USDP
+      - USDT.BSC
+      - USDT.CELO
+      - PEPE.ETH
+      - SAND
+      - USDC.DOTHUB
+      - USDC.SEI
+      - USDC.SOL
+      - USDC.ZKSYNC
+      - ENA.ETH
+      - MANA.ETH
+      - PYTH.SOL
+      - SOL
+      - USDC.BASE
+      - USDC.CELO
+      - USDT
+      - ADA
+      - INJ.ETH
+      - MATIC.POLYGON
+      - PAXG
+      - USD
+      - AAVE.ETH
+      - ALGO
+      - EURC.XLM
+      - KNC.ETH
+      - PNUT.SOL
+      - SHIB
+      - BCH
+      - DOGE
+      - EGLD
+      - JTO.SOL
+      - UNI.ETH
+      - USDC
+      - USDC.ARBITRUM
+      - ONDO.ETH
+      - PENGU.SOL
+      - USD
+      - WLFI.ETH
+      - XLM
+      - APT
+      - CC
+      - ETH.OPTIMISM
+      - ETH.WORLDCHAIN
+      - LDO.ETH
+      - MORPHO.ETH
+      - SEI
+      - ETH.ZKSYNC
+      - USDC.AVAX
+      - USDC.XLM
+      - USDT.DOTHUB
+      - USDT.SOL
+      - MANA
+      - USDC.ALGO
+      - MATIC.ETH
+      - NEAR
+      - UNI
+      - USDT.ARBITRUM
+      - USDT.AVAX
+      - OMG
+      - ARB.ARBITRUM
+      - COMP.ETH
+      - GRT.ETH
+      - USDC.POLYGON
+      - AVAX
+      - AAVE
+      - CELO
+      - PYUSD.SOL
+      - PAXG.ETH
+      - USDC.MONAD
+      - BAT
+      - COMP
+      - ETH.ARBITRUM
+      - ETH.BASE
+      - OP.OPTIMISM
+      - TRUMP.SOL
+      - ENJ.ETH
+      - SUI
+      - USDT.ETH
+      - USDT.OPTIMISM
+      - USDT.TRX
+      - USDT.XPL
+      - OMG.ETH
+      - XRP
+      - HBAR
+      - USDC.APT
+      - USDC.ETH
+      - BNB
+      - ATOM
+      - BAT.ETH
+      - GRT
+      - LINK.ETH
+      - USDP.SOL
+      - ZK.ZKSYNC
+      - BONK.SOL
+      - KNC
+      - TIA
+      - ZRO.ETH
+      - ZRX.ETH
+      - PUMP.SOL
+      - USD
+      - XTZ
+      - CRV.ETH
+      - GALA.ETH
+      - TON
+      - USDT.POLYGON
+      - WBTC.ETH
+      - XPL
+      - BTC
+      - MON
+      - SHIB.ETH
+      - USDC.BSC
+      - WLD.WORLDCHAIN
+      - W.SOL
+      - LTC
+      - RLUSD.ETH
+      - WBTC
+      - LINK
+      - USDCX.CANTON
+      - ETH
+      - WIF.SOL
+      - APE.ETH
+      - EURC
+      - MKR.ETH
+      - RLUSD.XRP
+    GetNewsCategoriesResponse:
+      type: array
+      description: List of available news categories.
+      items:
+        $ref: '#/components/schemas/GetNewsCategory'
+    GetSymbolDataResponse:
+      type: array
+      description: 'Array of tuples keyed by underlying symbol. Each tuple is `[underlyingSymbol, { marketDataMap: [[quotedSymbol, GetSymbolData], ...] }]`.'
+      items:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+        - type: string
+          description: Underlying asset symbol (e.g. `BTC`).
+          example: BTC
+        - type: object
+          required:
+          - marketDataMap
+          properties:
+            marketDataMap:
+              type: array
+              description: Array of `[quotedSymbol, GetSymbolData]` tuples for the given underlying.
+              items:
+                type: array
+                minItems: 2
+                maxItems: 2
+                items:
+                - type: string
+                  description: Quoted currency symbol (e.g. `USD`).
+                  example: USD
+                - $ref: '#/components/schemas/GetSymbolData'
+      example:
+      - - BTC
+        - marketDataMap:
+          - - USD
+            - underlyingSymbol: BTC
+              quotedSymbol: USD
+              price:
+                value: '63523.1267818274'
+              lastTimestamp:
+                seconds: 1780942
+                nanos: 100000000
+              median:
+                value: '63523.1267818274'
+              lastVolume:
+                value: '0.00000017'
+              lastUnderlyingVolume:
+                value: '0.0107958126'
+              lastTradeId: '1204043756'
+              dayUnderlyingVolume:
+                value: '23877.59071385'
+              dayQuotedVolume:
+                value: '1513703665.67374'
+              h24UnderlyingVolume:
+                value: '33691.54917206'
+              h24QuotedVolume:
+                value: '2126242561.78843'
+              dayOpen:
+                value: '63315.1065321782'
+              dayHigh:
+                value: '64199.9776710545'
+              dayLow:
+                value: '62393.1022759814'
+              h24Open:
+                value: '62014.926566741'
+              h24High:
+                value: '64199.9776710545'
+              h24Low:
+                value: '61166.479991137'
+              hourUnderlyingVolume:
+                value: '105.6514879'
+              hourQuotedVolume:
+                value: '6717810.00305892'
+              hourOpen:
+                value: '63534.1678453974'
+              hourHigh:
+                value: '63624.8539896268'
+              hourLow:
+                value: '63519.9494427626'
+              h24Change:
+                value: '1508.200215086399'
+              h24PctChange:
+                value: '2.431995486543487'
+              dayChange:
+                value: '208.02024964919838'
+              dayPctChange:
+                value: '0.3285475789944027'
+              hourChange:
+                value: '-11.041063570002734'
+              hourPctChange:
+                value: '-0.017378150913804062'
+              supply: 20039087
+              mktcap:
+                value: '1272945464093.0693'
+              circulatingSupply: 20039087
+              circulatingSupplyMktcap:
+                value: '1272945464093.0693'
+              h24UnderlyingTotalVolume:
+                value: '326752.617229663'
+              h24QuotedTotalVolume:
+                value: '20742397942.829296'
+              imageUrl: //media/37746251/btc.png
+    GetOHLCVResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/OHLCVResponseEntity'
+  parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

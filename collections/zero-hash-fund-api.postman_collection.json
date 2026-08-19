@@ -1,0 +1,1720 @@
+{
+  "item": [
+    {
+      "id": "95686fcf-b233-4a6b-b96b-37b16cb67aba",
+      "name": "Fund",
+      "description": {
+        "content": "Fund Services",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ae208497-4705-4e80-b442-7f5fc541eaf1",
+          "name": "Get quote",
+          "request": {
+            "name": "Get quote",
+            "description": {
+              "content": "Retrieves a quote for a fund event for a given participant code and asset. This endpoint response indicates the rate by which a subsequent on-chain deposit will be honored at.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "fund",
+                "rfq"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participant_code\": \"<string>\",\n  \"fund_asset\": \"<string>\",\n  \"account_label\": \"<string>\",\n  \"client_fund_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "66b8410a-597d-41e2-b0bb-430dc9346cbc",
+              "name": "Returns a quote for the subsequent on-chain deposit, including the rate, deposit address, expiry, and fee configuration.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"fund_asset\": \"USDC\",\n  \"account_label\": \"test_label\",\n  \"client_fund_id\": \"f2f14251-e296-42ac-9bc7-01c9186b921c\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n    \"participant_code\": \"ABCDEF\",\n    \"fund_asset\": \"USDC.ETH\",\n    \"rate\": \"1\",\n    \"quoted_currency\": \"1\",\n    \"expiry_timestamp\": 2554408627334,\n    \"deposit_address\": \"0x5f59B625036ccB4f7aD27Ca4Cb896e4452AfFDAF\",\n    \"account_label\": \"general\",\n    \"deposit_fee_bps\": 0,\n    \"first_deposit_fee_floor\": \"1\",\n    \"subsequent_deposit_fee_floor\": \"0\",\n    \"minimum_deposit\": \"1\",\n    \"maximum_deposit\": \"250000\",\n    \"reference_id\": \"f2f14251-e296-42ac-9bc7-01c9186b921c\",\n    \"deposit_fee_type\": \"tiered\",\n    \"deposit_fee_tiers\": [\n      {\n        \"tier\": 1,\n        \"min_amount\": \"0\",\n        \"max_amount\": \"5000\",\n        \"fee_bps\": \"40\"\n      },\n      {\n        \"tier\": 1,\n        \"min_amount\": \"0\",\n        \"max_amount\": \"5000\",\n        \"fee_bps\": \"40\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4624b58b-9ebc-4064-9f7b-825956057eae",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"fund_asset\": \"USDC\",\n  \"account_label\": \"test_label\",\n  \"client_fund_id\": \"f2f14251-e296-42ac-9bc7-01c9186b921c\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eec99eb2-3d61-4e86-b113-25a22464514b",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"fund_asset\": \"USDC\",\n  \"account_label\": \"test_label\",\n  \"client_fund_id\": \"f2f14251-e296-42ac-9bc7-01c9186b921c\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "59d79caf-737e-4afb-922e-cd398cc0834a",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"fund_asset\": \"USDC\",\n  \"account_label\": \"test_label\",\n  \"client_fund_id\": \"f2f14251-e296-42ac-9bc7-01c9186b921c\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8d370738-552e-414a-94c1-35f0b5148c9f",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"fund_asset\": \"USDC\",\n  \"account_label\": \"test_label\",\n  \"client_fund_id\": \"f2f14251-e296-42ac-9bc7-01c9186b921c\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71beba51-b408-41e1-a560-d89c4cd00092",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"fund_asset\": \"USDC\",\n  \"account_label\": \"test_label\",\n  \"client_fund_id\": \"f2f14251-e296-42ac-9bc7-01c9186b921c\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e41a7b04-0c24-49bb-adab-2b8361060f4b",
+          "name": "List transactions",
+          "request": {
+            "name": "List transactions",
+            "description": {
+              "content": "You can use the `fund_id` in the response as the “parent” to query `GET /movements?parent_link_id=[fund_id]` to view a trail of all movements related to this fund event.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "fund",
+                "transactions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "participant_code",
+                  "value": "<string>",
+                  "description": "Participant code of the end customer"
+                },
+                {
+                  "disabled": false,
+                  "key": "fund_asset",
+                  "value": "<string>",
+                  "description": "The asset sent on-chain by the end customer in order to fund an account"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_address",
+                  "value": "<string>",
+                  "description": "The address provided by zerohash that the end customer will send to"
+                },
+                {
+                  "disabled": false,
+                  "key": "fund_id",
+                  "value": "<string>",
+                  "description": "The zerohash-generated unique identifier associated with an executed fund event"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "Filters for a specific page (pagination)"
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "<string>",
+                  "description": "The number of results returned per page, with a maximum of 50 transactions per page"
+                },
+                {
+                  "disabled": false,
+                  "key": "success",
+                  "value": "<string>",
+                  "description": "Filters transactions by successful status. This is a boolean field, please specify either `true` or `false`"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_gte",
+                  "value": "<number>",
+                  "description": "Filter for greater than or equal to a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_gt",
+                  "value": "<number>",
+                  "description": "Filter for greater than a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_lt",
+                  "value": "<number>",
+                  "description": "Filter for less than a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_timestamp_lte",
+                  "value": "<number>",
+                  "description": "Filter for less than or equal to a given timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "deposit_intent_id",
+                  "value": "<string>",
+                  "description": "id returned on JWT creation for correlation purposes"
+                },
+                {
+                  "disabled": false,
+                  "key": "reference_id",
+                  "value": "<string>",
+                  "description": "Filter by the client-provided reference ID (set via client_fund_id when creating the RFQ or provided at JWT generation)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0a58f42d-24b0-40e5-9a0d-4f0f8cda5a61",
+              "name": "Successfully retrieved paginated list of fund transactions with optional filters: participant_code, fund_asset, deposit_address, fund_id, success, deposit_timestamp_*, deposit_intent_id, reference_id.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_intent_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reference_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": [\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"fund_asset\": \"USDC.ETH\",\n      \"deposited_asset\": \"USDC.ETH\",\n      \"rate\": \"1\",\n      \"quoted_currency\": \"USD\",\n      \"source_address\": \"0xA32A6aA6a3B87b49BeaB01393e2020C3C191CD61\",\n      \"deposit_address\": \"0xF6C6E7d76Ec47F992aEbF46987879a4E3991a03b\",\n      \"quantity\": \"100\",\n      \"notional\": \"100\",\n      \"fund_id\": \"29e6d7b8-d604-4212-86ee-998fef35505e\",\n      \"fund_timestamp\": 1708631671631,\n      \"deposit_timestamp\": 1708631681631,\n      \"transaction_id\": \"ec963207-69f4-44d0-9251-2977dda86fcd\",\n      \"account_label\": \"general\",\n      \"success\": true,\n      \"is_first_deposit\": false,\n      \"status_reason\": \"success\",\n      \"status_reason_code\": \"DEPOSIT_PROCESSED\",\n      \"reference_id\": \"ba97133e-ab15-4c86-86c1-86671b8420bc\",\n      \"raw_fee_bps\": \"1.5\",\n      \"raw_fee_notional\": \"30\",\n      \"deposit_fee_bps\": \"1.5\",\n      \"deposit_fee_notional\": \"30\",\n      \"source\": {\n        \"type\": \"CUSTODIAL\",\n        \"integration\": \"coinbase\"\n      },\n      \"deposit_fee_type\": \"tiered\",\n      \"fee_tier_breakdown\": [\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"5000\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"2.00\"\n        },\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"5000\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"2.00\"\n        }\n      ]\n    },\n    {\n      \"participant_code\": \"ABCDEF\",\n      \"fund_asset\": \"USDC.ETH\",\n      \"deposited_asset\": \"USDC.ETH\",\n      \"rate\": \"1\",\n      \"quoted_currency\": \"USD\",\n      \"source_address\": \"0xA32A6aA6a3B87b49BeaB01393e2020C3C191CD61\",\n      \"deposit_address\": \"0xF6C6E7d76Ec47F992aEbF46987879a4E3991a03b\",\n      \"quantity\": \"100\",\n      \"notional\": \"100\",\n      \"fund_id\": \"29e6d7b8-d604-4212-86ee-998fef35505e\",\n      \"fund_timestamp\": 1708631671631,\n      \"deposit_timestamp\": 1708631681631,\n      \"transaction_id\": \"ec963207-69f4-44d0-9251-2977dda86fcd\",\n      \"account_label\": \"general\",\n      \"success\": true,\n      \"is_first_deposit\": false,\n      \"status_reason\": \"success\",\n      \"status_reason_code\": \"DEPOSIT_PROCESSED\",\n      \"reference_id\": \"ba97133e-ab15-4c86-86c1-86671b8420bc\",\n      \"raw_fee_bps\": \"1.5\",\n      \"raw_fee_notional\": \"30\",\n      \"deposit_fee_bps\": \"1.5\",\n      \"deposit_fee_notional\": \"30\",\n      \"source\": {\n        \"type\": \"CUSTODIAL\",\n        \"integration\": \"coinbase\"\n      },\n      \"deposit_fee_type\": \"tiered\",\n      \"fee_tier_breakdown\": [\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"5000\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"2.00\"\n        },\n        {\n          \"tier\": 1,\n          \"amount_in_tier\": \"5000\",\n          \"fee_bps\": \"40\",\n          \"fee_amount\": \"2.00\"\n        }\n      ]\n    }\n  ],\n  \"page\": 1,\n  \"page_size\": 50,\n  \"total_pages\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a391f2d4-d022-4e5f-aaf3-515305f86ad3",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_intent_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reference_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "feb91057-e6a5-46a2-a62c-b7ad5c160640",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_intent_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reference_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "27363738-56cd-4c7e-8432-964b8fbeff9c",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_intent_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reference_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ee182347-ba6a-49f5-a5d2-e5a90a199a3b",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_intent_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reference_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "614ad660-b24e-45a8-8644-4e7bc91923ba",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "transactions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_asset",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fund_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "success",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_gt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lt",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_timestamp_lte",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "deposit_intent_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reference_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2e267fb6-0544-4ced-a1e8-4f63ae481011",
+          "name": "Create deposit",
+          "request": {
+            "name": "Create deposit",
+            "description": {
+              "content": "This endpoint is used to create a new Fiat deposit and enable instant buying power.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "fund",
+                "deposit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participant_code\": \"<string>\",\n  \"external_account_id\": \"<string>\",\n  \"asset\": \"<string>\",\n  \"amount\": \"<string>\",\n  \"description\": \"<string>\",\n  \"network\": \"<string>\",\n  \"instant\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0e31e840-7637-4243-aef2-03d0bceb902d",
+              "name": "Successfully created the fiat deposit. Returns the submitted transaction details including its current status.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"external_account_id\": \"0f34533e-2114-469d-b505-c850d776e061\",\n  \"asset\": \"USD\",\n  \"amount\": \"100\",\n  \"description\": \"Deposit for trading account\",\n  \"network\": \"ach\",\n  \"instant\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"d39b1957-d0cc-40d7-9daf-9a31e9584c5f\",\n  \"transaction_id\": \"bfa45e86-d414-4dda-863a-42bbdd7f389e\",\n  \"external_account_id\": \"487e49ac-c797-4136-8675-9464fc5e8a12\",\n  \"trade_id\": \"\",\n  \"description\": \"Deposit for trading account\",\n  \"amount\": \"5000\",\n  \"status\": \"submitted\",\n  \"transfer_type\": \"debit\",\n  \"network\": \"ach\",\n  \"participant_code\": \"ABCDEF\",\n  \"account_label\": \"general\",\n  \"currency\": \"USD\",\n  \"created_at\": \"2026-05-04T11:58:45.221Z\",\n  \"ach_agreement_acceptance\": {\n    \"timestamp\": 1708631671631,\n    \"version\": \"1.0.0\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "de1daf6e-b37f-4273-86d6-94bbf76e65bb",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"external_account_id\": \"0f34533e-2114-469d-b505-c850d776e061\",\n  \"asset\": \"USD\",\n  \"amount\": \"100\",\n  \"description\": \"Deposit for trading account\",\n  \"network\": \"ach\",\n  \"instant\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2d29275e-93ab-4d67-9fa7-ba775f3ebf34",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"external_account_id\": \"0f34533e-2114-469d-b505-c850d776e061\",\n  \"asset\": \"USD\",\n  \"amount\": \"100\",\n  \"description\": \"Deposit for trading account\",\n  \"network\": \"ach\",\n  \"instant\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f55d320b-b9ef-4c50-aefe-314fba305347",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"external_account_id\": \"0f34533e-2114-469d-b505-c850d776e061\",\n  \"asset\": \"USD\",\n  \"amount\": \"100\",\n  \"description\": \"Deposit for trading account\",\n  \"network\": \"ach\",\n  \"instant\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0b419c95-c7c3-4ae4-912d-7547ed7e7d66",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"external_account_id\": \"0f34533e-2114-469d-b505-c850d776e061\",\n  \"asset\": \"USD\",\n  \"amount\": \"100\",\n  \"description\": \"Deposit for trading account\",\n  \"network\": \"ach\",\n  \"instant\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "addb1cb4-227c-4441-9a16-f5c3617275dd",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fund",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participant_code\": \"ABCDEF\",\n  \"external_account_id\": \"0f34533e-2114-469d-b505-c850d776e061\",\n  \"asset\": \"USD\",\n  \"amount\": \"100\",\n  \"description\": \"Deposit for trading account\",\n  \"network\": \"ach\",\n  \"instant\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "30fbce1a-2d14-4d36-be1d-99efc7a7f71f",
+    "name": "zerohash Fund API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

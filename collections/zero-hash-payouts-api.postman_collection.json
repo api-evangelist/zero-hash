@@ -1,0 +1,1111 @@
+{
+  "item": [
+    {
+      "id": "5d1e8e5b-501e-45b0-9dea-48fa09a3b37b",
+      "name": "Payouts",
+      "description": {
+        "content": "Crypto payouts",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a0b04c61-a244-4013-bb16-588a7aa4e6d9",
+          "name": "Retrieve payout state",
+          "request": {
+            "name": "Retrieve payout state",
+            "description": {
+              "content": "Returns the current lifecycle state of a payout. Identify the payout by **exactly one** of `payout_id` or `idempotency_key` — supplying neither or both returns `400 Bad Request`. The response is lifecycle-only (PII-free); full per-resource details are fetched from the existing per-resource endpoints (`GET /participants/{code}`, `GET /payments/external_accounts/{id}`, `GET /payments/{payment_id}`) once the caller has the identifier. All queries are scoped to the caller's `platform_code`; a `payout_id` belonging to another tenant returns `404 Not Found` (indistinguishable from a non-existent payout).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payouts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "payout_id",
+                  "value": "<uuid>",
+                  "description": "Public-facing payout identifier returned by `POST /payouts` (202 acknowledgement) and emitted on `payout.status_updated` webhooks. Mutually exclusive with `idempotency_key`."
+                },
+                {
+                  "disabled": false,
+                  "key": "idempotency_key",
+                  "value": "<string>",
+                  "description": "The `Idempotency-Key` value the caller supplied on the original `POST /payouts` submission. Useful for reconciliation when the POST response was lost mid-flight and the caller is unsure whether a payout was created. Mutually exclusive with `payout_id`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ea4f5de0-d308-4527-859a-2a0fee6a18d8",
+              "name": "Current state of the payout.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payout_id",
+                      "value": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    {
+                      "key": "idempotency_key",
+                      "value": "client-supplied-uuid"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payout_id\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"idempotency_key\": \"client-supplied-uuid\",\n  \"account_model\": \"omnibus\",\n  \"status\": \"completed\",\n  \"created_at\": \"2026-05-06T12:00:00Z\",\n  \"updated_at\": \"2026-05-06T12:01:45Z\",\n  \"resources\": {\n    \"payor\": {\n      \"participant_code\": \"PAYOR1\",\n      \"payor\": {\n        \"participant_code\": \"ORIG01\",\n        \"status\": \"approved\"\n      }\n    },\n    \"beneficiary\": {\n      \"participant_code\": \"PART_7e2a4f9c\",\n      \"status\": \"approved\",\n      \"external_account\": {\n        \"external_account_id\": \"ea_3b1d8e4a\",\n        \"account_nickname\": \"Max's USDC wallet\",\n        \"status\": \"approved\",\n        \"details\": {\n          \"network\": \"SOL\",\n          \"supported_symbols\": [\n            \"USDC\"\n          ],\n          \"crypto_address\": \"ab123...\",\n          \"destination_tag\": \"\"\n        },\n        \"created_at\": \"2026-05-06T12:01:00Z\",\n        \"updated_at\": \"2026-05-06T12:01:20Z\"\n      }\n    },\n    \"payment\": {\n      \"payment_id\": \"pmt_4c9d2e10\",\n      \"network\": \"SOL\",\n      \"asset\": \"USDC\",\n      \"quoted_asset\": \"USD\",\n      \"total\": \"100.00\",\n      \"rate\": \"1\",\n      \"destination_amount\": \"100.00\",\n      \"status\": \"posted\",\n      \"description\": \"Monthly payout\",\n      \"payment_details\": {\n        \"withdrawal_request_id\": \"wr_uuid_xyz\",\n        \"trade_id\": \"tr_uuid_qrs\",\n        \"on_chain_transaction_id\": \"0xabc123...\",\n        \"network_fee_notional\": \"0.01\",\n        \"network_fee_quantity\": \"0.0000000384712\"\n      },\n      \"created_at\": \"2026-05-06T12:01:30Z\",\n      \"updated_at\": \"2026-05-06T12:01:45Z\"\n    }\n  },\n  \"sub_status\": \"payment.settled\",\n  \"previous_sub_status\": \"payment.posted\",\n  \"failure_reason\": \"external_account_rejected\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1cd20dc0-d9ce-4e4d-acb1-3bbedc9b4fc6",
+              "name": "Neither or both of `payout_id` / `idempotency_key` were supplied.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payout_id",
+                      "value": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    {
+                      "key": "idempotency_key",
+                      "value": "client-supplied-uuid"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"exactly one of payout_id or idempotency_key is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7480bd4d-d3ef-4d62-b751-aa39f827e1db",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payout_id",
+                      "value": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    {
+                      "key": "idempotency_key",
+                      "value": "client-supplied-uuid"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63097699-e8d0-442b-8cd9-aec9a9f70416",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payout_id",
+                      "value": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    {
+                      "key": "idempotency_key",
+                      "value": "client-supplied-uuid"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dfd4b45c-10ca-4107-82b5-7633460f65ec",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payout_id",
+                      "value": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    {
+                      "key": "idempotency_key",
+                      "value": "client-supplied-uuid"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "84847301-49a0-432f-add7-75eeed5ba670",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "payout_id",
+                      "value": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    },
+                    {
+                      "key": "idempotency_key",
+                      "value": "client-supplied-uuid"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "40d85508-b9a3-4941-a87b-25bfb7f0c677",
+          "name": "Submit or validate a payout",
+          "request": {
+            "name": "Submit or validate a payout",
+            "description": {
+              "content": "Single endpoint that drives the full payout lifecycle. The optional `validate` body field switches between two modes:\n\n- `validate: true` — runs the full pre-flight pipeline (schema, business-logic, and address-validity checks) with **no side effects**. Returns `200 OK` with body `{}` on success, `400 Bad Request` with `errors[]` on any validation failure, or `422 Unprocessable Entity` with `errors[]` if the payout asset is currently depegged. Nothing is persisted; no beneficiary, external account, or payment is created. The `Idempotency-Key` header is not required and is ignored if supplied.\n\n- `validate: false` or omitted (submit) — runs the same validation pipeline then executes the payout. **Requires the `Idempotency-Key` header.** On success returns `202 Accepted` with a slim `{ idempotency_key, payout_id, status }` body; full resource state is retrieved via `GET /payouts` or observed on `payout.status_updated` webhooks. The (`platform_code`, `Idempotency-Key`) pair is unique: replaying the same key with the canonical-JSON-equivalent body returns the original `202` echo-back; replaying with a different body returns `400`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "payouts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                "key": "Idempotency-Key",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payor\": {\n    \"participant_code\": \"<string>\",\n    \"payor\": {\n      \"participant_code\": \"<string>\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"<string>\",\n    \"external_account\": {\n      \"external_account_id\": \"<string>\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"<string>\",\n    \"quoted_asset\": \"<string>\",\n    \"total\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"account_model\": \"<string>\",\n  \"validate\": false,\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\",\n    \"key_4\": \"<string>\",\n    \"key_5\": \"<string>\",\n    \"key_6\": \"<string>\",\n    \"key_7\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a37b7a91-598a-46a2-a66e-32170c213148",
+              "name": "Validate-mode success (only returned when `validate: true`). All three validation tiers passed. Body is intentionally empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4ddb638b-f602-4d08-80a8-2dfd66ef4a5a",
+              "name": "Submit-mode success. The payout has been accepted and is now pending. Asynchronous processing continues; observe state changes via `payout.status_updated` webhooks or `GET /payouts`. Returned only when `validate` is omitted or `false`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"idempotency_key\": \"client-supplied-uuid\",\n  \"payout_id\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"status\": \"pending\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "644c7689-8d3d-4413-8378-7d1d2c4b0185",
+              "name": "Validation failure. A schema, business-logic, or address-validity check failed, OR an `Idempotency-Key` was reused with a different request body. Body uses the standard `errors[]` envelope. Nothing is persisted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"zip format is not valid\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "273b68d8-db9a-4a72-a6ad-3f634517d8a1",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1dc95c11-1949-4914-b4ff-169eb2dcd3b4",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6822c0f3-ba2e-4428-be3b-643ff434b8ce",
+              "name": "Operational halt — the supplied `payment.asset` is currently depegged and new conversions are halted. Returns 422 (not 400) because the request itself is well-formed; the current state simply prevents execution. Nothing is persisted; the `Idempotency-Key` is NOT consumed and may be reused once the depeg clears. Replays of a pre-depeg payout with the same key + body still echo back 202 normally.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"asset is currently depegged and conversions are halted\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "18cf2217-8584-4ffe-af77-7529dae18d85",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "511dff38-2adf-4ba0-bc71-41a2bf9a6d55",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "payouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Caller-supplied idempotency key (stable across retries of the same logical operation). **Required when `validate` is omitted or `false`.** Ignored in validate mode. zerohash stores a SHA-256 hash of the canonicalized JSON body alongside this key; a replay with the same key but a different body returns HTTP 400.",
+                    "key": "Idempotency-Key",
+                    "value": "client-supplied-idempotency-key"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payor\": {\n    \"participant_code\": \"PAYOR1\",\n    \"payor\": {\n      \"participant_code\": \"ORIG01\"\n    }\n  },\n  \"beneficiary\": {\n    \"participant_code\": \"BENE01\",\n    \"external_account\": {\n      \"external_account_id\": \"ea_3b1d8e4a\"\n    }\n  },\n  \"payment\": {\n    \"asset\": \"USDC\",\n    \"quoted_asset\": \"USD\",\n    \"total\": \"100.00\",\n    \"description\": \"Monthly payout\"\n  },\n  \"account_model\": \"omnibus\",\n  \"validate\": false,\n  \"metadata\": {\n    \"client_ref\": \"order-9182\",\n    \"region\": \"us-west\",\n    \"campaign\": \"weekly-payout\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "aa53142d-1b61-4bd3-81b9-b6aa08cd34b4",
+    "name": "zerohash Payouts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

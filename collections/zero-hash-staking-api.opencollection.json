@@ -1,0 +1,385 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Staking API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Staking",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a new stake",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/stakes",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "X-Request-Id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit a staking request for a specific asset. The platform performs validation checks before processing the stake."
+        },
+        {
+          "info": {
+            "name": "Unstake assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/stakes/unstake",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "X-Request-Id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute unstaking operation to withdraw staked assets. Funds will become available after the network-specific cooldown period."
+        },
+        {
+          "info": {
+            "name": "Cancel a stake",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/stakes/:stake_id/cancel",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "X-Request-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "stake_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the stake to cancel"
+              }
+            ]
+          },
+          "docs": "Cancel a pending stake request before it is fully processed."
+        },
+        {
+          "info": {
+            "name": "Cancel an unstake",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/stakes/unstake/:unstake_id/cancel",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "X-Request-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "unstake_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the unstake to cancel"
+              }
+            ]
+          },
+          "docs": "Cancel a pending unstake request before it is fully processed."
+        },
+        {
+          "info": {
+            "name": "Get stake status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/stakes/:stake_id/status",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "stake_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the stake"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by settlement account label"
+              }
+            ]
+          },
+          "docs": "Get the current status and details of a specific stake by its ID."
+        },
+        {
+          "info": {
+            "name": "Get unstake status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/stakes/unstake/:unstake_id/status",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "unstake_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the unstake request"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by settlement account label"
+              }
+            ]
+          },
+          "docs": "Get the current status and details of a specific unstake request by its ID."
+        },
+        {
+          "info": {
+            "name": "List participant stakes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/stakes/:participant_code",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Participant identifier"
+              },
+              {
+                "name": "asset",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific asset"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by stake status"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by settlement account label"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Number of results per page"
+              }
+            ]
+          },
+          "docs": "List all stakes for a participant with optional filtering by asset and status. Includes a summary of total staked value and rewards."
+        },
+        {
+          "info": {
+            "name": "List staking rewards",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/stakes/:participant_code/rewards",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Participant identifier"
+              },
+              {
+                "name": "asset",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific asset"
+              },
+              {
+                "name": "stake_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by specific stake ID"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by settlement account label"
+              },
+              {
+                "name": "start_date",
+                "value": "",
+                "type": "query",
+                "description": "Start date for reward history (ISO 8601 format)"
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "type": "query",
+                "description": "End date for reward history (ISO 8601 format)"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Number of results per page"
+              }
+            ]
+          },
+          "docs": "Retrieve staking reward history for a participant. Includes detailed reward information and cumulative summaries."
+        },
+        {
+          "info": {
+            "name": "Get staking summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/stakes/:participant_code/:asset/summary",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Participant identifier"
+              },
+              {
+                "name": "asset",
+                "value": "",
+                "type": "path",
+                "description": "Asset symbol"
+              }
+            ]
+          },
+          "docs": "Get a summary of the staking activity for a given participant_code and asset, including total staked amount, total rewards earned, and average APY."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

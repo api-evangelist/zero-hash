@@ -1,0 +1,1810 @@
+{
+  "item": [
+    {
+      "id": "6b1924ad-f9a7-4800-845d-e78d4f2c0bdc",
+      "name": "Convert and Withdraw",
+      "description": {
+        "content": "Convert and Withdraw Services",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "00b10ba7-3d4b-4929-b988-165ebbd1bf57",
+          "name": "Get quote",
+          "request": {
+            "name": "Get quote",
+            "description": {
+              "content": "Retrieves a quote for the purchase of an asset and the network fees associated with an imminent and automatic withdrawal of the asset. Exactly one of `quantity` or `total` must be supplied.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "convert_withdraw",
+                "rfq"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "side",
+                  "value": "<string>",
+                  "description": "(Required) Allows platforms to specify the side of the quote"
+                },
+                {
+                  "disabled": false,
+                  "key": "underlying",
+                  "value": "<string>",
+                  "description": "(Required) Allows platforms to specify the underlying asset"
+                },
+                {
+                  "disabled": false,
+                  "key": "quoted_currency",
+                  "value": "<string>",
+                  "description": "(Required) Allows platforms to specify the quoted asset"
+                },
+                {
+                  "disabled": false,
+                  "key": "quantity",
+                  "value": "<string>",
+                  "description": "The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied."
+                },
+                {
+                  "disabled": false,
+                  "key": "total",
+                  "value": "<string>",
+                  "description": "The `total` of the `quoted_currency` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied."
+                },
+                {
+                  "disabled": false,
+                  "key": "participant_code",
+                  "value": "<string>",
+                  "description": "The participant requesting a quote to buy or sell an asset"
+                },
+                {
+                  "disabled": false,
+                  "key": "account_label",
+                  "value": "<string>",
+                  "description": "The account_label that's used to fund the trade"
+                },
+                {
+                  "disabled": false,
+                  "key": "withdrawal_address",
+                  "value": "<string>",
+                  "description": "(Required) The on-chain address where the withdrawal should be sent"
+                },
+                {
+                  "disabled": false,
+                  "key": "fee_inclusive",
+                  "value": "<boolean>",
+                  "description": "Allows platforms to specify if fees are inclusive\nThis parameter is only applicable for requests made by `total` "
+                },
+                {
+                  "disabled": false,
+                  "key": "spread",
+                  "value": "<string>",
+                  "description": "Allows the platform to define the quote spread in basis points"
+                },
+                {
+                  "disabled": false,
+                  "key": "destination_tag",
+                  "value": "<string>",
+                  "description": "The destination tag or memo ID associated with the transaction. If the asset is EOS, XLM or XRP and no_destination_tag is false, then this is required"
+                },
+                {
+                  "disabled": false,
+                  "key": "no_destination_tag",
+                  "value": "<string>",
+                  "description": "Whether or not the specific withdrawal and destination address requires a destination tag. If the asset is EOS, XLM or XRP, this field is required. Note: zerohash requires that no_destination_tag be false for EOS"
+                },
+                {
+                  "disabled": false,
+                  "key": "beneficiary_participant_code",
+                  "value": "<string>",
+                  "description": "The participant benefiting from the quote to buy or sell an asset"
+                },
+                {
+                  "disabled": false,
+                  "key": "beneficiary_first_name",
+                  "value": "<string>",
+                  "description": "The first name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+                },
+                {
+                  "disabled": false,
+                  "key": "beneficiary_last_name",
+                  "value": "<string>",
+                  "description": "The last name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+                },
+                {
+                  "disabled": false,
+                  "key": "beneficiary_business_name",
+                  "value": "<string>",
+                  "description": "The name of the the business participant benefiting from the quote request\n        Only applies to business beneficiaries. Cannot be used along with first/last_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "48ec2d6d-a07a-4566-9780-8443d4c39ae9",
+              "name": "Successfully generated convert-and-withdraw quote. Returns the quote envelope (`{ message: {...} }`) with pricing, network fees, and an ephemeral `quote_id`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "side",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "underlying",
+                      "value": "BTC"
+                    },
+                    {
+                      "key": "quoted_currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "total",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "withdrawal_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fee_inclusive",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "spread",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "no_destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_first_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_last_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_business_name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"ce819fe8-b1d7-43bb-961c-e09ede0988d3\",\n    \"participant_code\": \"CUST01\",\n    \"quoted_currency\": \"USD\",\n    \"side\": \"buy\",\n    \"quantity\": \"1\",\n    \"price\": \"11430.90\",\n    \"quote_id\": \"5cd07738b861c31e3bd61467BTC1Buy1568311644602\",\n    \"expire_ts\": 1568311649602,\n    \"account_group\": \"GRP001\",\n    \"account_label\": \"general\",\n    \"obo_participant\": {\n      \"participant_code\": \"20XRLH\",\n      \"account_group\": \"WRD1K0\",\n      \"account_label\": \"general\"\n    },\n    \"network_fee_notional\": \"1\",\n    \"network_fee_quantity\": \"1\",\n    \"withdrawal_fee_type\": 0,\n    \"total_notional\": \"2.00\",\n    \"underlying\": \"BTC\",\n    \"asset_cost_notional\": \"2.00\",\n    \"withdrawal_address\": \"2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG\",\n    \"payment_processor\": {\n      \"name\": \"checkout.com\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"spread_notional\": \"0.12\",\n    \"spread_bps\": \"50\",\n    \"commission_notional\": \"5.00\",\n    \"commission_bps\": \"25\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f274683c-4d20-497c-af23-d8ef5cf48bed",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "side",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "underlying",
+                      "value": "BTC"
+                    },
+                    {
+                      "key": "quoted_currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "total",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "withdrawal_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fee_inclusive",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "spread",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "no_destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_first_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_last_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_business_name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0abb11f3-f5c3-49d0-929f-f53b6f822004",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "side",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "underlying",
+                      "value": "BTC"
+                    },
+                    {
+                      "key": "quoted_currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "total",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "withdrawal_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fee_inclusive",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "spread",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "no_destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_first_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_last_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_business_name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "229d1b21-409f-416f-afd4-7af75555ba2f",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "side",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "underlying",
+                      "value": "BTC"
+                    },
+                    {
+                      "key": "quoted_currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "total",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "withdrawal_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fee_inclusive",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "spread",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "no_destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_first_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_last_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_business_name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "09240b00-a81d-4a54-b455-16fedb9a3f9a",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "side",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "underlying",
+                      "value": "BTC"
+                    },
+                    {
+                      "key": "quoted_currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "total",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "withdrawal_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fee_inclusive",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "spread",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "no_destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_first_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_last_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_business_name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d89da77f-97d9-4a5c-9f8e-d57c46314b7c",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "side",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "underlying",
+                      "value": "BTC"
+                    },
+                    {
+                      "key": "quoted_currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "total",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "account_label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "withdrawal_address",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fee_inclusive",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "spread",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "no_destination_tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_participant_code",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_first_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_last_name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "beneficiary_business_name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4252c288-a48b-4656-b5e0-10b2a09c6144",
+          "name": "Get quote",
+          "request": {
+            "name": "Get quote",
+            "description": {
+              "content": "Retrieves a quote for the purchase of an asset and the network fees associated with an imminent and automatic withdrawal of the asset. Exactly one of `quantity` or `total` must be supplied in the request body.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "convert_withdraw",
+                "rfq"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"side\": \"<string>\",\n  \"quoted_currency\": \"<string>\",\n  \"underlying\": \"<string>\",\n  \"withdrawal_address\": \"<string>\",\n  \"quantity\": \"<string>\",\n  \"participant_code\": \"<string>\",\n  \"account_label\": \"<string>\",\n  \"fee_inclusive\": \"<boolean>\",\n  \"spread\": \"<string>\",\n  \"destination_tag\": \"<string>\",\n  \"no_destination_tag\": \"<boolean>\",\n  \"beneficiary_participant_code\": \"<string>\",\n  \"beneficiary_first_name\": \"<string>\",\n  \"beneficiary_last_name\": \"<string>\",\n  \"beneficiary_business_name\": \"<string>\",\n  \"fees\": [\n    {\n      \"name\": \"<string>\",\n      \"amount\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"amount\": \"<string>\",\n      \"type\": \"<string>\"\n    }\n  ],\n  \"payment_processor\": {\n    \"name\": \"<string>\",\n    \"id\": \"<string>\"\n  },\n  \"contract_execution\": {\n    \"contract_id\": \"<string>\",\n    \"contract_address\": \"<string>\",\n    \"payload\": \"<object>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5c3936d1-71b2-4844-956c-0821ad5784c6",
+              "name": "Successfully generated convert-and-withdraw quote. Returns the quote envelope (`{ message: {...} }`) with pricing, network fees, and an ephemeral `quote_id`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"side\": \"buy\",\n  \"quoted_currency\": \"USD\",\n  \"underlying\": \"BTC\",\n  \"withdrawal_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n  \"quantity\": \"0.001\",\n  \"participant_code\": \"CUST01\",\n  \"account_label\": \"general\",\n  \"fee_inclusive\": \"<boolean>\",\n  \"spread\": \"50\",\n  \"destination_tag\": \"123456789\",\n  \"no_destination_tag\": false,\n  \"beneficiary_participant_code\": \"CUST02\",\n  \"beneficiary_first_name\": \"John\",\n  \"beneficiary_last_name\": \"Doe\",\n  \"beneficiary_business_name\": \"ACME Inc.\",\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    }\n  ],\n  \"payment_processor\": {\n    \"name\": \"checkout.com\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"contract_execution\": {\n    \"contract_id\": \"<string>\",\n    \"contract_address\": \"<string>\",\n    \"payload\": \"<object>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"ce819fe8-b1d7-43bb-961c-e09ede0988d3\",\n    \"participant_code\": \"CUST01\",\n    \"quoted_currency\": \"USD\",\n    \"side\": \"buy\",\n    \"quantity\": \"1\",\n    \"price\": \"11430.90\",\n    \"quote_id\": \"5cd07738b861c31e3bd61467BTC1Buy1568311644602\",\n    \"expire_ts\": 1568311649602,\n    \"account_group\": \"GRP001\",\n    \"account_label\": \"general\",\n    \"obo_participant\": {\n      \"participant_code\": \"20XRLH\",\n      \"account_group\": \"WRD1K0\",\n      \"account_label\": \"general\"\n    },\n    \"network_fee_notional\": \"1\",\n    \"network_fee_quantity\": \"1\",\n    \"withdrawal_fee_type\": 0,\n    \"total_notional\": \"2.00\",\n    \"underlying\": \"BTC\",\n    \"asset_cost_notional\": \"2.00\",\n    \"withdrawal_address\": \"2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG\",\n    \"payment_processor\": {\n      \"name\": \"checkout.com\",\n      \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n    },\n    \"spread_notional\": \"0.12\",\n    \"spread_bps\": \"50\",\n    \"commission_notional\": \"5.00\",\n    \"commission_bps\": \"25\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4c2f044e-8646-4f14-982c-937f1a680385",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"side\": \"buy\",\n  \"quoted_currency\": \"USD\",\n  \"underlying\": \"BTC\",\n  \"withdrawal_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n  \"quantity\": \"0.001\",\n  \"participant_code\": \"CUST01\",\n  \"account_label\": \"general\",\n  \"fee_inclusive\": \"<boolean>\",\n  \"spread\": \"50\",\n  \"destination_tag\": \"123456789\",\n  \"no_destination_tag\": false,\n  \"beneficiary_participant_code\": \"CUST02\",\n  \"beneficiary_first_name\": \"John\",\n  \"beneficiary_last_name\": \"Doe\",\n  \"beneficiary_business_name\": \"ACME Inc.\",\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    }\n  ],\n  \"payment_processor\": {\n    \"name\": \"checkout.com\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"contract_execution\": {\n    \"contract_id\": \"<string>\",\n    \"contract_address\": \"<string>\",\n    \"payload\": \"<object>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "55f91b36-f7b9-477a-8375-2e06381c0e8a",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"side\": \"buy\",\n  \"quoted_currency\": \"USD\",\n  \"underlying\": \"BTC\",\n  \"withdrawal_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n  \"quantity\": \"0.001\",\n  \"participant_code\": \"CUST01\",\n  \"account_label\": \"general\",\n  \"fee_inclusive\": \"<boolean>\",\n  \"spread\": \"50\",\n  \"destination_tag\": \"123456789\",\n  \"no_destination_tag\": false,\n  \"beneficiary_participant_code\": \"CUST02\",\n  \"beneficiary_first_name\": \"John\",\n  \"beneficiary_last_name\": \"Doe\",\n  \"beneficiary_business_name\": \"ACME Inc.\",\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    }\n  ],\n  \"payment_processor\": {\n    \"name\": \"checkout.com\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"contract_execution\": {\n    \"contract_id\": \"<string>\",\n    \"contract_address\": \"<string>\",\n    \"payload\": \"<object>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e640ebe-7e4d-4fdd-8cf2-5ab6d1b681b6",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"side\": \"buy\",\n  \"quoted_currency\": \"USD\",\n  \"underlying\": \"BTC\",\n  \"withdrawal_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n  \"quantity\": \"0.001\",\n  \"participant_code\": \"CUST01\",\n  \"account_label\": \"general\",\n  \"fee_inclusive\": \"<boolean>\",\n  \"spread\": \"50\",\n  \"destination_tag\": \"123456789\",\n  \"no_destination_tag\": false,\n  \"beneficiary_participant_code\": \"CUST02\",\n  \"beneficiary_first_name\": \"John\",\n  \"beneficiary_last_name\": \"Doe\",\n  \"beneficiary_business_name\": \"ACME Inc.\",\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    }\n  ],\n  \"payment_processor\": {\n    \"name\": \"checkout.com\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"contract_execution\": {\n    \"contract_id\": \"<string>\",\n    \"contract_address\": \"<string>\",\n    \"payload\": \"<object>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "13cc7bef-9d7f-4471-8be2-5096e66886f0",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"side\": \"buy\",\n  \"quoted_currency\": \"USD\",\n  \"underlying\": \"BTC\",\n  \"withdrawal_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n  \"quantity\": \"0.001\",\n  \"participant_code\": \"CUST01\",\n  \"account_label\": \"general\",\n  \"fee_inclusive\": \"<boolean>\",\n  \"spread\": \"50\",\n  \"destination_tag\": \"123456789\",\n  \"no_destination_tag\": false,\n  \"beneficiary_participant_code\": \"CUST02\",\n  \"beneficiary_first_name\": \"John\",\n  \"beneficiary_last_name\": \"Doe\",\n  \"beneficiary_business_name\": \"ACME Inc.\",\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    }\n  ],\n  \"payment_processor\": {\n    \"name\": \"checkout.com\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"contract_execution\": {\n    \"contract_id\": \"<string>\",\n    \"contract_address\": \"<string>\",\n    \"payload\": \"<object>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e96d58de-fcc5-4277-b066-3442142df19c",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "rfq"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"side\": \"buy\",\n  \"quoted_currency\": \"USD\",\n  \"underlying\": \"BTC\",\n  \"withdrawal_address\": \"bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\",\n  \"quantity\": \"0.001\",\n  \"participant_code\": \"CUST01\",\n  \"account_label\": \"general\",\n  \"fee_inclusive\": \"<boolean>\",\n  \"spread\": \"50\",\n  \"destination_tag\": \"123456789\",\n  \"no_destination_tag\": false,\n  \"beneficiary_participant_code\": \"CUST02\",\n  \"beneficiary_first_name\": \"John\",\n  \"beneficiary_last_name\": \"Doe\",\n  \"beneficiary_business_name\": \"ACME Inc.\",\n  \"fees\": [\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    },\n    {\n      \"name\": \"sample\",\n      \"amount\": \"1.95\",\n      \"type\": \"notional\"\n    }\n  ],\n  \"payment_processor\": {\n    \"name\": \"checkout.com\",\n    \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n  },\n  \"contract_execution\": {\n    \"contract_id\": \"<string>\",\n    \"contract_address\": \"<string>\",\n    \"payload\": \"<object>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "775a4742-c80a-47a6-93ae-cd64ba6a687b",
+          "name": "Execute quote",
+          "request": {
+            "name": "Execute quote",
+            "description": {
+              "content": "Executes a convert-and-withdraw quote. The underlying asset will be purchased and automatically withdrawn. Use the returned `withdrawal_request_id` with `GET /withdrawals/requests/{id}` to track the withdrawal.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "convert_withdraw",
+                "execute"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quote_id\": \"<string>\",\n  \"withdrawal_request_id\": \"<string>\",\n  \"funding_details\": {\n    \"inbound_reference_id\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "52e3543b-176a-4ce9-8f19-779a14c326da",
+              "name": "Successfully executed convert-and-withdraw quote. Returns the executed quote, the booked `trade_id`, the trade status, and the `withdrawal_request_id` for tracking the on-chain withdrawal.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quote_id\": \"32ad471b-824e-4f04-94ff-45c4439b4fe9\",\n  \"withdrawal_request_id\": \"640ee134-1e55-411d-ad2d-c924c5ccf9aa\",\n  \"funding_details\": {\n    \"inbound_reference_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"request_id\": \"14f8ebb8-7530-4aa4-bef9-9d73d56313f3\",\n    \"quote\": {\n      \"request_id\": \"ce819fe8-b1d7-43bb-961c-e09ede0988d3\",\n      \"participant_code\": \"CUST01\",\n      \"quoted_currency\": \"USD\",\n      \"side\": \"buy\",\n      \"quantity\": \"1\",\n      \"price\": \"11430.90\",\n      \"quote_id\": \"5cd07738b861c31e3bd61467BTC1Buy1568311644602\",\n      \"expire_ts\": 1568311649602,\n      \"account_group\": \"GRP001\",\n      \"account_label\": \"general\",\n      \"obo_participant\": {\n        \"participant_code\": \"20XRLH\",\n        \"account_group\": \"WRD1K0\",\n        \"account_label\": \"general\"\n      },\n      \"network_fee_notional\": \"1\",\n      \"network_fee_quantity\": \"1\",\n      \"withdrawal_fee_type\": 0,\n      \"total_notional\": \"2.00\",\n      \"underlying\": \"BTC\",\n      \"asset_cost_notional\": \"2.00\",\n      \"withdrawal_address\": \"2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG\",\n      \"payment_processor\": {\n        \"name\": \"checkout.com\",\n        \"id\": \"593dd810-f051-40a9-9f26-d45280efe8f3\"\n      },\n      \"spread_notional\": \"0.12\",\n      \"spread_bps\": \"50\",\n      \"commission_notional\": \"5.00\",\n      \"commission_bps\": \"25\"\n    },\n    \"trade_id\": \"ba97133e-ab15-4c86-86c1-86671b8420bc\",\n    \"trade_ids_list\": [\n      \"ba97133e-ab15-4c86-86c1-86671b8420bc\",\n      \"ce819fe8-b1d7-43bb-961c-e09ede0988d3\"\n    ],\n    \"status\": \"Completed\",\n    \"withdrawal_request_id\": \"640ee134-1e55-411d-ad2d-c924c5ccf9aa\",\n    \"ach_details\": {\n      \"inbound_reference_id\": \"string\",\n      \"external_account_id\": \"string\",\n      \"bank_fee\": \"string\",\n      \"payment_amount\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "951555ff-dc20-44b7-85de-ca57eb7b78f4",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quote_id\": \"32ad471b-824e-4f04-94ff-45c4439b4fe9\",\n  \"withdrawal_request_id\": \"640ee134-1e55-411d-ad2d-c924c5ccf9aa\",\n  \"funding_details\": {\n    \"inbound_reference_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "017f6d5a-29a9-4349-8147-593b23d9d81d",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quote_id\": \"32ad471b-824e-4f04-94ff-45c4439b4fe9\",\n  \"withdrawal_request_id\": \"640ee134-1e55-411d-ad2d-c924c5ccf9aa\",\n  \"funding_details\": {\n    \"inbound_reference_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "22275a1e-f88a-4346-b99e-ee00ef97bc16",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quote_id\": \"32ad471b-824e-4f04-94ff-45c4439b4fe9\",\n  \"withdrawal_request_id\": \"640ee134-1e55-411d-ad2d-c924c5ccf9aa\",\n  \"funding_details\": {\n    \"inbound_reference_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "54a76c33-9936-4b21-b2a1-4fc17c41e248",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quote_id\": \"32ad471b-824e-4f04-94ff-45c4439b4fe9\",\n  \"withdrawal_request_id\": \"640ee134-1e55-411d-ad2d-c924c5ccf9aa\",\n  \"funding_details\": {\n    \"inbound_reference_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a64613bd-47cf-40db-9195-103d5b9d8487",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "convert_withdraw",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quote_id\": \"32ad471b-824e-4f04-94ff-45c4439b4fe9\",\n  \"withdrawal_request_id\": \"640ee134-1e55-411d-ad2d-c924c5ccf9aa\",\n  \"funding_details\": {\n    \"inbound_reference_id\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "244bcaca-f62b-41a6-80da-bd4df7d9cf6c",
+    "name": "zerohash Convert and Withdraw API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

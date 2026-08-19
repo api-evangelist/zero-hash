@@ -1,0 +1,2278 @@
+openapi: 3.2.0
+info:
+  title: zerohash Trades API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Trades
+  description: Trade Settlement Services
+paths:
+  /trades:
+    post:
+      tags:
+      - Trades
+      summary: Submit trade
+      description: Submits a trade for settlement that was matched and executed outside of zerohash.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Trade details including counterparties, settlement schedule, amounts, and prices for external execution settlement.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTradesBody'
+      responses:
+        '200':
+          description: Successfully created trade. Returns the created resource with generated IDs and timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTradesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    get:
+      tags:
+      - Trades
+      summary: Get trades
+      description: Returns trade details where the requestor is the Platform, either party associated with the trade, or the account group where the trade was settled. For the party information, the asset is the settlement currency (i.e asset RECEIVED). This means in the second you are receiving USD correctly, 00SCXM is receiving BTC. The "sell" side receives the quoted currency, the "buy" side receives the underlying. Our trade structure mirrors a typical back office trade report (FIX TradeCaptureReport) and we use the concept of settlement currency for the sides to help keep our system agnostic of symbol definitions. Results are limited to the last 2 months
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/AccountLabelQuery'
+      - $ref: '#/components/parameters/PageQuery'
+      - name: market_identifier_code
+        in: query
+        description: Filters for trades within a designated `market_identifier_code`.
+        required: false
+        schema:
+          type: string
+      - name: omit_market_identifier_code
+        in: query
+        description: Filters for trades excluding those from a particular `market_identifier_code`.
+        required: false
+        schema:
+          type: string
+      - name: platform_code
+        in: query
+        description: Filters for trades based on the specific `platform_code` where the trade execution took place.
+        required: false
+        schema:
+          type: string
+      - name: omit_platform_code
+        in: query
+        description: Filters for trades based excluding those from a particular `platform_code`.
+        required: false
+        schema:
+          type: string
+      - name: trade_state
+        in: query
+        description: Filters for trades based on their current `trade_state`.
+        required: false
+        schema:
+          type: string
+          enum:
+          - accepted
+          - active
+          - terminated
+      - name: settlement_state
+        in: query
+        description: Filters for trades based on their current `settlement_state`.
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'null'
+          - obligations_outstanding
+          - current_obligations_met
+          - settled
+          - defaulted
+          - counterparty_defaulted
+      - name: party_code
+        in: query
+        description: Filters for trades where the provided `party_code` is at least one of the counterparties to a trade in the `parties` array.
+        required: false
+        schema:
+          type: string
+      - name: transaction_timestamp[gt]
+        in: query
+        description: Filters for trades with a timestamp greater than the provided value, which can be defined in milliseconds or nanoseconds.
+        required: false
+        schema:
+          type: number
+      - name: transaction_timestamp[gte]
+        in: query
+        description: Filters for trades with a timestamp greater than or equal to the provided value, which can be defined in milliseconds or nanoseconds.
+        required: false
+        example: 1678901234567
+        schema:
+          type: number
+      - name: transaction_timestamp[e]
+        in: query
+        description: Filters for trades with a timestamp equal to the provided value, which can be defined in milliseconds or nanoseconds.
+        required: false
+        example: 1678901234567
+        schema:
+          type: number
+      - name: transaction_timestamp[lt]
+        in: query
+        description: Filters for trades with a timestamp less than the provided value, which can be defined in milliseconds or nanoseconds.
+        required: false
+        example: 1678901234567
+        schema:
+          type: number
+      - name: transaction_timestamp[lte]
+        in: query
+        description: Filters for trades with a timestamp less than or equal to the provided value, which can be defined in milliseconds or nanoseconds.
+        required: false
+        example: 1678901234567
+        schema:
+          type: number
+      - name: client_trade_id
+        in: query
+        description: "Filters for trades with the provided `client_trade_id` value.\nNote:\n - Platforms integrated to the zerohash RFQ systems, the `quote_id` from the RFQ will be saved as the `client_trade_id` once the quote has been executed.\n- Platforms integrated to the zerohash CLOB, the `execution_id` from the order trade execution will be saved as the `client_trade_id` on the resulting trade."
+        required: false
+        schema:
+          type: string
+      - name: execution_id
+        in: query
+        description: Filters for trades with the provided `execution_id` in either party's `execution_id` field.
+        required: false
+        schema:
+          type: string
+      - name: reporting_party
+        in: query
+        description: Filters for trades based on the `reporting_party` associated with each trade.
+        required: false
+        schema:
+          type: string
+      - name: settlement_schedule
+        in: query
+        description: Filters for trades based on the `settlement_schedule` associated with each trade.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of trades with optional filters: participant_code, asset, underlying, account_label, market_identifier_code, platform_code, trade_state, settlement_state, party_code, transaction_timestamp, client_trade_id, execution_id, reporting_party, settlement_schedule.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTradesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /trades/batch:
+    post:
+      tags:
+      - Trades
+      summary: Submit batch of trades
+      description: Submits a batch of trades for settlement that was matched and executed outside of zerohash.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Array of trade details for bulk submission. Each trade includes counterparties, settlement schedule, amounts, and prices.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTradesBatchBody'
+      responses:
+        '201':
+          description: Successfully created batch of trades. Returns the created resource with generated IDs and timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTradesBatchResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /trades/{trade_id}:
+    get:
+      tags:
+      - Trades
+      summary: Get trade
+      description: Retrieves trade details for a specific trade.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: trade_id
+        in: path
+        description: The zerohash generated ID associated with a trade
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved trade. Including amounts, prices, settlement details, and counterparty information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTradeResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  parameters:
+    AccountLabelQuery:
+      name: account_label
+      in: query
+      description: Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history.
+      required: false
+      schema:
+        type: string
+        example: general
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    PageQuery:
+      name: page
+      in: query
+      description: Page number for pagination (starts at 1).
+      required: false
+      schema:
+        type: number
+        minimum: 1
+        example: 1
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+  schemas:
+    PostTradesBatchResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TradeResponseEntity'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetTradesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TradeResponseEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 15
+        total_pages:
+          type: number
+          example: 1
+        count:
+          type: number
+          example: 1
+    GetTradeResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TradeResponseEntity'
+    TradeResponseEntity:
+      oneOf:
+      - type: object
+        title: Trade Object - RFQ with fees Execution
+        properties:
+          batch_trade_id:
+            type: string
+            maxLength: 50
+            nullable: true
+            description: A unique identifier for a batch of trades. Null when the trade was not submitted as part of a batch.
+            example: f2f14251-e296-42ac-9bc7-01c9186b9219
+          client_trade_id:
+            type: string
+            maxLength: 50
+            description: 'A unique identifier for the trade, generally produced by the Platform on which the trade was executed. Note: this must be unique, per platform, per 72 hour period'
+            example: f2f14251-e296-42ac-9bc7-01c9186b9219
+          trade_reporter:
+            type: string
+            maxLength: 50
+            description: A text field to indicate the name or identifier of the person or entity submitting the trade, e.g. an email address
+            example: user@00SCXM.com
+          trade_reporter_code:
+            type: string
+            maxLength: 50
+            description: A code to identify the person or entity submitting the trade
+            example: 00SCXM
+          reporting_party:
+            type: string
+            nullable: true
+            minLength: 6
+            maxLength: 6
+            description: The original reporter of the trade. This field is optional and must be a 6 digit participant code of which you have proper relationships with. Null when not supplied at trade submission.
+            example: SCXM
+          settlement_schedule:
+            type: string
+            nullable: true
+            minLength: 6
+            maxLength: 6
+            description: Instructs zerohash to settle trades according to a certain schedule. Null when not supplied at trade submission.
+            example: ABCDEF
+          platform_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The unique identifier to the Platform on which the trade was executed, as provided by zerohash.
+            example: PLAT01
+          market_identifier_code:
+            type: string
+            nullable: true
+            maxLength: 50
+            description: The [ISO 10383](https://www.iso20022.org/market-identifier-codes) market identifier code for the platform. Null when not supplied at trade submission.
+            example: SCXM
+          symbol:
+            type: string
+            maxLength: 25
+            description: A free text field to identify the pair being traded, e.g. `BTC/USD`
+            example: BTC/USD
+          product_type:
+            type: string
+            enum:
+            - spot
+            - forward
+            description: '`spot` or `forward`'
+            example: spot
+          trade_type:
+            type: string
+            enum:
+            - regular
+            - block
+            description: The type of trade to be settled. Valid values are `regular` or `block`
+            example: regular
+          trade_price:
+            type: string
+            pattern: ^\d*\.?\d+$
+            description: 'The price the trade was executed
+
+              Note: if the `amount` is included per side, then this must equal to the seller''s `amount` divided by the buyer''s `amount` accurate for up to 20 figures.'
+            example: '10000'
+          trade_quantity:
+            type: string
+            pattern: ^\d*\.?\d+$
+            description: 'The quantity purchased
+
+              Note: if the `amount` is included per side, then this should not be included, otherwise it is required'
+            example: '1.0'
+          trade_state:
+            type: string
+            description: "The current state of the trade;\n - `accepted` : The trade has been booked by zerohash and pending settlement in the next settlement cycle between the platform and zerohash.\n - `active` : The trades are eligible for settlement and there are pending payable and receivable obligations.\n - `terminated` : The trade has been terminated by settlement."
+            enum:
+            - accepted
+            - active
+            - terminated
+          physical_delivery:
+            type: boolean
+            description: A boolean statement to indicate if the trade is physically delivered. Currently zerohash only supports physically-settled trades, i.e. a value of `true`
+            example: true
+          transaction_timestamp:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp the trade was executed on the external platform in milliseconds
+            example: 2554408627334
+          accepted_timestamp:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp at which the trade was accepted by zerohash and entered into an `accepted` status.
+            example: 2554408627334
+          defaulted_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds at which the trade was defaulted. Null when the trade has not defaulted.
+            example: 2554408627334
+          settled_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds at which the trade entered a `settled` state. Trades are generally settled instantaneously. Null until the trade is settled.
+            example: 2554408627334
+          comment:
+            type: string
+            nullable: true
+            maxLength: 500
+            description: Some comments about the trade for zerohash to store. Null when not supplied at trade submission.
+            example: OTC trade executed via phone instruction
+          last_update:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp of the last update to the trade object.
+            example: 2554408627334
+          parties_anonymous:
+            type: boolean
+            description: A boolean flag to determine if the counterparties are known to each other (`false` if the `platform_code` is also a counterparty) to the trade.
+            example: true
+          settlement_price_index_id:
+            type: string
+            nullable: true
+            maxLength: 20
+            description: The unique identifier of the benchmark settlement price to be used when calculating settlement obligations on trades that are settled at zerohash - required for `forwards` only. Null for `spot` trades.
+            example: null
+          contract_size:
+            type: number
+            description: The contract size
+            example: '1'
+          underlying:
+            $ref: '#/components/schemas/UnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/QuotedCurrency'
+          settlement_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds when final settlement will first be attempted - if not included, the standard platform settlement instructions will be applied. Null when not supplied at trade submission.
+            example: 2554408627334
+          expiry_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: 'The last unix timestamp in milliseconds that the product can be traded, and the datetime that all final prices will be set, i.e. the fixing date - relevant for `forwards` only. Note: after this point, there is no more ability to exit the trade or change its economics. Null for `spot` trades.'
+            example: 2554408627334
+          bank_fee:
+            type: string
+            nullable: true
+            pattern: ^\d*\.?\d{0,2}$
+            description: An optional field that clients can use to specify the fee taken by the banking partner (supports 2 decimal places). Null when not supplied at trade submission.
+            example: '1.00'
+          spread_notional:
+            type: string
+            nullable: true
+            description: The `spread_notional` is a field that shows the notional cost of the spread applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+            maxLength: 50
+            example: '2.50'
+          spread_bps:
+            type: string
+            nullable: true
+            description: The `spread_bps` is a field that shows the spread in basis points that was applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+            maxLength: 50
+            example: '100'
+          issuer_fee_rate:
+            type: string
+            nullable: true
+            description: The rate (in basis points) of the issuer fee applied to the trade. Returns null when no issuer fee applied.
+            example: null
+          issuer_fee_amount:
+            type: string
+            nullable: true
+            description: The notional amount of the issuer fee applied to the trade, denominated in the `quoted_currency`. Returns null when no issuer fee applied.
+            example: null
+          issuer_fee_payor_type:
+            type: string
+            nullable: true
+            enum:
+            - null
+            - CUSTOMER
+            - PARTICIPANT
+            - PLATFORM
+            description: The type of payor that paid the issuer fee. Returns null when no issuer fee applied.
+            example: null
+          origin:
+            type: string
+            nullable: true
+            enum:
+            - rest_api
+            - sdk
+            - secondary
+            - null
+            description: Specifies the method through which the movement was initiated, indicating whether it originated via our REST API, SDK, or Secondary Portal. Returns null for legacy/externally-reported trades.
+            example: rest_api
+          parties:
+            type: array
+            maxItems: 2
+            minItems: 2
+            items:
+              type: object
+              required:
+              - participant_code
+              - side
+              - asset
+              - amount
+              properties:
+                side:
+                  type: string
+                  enum:
+                  - buy
+                  - sell
+                  description: The `side` of the trade for the participant - `buy` or `sell`
+                  example: buy
+                participant_code:
+                  type: string
+                  minLength: 6
+                  maxLength: 6
+                  description: The `participant_code` of the trade party.
+                  example: ABCDEF
+                asset:
+                  type: string
+                  maxLength: 25
+                  description: The asset being traded by the party.
+                  example: BTC
+                amount:
+                  type: string
+                  pattern: ^\d*\.?\d+$
+                  maxLength: 30
+                  description: The amount of the `asset` being traded by the party.
+                  example: '0.00001'
+                liquidity_indicator:
+                  type: string
+                  enum:
+                  - added
+                  - removed
+                  description: Indicates whether the party added or removed liquidity from the market. This field is relevant for orders that were executed on the zerohash CLOB.
+                  example: removed
+                  nullable: true
+                client_order_id:
+                  type: string
+                  maxLength: 36
+                  description: A unique ID for the trade, preferably a UUID.
+                  example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+                  nullable: true
+                order_id:
+                  type: string
+                  maxLength: 100
+                  description: The unique identifier of the order generated on the zerohash CLOB.
+                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                  nullable: true
+                obligations_outstanding_timestamp:
+                  type: number
+                  nullable: true
+                  minimum: 1254408627334
+                  maximum: 2554408627334
+                  multipleOf: 1
+                  description: The unix timestamp in milliseconds when the party entered an `obligations_outstanding` settlement state. Null when the party has not yet entered this state.
+                  example: 2554408627334
+                current_obligations_met_timestamp:
+                  type: number
+                  nullable: true
+                  minimum: 1254408627334
+                  maximum: 2554408627334
+                  multipleOf: 1
+                  description: The unix timestamp in milliseconds when the party met its current obligations. Null when obligations have not yet been met.
+                  example: 2554408627334
+                settlement_state:
+                  type: string
+                  nullable: true
+                  enum:
+                  - null
+                  - obligations_outstanding
+                  - current_obligations_met
+                  - settled
+                  - defaulted
+                  - counterparty_defaulted
+                  description: The current settlement state for this party. Null when the trade is in `accepted` state and settlement has not yet been attempted.
+                  example: settled
+                execution_id:
+                  type: string
+                  nullable: true
+                  maxLength: 100
+                  description: The unique identifier for the execution of the trade. Null when the trade was not executed on the zerohash CLOB.
+                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                settling:
+                  type: boolean
+                  description: Indicates whether this party is responsible for settling its side of the trade at zerohash.
+                  example: false
+                account_label:
+                  type: string
+                  nullable: true
+                  maxLength: 40
+                  description: The `account_label` that the party executed the trade on, if applicable. This field is relevant for platforms integrated using custom `account_label` for the zerohash participants. If not provided, the trade will be associated with the default (`general`) account for the participant.
+                  example: general
+                  default: general
+                collateral_percentage:
+                  type: string
+                  nullable: true
+                  maxLength: 6
+                  pattern: ^([0-1]\.\d{4}|2\.0000)$
+                  description: The percentage of collateral required for the trade. Null when collateralization does not apply.
+                  example: '0.1'
+                account_profile:
+                  type: string
+                  nullable: true
+                  description: The account profile associated with the executing account (e.g. `nonprefunded`). Null when the party is not tied to a profiled account.
+                  example: nonprefunded
+                trader:
+                  type: string
+                  nullable: true
+                  minLength: 6
+                  maxLength: 6
+                  description: Participant who placed the order on the trading zerohash trading venue. This field is relevant for orders that were executed on the zerohash CLOB using the Multi Tenant Accounts. Null when not applicable.
+                  example: ABCDEF
+                zrn:
+                  type: string
+                  nullable: true
+                  description: The `urn` associated with the account that executed the trade, if applicable. This field is relevant for platforms integrated with the zerohash Multi Tenant Accounts. Returns null when the trade was not executed by a multi-tenant account.
+                  maxLength: 100
+                  example: null
+                manual_order_indicator:
+                  type: string
+                  nullable: true
+                  enum:
+                  - null
+                  - manual
+                  - automated
+                  description: Indicates if the order was submitted manually via a user interface or via an API / Automated solution. Null when not applicable.
+                  example: manual
+          session_id:
+            type: string
+            description: A session identifier to group filled orders that were executed in the same trading session on the zerohash CLOB. An empty string is returned when the trade was not executed on the zerohash CLOB.
+            maxLength: 50
+            example: '20260504115000'
+          payment_processor:
+            type: object
+            nullable: true
+            description: Identifier for the payment service processor that funded the trade, when applicable. Null when the trade was not funded via a payment processor.
+            properties:
+              name:
+                type: string
+                description: The name of the payment processor
+                example: checkout.out
+              id:
+                type: string
+                description: The unique identifier of the payment according to the PSP
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFee'
+          trade_id:
+            type: string
+            description: zerohash generated unique identifier for the trade.
+            maxLength: 50
+            example: 78260d47-336e-4253-b800-d528894253b2
+          total_notional:
+            type: string
+            description: Total notional value of the executed quote, denominated in the `quoted_currency`.
+            maxLength: 50
+            example: '50.00'
+          asset_cost_notional:
+            type: string
+            description: The `asset_cost_notional` is a field that shows the notional cost of the asset being traded, denominated in the `quoted_currency`.
+            maxLength: 50
+            example: '48.30'
+          network_fee_notional:
+            type: string
+            nullable: true
+            description: Notional value of the quoted network fee, denominated in the `quoted_currency`. This field is relevant for trades that are coupled with a withdrawal of digital assets. Null for trades that do not carry a network fee.
+            maxLength: 50
+            example: null
+          network_fee_quantity:
+            type: string
+            nullable: true
+            description: The `quantity` of the network fee quoted, denominated in the native chain's asset associated with the underlying asset. For example, if the underlying asset is `USDC.ETH`, then this would be denominated in `ETH`. Null for trades that do not carry a network fee.
+            maxLength: 50
+            example: null
+        example:
+          batch_trade_id: null
+          trade_id: 78260d47-336e-4253-b800-d528894253b2
+          client_trade_id: 40b402b0-22ad-4d67-ae8c-7964be34ee29
+          trade_state: terminated
+          market_identifier_code: SCXM
+          trade_reporter_code: 00SCXM
+          symbol: BTC/USD
+          trade_quantity: '0.00059241'
+          trade_price: '81531.3718539524991138'
+          trade_type: regular
+          physical_delivery: true
+          comment: ''
+          last_update: 1778771702391
+          transaction_timestamp: 1778771677000
+          accepted_timestamp: 1778771677972
+          defaulted_timestamp: null
+          settled_timestamp: 1778771702360
+          expiry_timestamp: null
+          settlement_timestamp: null
+          settlement_price_index_id: null
+          contract_size: 1
+          underlying: BTC
+          quoted_currency: USD
+          trade_reporter: 00SCXM
+          platform_code: 00SCXM
+          product_type: spot
+          parties_anonymous: false
+          bank_fee: null
+          reporting_party: 00SCXM
+          settlement_schedule: null
+          parties:
+          - settling: true
+            participant_code: DL1BXT
+            side: buy
+            asset: BTC
+            amount: '0.00059241'
+            liquidity_indicator: null
+            execution_id: ''
+            order_id: ''
+            obligations_outstanding_timestamp: null
+            current_obligations_met_timestamp: null
+            settlement_state: settled
+            client_order_id: ''
+            collateral_percentage: null
+            account_label: general
+            account_profile: null
+            trader: null
+            zrn: null
+            manual_order_indicator: null
+          - settling: true
+            participant_code: 00SCXM
+            side: sell
+            asset: USD
+            amount: '48.3'
+            liquidity_indicator: null
+            execution_id: ''
+            order_id: ''
+            obligations_outstanding_timestamp: null
+            current_obligations_met_timestamp: null
+            settlement_state: settled
+            client_order_id: ''
+            collateral_percentage: null
+            account_label: inventory
+            account_profile: null
+            trader: null
+            zrn: null
+            manual_order_indicator: null
+          session_id: '20260514151438'
+          fees:
+          - name: LiquidityFee
+            amount: '1.7'
+          issuer_fee_rate: '0'
+          issuer_fee_amount: '0'
+          issuer_fee_payor_type: null
+          payment_processor: null
+          network_fee_notional: null
+          network_fee_quantity: null
+          total_notional: '50.00'
+          asset_cost_notional: '48.30'
+          origin: rest_api
+          spread_notional: '0.12075'
+          spread_bps: '25'
+      - type: object
+        title: Trade Object - CLOB Execution
+        properties:
+          batch_trade_id:
+            type: string
+            maxLength: 50
+            nullable: true
+            description: A unique identifier for a batch of trades. Null when the trade was not submitted as part of a batch.
+            example: f2f14251-e296-42ac-9bc7-01c9186b9219
+          client_trade_id:
+            type: string
+            maxLength: 50
+            description: 'A unique identifier for the trade, generally produced by the Platform on which the trade was executed. Note: this must be unique, per platform, per 72 hour period'
+            example: f2f14251-e296-42ac-9bc7-01c9186b9219
+          trade_reporter:
+            type: string
+            maxLength: 50
+            description: A text field to indicate the name or identifier of the person or entity submitting the trade, e.g. an email address
+            example: user@00SCXM.com
+          trade_reporter_code:
+            type: string
+            maxLength: 50
+            description: A code to identify the person or entity submitting the trade
+            example: 00SCXM
+          reporting_party:
+            type: string
+            nullable: true
+            minLength: 6
+            maxLength: 6
+            description: The original reporter of the trade. This field is optional and must be a 6 digit participant code of which you have proper relationships with. Null when not supplied at trade submission.
+            example: SCXM
+          settlement_schedule:
+            type: string
+            nullable: true
+            minLength: 6
+            maxLength: 6
+            description: Instructs zerohash to settle trades according to a certain schedule. Null when not supplied at trade submission.
+            example: ABCDEF
+          platform_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The unique identifier to the Platform on which the trade was executed, as provided by zerohash.
+            example: PLAT01
+          market_identifier_code:
+            type: string
+            nullable: true
+            maxLength: 50
+            description: The [ISO 10383](https://www.iso20022.org/market-identifier-codes) market identifier code for the platform. Null when not supplied at trade submission.
+            example: SCXM
+          symbol:
+            type: string
+            maxLength: 25
+            description: A free text field to identify the pair being traded, e.g. `BTC/USD`
+            example: BTC/USD
+          product_type:
+            type: string
+            enum:
+            - spot
+            - forward
+            description: '`spot` or `forward`'
+            example: spot
+          trade_type:
+            type: string
+            enum:
+            - regular
+            - block
+            description: The type of trade to be settled. Valid values are `regular` or `block`
+            example: regular
+          trade_price:
+            type: string
+            pattern: ^\d*\.?\d+$
+            description: 'The price the trade was executed
+
+              Note: if the `amount` is included per side, then this must equal to the seller''s `amount` divided by the buyer''s `amount` accurate for up to 20 figures.'
+            example: '10000'
+          trade_quantity:
+            type: string
+            pattern: ^\d*\.?\d+$
+            description: 'The quantity purchased
+
+              Note: if the `amount` is included per side, then this should not be included, otherwise it is required'
+            example: '1.0'
+          trade_state:
+            type: string
+            description: "The current state of the trade;\n - `accepted` : The trade has been booked by zerohash and pending settlement in the next settlement cycle between the platform and zerohash.\n - `active` : The trades are eligible for settlement and there are pending payable and receivable obligations.\n - `terminated` : The trade has been terminated by settlement."
+            enum:
+            - accepted
+            - active
+            - terminated
+          physical_delivery:
+            type: boolean
+            description: A boolean statement to indicate if the trade is physically delivered. Currently zerohash only supports physically-settled trades, i.e. a value of `true`
+            example: true
+          transaction_timestamp:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp the trade was executed on the external platform in milliseconds
+            example: 2554408627334
+          accepted_timestamp:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp at which the trade was accepted by zerohash and entered into an `accepted` status.
+            example: 2554408627334
+          defaulted_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds at which the trade was defaulted. Null when the trade has not defaulted.
+            example: 2554408627334
+          settled_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds at which the trade entered a `settled` state. Trades are generally settled instantaneously. Null until the trade is settled.
+            example: 2554408627334
+          comment:
+            type: string
+            nullable: true
+            maxLength: 500
+            description: Some comments about the trade for zerohash to store. Null when not supplied at trade submission.
+            example: OTC trade executed via phone instruction
+          last_update:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp of the last update to the trade object.
+            example: 2554408627334
+          parties_anonymous:
+            type: boolean
+            description: A boolean flag to determine if the counterparties are known to each other (`false` if the `platform_code` is also a counterparty) to the trade.
+            example: true
+          settlement_price_index_id:
+            type: string
+            nullable: true
+            maxLength: 20
+            description: The unique identifier of the benchmark settlement price to be used when calculating settlement obligations on trades that are settled at zerohash - required for `forwards` only. Null for `spot` trades.
+            example: null
+          contract_size:
+            type: number
+            description: The contract size
+            example: '1'
+          underlying:
+            $ref: '#/components/schemas/UnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/QuotedCurrency'
+          settlement_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds when final settlement will first be attempted - if not included, the standard platform settlement instructions will be applied. Null when not supplied at trade submission.
+            example: 2554408627334
+          expiry_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: 'The last unix timestamp in milliseconds that the product can be traded, and the datetime that all final prices will be set, i.e. the fixing date - relevant for `forwards` only. Note: after this point, there is no more ability to exit the trade or change its economics. Null for `spot` trades.'
+            example: 2554408627334
+          bank_fee:
+            type: string
+            nullable: true
+            pattern: ^\d*\.?\d{0,2}$
+            description: An optional field that clients can use to specify the fee taken by the banking partner (supports 2 decimal places). Null when not supplied at trade submission.
+            example: '1.00'
+          spread_notional:
+            type: string
+            nullable: true
+            description: The `spread_notional` is a field that shows the notional cost of the spread applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+            maxLength: 50
+            example: '2.50'
+          spread_bps:
+            type: string
+            nullable: true
+            description: The `spread_bps` is a field that shows the spread in basis points that was applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+            maxLength: 50
+            example: '100'
+          issuer_fee_rate:
+            type: string
+            nullable: true
+            description: The rate (in basis points) of the issuer fee applied to the trade. Returns null when no issuer fee applied.
+            example: null
+          issuer_fee_amount:
+            type: string
+            nullable: true
+            description: The notional amount of the issuer fee applied to the trade, denominated in the `quoted_currency`. Returns null when no issuer fee applied.
+            example: null
+          issuer_fee_payor_type:
+            type: string
+            nullable: true
+            enum:
+            - null
+            - CUSTOMER
+            - PARTICIPANT
+            - PLATFORM
+            description: The type of payor that paid the issuer fee. Returns null when no issuer fee applied.
+            example: null
+          origin:
+            type: string
+            nullable: true
+            enum:
+            - rest_api
+            - sdk
+            - secondary
+            - null
+            description: Specifies the method through which the movement was initiated, indicating whether it originated via our REST API, SDK, or Secondary Portal. Returns null for legacy/externally-reported trades.
+            example: rest_api
+          parties:
+            type: array
+            maxItems: 2
+            minItems: 2
+            items:
+              type: object
+              required:
+              - participant_code
+              - side
+              - asset
+              - amount
+              properties:
+                side:
+                  type: string
+                  enum:
+                  - buy
+                  - sell
+                  description: The `side` of the trade for the participant - `buy` or `sell`
+                  example: buy
+                participant_code:
+                  type: string
+                  minLength: 6
+                  maxLength: 6
+                  description: The `participant_code` of the trade party.
+                  example: ABCDEF
+                asset:
+                  type: string
+                  maxLength: 25
+                  description: The asset being traded by the party.
+                  example: BTC
+                amount:
+                  type: string
+                  pattern: ^\d*\.?\d+$
+                  maxLength: 30
+                  description: The amount of the `asset` being traded by the party.
+                  example: '0.00001'
+                liquidity_indicator:
+                  type: string
+                  enum:
+                  - added
+                  - removed
+                  description: Indicates whether the party added or removed liquidity from the market. This field is relevant for orders that were executed on the zerohash CLOB.
+                  example: removed
+                  nullable: true
+                client_order_id:
+                  type: string
+                  maxLength: 36
+                  description: A unique ID for the trade, preferably a UUID.
+                  example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+                  nullable: true
+                order_id:
+                  type: string
+                  maxLength: 100
+                  description: The unique identifier of the order generated on the zerohash CLOB.
+                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                  nullable: true
+                obligations_outstanding_timestamp:
+                  type: number
+                  nullable: true
+                  minimum: 1254408627334
+                  maximum: 2554408627334
+                  multipleOf: 1
+                  description: The unix timestamp in milliseconds when the party entered an `obligations_outstanding` settlement state. Null when the party has not yet entered this state.
+                  example: 2554408627334
+                current_obligations_met_timestamp:
+                  type: number
+                  nullable: true
+                  minimum: 1254408627334
+                  maximum: 2554408627334
+                  multipleOf: 1
+                  description: The unix timestamp in milliseconds when the party met its current obligations. Null when obligations have not yet been met.
+                  example: 2554408627334
+                settlement_state:
+                  type: string
+                  nullable: true
+                  enum:
+                  - null
+                  - obligations_outstanding
+                  - current_obligations_met
+                  - settled
+                  - defaulted
+                  - counterparty_defaulted
+                  description: The current settlement state for this party. Null when the trade is in `accepted` state and settlement has not yet been attempted.
+                  example: settled
+                execution_id:
+                  type: string
+                  nullable: true
+                  maxLength: 100
+                  description: The unique identifier for the execution of the trade. Null when the trade was not executed on the zerohash CLOB.
+                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                settling:
+                  type: boolean
+                  description: Indicates whether this party is responsible for settling its side of the trade at zerohash.
+                  example: false
+                account_label:
+                  type: string
+                  nullable: true
+                  maxLength: 40
+                  description: The `account_label` that the party executed the trade on, if applicable. This field is relevant for platforms integrated using custom `account_label` for the zerohash participants. If not provided, the trade will be associated with the default (`general`) account for the participant.
+                  example: general
+                  default: general
+                collateral_percentage:
+                  type: string
+                  nullable: true
+                  maxLength: 6
+                  pattern: ^([0-1]\.\d{4}|2\.0000)$
+                  description: The percentage of collateral required for the trade. Null when collateralization does not apply.
+                  example: '0.1'
+                account_profile:
+                  type: string
+                  nullable: true
+                  description: The account profile associated with the executing account (e.g. `nonprefunded`). Null when the party is not tied to a profiled account.
+                  example: nonprefunded
+                trader:
+                  type: string
+                  nullable: true
+                  minLength: 6
+                  maxLength: 6
+                  description: Participant who placed the order on the trading zerohash trading venue. This field is relevant for orders that were executed on the zerohash CLOB using the Multi Tenant Accounts. Null when not applicable.
+                  example: ABCDEF
+                zrn:
+                  type: string
+                  nullable: true
+                  description: The `urn` associated with the account that executed the trade, if applicable. This field is relevant for platforms integrated with the zerohash Multi Tenant Accounts. Returns null when the trade was not executed by a multi-tenant account.
+                  maxLength: 100
+                  example: null
+                manual_order_indicator:
+                  type: string
+                  nullable: true
+                  enum:
+                  - null
+                  - manual
+                  - automated
+                  description: Indicates if the order was submitted manually via a user interface or via an API / Automated solution. Null when not applicable.
+                  example: manual
+          session_id:
+            type: string
+            description: A session identifier to group filled orders that were executed in the same trading session on the zerohash CLOB. An empty string is returned when the trade was not executed on the zerohash CLOB.
+            maxLength: 50
+            example: '20260504115000'
+          payment_processor:
+            type: object
+            nullable: true
+            description: Identifier for the payment service processor that funded the trade, when applicable. Null when the trade was not funded via a payment processor.
+            properties:
+              name:
+                type: string
+                description: The name of the payment processor
+                example: checkout.out
+              id:
+                type: string
+                description: The unique identifier of the payment according to the PSP
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFee'
+        example:
+          batch_trade_id: null
+          trade_id: bfa4d7b4-a3ac-4a69-acb4-a52ea07e8bf7
+          client_trade_id: 9PQDTXS000MR
+          trade_state: active
+          market_identifier_code: SCXM
+          trade_reporter_code: 00SCXM
+          symbol: W.SOL/USD
+          trade_quantity: '1000'
+          trade_price: '0.01294'
+          trade_type: regular
+          physical_delivery: true
+          comment: ''
+          last_update: 1777401329374
+          transaction_timestamp: 1777398165000
+          accepted_timestamp: 1777398165695
+          defaulted_timestamp: null
+          settled_timestamp: null
+          expiry_timestamp: null
+          settlement_timestamp: null
+          settlement_price_index_id: null
+          contract_size: 1
+          underlying: W.SOL
+          quoted_currency: USD
+          trade_reporter: 00SCXM
+          platform_code: 00SCXM
+          product_type: spot
+          parties_anonymous: true
+          bank_fee: null
+          reporting_party: 00SCXM
+          settlement_schedule: null
+          parties:
+          - settling: true
+            participant_code: ZHMQUN
+            side: buy
+            asset: W.SOL
+            amount: '1000'
+            liquidity_indicator: null
+            execution_id: 9PQDTXS000MR
+            order_id: 9KHC0T60W0MB
+            obligations_outstanding_timestamp: 1777398166809
+            current_obligations_met_timestamp: null
+            settlement_state: obligations_outstanding
+            client_order_id: '91639129949595461897'
+            collateral_percentage: null
+            account_label: ZHMQUN-march
+            account_profile: prefunded
+            trader: ZHMQUN
+            urn: null
+            manual_order_indicator: null
+            commission: '0.05'
+            commission_asset: USD
+          - participant_code: Anonymous
+            side: sell
+            asset: USD
+            amount: '12.94'
+            liquidity_indicator: null
+          session_id: '20260428174245'
+          fees: []
+          issuer_fee_rate: null
+          issuer_fee_amount: null
+          issuer_fee_payor_type: null
+          payment_processor: null
+          network_fee_notional: null
+          network_fee_quantity: null
+          total_notional: '12.94'
+          asset_cost_notional: '12.94'
+          origin: null
+          spread_notional: null
+          spread_bps: null
+      - type: object
+        title: Trade Object - All Fields
+        properties:
+          batch_trade_id:
+            type: string
+            maxLength: 50
+            nullable: true
+            description: A unique identifier for a batch of trades. Null when the trade was not submitted as part of a batch.
+            example: f2f14251-e296-42ac-9bc7-01c9186b9219
+          client_trade_id:
+            type: string
+            maxLength: 50
+            description: 'A unique identifier for the trade, generally produced by the Platform on which the trade was executed. Note: this must be unique, per platform, per 72 hour period'
+            example: f2f14251-e296-42ac-9bc7-01c9186b9219
+          trade_reporter:
+            type: string
+            maxLength: 50
+            description: A text field to indicate the name or identifier of the person or entity submitting the trade, e.g. an email address
+            example: user@00SCXM.com
+          trade_reporter_code:
+            type: string
+            maxLength: 50
+            description: A code to identify the person or entity submitting the trade
+            example: 00SCXM
+          reporting_party:
+            type: string
+            nullable: true
+            minLength: 6
+            maxLength: 6
+            description: The original reporter of the trade. This field is optional and must be a 6 digit participant code of which you have proper relationships with. Null when not supplied at trade submission.
+            example: SCXM
+          settlement_schedule:
+            type: string
+            nullable: true
+            minLength: 6
+            maxLength: 6
+            description: Instructs zerohash to settle trades according to a certain schedule. Null when not supplied at trade submission.
+            example: ABCDEF
+          platform_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The unique identifier to the Platform on which the trade was executed, as provided by zerohash.
+            example: PLAT01
+          market_identifier_code:
+            type: string
+            nullable: true
+            maxLength: 50
+            description: The [ISO 10383](https://www.iso20022.org/market-identifier-codes) market identifier code for the platform. Null when not supplied at trade submission.
+            example: SCXM
+          symbol:
+            type: string
+            maxLength: 25
+            description: A free text field to identify the pair being traded, e.g. `BTC/USD`
+            example: BTC/USD
+          product_type:
+            type: string
+            enum:
+            - spot
+            - forward
+            description: '`spot` or `forward`'
+            example: spot
+          trade_type:
+            type: string
+            enum:
+            - regular
+            - block
+            description: The type of trade to be settled. Valid values are `regular` or `block`
+            example: regular
+          trade_price:
+            type: string
+            pattern: ^\d*\.?\d+$
+            description: 'The price the trade was executed
+
+              Note: if the `amount` is included per side, then this must equal to the seller''s `amount` divided by the buyer''s `amount` accurate for up to 20 figures.'
+            example: '10000'
+          trade_quantity:
+            type: string
+            pattern: ^\d*\.?\d+$
+            description: 'The quantity purchased
+
+              Note: if the `amount` is included per side, then this should not be included, otherwise it is required'
+            example: '1.0'
+          trade_state:
+            type: string
+            description: "The current state of the trade;\n - `accepted` : The trade has been booked by zerohash and pending settlement in the next settlement cycle between the platform and zerohash.\n - `active` : The trades are eligible for settlement and there are pending payable and receivable obligations.\n - `terminated` : The trade has been terminated by settlement."
+            enum:
+            - accepted
+            - active
+            - terminated
+          physical_delivery:
+            type: boolean
+            description: A boolean statement to indicate if the trade is physically delivered. Currently zerohash only supports physically-settled trades, i.e. a value of `true`
+            example: true
+          transaction_timestamp:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp the trade was executed on the external platform in milliseconds
+            example: 2554408627334
+          accepted_timestamp:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp at which the trade was accepted by zerohash and entered into an `accepted` status.
+            example: 2554408627334
+          defaulted_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds at which the trade was defaulted. Null when the trade has not defaulted.
+            example: 2554408627334
+          settled_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds at which the trade entered a `settled` state. Trades are generally settled instantaneously. Null until the trade is settled.
+            example: 2554408627334
+          comment:
+            type: string
+            nullable: true
+            maxLength: 500
+            description: Some comments about the trade for zerohash to store. Null when not supplied at trade submission.
+            example: OTC trade executed via phone instruction
+          last_update:
+            type: number
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp of the last update to the trade object.
+            example: 2554408627334
+          parties_anonymous:
+            type: boolean
+            description: A boolean flag to determine if the counterparties are known to each other (`false` if the `platform_code` is also a counterparty) to the trade.
+            example: true
+          settlement_price_index_id:
+            type: string
+            nullable: true
+            maxLength: 20
+            description: The unique identifier of the benchmark settlement price to be used when calculating settlement obligations on trades that are settled at zerohash - required for `forwards` only. Null for `spot` trades.
+            example: null
+          contract_size:
+            type: number
+            description: The contract size
+            example: '1'
+          underlying:
+            $ref: '#/components/schemas/UnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/QuotedCurrency'
+          settlement_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: The unix timestamp in milliseconds when final settlement will first be attempted - if not included, the standard platform settlement instructions will be applied. Null when not supplied at trade submission.
+            example: 2554408627334
+          expiry_timestamp:
+            type: number
+            nullable: true
+            minimum: 1254408627334
+            maximum: 2554408627334
+            multipleOf: 1
+            description: 'The last unix timestamp in milliseconds that the product can be traded, and the datetime that all final prices will be set, i.e. the fixing date - relevant for `forwards` only. Note: after this point, there is no more ability to exit the trade or change its economics. Null for `spot` trades.'
+            example: 2554408627334
+          bank_fee:
+            type: string
+            nullable: true
+            pattern: ^\d*\.?\d{0,2}$
+            description: An optional field that clients can use to specify the fee taken by the banking partner (supports 2 decimal places). Null when not supplied at trade submission.
+            example: '1.00'
+          spread_notional:
+            type: string
+            nullable: true
+            description: The `spread_notional` is a field that shows the notional cost of the spread applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+            maxLength: 50
+            example: '2.50'
+          spread_bps:
+            type: string
+            nullable: true
+            description: The `spread_bps` is a field that shows the spread in basis points that was applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+            maxLength: 50
+            example: '100'
+          issuer_fee_rate:
+            type: string
+            nullable: true
+            description: The rate (in basis points) of the issuer fee applied to the trade. Returns null when no issuer fee applied.
+            example: null
+          issuer_fee_amount:
+            type: string
+            nullable: true
+            description: The notional amount of the issuer fee applied to the trade, denominated in the `quoted_currency`. Returns null when no issuer fee applied.
+            example: null
+          issuer_fee_payor_type:
+            type: string
+            nullable: true
+            enum:
+            - null
+            - CUSTOMER
+            - PARTICIPANT
+            - PLATFORM
+            description: The type of payor that paid the issuer fee. Returns null when no issuer fee applied.
+            example: null
+          origin:
+            type: string
+            nullable: true
+            enum:
+            - rest_api
+            - sdk
+            - secondary
+            - null
+            description: Specifies the method through which the movement was initiated, indicating whether it originated via our REST API, SDK, or Secondary Portal. Returns null for legacy/externally-reported trades.
+            example: rest_api
+          parties:
+            type: array
+            maxItems: 2
+            minItems: 2
+            items:
+              type: object
+              required:
+              - participant_code
+              - side
+              - asset
+              - amount
+              properties:
+                side:
+                  type: string
+                  enum:
+                  - buy
+                  - sell
+                  description: The `side` of the trade for the participant - `buy` or `sell`
+                  example: buy
+                participant_code:
+                  type: string
+                  minLength: 6
+                  maxLength: 6
+                  description: The `participant_code` of the trade party.
+                  example: ABCDEF
+                asset:
+                  type: string
+                  maxLength: 25
+                  description: The asset being traded by the party.
+                  example: BTC
+                amount:
+                  type: string
+                  pattern: ^\d*\.?\d+$
+                  maxLength: 30
+                  description: The amount of the `asset` being traded by the party.
+                  example: '0.00001'
+                liquidity_indicator:
+                  type: string
+                  enum:
+                  - added
+                  - removed
+                  description: Indicates whether the party added or removed liquidity from the market. This field is relevant for orders that were executed on the zerohash CLOB.
+                  example: removed
+                  nullable: true
+                client_order_id:
+                  type: string
+                  maxLength: 36
+                  description: A unique ID for the trade, preferably a UUID.
+                  example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+                  nullable: true
+                order_id:
+                  type: string
+                  maxLength: 100
+                  description: The unique identifier of the order generated on the zerohash CLOB.
+                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                  nullable: true
+                obligations_outstanding_timestamp:
+                  type: number
+                  nullable: true
+                  minimum: 1254408627334
+                  maximum: 2554408627334
+                  multipleOf: 1
+                  description: The unix timestamp in milliseconds when the party entered an `obligations_outstanding` settlement state. Null when the party has not yet entered this state.
+                  example: 2554408627334
+                current_obligations_met_timestamp:
+                  type: number
+                  nullable: true
+                  minimum: 1254408627334
+                  maximum: 2554408627334
+                  multipleOf: 1
+                  description: The unix timestamp in milliseconds when the party met its current obligations. Null when obligations have not yet been met.
+                  example: 2554408627334
+                settlement_state:
+                  type: string
+                  nullable: true
+                  enum:
+                  - null
+                  - obligations_outstanding
+                  - current_obligations_met
+                  - settled
+                  - defaulted
+                  - counterparty_defaulted
+                  description: The current settlement state for this party. Null when the trade is in `accepted` state and settlement has not yet been attempted.
+                  example: settled
+                execution_id:
+                  type: string
+                  nullable: true
+                  maxLength: 100
+                  description: The unique identifier for the execution of the trade. Null when the trade was not executed on the zerohash CLOB.
+                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                settling:
+                  type: boolean
+                  description: Indicates whether this party is responsible for settling its side of the trade at zerohash.
+                  example: false
+                account_label:
+                  type: string
+                  nullable: true
+                  maxLength: 40
+                  description: The `account_label` that the party executed the trade on, if applicable. This field is relevant for platforms integrated using custom `account_label` for the zerohash participants. If not provided, the trade will be associated with the default (`general`) account for the participant.
+                  example: general
+                  default: general
+                collateral_percentage:
+                  type: string
+                  nullable: true
+                  maxLength: 6
+                  pattern: ^([0-1]\.\d{4}|2\.0000)$
+                  description: The percentage of collateral required for the trade. Null when collateralization does not apply.
+                  example: '0.1'
+                account_profile:
+                  type: string
+                  nullable: true
+                  description: The account profile associated with the executing account (e.g. `nonprefunded`). Null when the party is not tied to a profiled account.
+                  example: nonprefunded
+                trader:
+                  type: string
+                  nullable: true
+                  minLength: 6
+                  maxLength: 6
+                  description: Participant who placed the order on the trading zerohash trading venue. This field is relevant for orders that were executed on the zerohash CLOB using the Multi Tenant Accounts. Null when not applicable.
+                  example: ABCDEF
+                zrn:
+                  type: string
+                  nullable: true
+                  description: The `urn` associated with the account that executed the trade, if applicable. This field is relevant for platforms integrated with the zerohash Multi Tenant Accounts. Returns null when the trade was not executed by a multi-tenant account.
+                  maxLength: 100
+                  example: null
+                manual_order_indicator:
+                  type: string
+                  nullable: true
+                  enum:
+                  - null
+                  - manual
+                  - automated
+                  description: Indicates if the order was submitted manually via a user interface or via an API / Automated solution. Null when not applicable.
+                  example: manual
+          session_id:
+            type: string
+            description: A session identifier to group filled orders that were executed in the same trading session on the zerohash CLOB. An empty string is returned when the trade was not executed on the zerohash CLOB.
+            maxLength: 50
+            example: '20260504115000'
+          payment_processor:
+            type: object
+            nullable: true
+            description: Identifier for the payment service processor that funded the trade, when applicable. Null when the trade was not funded via a payment processor.
+            properties:
+              name:
+                type: string
+                description: The name of the payment processor
+                example: checkout.out
+              id:
+                type: string
+                description: The unique identifier of the payment according to the PSP
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFee'
+          trade_id:
+            type: string
+            description: zerohash generated unique identifier for the trade.
+            maxLength: 50
+            example: 9411a2d9-8964-47d0-8971-a52db2f65748
+          network_fee_notional:
+            type: string
+            nullable: true
+            description: Notional value of the quoted network fee, denominated in the `quoted_currency`. This field is relevant for trades that are coupled with a withdrawal of digital assets. Null for trades that do not carry a network fee.
+            maxLength: 50
+            example: '1'
+          network_fee_quantity:
+            type: string
+            nullable: true
+            description: The `quantity` of the network fee quoted, denominated in the native chain's asset associated with the underlying asset. For example, if the underlying asset is `USDC.ETH`, then this would be denominated in `ETH`. Null for trades that do not carry a network fee.
+            maxLength: 50
+            example: '1'
+          total_notional:
+            type: string
+            description: Total notional value of the executed quote, denominated in the `quoted_currency`.
+            maxLength: 50
+            example: '2.00'
+          asset_cost_notional:
+            type: string
+            description: The `asset_cost_notional` is a field that shows the notional cost of the asset being traded, denominated in the `quoted_currency`.
+            maxLength: 50
+            example: '2.00'
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    DynamicFee:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    PostTradesResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TradeResponseEntity'
+    PostTradesBody:
+      type: object
+      properties:
+        batch_trade_id:
+          type: string
+          maxLength: 50
+          nullable: true
+          description: A unique identifier for a batch of trades. Null when the trade was not submitted as part of a batch.
+          example: f2f14251-e296-42ac-9bc7-01c9186b9219
+        client_trade_id:
+          type: string
+          maxLength: 50
+          description: 'A unique identifier for the trade, generally produced by the Platform on which the trade was executed. Note: this must be unique, per platform, per 72 hour period'
+          example: f2f14251-e296-42ac-9bc7-01c9186b9219
+        trade_reporter:
+          type: string
+          maxLength: 50
+          description: A text field to indicate the name or identifier of the person or entity submitting the trade, e.g. an email address
+          example: user@00SCXM.com
+        trade_reporter_code:
+          type: string
+          maxLength: 50
+          description: A code to identify the person or entity submitting the trade
+          example: 00SCXM
+        reporting_party:
+          type: string
+          nullable: true
+          minLength: 6
+          maxLength: 6
+          description: The original reporter of the trade. This field is optional and must be a 6 digit participant code of which you have proper relationships with. Null when not supplied at trade submission.
+          example: SCXM
+        settlement_schedule:
+          type: string
+          nullable: true
+          minLength: 6
+          maxLength: 6
+          description: Instructs zerohash to settle trades according to a certain schedule. Null when not supplied at trade submission.
+          example: ABCDEF
+        platform_code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          description: The unique identifier to the Platform on which the trade was executed, as provided by zerohash.
+          example: PLAT01
+        market_identifier_code:
+          type: string
+          nullable: true
+          maxLength: 50
+          description: The [ISO 10383](https://www.iso20022.org/market-identifier-codes) market identifier code for the platform. Null when not supplied at trade submission.
+          example: SCXM
+        symbol:
+          type: string
+          maxLength: 25
+          description: A free text field to identify the pair being traded, e.g. `BTC/USD`
+          example: BTC/USD
+        product_type:
+          type: string
+          enum:
+          - spot
+          - forward
+          description: '`spot` or `forward`'
+          example: spot
+        trade_type:
+          type: string
+          enum:
+          - regular
+          - block
+          description: The type of trade to be settled. Valid values are `regular` or `block`
+          example: regular
+        trade_price:
+          type: string
+          pattern: ^\d*\.?\d+$
+          description: 'The price the trade was executed
+
+            Note: if the `amount` is included per side, then this must equal to the seller''s `amount` divided by the buyer''s `amount` accurate for up to 20 figures.'
+          example: '10000'
+        trade_quantity:
+          type: string
+          pattern: ^\d*\.?\d+$
+          description: 'The quantity purchased
+
+            Note: if the `amount` is included per side, then this should not be included, otherwise it is required'
+          example: '1.0'
+        trade_state:
+          type: string
+          description: "The current state of the trade;\n - `accepted` : The trade has been booked by zerohash and pending settlement in the next settlement cycle between the platform and zerohash.\n - `active` : The trades are eligible for settlement and there are pending payable and receivable obligations.\n - `terminated` : The trade has been terminated by settlement."
+          enum:
+          - accepted
+          - active
+          - terminated
+        physical_delivery:
+          type: boolean
+          description: A boolean statement to indicate if the trade is physically delivered. Currently zerohash only supports physically-settled trades, i.e. a value of `true`
+          example: true
+        transaction_timestamp:
+          type: number
+          minimum: 1254408627334
+          maximum: 2554408627334
+          multipleOf: 1
+          description: The unix timestamp the trade was executed on the external platform in milliseconds
+          example: 2554408627334
+        accepted_timestamp:
+          type: number
+          minimum: 1254408627334
+          maximum: 2554408627334
+          multipleOf: 1
+          description: The unix timestamp at which the trade was accepted by zerohash and entered into an `accepted` status.
+          example: 2554408627334
+        defaulted_timestamp:
+          type: number
+          nullable: true
+          minimum: 1254408627334
+          maximum: 2554408627334
+          multipleOf: 1
+          description: The unix timestamp in milliseconds at which the trade was defaulted. Null when the trade has not defaulted.
+          example: 2554408627334
+        settled_timestamp:
+          type: number
+          nullable: true
+          minimum: 1254408627334
+          maximum: 2554408627334
+          multipleOf: 1
+          description: The unix timestamp in milliseconds at which the trade entered a `settled` state. Trades are generally settled instantaneously. Null until the trade is settled.
+          example: 2554408627334
+        comment:
+          type: string
+          nullable: true
+          maxLength: 500
+          description: Some comments about the trade for zerohash to store. Null when not supplied at trade submission.
+          example: OTC trade executed via phone instruction
+        last_update:
+          type: number
+          minimum: 1254408627334
+          maximum: 2554408627334
+          multipleOf: 1
+          description: The unix timestamp of the last update to the trade object.
+          example: 2554408627334
+        parties_anonymous:
+          type: boolean
+          description: A boolean flag to determine if the counterparties are known to each other (`false` if the `platform_code` is also a counterparty) to the trade.
+          example: true
+        settlement_price_index_id:
+          type: string
+          nullable: true
+          maxLength: 20
+          description: The unique identifier of the benchmark settlement price to be used when calculating settlement obligations on trades that are settled at zerohash - required for `forwards` only. Null for `spot` trades.
+          example: null
+        contract_size:
+          type: number
+          description: The contract size
+          example: '1'
+        underlying:
+          $ref: '#/components/schemas/UnderlyingCurrency'
+        quoted_currency:
+          $ref: '#/components/schemas/QuotedCurrency'
+        settlement_timestamp:
+          type: number
+          nullable: true
+          minimum: 1254408627334
+          maximum: 2554408627334
+          multipleOf: 1
+          description: The unix timestamp in milliseconds when final settlement will first be attempted - if not included, the standard platform settlement instructions will be applied. Null when not supplied at trade submission.
+          example: 2554408627334
+        expiry_timestamp:
+          type: number
+          nullable: true
+          minimum: 1254408627334
+          maximum: 2554408627334
+          multipleOf: 1
+          description: 'The last unix timestamp in milliseconds that the product can be traded, and the datetime that all final prices will be set, i.e. the fixing date - relevant for `forwards` only. Note: after this point, there is no more ability to exit the trade or change its economics. Null for `spot` trades.'
+          example: 2554408627334
+        bank_fee:
+          type: string
+          nullable: true
+          pattern: ^\d*\.?\d{0,2}$
+          description: An optional field that clients can use to specify the fee taken by the banking partner (supports 2 decimal places). Null when not supplied at trade submission.
+          example: '1.00'
+        spread_notional:
+          type: string
+          nullable: true
+          description: The `spread_notional` is a field that shows the notional cost of the spread applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+          maxLength: 50
+          example: '2.50'
+        spread_bps:
+          type: string
+          nullable: true
+          description: The `spread_bps` is a field that shows the spread in basis points that was applied to the trade. This field is relevant for trades that are executed using the zerohash RFQ system. Returns null when no spread applied.
+          maxLength: 50
+          example: '100'
+        issuer_fee_rate:
+          type: string
+          nullable: true
+          description: The rate (in basis points) of the issuer fee applied to the trade. Returns null when no issuer fee applied.
+          example: null
+        issuer_fee_amount:
+          type: string
+          nullable: true
+          description: The notional amount of the issuer fee applied to the trade, denominated in the `quoted_currency`. Returns null when no issuer fee applied.
+          example: null
+        issuer_fee_payor_type:
+          type: string
+          nullable: true
+          enum:
+          - null
+          - CUSTOMER
+          - PARTICIPANT
+          - PLATFORM
+          description: The type of payor that paid the issuer fee. Returns null when no issuer fee applied.
+          example: null
+        origin:
+          type: string
+          nullable: true
+          enum:
+          - rest_api
+          - sdk
+          - secondary
+          - null
+          description: Specifies the method through which the movement was initiated, indicating whether it originated via our REST API, SDK, or Secondary Portal. Returns null for legacy/externally-reported trades.
+          example: rest_api
+        parties:
+          type: array
+          maxItems: 2
+          minItems: 2
+          items:
+            type: object
+            required:
+            - participant_code
+            - side
+            - asset
+            - amount
+            properties:
+              side:
+                type: string
+                enum:
+                - buy
+                - sell
+                description: The `side` of the trade for the participant - `buy` or `sell`
+                example: buy
+              participant_code:
+                type: string
+                minLength: 6
+                maxLength: 6
+                description: The `participant_code` of the trade party.
+                example: ABCDEF
+              asset:
+                type: string
+                maxLength: 25
+                description: The asset being traded by the party.
+                example: BTC
+              amount:
+                type: string
+                pattern: ^\d*\.?\d+$
+                maxLength: 30
+                description: The amount of the `asset` being traded by the party.
+                example: '0.00001'
+              liquidity_indicator:
+                type: string
+                enum:
+                - added
+                - removed
+                description: Indicates whether the party added or removed liquidity from the market. This field is relevant for orders that were executed on the zerohash CLOB.
+                example: removed
+                nullable: true
+              client_order_id:
+                type: string
+                maxLength: 36
+                description: A unique ID for the trade, preferably a UUID.
+                example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+                nullable: true
+              order_id:
+                type: string
+                maxLength: 100
+                description: The unique identifier of the order generated on the zerohash CLOB.
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                nullable: true
+              obligations_outstanding_timestamp:
+                type: number
+                nullable: true
+                minimum: 1254408627334
+                maximum: 2554408627334
+                multipleOf: 1
+                description: The unix timestamp in milliseconds when the party entered an `obligations_outstanding` settlement state. Null when the party has not yet entered this state.
+                example: 2554408627334
+              current_obligations_met_timestamp:
+                type: number
+                nullable: true
+                minimum: 1254408627334
+                maximum: 2554408627334
+                multipleOf: 1
+                description: The unix timestamp in milliseconds when the party met its current obligations. Null when obligations have not yet been met.
+                example: 2554408627334
+              settlement_state:
+                type: string
+                nullable: true
+                enum:
+                - null
+                - obligations_outstanding
+                - current_obligations_met
+                - settled
+                - defaulted
+                - counterparty_defaulted
+                description: The current settlement state for this party. Null when the trade is in `accepted` state and settlement has not yet been attempted.
+                example: settled
+              execution_id:
+                type: string
+                nullable: true
+                maxLength: 100
+                description: The unique identifier for the execution of the trade. Null when the trade was not executed on the zerohash CLOB.
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+              settling:
+                type: boolean
+                description: Indicates whether this party is responsible for settling its side of the trade at zerohash.
+                example: false
+              account_label:
+                type: string
+                nullable: true
+                maxLength: 40
+                description: The `account_label` that the party executed the trade on, if applicable. This field is relevant for platforms integrated using custom `account_label` for the zerohash participants. If not provided, the trade will be associated with the default (`general`) account for the participant.
+                example: general
+                default: general
+              collateral_percentage:
+                type: string
+                nullable: true
+                maxLength: 6
+                pattern: ^([0-1]\.\d{4}|2\.0000)$
+                description: The percentage of collateral required for the trade. Null when collateralization does not apply.
+                example: '0.1'
+              account_profile:
+                type: string
+                nullable: true
+                description: The account profile associated with the executing account (e.g. `nonprefunded`). Null when the party is not tied to a profiled account.
+                example: nonprefunded
+              trader:
+                type: string
+                nullable: true
+                minLength: 6
+                maxLength: 6
+                description: Participant who placed the order on the trading zerohash trading venue. This field is relevant for orders that were executed on the zerohash CLOB using the Multi Tenant Accounts. Null when not applicable.
+                example: ABCDEF
+              zrn:
+                type: string
+                nullable: true
+                description: The `urn` associated with the account that executed the trade, if applicable. This field is relevant for platforms integrated with the zerohash Multi Tenant Accounts. Returns null when the trade was not executed by a multi-tenant account.
+                maxLength: 100
+                example: null
+              manual_order_indicator:
+                type: string
+                nullable: true
+                enum:
+                - null
+                - manual
+                - automated
+                description: Indicates if the order was submitted manually via a user interface or via an API / Automated solution. Null when not applicable.
+                example: manual
+        session_id:
+          type: string
+          description: A session identifier to group filled orders that were executed in the same trading session on the zerohash CLOB. An empty string is returned when the trade was not executed on the zerohash CLOB.
+          maxLength: 50
+          example: '20260504115000'
+        payment_processor:
+          type: object
+          nullable: true
+          description: Identifier for the payment service processor that funded the trade, when applicable. Null when the trade was not funded via a payment processor.
+          properties:
+            name:
+              type: string
+              description: The name of the payment processor
+              example: checkout.out
+            id:
+              type: string
+              description: The unique identifier of the payment according to the PSP
+              example: 593dd810-f051-40a9-9f26-d45280efe8f3
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/DynamicFee'
+      required:
+      - client_trade_id
+      - trade_reporter
+      - platform_code
+      - symbol
+      - product_type
+      - trade_type
+      - trade_price
+      - physical_delivery
+      - transaction_timestamp
+      - parties_anonymous
+      - parties
+    PostTradesBatchBody:
+      type: array
+      items:
+        $ref: '#/components/schemas/PostTradesBody'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

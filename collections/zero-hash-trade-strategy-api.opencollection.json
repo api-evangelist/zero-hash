@@ -1,0 +1,601 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Trade Strategy API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Trade Strategy",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Strategies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Capped at 200. Defaults to 50."
+              }
+            ]
+          },
+          "docs": "Lists all Strategies under your platform, paginated. Synchronous."
+        },
+        {
+          "info": {
+            "name": "Create a Strategy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/strategies",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Strategy under your platform. Synchronous. The `request_id` sent as the `X-REQUEST-ID` header is the idempotency key — re-submitting the same value returns the existing Strategy with its original `id` and `created_at`."
+        },
+        {
+          "info": {
+            "name": "Get a Strategy",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies/:strategy_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Strategy."
+              }
+            ]
+          },
+          "docs": "Retrieves a single Strategy by its `id`. Synchronous."
+        },
+        {
+          "info": {
+            "name": "Update a Strategy's metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/strategies/:strategy_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Strategy."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the Strategy's `metadata`. Synchronous. The submitted value replaces the previous one verbatim (no merge); pass `{}` to clear. Only `metadata` is mutable."
+        },
+        {
+          "info": {
+            "name": "Enroll participants",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/strategies/:strategy_id/enroll",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Strategy."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a new enrollment Operation. Asynchronous. Each participant is processed independently; participant-level failures do not block the others. Idempotent on (strategy_id, `X-REQUEST-ID`)."
+        },
+        {
+          "info": {
+            "name": "Top up participants",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/strategies/:strategy_id/top-up",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Strategy."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds fiat to one or more existing Traders' positions and buys proportionally to the supplied allocations. Asynchronous. Idempotent on (strategy_id, `X-REQUEST-ID`)."
+        },
+        {
+          "info": {
+            "name": "Partial sell",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/strategies/:strategy_id/partial-sell",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Strategy."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes a partial sell for one or more existing Traders. `amount` is the fiat the Trader wants back; sells are sized proportionally to the supplied allocations. Asynchronous. PartialSell does NOT produce `skipped` outcomes — a participant whose per-asset slice falls below the instrument minimum gets an Execution with `status: \"rejected\"` and `status_reason: \"below_instrument_minimum\"`."
+        },
+        {
+          "info": {
+            "name": "Liquidate participants",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/strategies/:strategy_id/liquidate",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Strategy."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Fully exits one or more participants from the Strategy by selling everything they currently hold. Asynchronous. No allocations or per-participant amount — zerohash reads each participant's current balance and sells whatever they hold."
+        },
+        {
+          "info": {
+            "name": "Rebalance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/strategies/:strategy_id/rebalance",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Strategy."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Re-aligns Traders to the supplied allocations. Asynchronous. If `participants` is omitted, every Trader with `auto_rebalance: true` is targeted; if provided, only those Traders are targeted (ignoring their `auto_rebalance` flag). A weight of `\"0\"` means \"fully exit this asset\"; assets the Trader currently holds that are missing from the list are also fully exited."
+        },
+        {
+          "info": {
+            "name": "List Operations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies/operations",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter Operations to a single Strategy."
+              },
+              {
+                "name": "request_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the platform's `request_id` on the Operation (idempotency key lookup — not the per-call correlation id)."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Capped at 200. Defaults to 50."
+              }
+            ]
+          },
+          "docs": "Lists Operations across one or more Strategies, paginated. Synchronous."
+        },
+        {
+          "info": {
+            "name": "Get an Operation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies/operations/:operation_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "operation_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Operation."
+              }
+            ]
+          },
+          "docs": "Retrieves a single Operation by its `id`. Use this to poll until `status` is terminal (`settled`, `skipped`, or `failed`) — or subscribe to webhooks and skip the polling."
+        },
+        {
+          "info": {
+            "name": "List Traders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies/traders",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter Traders to a single Strategy."
+              },
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter Traders to a single end customer."
+              },
+              {
+                "name": "auto_rebalance",
+                "value": "",
+                "type": "query",
+                "description": "Filter Traders by their `auto_rebalance` flag."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Capped at 200. Defaults to 50."
+              }
+            ]
+          },
+          "docs": "Lists Traders across one or more Strategies, paginated. Synchronous."
+        },
+        {
+          "info": {
+            "name": "Get a Trader",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies/traders/:trader_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "trader_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Trader."
+              }
+            ]
+          },
+          "docs": "Retrieves a single Trader by its `id`. Synchronous."
+        },
+        {
+          "info": {
+            "name": "Update a Trader's settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/strategies/traders/:trader_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "trader_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Trader."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a Trader's settings. Synchronous. Currently the only mutable field is `auto_rebalance`. Does not affect any in-flight Operation; takes effect on the next Rebalance."
+        },
+        {
+          "info": {
+            "name": "List Executions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies/executions",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "strategy_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter Executions to a single Strategy."
+              },
+              {
+                "name": "operation_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter Executions to a single Operation."
+              },
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter Executions to a single end customer."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Items per page. Capped at 200. Defaults to 50."
+              }
+            ]
+          },
+          "docs": "Lists Executions across one or more Strategies, paginated. Each Execution includes the full `instructions[]` array, which can be large — narrow with filters whenever possible. Synchronous."
+        },
+        {
+          "info": {
+            "name": "Get an Execution",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/strategies/executions/:execution_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "execution_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the Execution."
+              }
+            ]
+          },
+          "docs": "Retrieves a single Execution by its `id`. Synchronous. Includes the full `instructions[]` array."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

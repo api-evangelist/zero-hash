@@ -1,0 +1,120 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Assets API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/assets",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "stablecoin",
+                "value": "",
+                "type": "query",
+                "description": "Filter for assets based on whether they are classified as stablecoins"
+              },
+              {
+                "name": "chain_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter assets by chain code"
+              },
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "Filter assets by symbol"
+              },
+              {
+                "name": "ny_allowed",
+                "value": "",
+                "type": "query",
+                "description": "Filter assets based on whether they are allowed for transactions in New York"
+              },
+              {
+                "name": "fund_enabled",
+                "value": "",
+                "type": "query",
+                "description": "Filters assets based on whether they are permitted for use with the Fund With Crypto API"
+              },
+              {
+                "name": "staking_enabled",
+                "value": "",
+                "type": "query",
+                "description": "Filters assets based on whether they are permitted for use with the Staking API"
+              },
+              {
+                "name": "deposit_address_creation",
+                "value": "",
+                "type": "query",
+                "description": "Filter assets by their deposit-address creation support level."
+              }
+            ]
+          },
+          "docs": "Returns a list of all assets supported in the zerohash environment."
+        },
+        {
+          "info": {
+            "name": "Get asset staking information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/assets/:asset/staking_info",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "asset",
+                "value": "",
+                "type": "path",
+                "description": "Asset symbol (e.g., ETH, BTC, SOL)"
+              }
+            ]
+          },
+          "docs": "Returns staking parameters for a specific asset including APY, activation periods, and unstaking details."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

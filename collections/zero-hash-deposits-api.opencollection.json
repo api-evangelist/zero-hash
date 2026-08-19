@@ -1,0 +1,517 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Deposits API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Deposits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List crypto deposits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/deposits/crypto",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "deposit_ids",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more deposit IDs"
+              },
+              {
+                "name": "account_ids",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more account IDs"
+              },
+              {
+                "name": "transaction_hashes",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more transaction hashes"
+              },
+              {
+                "name": "assets",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more asset codes (e.g. BTC, ETH)"
+              },
+              {
+                "name": "states",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more deposit states"
+              },
+              {
+                "name": "state_reasons",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more state reasons (e.g. `required_travel_rule_info`). Use with `states=PENDING_COMPLIANCE_REVIEW` to list deposits held for Travel Rule review."
+              },
+              {
+                "name": "travel_rule_status",
+                "value": "",
+                "type": "query",
+                "description": "Convenience filter for Travel Rule status. `pending` returns all deposits currently held awaiting Travel Rule verification (equivalent to `states=PENDING_COMPLIANCE_REVIEW&state_reasons=required_travel_rule_info`)."
+              },
+              {
+                "name": "from_timestamp",
+                "value": "",
+                "type": "query",
+                "description": "Filter deposits from this timestamp (inclusive)"
+              },
+              {
+                "name": "to_timestamp",
+                "value": "",
+                "type": "query",
+                "description": "Filter deposits up to this timestamp (inclusive)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return (1-999)"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor for the next page of results"
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of blockchain deposits. Filter by deposit IDs, account IDs, transaction hashes, assets, states, and timestamps."
+        },
+        {
+          "info": {
+            "name": "Get crypto deposit by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/deposits/crypto/:deposit_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "deposit_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the deposit"
+              }
+            ]
+          },
+          "docs": "Retrieves a single blockchain deposit by its unique deposit ID."
+        },
+        {
+          "info": {
+            "name": "List deposit addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/deposits/digital_asset_addresses",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "The participant whose deposit addresses should be returned. Must either match the calling platform or be a customer of the calling platform."
+              },
+              {
+                "name": "asset",
+                "value": "",
+                "type": "query",
+                "description": "Filter by asset. When omitted, addresses for all assets the participant holds are returned."
+              },
+              {
+                "name": "inactivity_interval",
+                "value": "",
+                "type": "query",
+                "description": "Only return addresses that have been inactive for at least this many days (1–1825)."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of addresses to return (1–100). Defaults to `1`."
+              }
+            ]
+          },
+          "docs": "Retrieves a list of addresses associated with your platform."
+        },
+        {
+          "info": {
+            "name": "Create deposit address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/deposits/digital_asset_addresses",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a deposit address for a given asset."
+        },
+        {
+          "info": {
+            "name": "Update address owner",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/deposits/digital_asset_addresses",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns a new owner to a digital wallet address. "
+        },
+        {
+          "info": {
+            "name": "Create a BOLT11 invoice for deposit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/deposits/bolt11",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a Lightning Network invoice (BOLT11) to deposit funds to the informed participant account."
+        },
+        {
+          "info": {
+            "name": "Create a test payment for a BOLT11 deposit invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/deposits/bolt11/test_payment",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Simulate a payment of BOLT11 invoice deposit generated by /deposits/bolt11. (CERT only)"
+        },
+        {
+          "info": {
+            "name": "Fund account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/deposits/fund",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Funds a specified fiat account in the zerohash CERT environment. This is helpful when automating end-to-end testing or manually validating a feature. Not available in production."
+        },
+        {
+          "info": {
+            "name": "List deposits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/deposits",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination (starts at 1)."
+              },
+              {
+                "name": "asset",
+                "value": "",
+                "type": "query",
+                "description": "Filter by asset code (e.g., BTC, USD, ETH)"
+              },
+              {
+                "name": "include_customer_deposits",
+                "value": "",
+                "type": "query",
+                "description": "Include deposits made by customers of your platform. Defaults to `true`. Ignored when `participant_code` is provided — a participant-scoped request always excludes customer deposits."
+              },
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter by a specific participant code. Always 6 uppercase alphanumeric characters."
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history."
+              },
+              {
+                "name": "settle_timestamp[gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for deposits whose settlement timestamp (Unix milliseconds) is strictly greater than the value."
+              },
+              {
+                "name": "settle_timestamp[gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for deposits whose settlement timestamp (Unix milliseconds) is greater than or equal to the value."
+              },
+              {
+                "name": "settle_timestamp[lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for deposits whose settlement timestamp (Unix milliseconds) is strictly less than the value."
+              },
+              {
+                "name": "settle_timestamp[lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for deposits whose settlement timestamp (Unix milliseconds) is less than or equal to the value."
+              },
+              {
+                "name": "settle_timestamp[e]",
+                "value": "",
+                "type": "query",
+                "description": "Filter for deposits whose settlement timestamp (Unix milliseconds) equals the value exactly."
+              },
+              {
+                "name": "parent_link_id_source",
+                "value": "",
+                "type": "query",
+                "description": "Filter deposits by the source system that originated the parent link (e.g. `rest_api`, `sdk`)."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of deposits made by you and your customers. Results are limited to the last 2 months."
+        },
+        {
+          "info": {
+            "name": "List fiat accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/deposits/fiat_accounts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieves a list of all fiat accounts. You must include your participant_code in the reference field with any deposit to ensure that funds can be allocated correctly to your participant."
+        },
+        {
+          "info": {
+            "name": "List UMA addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/deposits/uma",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for all addresses associated with a participant_code"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of addresses returned in the response"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skips over the specified number of addresses in the response"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of UMA addresses associated with your platform."
+        },
+        {
+          "info": {
+            "name": "Create UMA address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/deposits/uma",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an UMA address for a given participant."
+        },
+        {
+          "info": {
+            "name": "Update UMA address",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/deposits/uma",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an UMA username for a given participant."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

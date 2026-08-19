@@ -1,0 +1,476 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Customer Accounts (MTA) Customer Accounts (MTA) API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customer Accounts (MTA)",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new customer account. The pair (`participant_code`, `account_label`) is unique per participant and is used as idempotency check rather than `X-Request-Id`; submitting the same pair a second time returns an error rather than creating a duplicate."
+        },
+        {
+          "info": {
+            "name": "Update customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to add advisor to. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates prefunded and tier values for an existing customer account. "
+        },
+        {
+          "info": {
+            "name": "Get account details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/details",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "Get customer account by account zrn, assigned to the account at creation by zerohash. \nFormat: `zrn:zh:eu:account:customer:<uuid>`."
+              }
+            ]
+          },
+          "docs": "Retrieves customer account details"
+        },
+        {
+          "info": {
+            "name": "Lock customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/lock",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to lock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Locks an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Unlock customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/unlock",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to unlock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Unlocks an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Withdraw lock customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/withdraw_lock",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to withdraw lock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Locks withdrawals for an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Withdraw unlock customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/withdraw_unlock",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to withdraw unlock. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Unlocks withdrawals for an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Divest customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/divest",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to divest. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Divests an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Add advisor to customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/advisors",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to add advisor to. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds an advisor to an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Add tenant to customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/tenants",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to add tenant to. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a tenant to an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Remove advisor from customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/advisors/:financial_advisor",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to remove advisor from. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              },
+              {
+                "name": "financial_advisor",
+                "value": "ADV001",
+                "type": "path",
+                "description": "The financial advisor identifier to remove from the customer account. "
+              }
+            ]
+          },
+          "docs": "Removes an advisor from an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Remove tenant from customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/tenants/:tenant",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "zrn:zh:eu:account:customer:fcb1a806-0096-49c7-ac53-6e3daf2b58c5",
+                "type": "path",
+                "description": "The ZRN of the customer account to remove tenant from. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              },
+              {
+                "name": "tenant",
+                "value": "PLAT01",
+                "type": "path",
+                "description": "The participant code of the tenant to remove from the customer account. The participant code must be 6 characters long."
+              }
+            ]
+          },
+          "docs": "Removes a tenant from an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Close customer account",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/accounts/:zrn/close",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The ZRN of the customer account to close. The ZRN must be in the format: `zrn:zh:eu:account:customer:<uuid>`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Closes an existing customer account"
+        },
+        {
+          "info": {
+            "name": "Get customer account status reason",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/account/:zrn/status_reason",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "zrn",
+                "value": "",
+                "type": "path",
+                "description": "The customer account identifier to get status reason details for"
+              }
+            ]
+          },
+          "docs": "This endpoint returns detailed information about customer account status, including lock reason codes. This endpoint is disabled by default and enabled per platform using feature flags."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

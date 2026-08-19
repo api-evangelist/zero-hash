@@ -1,0 +1,51 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Connect User Token API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "User Token",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Initialize session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sandbox.connect.xyz/api/v1/sessions",
+            "headers": [
+              {
+                "name": "x-connect-client-id",
+                "value": ""
+              },
+              {
+                "name": "Signature",
+                "value": ""
+              },
+              {
+                "name": "timestamp",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new session and receive a JWT for authenticated API requests."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

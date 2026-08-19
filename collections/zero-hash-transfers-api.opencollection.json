@@ -1,0 +1,193 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Transfers API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transfers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List transfers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/transfers",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "Filters for a specific page (pagination)"
+              },
+              {
+                "name": "page_size",
+                "value": "30",
+                "type": "query",
+                "description": "Filter for number of transfer objects to be included on each page"
+              },
+              {
+                "name": "to_participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter for `to_participant_code` in receipt of the transfer"
+              },
+              {
+                "name": "from_participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter for `from_participant_code` the transfer was sent from"
+              },
+              {
+                "name": "requested_timestamp[gt]",
+                "value": "1622505600",
+                "type": "query",
+                "description": "Filter for greater than a given timestamp"
+              },
+              {
+                "name": "requested_timestamp[gte]",
+                "value": "1622505600",
+                "type": "query",
+                "description": "Filter for greater than or equal to a given timestamp"
+              },
+              {
+                "name": "requested_timestamp[e]",
+                "value": "1622505600",
+                "type": "query",
+                "description": "Filter for equal to a given timestamp"
+              },
+              {
+                "name": "requested_timestamp[lt]",
+                "value": "1622505600",
+                "type": "query",
+                "description": "Filter for less than a given timestamp"
+              },
+              {
+                "name": "requested_timestamp[lte]",
+                "value": "1622505600",
+                "type": "query",
+                "description": "Filter for less than or equal to a given timestamp"
+              },
+              {
+                "name": "client_transfer_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter for `client_transfer_id` associated with the transfer"
+              },
+              {
+                "name": "from_account_group",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the source account group of the transfer."
+              },
+              {
+                "name": "from_account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the source account label of the transfer."
+              },
+              {
+                "name": "to_account_group",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the destination account group of the transfer."
+              },
+              {
+                "name": "to_account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the destination account label of the transfer."
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the asset code of the transfer, e.g. `USD`."
+              }
+            ]
+          },
+          "docs": "Retrieves a list of objects containing information about transfers. This endpoint supports pagination and filtering based on the below parameters. Results are limited to the last 2 months."
+        },
+        {
+          "info": {
+            "name": "Create transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/transfers",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new transfer request between your own accounts.\nTo submit transfers on behalf of others, you will require the `submits_platform_transfers_for` relationship. Transfer requests created via the API are automatically set to an `APPROVED` state."
+        },
+        {
+          "info": {
+            "name": "Get transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/transfers/:id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Filter for id assigned to a transfer request"
+              }
+            ]
+          },
+          "docs": "Retrieves a single transfer made to or from your participant, or to or from your platform's account group."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

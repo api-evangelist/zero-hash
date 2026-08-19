@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Connect Organization Token API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Organization Token",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Generate access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.sandbox.connect.xyz/api/v1/oauth/token",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Request an OAuth2 access token for API authentication. Use the returned token in a subsequent /sessions call."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

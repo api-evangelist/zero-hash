@@ -1,0 +1,980 @@
+openapi: 3.2.0
+info:
+  title: zerohash SDK Authorization API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: SDK Authorization
+  description: SDK Authorization Services
+paths:
+  /client_auth_token:
+    post:
+      tags:
+      - SDK Authorization
+      summary: Generate a client access token
+      description: Generates a temporary JWT access token used to initialize zerohash SDK modules on behalf of one of your end users. The platform authenticates to this endpoint with its own HMAC credentials; the returned JWT is then handed to the end-user client. Either `participant_code` or `email` must be provided to identify the end user the token is issued for.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Client auth token parameters. Select the schema variant that matches the SDK experience being requested; each variant lists the fields that variant accepts.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientAuthTokenRequestBody'
+      responses:
+        '201':
+          description: Client access token successfully generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientAuthTokenResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: 'The transaction is not authorized. Possible causes: manual approval is required before this transaction can proceed (Level 4 shoppers — the body contains a transaction_id identifying the approval review), or the shopper has exceeded their daily spend limit at the current authorization level. A generic `{"error":"Transaction not authorized"}` body is returned when the transaction is hard-denied (no remediation).'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PayinsAuthorizationManualApprovalError'
+                - $ref: '#/components/schemas/PayinsAuthorizationLimitError'
+                - $ref: '#/components/schemas/PayinsTransactionNotAuthorizedError'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '409':
+          description: Shopper KYC requirements are not met for this transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayinsAuthorizationKycError'
+        '422':
+          description: 'The transaction could not be authorized. The `{"error": ...}` body is either "Participant is not authorized to transact" (the participant/merchant relationship or state precludes authorization) or "Transaction not authorized" (the authorizer returned an unrecognized status).'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayinsTransactionNotAuthorizedError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /revoke_auth_token:
+    post:
+      tags:
+      - SDK Authorization
+      summary: Revoke a client access token
+      description: Revokes a client access token previously issued via `/client_auth_token`, preventing it from being used to initialize SDK modules. The platform authenticates to this endpoint with its own HMAC credentials.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: JWT client access token to revoke. The token must be a well-formed three-part JWT containing a `jti` claim.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevokeClientAuthTokenRequestBody'
+      responses:
+        '204':
+          description: Client access token successfully revoked. Response body is empty.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    PayinsTransactionNotAuthorizedError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Transaction not authorized
+          description: Generic authorization denial with no remediation. Returned with HTTP 403 — `{"error":"Transaction not authorized"}` when the authorizer rejection has no specific mapping or reports no missing fields, or `{"error":"Transaction not permitted"}` when the participant is not permitted to transact (e.g. geographic restriction) — and with HTTP 422 (`{"error":"Participant is not authorized to transact"}`) when the participant/merchant context precludes authorization.
+    RevokeClientAuthTokenRequestBody:
+      type: object
+      description: Schema for revoking a client access token.
+      required:
+      - token
+      properties:
+        token:
+          type: string
+          description: The client access token to revoke.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    PayinsAuthorizationLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Shopper's Daily Spend Limit for this type of transaction have been hit.
+          description: Returned with a 403 status when the shopper has exceeded their daily or lifetime spend aggregate at the current authorization level. Lifting the limit requires manual review.
+    ClientAuthTokenResponse:
+      oneOf:
+      - title: Client Auth Token Response
+        type: object
+        properties:
+          message:
+            type: object
+            properties:
+              token:
+                type: string
+                description: JWT access token used to initialize zerohash SDK modules.
+                example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbl9pZCI6IiIsImRldmljZV9pZCI6IiIsImV4cCI6MTc2MzAyMjA0OCwiaXNzIjoiMmM5YTkxOGUtMGZiMy00YjQ3LTkxZWMtYmVmYTYyZjNhNTJmIiwianRpIjoiZmRjNzEyZTYtZGI1NC00ZjU2LWFhYTAtYWFmOWJlMDZkNDE2IiwicGFydGljaXBhbnRfY29kZSI6IlhCWUMwMCIsInBheWxvYWQiOnsiZGVwb3NpdF9kZXRhaWxzIjp7ImFjY291bnRfbGFiZWwiOiJtYW51YWxfY29udmVyc2lvbl90ZXN0In0sInBhcnRpY2lwYW50X2NvZGUiOiJYQllDMDAiLCJwbGF0Zm9ybV9hZ3JlZW1lbnRfbGluayI6ImliaW50ZXJuYWwiLCJwbGF0Zm9ybV9uYW1lIjoiQUNNRSBMaW1pdGVkIn0sInBlcm1pc3Npb25zIjpbImZ3YyJdLCJwbGF0Zm9ybV9jb2RlIjoiN1NSSzdPIn0.VNlHcBoDQBXRm0w6v-JGDYQaG8hAAUuISMf80v8e_MgLmAFAwB2wQn3yWVTMmoQzKRU1hnnLYqEPcftHVkCK8qGUNuEqeGbSTAd8yBXBFLXw1HnpjNtuZc8tSdp_lVZs2YDvNv-hjXX3-Nbn9g_1VAdDfaJDl3RiarsI3eoX9MYWaM40wKK4kNEQgmXXgcBeWnvLpGoewXh9Udpe7G7mDPD-4n4gp83-V2SBDBXCATfwev8wbpCMTqRgK_8i3U4-xM2hXGchM7TVw6lOEB_Dsh7mPGTT_0tFjl-TeyZ9VKQwWlJkRpgyUedk9ivEHlpe68fw0q4Gl5jEPj3ujgDRsdGuK4CV-xmoHvJLtUqYZHQ30BJ2Bpq1MbpvkQFIBKSvt4Ce3HUZW16V5yeZWh3rAulOPKxBx0rhedWyjRQzXjHduLVRvMw65-a-qLnUDCFAHOuiIZxQvIq-82EESOomFF8RMlo1z_r8fE_6MP37loLSYKsPB-mJBgN0FvrBxZ9k6idm94rozBXckHhOX8gGvzlKk6AZlqaKdrOo1ym0Epqy20tNdcH3oN69j2sTOdJL0PZ7Wto0IhJm9aEiYIRNqdz9oOgoW2ywO7LbLW4iwyH8IGCFefH6gwtrjSRo29JOZDu-exHI_r9_fiCBP9859iUJyPQCAQMHrNbhAZ_B_pE
+            required:
+            - token
+      - title: Client Auth Token Response - Account Linking
+        type: object
+        properties:
+          message:
+            type: object
+            properties:
+              token:
+                type: string
+                description: JWT access token used to initialize zerohash SDK modules.
+                example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbl9pZCI6IiIsImRldmljZV9pZCI6IiIsImV4cCI6MTc2MzAyMjA0OCwiaXNzIjoiMmM5YTkxOGUtMGZiMy00YjQ3LTkxZWMtYmVmYTYyZjNhNTJmIiwianRpIjoiZmRjNzEyZTYtZGI1NC00ZjU2LWFhYTAtYWFmOWJlMDZkNDE2IiwicGFydGljaXBhbnRfY29kZSI6IlhCWUMwMCIsInBheWxvYWQiOnsiZGVwb3NpdF9kZXRhaWxzIjp7ImFjY291bnRfbGFiZWwiOiJtYW51YWxfY29udmVyc2lvbl90ZXN0In0sInBhcnRpY2lwYW50X2NvZGUiOiJYQllDMDAiLCJwbGF0Zm9ybV9hZ3JlZW1lbnRfbGluayI6ImliaW50ZXJuYWwiLCJwbGF0Zm9ybV9uYW1lIjoiQUNNRSBMaW1pdGVkIn0sInBlcm1pc3Npb25zIjpbImZ3YyJdLCJwbGF0Zm9ybV9jb2RlIjoiN1NSSzdPIn0.VNlHcBoDQBXRm0w6v-JGDYQaG8hAAUuISMf80v8e_MgLmAFAwB2wQn3yWVTMmoQzKRU1hnnLYqEPcftHVkCK8qGUNuEqeGbSTAd8yBXBFLXw1HnpjNtuZc8tSdp_lVZs2YDvNv-hjXX3-Nbn9g_1VAdDfaJDl3RiarsI3eoX9MYWaM40wKK4kNEQgmXXgcBeWnvLpGoewXh9Udpe7G7mDPD-4n4gp83-V2SBDBXCATfwev8wbpCMTqRgK_8i3U4-xM2hXGchM7TVw6lOEB_Dsh7mPGTT_0tFjl-TeyZ9VKQwWlJkRpgyUedk9ivEHlpe68fw0q4Gl5jEPj3ujgDRsdGuK4CV-xmoHvJLtUqYZHQ30BJ2Bpq1MbpvkQFIBKSvt4Ce3HUZW16V5yeZWh3rAulOPKxBx0rhedWyjRQzXjHduLVRvMw65-a-qLnUDCFAHOuiIZxQvIq-82EESOomFF8RMlo1z_r8fE_6MP37loLSYKsPB-mJBgN0FvrBxZ9k6idm94rozBXckHhOX8gGvzlKk6AZlqaKdrOo1ym0Epqy20tNdcH3oN69j2sTOdJL0PZ7Wto0IhJm9aEiYIRNqdz9oOgoW2ywO7LbLW4iwyH8IGCFefH6gwtrjSRo29JOZDu-exHI_r9_fiCBP9859iUJyPQCAQMHrNbhAZ_B_pE
+              deposit_intent_id:
+                type: string
+                nullable: true
+                description: When permission is `fwc` this field will contain an id to be correlated with the fund deposit
+                example: b92cd92c-beef-5f6e-bcff-81976e2f24c2
+            required:
+            - token
+      - title: Client Auth Token Response - Payment SDK's
+        type: object
+        properties:
+          message:
+            type: object
+            properties:
+              token:
+                type: string
+                description: JWT access token used to initialize zerohash SDK modules.
+                example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbl9pZCI6IiIsImRldmljZV9pZCI6IiIsImV4cCI6MTc2MzAyMjA0OCwiaXNzIjoiMmM5YTkxOGUtMGZiMy00YjQ3LTkxZWMtYmVmYTYyZjNhNTJmIiwianRpIjoiZmRjNzEyZTYtZGI1NC00ZjU2LWFhYTAtYWFmOWJlMDZkNDE2IiwicGFydGljaXBhbnRfY29kZSI6IlhCWUMwMCIsInBheWxvYWQiOnsiZGVwb3NpdF9kZXRhaWxzIjp7ImFjY291bnRfbGFiZWwiOiJtYW51YWxfY29udmVyc2lvbl90ZXN0In0sInBhcnRpY2lwYW50X2NvZGUiOiJYQllDMDAiLCJwbGF0Zm9ybV9hZ3JlZW1lbnRfbGluayI6ImliaW50ZXJuYWwiLCJwbGF0Zm9ybV9uYW1lIjoiQUNNRSBMaW1pdGVkIn0sInBlcm1pc3Npb25zIjpbImZ3YyJdLCJwbGF0Zm9ybV9jb2RlIjoiN1NSSzdPIn0.VNlHcBoDQBXRm0w6v-JGDYQaG8hAAUuISMf80v8e_MgLmAFAwB2wQn3yWVTMmoQzKRU1hnnLYqEPcftHVkCK8qGUNuEqeGbSTAd8yBXBFLXw1HnpjNtuZc8tSdp_lVZs2YDvNv-hjXX3-Nbn9g_1VAdDfaJDl3RiarsI3eoX9MYWaM40wKK4kNEQgmXXgcBeWnvLpGoewXh9Udpe7G7mDPD-4n4gp83-V2SBDBXCATfwev8wbpCMTqRgK_8i3U4-xM2hXGchM7TVw6lOEB_Dsh7mPGTT_0tFjl-TeyZ9VKQwWlJkRpgyUedk9ivEHlpe68fw0q4Gl5jEPj3ujgDRsdGuK4CV-xmoHvJLtUqYZHQ30BJ2Bpq1MbpvkQFIBKSvt4Ce3HUZW16V5yeZWh3rAulOPKxBx0rhedWyjRQzXjHduLVRvMw65-a-qLnUDCFAHOuiIZxQvIq-82EESOomFF8RMlo1z_r8fE_6MP37loLSYKsPB-mJBgN0FvrBxZ9k6idm94rozBXckHhOX8gGvzlKk6AZlqaKdrOo1ym0Epqy20tNdcH3oN69j2sTOdJL0PZ7Wto0IhJm9aEiYIRNqdz9oOgoW2ywO7LbLW4iwyH8IGCFefH6gwtrjSRo29JOZDu-exHI_r9_fiCBP9859iUJyPQCAQMHrNbhAZ_B_pE
+              payment_id:
+                type: string
+                nullable: true
+                description: Only present when permissions include `crypto-withdrawals` or `crypto-payouts`.
+                example: pay_00001
+            required:
+            - token
+    ClientAuthTokenFull:
+      type: object
+      title: Full Client Auth Token accepted fields
+      description: Schema containing ALL optional fields and ALL permission types.
+      properties:
+        participant_code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+          example: CUST01
+        email:
+          type: string
+          description: The email address of the user the SDK token is created for. Used for pre-onboarding flows. Either `participant_code` or `email` must be provided.
+          example: jane.doe@example.com
+        phone_number:
+          type: string
+          description: Phone number of the user the SDK token is created for. Used for pre-onboarding flows.
+          example: '+15551234567'
+        otp_verified:
+          type: string
+          enum:
+          - email
+          - sms
+          description: Indicates which channel the end user verified via OTP before this token was requested.
+          example: email
+        reference_id:
+          type: string
+          maxLength: 50
+          description: Optional platform-defined ID to link downstream events
+          example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+        merchant_participant_code:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Optional merchant participant code associated with the transaction. When omitted, the platform itself is treated as the merchant.
+          example: MERCH1
+        permissions:
+          description: One or more SDK experiences requested for this token. The following permissions are supported.
+          type: array
+          items:
+            type: string
+            enum:
+            - onboarding
+            - update-participant
+            - csp-active
+            - csp-recovery
+            - fiat-deposits
+            - fiat-withdrawals
+            - crypto-withdrawals
+            - crypto-buy
+            - crypto-sell
+            - fwc
+            - participant-profile
+            - crypto-account-link
+            - crypto-payouts
+            - crypto-pay
+            - fiat-account-link
+          example:
+          - fwc
+        withdrawal_details:
+          type: object
+          description: Details for crypto withdrawals and payouts.
+          properties:
+            quoted_asset:
+              type: string
+              example: USD
+              description: The asset code for the withdrawal request, e.g. USD
+            withdrawal_request_amount:
+              type: string
+              example: '125.55'
+              description: The amount requested for withdrawal.
+            external_account_id:
+              type: string
+              example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+              description: The external account ID for the withdrawal.
+            account_label:
+              type: string
+              example: custom_label
+              description: The account label for the withdrawal to be taken from.
+          required:
+          - quoted_asset
+          - withdrawal_request_amount
+          - external_account_id
+        deposit_details:
+          type: object
+          description: Account deposit details.
+          properties:
+            account_label:
+              type: string
+              example: funding_01
+              description: The account label for the deposited funds.
+            external_wallet_address:
+              type: string
+              example: 0xabc123...
+              description: Platform-owned wallet address to receive the crypto deposit. Only valid with the `crypto-deposits` permission. When omitted, the deposit is routed to a zerohash internal wallet (internal mode).
+            deposit_amount:
+              type: string
+              example: '250.00'
+              description: The amount, denominated in `denominated_currency`, that is pre-filled and uneditable by the user. usable only if `permission` = `fwc` and the Platform is using AUTH.
+            denominated_currency:
+              type: string
+              example: USD
+              description: The currency in which `deposit_amount` is denominated. Only `USD` is supported.
+          required:
+          - account_label
+        payment_details:
+          type: object
+          description: Details for crypto payments.
+          properties:
+            purchase_amount:
+              type: string
+              example: '250.00'
+              description: The amount of the purchase in the `denominated_currency`.
+            denominated_currency:
+              type: string
+              example: USD
+              description: The currency in which the `purchase_amount` is denominated.
+          required:
+          - denominated_currency
+          - purchase_amount
+        client_device_info:
+          type: object
+          description: Metadata about the client environment where the SDK is initialized.
+          required:
+          - ip_address
+          - location
+          properties:
+            ip_address:
+              type: string
+              example: 81.2.69.142
+              description: The public IP address of the end-user device.
+            location:
+              type: string
+              example: US-IL
+              description: The location of the end-user device in ISO 3166-2 format (country-state, e.g., US-IL).
+        custom_fees_and_spreads:
+          type: object
+          description: Custom fees and spreads for crypto buy/sell.
+          properties:
+            crypto_buy:
+              type: object
+              properties:
+                spread_bps:
+                  type: string
+                  example: '50'
+                  description: The custom spread in basis points to be applied to the buy quote.
+                fees:
+                  type: array
+                  description: An array of custom fees to be applied to the buy quote.
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: bps
+                        enum:
+                        - bps
+                        - notional
+                        description: The type of fee (e.g., percentage, flat).
+                      amount:
+                        type: string
+                        example: '20'
+                        description: The value of the fee `type`.
+                      name:
+                        type: string
+                        example: platform_fee
+                        description: The name of the fee.
+            crypto_sell:
+              type: object
+              properties:
+                spread_bps:
+                  type: string
+                  example: '50'
+                  description: The custom spread in basis points to be applied to the sell quote.
+                fees:
+                  type: array
+                  description: An array of custom fees to be applied to the sell quote.
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: bps
+                        enum:
+                        - bps
+                        - notional
+                        description: The type of fee (e.g., percentage, flat).
+                      amount:
+                        type: string
+                        example: '20'
+                        description: The value of the fee `type`.
+                      name:
+                        type: string
+                        example: platform_fee
+                        description: The name of the fee.
+          required: []
+      required:
+      - permissions
+      example:
+        participant_code: CUST01
+        reference_id: a81bc81b-dead-4e5d-abff-90865d1e13b1
+        permissions:
+        - fwc
+        deposit_details:
+          account_label: funding_01
+          deposit_amount: '250.00'
+          denominated_currency: USD
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    ClientAuthTokenRequestBody:
+      oneOf:
+      - $ref: '#/components/schemas/ClientAuthTokenFull'
+      - title: Account Funding SDK - Deposits
+        type: object
+        description: Account Funding SDK token with optional deposit details preconfigured.
+        properties:
+          permissions:
+            type: array
+            description: One or more SDK experiences requested for this token.
+            items:
+              type: string
+              enum:
+              - fwc
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+          reference_id:
+            type: string
+            maxLength: 50
+            description: Optional platform-defined ID to link downstream events
+            example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+          deposit_details:
+            type: object
+            description: Account deposit details.
+            properties:
+              account_label:
+                type: string
+                example: funding_01
+                description: The account label for the deposited funds.
+              external_wallet_address:
+                type: string
+                example: 0xabc123...
+                description: Platform-owned wallet address to receive the crypto deposit. Only valid with the `crypto-deposits` permission. When omitted, the deposit is routed to a zerohash internal wallet (internal mode).
+              deposit_amount:
+                type: string
+                example: '250.00'
+                description: The amount, denominated in `denominated_currency`, that is pre-filled and uneditable by the user. usable only if `permission` = `fwc` and the Platform is using AUTH.
+              denominated_currency:
+                type: string
+                example: USD
+                description: The currency in which `deposit_amount` is denominated. Only `USD` is supported.
+            required:
+            - account_label
+          client_device_info:
+            type: object
+            description: Metadata about the client environment where the SDK is initialized.
+            required:
+            - ip_address
+            - location
+            properties:
+              ip_address:
+                type: string
+                example: 81.2.69.142
+                description: The public IP address of the end-user device.
+              location:
+                type: string
+                example: US-IL
+                description: The location of the end-user device in ISO 3166-2 format (country-state, e.g., US-IL).
+        required:
+        - participant_code
+        - permissions
+      - title: Account Funding SDK - Account Link
+        type: object
+        description: All accepted fields for a customer
+        properties:
+          permissions:
+            type: array
+            description: One or more SDK experiences requested for this token.
+            items:
+              type: string
+              enum:
+              - crypto-account-link
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+        required:
+        - participant_code
+        - permissions
+      - title: Account Funding SDK - Withdrawals
+        type: object
+        description: Account Funding SDK token with withdrawal details preconfigured. Registered external account is required for Account Funding - Withdrawals.
+        properties:
+          permissions:
+            type: array
+            description: One or more SDK experiences requested for this token.
+            items:
+              type: string
+              enum:
+              - crypto-withdrawals
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+          reference_id:
+            type: string
+            maxLength: 50
+            description: Optional platform-defined ID to link downstream events
+            example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+          withdrawal_details:
+            type: object
+            description: Details for crypto withdrawals and payouts.
+            properties:
+              quoted_asset:
+                type: string
+                example: USD
+                description: The asset code for the withdrawal request, e.g. USD
+              withdrawal_request_amount:
+                type: string
+                example: '125.55'
+                description: The amount requested for withdrawal.
+              external_account_id:
+                type: string
+                example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+                description: The external account ID for the withdrawal.
+              account_label:
+                type: string
+                example: custom_label
+                description: The account label for the withdrawal to be taken from.
+            required:
+            - quoted_asset
+            - withdrawal_request_amount
+            - external_account_id
+        required:
+        - participant_code
+        - permissions
+        - withdrawal_details
+      - title: Participant Profile SDK
+        type: object
+        description: Participant Profile SDK for viewing and managing participant information.
+        properties:
+          permissions:
+            type: array
+            description: One or more SDK experiences requested for this token.
+            items:
+              type: string
+              enum:
+              - participant-profile
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+        required:
+        - participant_code
+        - permissions
+      - title: Payins SDK
+        type: object
+        description: Payins SDK for launching digital asset payment experiences.
+        properties:
+          permissions:
+            type: array
+            description: One or more SDK experiences requested for this token.
+            items:
+              type: string
+              enum:
+              - crypto-pay
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+          reference_id:
+            type: string
+            maxLength: 50
+            description: Optional platform-defined ID to link downstream events
+            example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+          payment_details:
+            type: object
+            description: Details for crypto payments.
+            properties:
+              purchase_amount:
+                type: string
+                example: '250.00'
+                description: The amount of the purchase in the `denominated_currency`.
+              denominated_currency:
+                type: string
+                example: USD
+                description: The currency in which the `purchase_amount` is denominated.
+            required:
+            - denominated_currency
+            - purchase_amount
+          client_device_info:
+            type: object
+            description: Metadata about the client environment where the SDK is initialized.
+            required:
+            - ip_address
+            - location
+            properties:
+              ip_address:
+                type: string
+                example: 81.2.69.142
+                description: The public IP address of the end-user device.
+              location:
+                type: string
+                example: US-IL
+                description: The location of the end-user device in ISO 3166-2 format (country-state, e.g., US-IL).
+          merchant_participant_code:
+            type: string
+            minLength: 1
+            maxLength: 50
+            description: Optional merchant participant code associated with the transaction. When omitted, the platform itself is treated as the merchant.
+            example: MERCH1
+        required:
+        - participant_code
+        - permissions
+        - payment_details
+      - title: Crypto Withdrawals SDK
+        type: object
+        description: Crypto Withdrawals SDK for launching digital asset withdrawal experiences easily.
+        properties:
+          permissions:
+            type: array
+            items:
+              type: string
+              enum:
+              - crypto-withdrawals
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+          reference_id:
+            type: string
+            maxLength: 50
+            description: Optional platform-defined ID to link downstream events
+            example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+          withdrawal_details:
+            type: object
+            description: Details for crypto withdrawals and payouts.
+            properties:
+              quoted_asset:
+                type: string
+                example: USD
+                description: The asset code for the withdrawal request, e.g. USD
+              withdrawal_request_amount:
+                type: string
+                example: '125.55'
+                description: The amount requested for withdrawal.
+              external_account_id:
+                type: string
+                example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+                description: The external account ID for the withdrawal.
+              account_label:
+                type: string
+                example: custom_label
+                description: The account label for the withdrawal to be taken from.
+            required:
+            - quoted_asset
+            - withdrawal_request_amount
+            - external_account_id
+          client_device_info:
+            type: object
+            description: Metadata about the client environment where the SDK is initialized.
+            required:
+            - ip_address
+            - location
+            properties:
+              ip_address:
+                type: string
+                example: 81.2.69.142
+                description: The public IP address of the end-user device.
+              location:
+                type: string
+                example: US-IL
+                description: The location of the end-user device in ISO 3166-2 format (country-state, e.g., US-IL).
+        required:
+        - participant_code
+        - permissions
+      - title: Crypto Payouts SDK
+        type: object
+        description: One or more SDK experiences requested for this token.
+        properties:
+          permissions:
+            type: array
+            items:
+              type: string
+              enum:
+              - crypto-payouts
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+          reference_id:
+            type: string
+            maxLength: 50
+            description: Optional platform-defined ID to link downstream events
+            example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+          withdrawal_details:
+            type: object
+            description: Details for crypto withdrawals and payouts.
+            properties:
+              quoted_asset:
+                type: string
+                example: USD
+                description: The asset code for the withdrawal request, e.g. USD
+              withdrawal_request_amount:
+                type: string
+                example: '125.55'
+                description: The amount requested for withdrawal.
+              external_account_id:
+                type: string
+                example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+                description: The external account ID for the withdrawal.
+              account_label:
+                type: string
+                example: custom_label
+                description: The account label for the withdrawal to be taken from.
+            required:
+            - quoted_asset
+            - withdrawal_request_amount
+            - external_account_id
+        required:
+        - participant_code
+        - permissions
+      - title: 'Crypto Buy SDK '
+        type: object
+        description: One or more SDK experiences requested for this token.
+        properties:
+          permissions:
+            type: array
+            items:
+              type: string
+              enum:
+              - crypto-buy
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+          reference_id:
+            type: string
+            maxLength: 50
+            description: Optional platform-defined ID to link downstream events
+            example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+          custom_fees_and_spreads:
+            type: object
+            properties:
+              crypto_buy:
+                type: object
+                properties:
+                  spread_bps:
+                    type: string
+                    example: '50'
+                    description: The custom spread in basis points to be applied to the buy quote.
+                  fees:
+                    type: array
+                    description: An array of custom fees to be applied to the buy quote.
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: bps
+                          enum:
+                          - bps
+                          - notional
+                          description: The type of fee (e.g., percentage, flat).
+                        amount:
+                          type: string
+                          example: '20'
+                          description: The value of the fee `type`.
+                        name:
+                          type: string
+                          example: platform_fee
+                          description: The name of the fee.
+        required:
+        - participant_code
+        - permissions
+      - title: Crypto Sell SDK
+        type: object
+        description: One or more SDK experiences requested for this token.
+        properties:
+          permissions:
+            type: array
+            items:
+              type: string
+              enum:
+              - crypto-buy
+              - crypto-sell
+          participant_code:
+            type: string
+            minLength: 6
+            maxLength: 6
+            description: The participant_code for whom the SDK token is created. Either `participant_code` or `email` must be provided.
+            example: CUST01
+          reference_id:
+            type: string
+            maxLength: 50
+            description: Optional platform-defined ID to link downstream events
+            example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+          custom_fees_and_spreads:
+            type: object
+            properties:
+              crypto_sell:
+                type: object
+                properties:
+                  spread_bps:
+                    type: string
+                    example: '50'
+                    description: The custom spread in basis points to be applied to the sell quote.
+                  fees:
+                    type: array
+                    description: An array of custom fees to be applied to the sell quote.
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: bps
+                          enum:
+                          - bps
+                          - notional
+                          description: The type of fee (e.g., percentage, flat).
+                        amount:
+                          type: string
+                          example: '20'
+                          description: The value of the fee `type`.
+                        name:
+                          type: string
+                          example: platform_fee
+                          description: The name of the fee.
+        required:
+        - participant_code
+        - permissions
+    PayinsAuthorizationKycError:
+      type: object
+      required:
+      - error
+      - missing_requirements
+      properties:
+        error:
+          type: string
+          example: Shopper KYC requirements for this transaction are not met
+          description: Human-readable error message indicating the shopper is missing required KYC data for the requested transaction.
+        missing_requirements:
+          type: array
+          items:
+            type: string
+          example:
+          - first_name
+          - last_name
+          - date_of_birth
+          description: List of participant fields that must be collected or updated for the shopper to pass authorization at the requested amount and merchant MCC tier.
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PayinsAuthorizationManualApprovalError:
+      type: object
+      required:
+      - error
+      - transaction_id
+      properties:
+        error:
+          type: string
+          example: Manual approval required for this transaction
+          description: 'Human-readable error message. Possible values: "Manual approval required for this transaction" (no approval on file yet), "Approval pending, shopper must wait" (an approval request is already in review), "Manual approval for this transaction was rejected" (the approval was rejected by compliance or the platform), or "Manual approval for this transaction has already been finalized" (the approval was already consumed).'
+        transaction_id:
+          type: string
+          example: txn_01HZF7QWXJ8XK3VYNS6TKDM4G2
+          description: Identifier of the manual approval review. Persist this and re-use it when checking approval status or cancelling the request.
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

@@ -1,0 +1,241 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Individual Participants API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Individual Participants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/participants/customers/new",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a customer to your platform.\nThis endpoint is only available to certain participants leveraging zerohash for customer settlements. Please contact us for more information on enabling this endpoint."
+        },
+        {
+          "info": {
+            "name": "Submit documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/participants/documents",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a document on behalf of you or a customer if you operate a platform on zerohash."
+        },
+        {
+          "info": {
+            "name": "Update customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/participants/customers/:participant_code",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a customer of your platform.\nThis endpoint is only available to certain participants leveraging zerohash for customer settlements. Please contact us for more information on enabling this endpoint."
+        },
+        {
+          "info": {
+            "name": "Lock customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/participants/customers/:participant_code/lock",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When platforms terminate a customer, they may alert zerohash through this endpoint."
+        },
+        {
+          "info": {
+            "name": "Create beneficiary",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/participants/beneficiaries/new",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "X-Request-Id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a beneficiary to your platform.\nThis endpoint is only available to certain participants leveraging zerohash for beneficiary services. Please contact us for more information on enabling this endpoint."
+        },
+        {
+          "info": {
+            "name": "Update beneficiary",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/participants/beneficiaries/:participant_code",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              },
+              {
+                "name": "X-Request-Id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a beneficiary from your platform.\nThis endpoint is only available to certain participants leveraging zerohash for beneficiary services. Please contact us for more information on enabling this endpoint."
+        },
+        {
+          "info": {
+            "name": "Update participant limits",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/limits",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates transaction limits for a participant. Allows platforms to configure custom limits by transaction type, time period, and asset. This endpoint is available when the platform is configured accordingly to use custom limits."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

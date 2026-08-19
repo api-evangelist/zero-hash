@@ -1,0 +1,352 @@
+openapi: 3.2.0
+info:
+  title: zerohash Positions API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Positions
+  description: Positions and Balances monitoring
+paths:
+  /positions:
+    get:
+      tags:
+      - Positions
+      summary: List positions
+      description: Retrieve all positions maintained at zerohash.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: platform_code
+        in: query
+        description: Filters for positions based on the specific platform
+        required: false
+        schema:
+          type: string
+      - name: account_label
+        in: query
+        description: Filters for positions based on the account_label
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved positions for the authenticated participant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPositionsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /positions/platform/{platform_code}:
+    get:
+      tags:
+      - Positions
+      summary: List platform positions
+      description: Retrieve all platform positions maintained at zerohash.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: platform_code
+        in: path
+        description: Filters for positions based on the specific platform
+        required: true
+        schema:
+          type: string
+      - name: participant_code
+        in: query
+        description: 'Filters for positions based on the specific participant.
+
+
+          Note: multiple participant codes can be provided in the query string, separated by ampersands.
+
+          E.g. `participant_code=PLAT01&participant_code=PLAT02`'
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/AccountLabelQuery'
+      responses:
+        '200':
+          description: Successfully retrieved positions for the requested platform.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPlatformPositionsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /positions/participant/{id}:
+    get:
+      tags:
+      - Positions
+      summary: List participant positions
+      description: Retrieve all positions for the specified participant maintained at zerohash.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: id
+        in: path
+        description: Participant code to filter positions for.
+        required: true
+        schema:
+          type: string
+          example: CUST01
+      - name: platform_code
+        in: query
+        description: Filters for positions based on the specific platform.
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/AccountLabelQuery'
+      responses:
+        '200':
+          description: Successfully retrieved positions for the requested participant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPositionsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  parameters:
+    AccountLabelQuery:
+      name: account_label
+      in: query
+      description: Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history.
+      required: false
+      schema:
+        type: string
+        example: general
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+  schemas:
+    GetPositionsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionsResponseEntity'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetPlatformPositionsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionsResponseEntity'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    PositionsResponseEntity:
+      type: object
+      properties:
+        platform_code:
+          type: string
+          description: The code of the platform for the position.
+          example: PLAT01
+        participant_code:
+          type: string
+          description: The code of the participant for the position.
+          example: CUST01
+        account_label:
+          type: string
+          description: Account label for the account holding the position.
+          example: general
+        asset:
+          type: string
+          description: The asset code for the position, e.g. `BTC`.
+          example: BTC
+        position_all_open_trades:
+          type: string
+          description: The net position of all open trades in the asset, i.e. trades with a `trade_state` of `accepted` or `active`.
+          example: '10.02'
+        position_accepted_trades_only:
+          type: string
+          description: The net position of all trades in the asset with a `trade_state` of `accepted`, i.e. trades where settlement has not yet been attempted.
+          example: '10.02'
+        position_active_trades_only:
+          type: string
+          description: The net position of all trades in the asset with a `trade_state` of `active`, i.e. trades where settlement has been attempted but was unsuccessful.
+          example: '0'
+        trade_ids_list:
+          type: array
+          items:
+            type: string
+          description: List of trade IDs contributing to this position (UUIDs from `/trades`).
+          example:
+          - 0003eb17-43b8-4c40-aec5-317b1080d6c3
+          - 1f9142b8-57f2-4b4a-8e72-b94df84cf4e9
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

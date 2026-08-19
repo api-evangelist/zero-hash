@@ -1,0 +1,358 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Query Participants API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Query Participants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List participants",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participants",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filter by a specific participant code. Always 6 uppercase alphanumeric characters."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for pagination (starts at 1)."
+              },
+              {
+                "name": "relationship_type",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific `relationship_type`"
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific `email`"
+              },
+              {
+                "name": "minors",
+                "value": "",
+                "type": "query",
+                "description": "When set to the string `\"true\"`, restricts results to minor participants only."
+              },
+              {
+                "name": "entity_type",
+                "value": "",
+                "type": "query",
+                "description": "Filters entity participants by their declared entity type."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific `status`"
+              }
+            ]
+          },
+          "docs": "Returns a list of all participants to which you are associated."
+        },
+        {
+          "info": {
+            "name": "Get participant",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participants/:email",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "email",
+                "value": "",
+                "type": "path",
+                "description": "participant email"
+              }
+            ]
+          },
+          "docs": "This endpoint returns a participant associated with an email address. It provides a dedicated and lightweight alternative to using the email query parameter within the `GET /participants` endpoint for filtering participants by `email`."
+        },
+        {
+          "info": {
+            "name": "Get participant limits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/limits",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "Allows the Platform to query Customer limits, broken out by transaction type, time period and asset."
+        },
+        {
+          "info": {
+            "name": "Get participant KYC status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/kyc_status",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "This endpoint returns KYC Status information attached to a participant."
+        },
+        {
+          "info": {
+            "name": "Get participant basic info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/basic_info",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "This endpoint returns Participant basic info."
+        },
+        {
+          "info": {
+            "name": "Get participant sanction screening info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/sanction_screening_info",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "This endpoint returns Participant sanction screening info."
+        },
+        {
+          "info": {
+            "name": "Get participant full info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/full_info",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "This endpoint returns Participant full info."
+        },
+        {
+          "info": {
+            "name": "Get participant document metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/full_info/document_metadata",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "Returns a list of KYC document metadata for a participant. Does not include document contents or signed URLs."
+        },
+        {
+          "info": {
+            "name": "Download participant document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/full_info/documents/:document_id/download",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              },
+              {
+                "name": "document_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier of the document to download. Returned by `GET /participant/{participant_code}/full_info/document_metadata` on each document entry."
+              }
+            ]
+          },
+          "docs": "Returns a single KYC document with a presigned S3 URL for downloading. The presigned URL expires after 15 minutes. Returns 404 if the document is not found or does not belong to the participant."
+        },
+        {
+          "info": {
+            "name": "Get participant status reason details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/participant/:participant_code/status_reason",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "path",
+                "description": "Unique participant identifier. Always 6 uppercase alphanumeric characters."
+              }
+            ]
+          },
+          "docs": "Returns detailed information about a participant's current status, including lock, disable, close, or divest reason codes along with compliance and KYC reasons when applicable. Availability is gated per platform; contact zerohash to enable for your platform."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

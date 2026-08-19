@@ -1,0 +1,381 @@
+openapi: 3.2.0
+info:
+  title: zerohash Movements API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Movements
+paths:
+  /movements:
+    get:
+      tags:
+      - Movements
+      summary: List movements
+      description: Retrieves the history of each itemized movement that has been applied to all account(s) that the requesting platform has access to. Results are limited to the last 2 months
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/PageSizeQuery'
+      - name: parent_link_id
+        in: query
+        description: Filters for movements that are tagged with a specific `parent_link_id`.
+        required: false
+        schema:
+          type: string
+      - name: movement_type
+        in: query
+        description: The type of the movement
+        required: false
+        schema:
+          type: string
+          description: The type of movement
+          example: final_settlement
+          enum:
+          - initial_margin
+          - deposit
+          - execution_fee
+          - final_settlement
+          - final_settlement_default
+          - final_settlement_default_fallback
+          - final_settlement_default_partial
+          - final_settlement_outstanding
+          - interest_payment
+          - collateralize_loan
+          - loan_collateral_return
+          - network_fee
+          - otc_final_settlement
+          - principal_swap
+          - repayment
+          - transfer
+          - variation_margin
+          - variation_margin_call
+          - withdrawal
+          - withdrawal_confirmed
+          - withdrawal_pending
+          - commission
+          - bank_fee
+          - transaction_fee
+      - name: transfer_type
+        in: query
+        description: Filters for movements with a specific `transfer_type`.
+        required: false
+        schema:
+          type: string
+          example: prefunded
+          enum:
+          - trade_allocation
+          - commission_allocation
+          - commission_correction
+          - revenue_capture
+          - fund
+          - pay
+          - prefunded
+      - name: account_id
+        in: query
+        description: This parameter enables the filtering of movements based on the associated `account_id`.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Paginated list of movements for the accounts the requesting platform has access to. Results are limited to the last 2 months.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMovementsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    PageSizeQuery:
+      name: page_size
+      in: query
+      description: Number of items per page for pagination. Default and maximum is 100
+      required: false
+      schema:
+        type: number
+        minimum: 1
+        maximum: 100
+        example: 15
+    PageQuery:
+      name: page
+      in: query
+      description: Page number for pagination (starts at 1).
+      required: false
+      schema:
+        type: number
+        minimum: 1
+        example: 1
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+  schemas:
+    GetMovementsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovementsEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    MovementsEntity:
+      type: object
+      properties:
+        movement_timestamp:
+          type: number
+          description: Unix timestamp in milliseconds for the movement.
+          example: 1554395972174
+        account_id:
+          type: string
+          description: Unique ID of the specific account
+          example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+        movement_id:
+          type: string
+          description: A unique ID for the specific account update
+          example: ab938734-0aa6-4378-baa1-2cc56aeee757
+        movement_type:
+          type: string
+          description: The type of movement
+          example: final_settlement
+          enum:
+          - initial_margin
+          - deposit
+          - execution_fee
+          - final_settlement
+          - final_settlement_default
+          - final_settlement_default_fallback
+          - final_settlement_default_partial
+          - final_settlement_outstanding
+          - interest_payment
+          - collateralize_loan
+          - loan_collateral_return
+          - network_fee
+          - otc_final_settlement
+          - principal_swap
+          - repayment
+          - transfer
+          - variation_margin
+          - variation_margin_call
+          - withdrawal
+          - withdrawal_confirmed
+          - withdrawal_pending
+          - commission
+          - bank_fee
+          - transaction_fee
+        transfer_type:
+          type: string
+          nullable: true
+          description: Transfer type associated with the movement. `null` when the movement is not associated with a transfer.
+          enum:
+          - trade_allocation
+          - commission_allocation
+          - commission_correction
+          - error_trade_allocation
+          - error_trade_commission
+          - error_trade_loss
+          - error_trade_gain
+          - revenue_capture
+          - error_trade_loss_buy
+          - error_trade_loss_sell
+          - transaction_fee_allocation
+          - fund
+          - pay
+          - unquarantine
+          - prefunded
+          - inventory_loan
+          - stake_submitted
+          - stake_activated_pool
+          - stake_activated_external
+          - unstake_submitted
+          - unstake_completed
+          - loan_repaid
+          - reward_distributed
+          - fund_failure
+          - stake_canceled
+          - unstake_canceled
+          - stake_failed
+          - unstake_failed
+          - staking_reward_deposit
+          - staking_reward_fee_conversion
+          - staking_reward_platform_fee
+          - staking_system_reward
+          - ndo_settlement
+          - pool_stake_initiated
+          - pool_stake_activated
+          - pool_stake_failed
+          - pool_stake_canceled
+          - pool_unstake_initiated
+          - pool_unstake_completed
+          - pool_unstake_failed
+          - pool_unstake_canceled
+          - travel_rule_deposit_info_verified
+          - travel_rule_deposit_failure
+          - travel_rule_deposit_recovered
+          - null
+        deposit_reference_id:
+          type: string
+          nullable: true
+          description: External identifier associated with the deposit when the movement was due to a deposit. Equal to the `reference_id` field from `/deposits`. `null` otherwise.
+          example: 3ad29e08-8b4f-435b-89aa-17b7a298b350
+        withdrawal_request_id:
+          type: string
+          nullable: true
+          description: Withdrawal request ID when the movement was due to a withdrawal. Equal to the `id` field from `/withdrawals/requests`. `null` otherwise.
+          example: 3ad29e08-8b4f-435b-89aa-17b7a298b350
+        transfer_id:
+          type: string
+          nullable: true
+          description: Transfer request ID when the movement was due to a transfer. Equal to the `id` field from `/transfers`. `null` otherwise.
+          example: '78'
+        parent_link_id:
+          type: string
+          nullable: true
+          description: Unique identifier of the parent transaction that resulted in the movement. For a trade, equal to the `trade_id` from `/trades`. `null` when there is no parent.
+          example: 3ad29e08-8b4f-435b-89aa-17b7a298b350
+        trade_id:
+          type: string
+          nullable: true
+          description: Unique identifier of the trade or loan that resulted in the movement. For a trade, equal to the `trade_id` from `/trades`. `null` when the movement is not tied to a trade or loan.
+          example: 3ad29e08-8b4f-435b-89aa-17b7a298b350
+        change:
+          type: string
+          description: "The change due to the specific movement\t"
+          example: '10000'
+        origin:
+          type: string
+          nullable: true
+          enum:
+          - rest_api
+          - sdk
+          - secondary
+          - null
+          description: Method through which the movement was initiated (`rest_api`, `sdk`, or `secondary`). `null` when the movement was not initiated by a client request (e.g. on-chain deposit credit).
+          example: rest_api
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

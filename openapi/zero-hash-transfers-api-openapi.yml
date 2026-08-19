@@ -1,0 +1,687 @@
+openapi: 3.2.0
+info:
+  title: zerohash Transfers API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Transfers
+  description: Initiate and monitor transfers between accounts
+paths:
+  /transfers:
+    get:
+      tags:
+      - Transfers
+      summary: List transfers
+      description: Retrieves a list of objects containing information about transfers. This endpoint supports pagination and filtering based on the below parameters. Results are limited to the last 2 months.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: page
+        in: query
+        description: Filters for a specific page (pagination)
+        required: false
+        example: 1
+        schema:
+          type: number
+      - name: page_size
+        in: query
+        description: Filter for number of transfer objects to be included on each page
+        required: false
+        example: 30
+        schema:
+          type: number
+      - name: to_participant_code
+        in: query
+        required: false
+        description: Filter for `to_participant_code` in receipt of the transfer
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 6
+          example: CUST01
+      - name: from_participant_code
+        in: query
+        description: Filter for `from_participant_code` the transfer was sent from
+        required: false
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 6
+          example: CUST02
+      - name: requested_timestamp[gt]
+        in: query
+        description: Filter for greater than a given timestamp
+        required: false
+        example: '1622505600'
+        schema:
+          type: number
+      - name: requested_timestamp[gte]
+        in: query
+        description: Filter for greater than or equal to a given timestamp
+        required: false
+        example: '1622505600'
+        schema:
+          type: number
+      - name: requested_timestamp[e]
+        in: query
+        description: Filter for equal to a given timestamp
+        required: false
+        example: '1622505600'
+        schema:
+          type: number
+      - name: requested_timestamp[lt]
+        in: query
+        description: Filter for less than a given timestamp
+        required: false
+        example: '1622505600'
+        schema:
+          type: number
+      - name: requested_timestamp[lte]
+        in: query
+        description: Filter for less than or equal to a given timestamp
+        example: '1622505600'
+        required: false
+        schema:
+          type: number
+      - name: client_transfer_id
+        in: query
+        description: Filter for `client_transfer_id` associated with the transfer
+        required: false
+        schema:
+          type: string
+      - name: from_account_group
+        in: query
+        description: Filter by the source account group of the transfer.
+        required: false
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 6
+          example: PLAT01
+      - name: from_account_label
+        in: query
+        description: Filter by the source account label of the transfer.
+        required: false
+        schema:
+          type: string
+          minLength: 4
+          maxLength: 60
+          example: LABEL01
+      - name: to_account_group
+        in: query
+        description: Filter by the destination account group of the transfer.
+        required: false
+        schema:
+          type: string
+          minLength: 6
+          maxLength: 6
+          example: PLAT01
+      - name: to_account_label
+        in: query
+        description: Filter by the destination account label of the transfer.
+        required: false
+        schema:
+          type: string
+          minLength: 4
+          maxLength: 60
+          example: LABEL02
+      - name: currency
+        in: query
+        description: Filter by the asset code of the transfer, e.g. `USD`.
+        required: false
+        schema:
+          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of transfers with optional filters: page, page_size, to_participant_code, from_participant_code, requested_timestamp filters, client_transfer_id.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransfersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    post:
+      tags:
+      - Transfers
+      summary: Create transfer
+      description: 'Create a new transfer request between your own accounts.
+
+        To submit transfers on behalf of others, you will require the `submits_platform_transfers_for` relationship. Transfer requests created via the API are automatically set to an `APPROVED` state.'
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Request body containing the transfer details including sender, recipient, asset, and amount.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTransferBody'
+      responses:
+        '201':
+          description: Successfully created transfer request. Returns the created resource with generated IDs and timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostTransferResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /transfers/{id}:
+    get:
+      tags:
+      - Transfers
+      summary: Get transfer
+      description: Retrieves a single transfer made to or from your participant, or to or from your platform's account group.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: id
+        in: path
+        description: Filter for id assigned to a transfer request
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved transfer by ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransferById'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    GetTransfersResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 15
+        total_pages:
+          type: number
+          example: 1
+        count:
+          type: number
+          example: 1
+    PostTransferBody:
+      type: object
+      additionalProperties: false
+      required:
+      - from_participant_code
+      - from_account_group
+      - to_participant_code
+      - to_account_group
+      - asset
+      - amount
+      properties:
+        from_participant_code:
+          type: string
+          description: The source participant for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        from_account_group:
+          type: string
+          description: The source account group for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        from_account_label:
+          type: string
+          pattern: ^[A-Za-z0-9:_-]+$
+          description: The source account label for the transfer, e.g. `general`.
+          example: general
+        to_participant_code:
+          type: string
+          description: The destination participant for the transfer, e.g. `ABCDEF`.
+          example: DEMO01
+        to_account_group:
+          type: string
+          description: The destination account group for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        to_account_label:
+          type: string
+          pattern: ^[A-Za-z0-9:_-]+$
+          description: The destination account label for the transfer, e.g. `general`.
+          example: general
+        asset:
+          type: string
+          description: The asset code for the transfer, e.g. `USD`.
+          example: USD
+        amount:
+          type: string
+          description: The amount or quantity to transfer, e.g. `100`.
+          example: '20.1'
+        client_transfer_id:
+          type: string
+          description: A unique identifier for the transfer. Must be unique per platform, per 72 hour period.
+          example: e6afed46-301e-46ee-a339-e897e9855c3a
+        prefunded:
+          type: boolean
+          description: Set to `true` if the transfer amount should be included in the net settlement calculation. Requires `pt_1.is_prefunded_transfer_enabled` to be enabled for the calling participant.
+          example: false
+    TransferEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          description: The transfer request ID.
+          example: 1152665
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the transfer request was created.
+          example: '2026-05-04T11:58:50.115Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the transfer request was last updated.
+          example: '2026-05-04T11:58:50.115Z'
+        status:
+          type: string
+          description: "The current status of the transfer request:\n - `pending`: platform submitted and awaiting approval via the customer portal.\n - `approved`: platform submitted and approved. Transfers created via this API are auto-set to `approved`.\n - `rejected`: transfer was declined by an administrator.\n - `settled`: transfer has been successfully completed.\n - `outstanding`: transfer has no funds available.\n - `canceled`: transfer was canceled.\n - `error_canceled`: transfer failed.\n\nNote: pre-funded transfers can only be `approved`, `settled`, or `rejected`."
+          example: approved
+          enum:
+          - pending
+          - approved
+          - canceled
+          - rejected
+          - settled
+          - outstanding
+          - error_canceled
+        from_participant_code:
+          type: string
+          description: The source participant for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        from_account_group:
+          type: string
+          nullable: true
+          description: The source account group for the transfer, e.g. `ABCDEF`. Null when the requesting participant is not authorized to see the source account group.
+          example: ABCDEF
+        from_account_label:
+          type: string
+          nullable: true
+          description: The source account label for the transfer, e.g. `general`. Null when the requesting participant is not authorized to see the source account label.
+          example: general
+        to_participant_code:
+          type: string
+          description: The destination participant for the transfer, e.g. `ABCDEF`.
+          example: DEMO01
+        to_account_group:
+          type: string
+          nullable: true
+          description: The destination account group for the transfer, e.g. `ABCDEF`. Null when the requesting participant is not authorized to see the destination account group.
+          example: ABCDEF
+        to_account_label:
+          type: string
+          nullable: true
+          description: The destination account label for the transfer, e.g. `general`. Null when the requesting participant is not authorized to see the destination account label.
+          example: general
+        asset:
+          type: string
+          description: The asset code for the transfer, e.g. `USD`.
+          example: USD
+        amount:
+          type: string
+          description: The amount or quantity transferred, e.g. `100`.
+          example: '100.00'
+        movement_id:
+          type: string
+          nullable: true
+          description: A unique ID for the ledger movement associated with the transfer. Null until the transfer reaches `settled`.
+          example: null
+        client_transfer_id:
+          type: string
+          description: A unique identifier for the transfer. Must be unique per platform, per 72 hour period.
+          example: e6afed46-301e-46ee-a339-e897e9855c3a
+        admin_transfer:
+          type: boolean
+          description: Indicates whether the transfer was created by an administrator. Transfers created via this API are always `false`.
+          example: false
+        parent_link_id:
+          type: string
+          nullable: true
+          description: Identifier linking this transfer to a parent operation (e.g. a prefunded transfer chain). Null when the transfer is not linked.
+          example: null
+        parent_link_id_source:
+          type: string
+          nullable: true
+          description: Source of the `parent_link_id`. Null when the transfer is not linked.
+          example: LINK_SOURCE_PREFUNDED_TRANSFER
+        prefunded:
+          type: boolean
+          description: Indicates whether this transfer was created as a pre-funded transfer that is included in net settlement calculations.
+          example: false
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    GetTransferById:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TransferEntity'
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    LiquidityEnabledUnderlyingCurrency:
+      type: string
+      description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
+      example: BTC
+      enum:
+      - USDC.OPTIMISM
+      - USDC.SUI
+      - DOT
+      - FIL
+      - PYUSD.ETH
+      - TRX
+      - ZRX
+      - DAI.ETH
+      - USDC.WORLDCHAIN
+      - USDP
+      - USDT.BSC
+      - USDT.CELO
+      - PEPE.ETH
+      - SAND
+      - USDC.DOTHUB
+      - USDC.SEI
+      - USDC.SOL
+      - USDC.ZKSYNC
+      - ENA.ETH
+      - MANA.ETH
+      - PYTH.SOL
+      - SOL
+      - USDC.BASE
+      - USDC.CELO
+      - USDT
+      - ADA
+      - INJ.ETH
+      - MATIC.POLYGON
+      - PAXG
+      - USD
+      - AAVE.ETH
+      - ALGO
+      - EURC.XLM
+      - KNC.ETH
+      - PNUT.SOL
+      - SHIB
+      - BCH
+      - DOGE
+      - EGLD
+      - JTO.SOL
+      - UNI.ETH
+      - USDC
+      - USDC.ARBITRUM
+      - ONDO.ETH
+      - PENGU.SOL
+      - USD
+      - WLFI.ETH
+      - XLM
+      - APT
+      - CC
+      - ETH.OPTIMISM
+      - ETH.WORLDCHAIN
+      - LDO.ETH
+      - MORPHO.ETH
+      - SEI
+      - ETH.ZKSYNC
+      - USDC.AVAX
+      - USDC.XLM
+      - USDT.DOTHUB
+      - USDT.SOL
+      - MANA
+      - USDC.ALGO
+      - MATIC.ETH
+      - NEAR
+      - UNI
+      - USDT.ARBITRUM
+      - USDT.AVAX
+      - OMG
+      - ARB.ARBITRUM
+      - COMP.ETH
+      - GRT.ETH
+      - USDC.POLYGON
+      - AVAX
+      - AAVE
+      - CELO
+      - PYUSD.SOL
+      - PAXG.ETH
+      - USDC.MONAD
+      - BAT
+      - COMP
+      - ETH.ARBITRUM
+      - ETH.BASE
+      - OP.OPTIMISM
+      - TRUMP.SOL
+      - ENJ.ETH
+      - SUI
+      - USDT.ETH
+      - USDT.OPTIMISM
+      - USDT.TRX
+      - USDT.XPL
+      - OMG.ETH
+      - XRP
+      - HBAR
+      - USDC.APT
+      - USDC.ETH
+      - BNB
+      - ATOM
+      - BAT.ETH
+      - GRT
+      - LINK.ETH
+      - USDP.SOL
+      - ZK.ZKSYNC
+      - BONK.SOL
+      - KNC
+      - TIA
+      - ZRO.ETH
+      - ZRX.ETH
+      - PUMP.SOL
+      - USD
+      - XTZ
+      - CRV.ETH
+      - GALA.ETH
+      - TON
+      - USDT.POLYGON
+      - WBTC.ETH
+      - XPL
+      - BTC
+      - MON
+      - SHIB.ETH
+      - USDC.BSC
+      - WLD.WORLDCHAIN
+      - W.SOL
+      - LTC
+      - RLUSD.ETH
+      - WBTC
+      - LINK
+      - USDCX.CANTON
+      - ETH
+      - WIF.SOL
+      - APE.ETH
+      - EURC
+      - MKR.ETH
+      - RLUSD.XRP
+    PostTransferResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TransferEntity'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

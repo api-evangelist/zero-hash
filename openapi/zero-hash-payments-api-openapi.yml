@@ -1,0 +1,2497 @@
+openapi: 3.2.0
+info:
+  title: zerohash Payments API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Payments
+  description: Payment Services
+paths:
+  /payments/external_accounts:
+    post:
+      tags:
+      - Payments
+      summary: Create external account
+      description: Links an external fiat or crypto account to a participant. Fiat accounts are linked via a Plaid processor token. Crypto account support requires the feature to be enabled on the calling platform.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Link request. Use the Fiat Account variant for Plaid-backed fiat accounts and the Crypto Account variant for on-chain destinations.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreateExternalAccountRequest'
+      responses:
+        '201':
+          description: Successfully created external account. Returns the created resource with generated IDs and timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCreateExternalAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    get:
+      tags:
+      - Payments
+      summary: List external accounts
+      description: Retrieves a paginated list of external accounts linked to the calling platform, optionally filtered by participants, account type, or account status.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: participants
+        in: query
+        description: Comma-separated list of participant codes to filter on (e.g. `ABCDEF,DEMO01`).
+        required: false
+        schema:
+          type: string
+          example: ABCDEF
+      - name: account_type
+        in: query
+        description: Filter for a specific account_type
+        required: false
+        schema:
+          type: string
+          enum:
+          - checking
+          - savings
+      - name: account_status
+        in: query
+        description: Filter for a specific account_status
+        required: false
+        schema:
+          type: string
+          enum:
+          - pending
+          - submitted
+          - approved
+          - closed
+          - deleted
+          - rejected
+          - locked
+          - disabled
+          - revoked
+          - failed
+      - name: page
+        in: query
+        description: Filter for a specific page (pagination)
+        required: false
+        schema:
+          default: 1
+          type: number
+      - name: size
+        in: query
+        description: Filter for the amount of external account objects returned
+        required: false
+        schema:
+          default: 200
+          type: number
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of external accounts with optional filters: participants, account_type, account_status.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetExternalAccountsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/external_accounts/{external_account_id}/close:
+    post:
+      tags:
+      - Payments
+      summary: Close external account
+      description: Closes an external account previously linked to a participant. After closure the account can no longer be used for new payments.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: external_account_id
+        in: path
+        description: Identifier of the external account to close.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Close request. `participant_code` identifies the account owner.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCloseExternalAccountRequest'
+      responses:
+        '200':
+          description: External account closed. Response contains the final snapshot of the account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCloseExternalAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments:
+    post:
+      tags:
+      - Payments
+      summary: Create payment
+      description: Creates a fiat pre-fund/settlement or a crypto payout. The request body must match one of the four documented shapes; submitting both `total` and `quantity` on a payout is rejected.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - $ref: '#/components/parameters/SimulatorScenario'
+      requestBody:
+        description: Payload describing either a fiat transaction or a crypto payout.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPaymentsRequest'
+      responses:
+        '201':
+          description: Successfully created payment. Returns the created resource with generated IDs and timestamps.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPaymentsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    get:
+      tags:
+      - Payments
+      summary: List payments
+      description: Retrieves a paginated list of payouts for the platform, optionally filtered by `participant_code` and a `start_date` / `end_date` window.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: participant_code
+        in: query
+        description: Filter for participant code
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Filter for a specific page (pagination)
+        required: false
+        schema:
+          default: 1
+          type: number
+      - name: size
+        in: query
+        description: Filter for the amount of payments returned
+        required: false
+        schema:
+          default: 50
+          type: number
+      - name: start_date
+        in: query
+        description: Unix timestamp in seconds. Returns payments created on or after this date.
+        required: false
+        schema:
+          type: integer
+          format: int64
+          example: 1704067200
+      - name: end_date
+        in: query
+        description: Unix timestamp in seconds. Returns payments created on or before this date.
+        required: false
+        schema:
+          type: integer
+          format: int64
+          example: 1704153600
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of payouts with optional filters: participant_code, start_date, end_date.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/{payment_id}:
+    get:
+      tags:
+      - Payments
+      summary: Get payment by id
+      description: Fetches a single payout by its identifier, returning the current lifecycle status and on-chain details.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: payment_id
+        in: path
+        description: Identifier of the payout to fetch.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved payout.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentByIDResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/settlements:
+    get:
+      tags:
+      - Payments
+      summary: List pending ACH settlements
+      description: Retrieves pending ACH settlements for a specific platform. Used by the platform to reconcile the daily ACH settlement window.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: start_date
+        in: query
+        description: Inclusive start of the query window as a Unix timestamp in seconds. Defaults to 2 days ago.
+        required: false
+        schema:
+          type: integer
+          format: int64
+          example: 1777722086
+      - name: end_date
+        in: query
+        description: Inclusive end of the query window as a Unix timestamp in seconds. Defaults to now.
+        required: false
+        schema:
+          type: integer
+          format: int64
+          example: 1777895286
+      - name: platform_code
+        in: query
+        description: Platform code to fetch pending settlements for.
+        required: true
+        schema:
+          type: string
+          example: DEMO01
+      - name: page
+        in: query
+        description: Filter for a specific page (pagination)
+        required: false
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: Filter for the amount of pending ACH transaction objects returned
+        required: false
+        schema:
+          type: number
+          default: 200
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of pending ACH settlements with optional filters: platform_code, start_date, end_date.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPendingACHTransactionsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/{transaction_id}/retry:
+    post:
+      tags:
+      - Payments
+      summary: Retry a fiat payment
+      description: Retries a failed, cancelled, or returned fiat transaction whose linked trade has already terminated.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: transaction_id
+        in: path
+        description: Identifier of the fiat transaction to retry.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Retry submitted. The returned `transaction_id` identifies the new transfer attempt and should be polled via `/payments/status`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPaymentsRetryResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/history:
+    get:
+      tags:
+      - Payments
+      summary: List fiat transaction history
+      description: Retrieves the historical fiat transactions (ACH / same-day ACH / wire / RTP) for the calling platform, with optional filters by participant, transfer type, or a set of transaction identifiers.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: participant
+        in: query
+        description: Filter to a single participant code.
+        required: false
+        schema:
+          type: string
+          example: ABCDEF
+      - name: transaction_ids
+        in: query
+        description: Optional list of transaction identifiers to fetch. Repeat the query parameter for multiple ids (e.g. `?transaction_ids=id1&transaction_ids=id2`).
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+      - name: transfer_type
+        in: query
+        description: Filter for the given `transfer_type`
+        required: false
+        schema:
+          type: string
+          enum:
+          - credit
+          - debit
+      - name: page
+        in: query
+        description: Filter for a specific page (pagination)
+        required: false
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: Filter for the amount of transaction objects will be returned per request
+        required: false
+        schema:
+          type: number
+          default: 200
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of fiat transactions with optional filters: participant, transfer_type.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetACHTransactionHistoryResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/status:
+    get:
+      tags:
+      - Payments
+      summary: List fiat transaction statuses
+      description: 'Retrieves fiat transaction status objects for the calling platform. Defaults: when `start_date`/`end_date` are omitted, the last day of transactions is returned; when `page`/`size` are omitted, the first 200 transactions are returned; omitting `participant` or `status` removes the respective filter.'
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: start_date
+        in: query
+        description: Inclusive start of the query window as a Unix timestamp in seconds.
+        required: false
+        schema:
+          type: integer
+          format: int64
+          example: 1777895286
+      - name: end_date
+        in: query
+        description: Inclusive end of the query window as a Unix timestamp in seconds.
+        required: false
+        schema:
+          type: integer
+          format: int64
+          example: 1777895700
+      - name: participant
+        in: query
+        description: Filter for the given `participant` code
+        required: false
+        schema:
+          type: string
+      - name: transaction_id
+        in: query
+        description: Filter for the given `transaction_id`
+        required: false
+        schema:
+          type: string
+      - name: trade_id
+        in: query
+        description: Filter for the given `trade_id`
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Filter for the given `status` of the transaction
+        required: false
+        schema:
+          type: string
+          enum:
+          - posted
+          - cancelled
+          - failed
+          - returned
+          - submitted
+          - pending
+          - settled
+          - rejected
+          - pending_trade
+          - returned_settled
+          - retried
+          - unspecified
+      - name: page
+        in: query
+        description: Filter for a specific page (pagination)
+        required: false
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: Filter for the amount of transaction status objects returned
+        required: false
+        schema:
+          type: number
+          default: 200
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of fiat transaction statuses with optional filters: start_date, end_date, participant, transaction_id, trade_id, status.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetACHTransactionStatusResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/rfq:
+    post:
+      tags:
+      - Payments
+      summary: Request payment quote
+      description: Retrieves a quote for a payout. Exactly one of `quantity` or `total` must be supplied. The returned `quote_id` can be passed to `POST /payments/execute` before `expire_ts`.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Quote parameters.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPaymentsRequestForQuoteRequest'
+      responses:
+        '200':
+          description: Quote generated. Execute the quote via `POST /payments/execute` before `expire_ts` elapses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPaymentsRequestForQuoteResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /payments/execute:
+    post:
+      tags:
+      - Payments
+      summary: Execute payment quote
+      description: Executes the quote identified by `quote_id` and creates the underlying fiat transaction. The quote must not have expired.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Execution payload.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPaymentsExecutePaymentRequest'
+      responses:
+        '200':
+          description: Quote executed. Poll `/payments/status` with the returned `transaction_id` to observe lifecycle transitions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPaymentsExecutePaymentResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    GetACHTransactionHistoryResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: Request identifier echoed back from the request.
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/ACHTransactionHistory'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 200
+        count:
+          type: number
+          example: 10
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    PostCreateExternalAccountRequest:
+      type: object
+      oneOf:
+      - title: Fiat Account
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: Participant code
+            example: ALI123
+          account_nickname:
+            type: string
+            description: Account nickname
+            example: test1
+          plaid_processor_token:
+            type: string
+            minLength: 1
+            description: Plaid processor token
+            example: 0f68333e-2114-469d-b505-c850d776e063
+        required:
+        - participant_code
+        - plaid_processor_token
+      - title: Crypto Account
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: Participant code
+            example: ALI123
+          account_nickname:
+            type: string
+            description: Account nickname
+            example: test1
+          type:
+            type: string
+            description: Account asset type
+            enum:
+            - crypto
+            example: crypto
+          details:
+            type: object
+            oneOf:
+            - title: With Supported Symbols
+              type: object
+              properties:
+                network:
+                  type: string
+                  description: Blockchain network
+                  enum:
+                  - ETH
+                  - ALGO
+                  - ARBITRUM
+                  - AVAX
+                  - BASE
+                  - HBAR
+                  - POLYGON
+                  - SOL
+                  - OP
+                  - SUI
+                  - XLM
+                  - ZK
+                  example: SOL
+                supported_symbols:
+                  description: Symbol uses dot notation to refer to asset and network
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - USDC.SOL
+                address:
+                  type: string
+                  description: Destination address
+                destination_tag:
+                  type: string
+                  description: Destination tag (for XRP, XLM, etc.)
+                no_destination_tag:
+                  type: boolean
+                  description: Set to true to acknowledge that the destination address does not require a destination tag. Required for tag-based assets when destination_tag is not provided.
+              required:
+              - network
+              - supported_symbols
+              - address
+            - title: With Supported Assets
+              type: object
+              properties:
+                network:
+                  type: string
+                  description: Blockchain network
+                  enum:
+                  - ETH
+                  - ALGO
+                  - ARBITRUM
+                  - AVAX
+                  - BASE
+                  - HBAR
+                  - POLYGON
+                  - SOL
+                  - OP
+                  - SUI
+                  - XLM
+                  - ZK
+                  example: ETH
+                supported_assets:
+                  description: Tokens or currencies in the provided network
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - USDC
+                address:
+                  type: string
+                  description: Destination address
+                destination_tag:
+                  type: string
+                  description: Destination tag (for XRP, XLM, etc.)
+                no_destination_tag:
+                  type: boolean
+                  description: Set to true to acknowledge that the destination address does not require a destination tag. Required for tag-based assets when destination_tag is not provided.
+              required:
+              - network
+              - supported_assets
+              - address
+        required:
+        - participant_code
+        - type
+        - details
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetPaymentsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+        request_id:
+          type: string
+          description: Request id
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        platform_code:
+          type: string
+          description: Platform code
+          example: AHU75O
+        total:
+          type: number
+          example: 10
+    PostPaymentsRequest:
+      type: object
+      description: Exactly one of the following payload shapes must be submitted. Providing both `total` and `quantity` on a payout is rejected by the validator.
+      oneOf:
+      - title: Fiat pre-fund / ACH debit / ACH credit
+        type: object
+        required:
+        - participant_code
+        - external_account_id
+        - currency
+        - amount
+        - transfer_type
+        properties:
+          participant_code:
+            type: string
+            minLength: 6
+            description: Participant the fiat transaction belongs to.
+            example: ABCDEF
+          external_account_id:
+            type: string
+            format: uuid
+            description: External fiat account previously linked via `POST /payments/external_accounts`.
+            example: 12f4b661-1f36-4624-a13c-b0822d2ba1e1
+          currency:
+            type: string
+            minLength: 3
+            maxLength: 3
+            description: Fiat currency of the transaction (ISO 4217 3-letter code).
+            example: USD
+          amount:
+            type: string
+            description: Transaction amount in `currency` units.
+            example: '250'
+          transfer_type:
+            type: string
+            enum:
+            - credit
+            - debit
+            description: Direction of funds. `debit` pulls funds from the external account (pre-fund); `credit` sends funds to the external account.
+            example: debit
+          network:
+            type: array
+            items:
+              type: string
+              enum:
+              - ach
+              - same_day_ach
+              - rtp
+            description: Ordered preference list of fiat rails. When omitted, the service selects the best eligible rail.
+            example:
+            - same_day_ach
+          description:
+            type: string
+            description: Bank statement descriptor. Will appear on statements as `ZH <description>` (effective max 15 chars including the `ZH` prefix).
+            example: prefund
+          account_label:
+            type: string
+            minLength: 1
+            description: Account label for routing the payment to a specific labeled account. Defaults to `general`.
+            example: general
+          ach_agreement_acceptance:
+            type: object
+            description: Optional ACH authorization acceptance evidence for debit transactions.
+            required:
+            - timestamp
+            - version
+            properties:
+              timestamp:
+                type: number
+                format: int64
+                description: Unix timestamp in milliseconds when the customer accepted the agreement.
+                example: 1777895506000
+              version:
+                type: string
+                minLength: 1
+                description: Version of the ACH agreement that was accepted.
+                example: '1'
+      - title: Trade-linked fiat settlement
+        type: object
+        required:
+        - participant_code
+        - external_account_id
+        - trade_id
+        properties:
+          participant_code:
+            type: string
+            minLength: 6
+            description: Participant the fiat transaction belongs to.
+            example: ABCDEF
+          external_account_id:
+            type: string
+            format: uuid
+            description: External fiat account that will settle the trade.
+            example: 12f4b661-1f36-4624-a13c-b0822d2ba1e1
+          trade_id:
+            type: string
+            format: uuid
+            description: Identifier of the trade to settle via ACH.
+            example: 802e80ec-b8e2-493d-bcc1-97e39190383c
+          description:
+            type: string
+            description: Optional free-text description.
+            example: trade settlement
+          account_label:
+            type: string
+            minLength: 1
+            description: Account label on the customer side. Defaults to `general`.
+            example: general
+      - title: Payout (total)
+        type: object
+        required:
+        - participant_code
+        - obo_participant
+        - external_account_id
+        - asset
+        - quoted_asset
+        - payment_type
+        - total
+        properties:
+          participant_code:
+            type: string
+            minLength: 6
+            description: Participant the payout belongs to.
+            example: ABCDEF
+          obo_participant:
+            $ref: '#/components/schemas/OBOParticipantEntity'
+          external_account_id:
+            type: string
+            format: uuid
+            description: External crypto account that will receive the payout.
+            example: b636e754-5cbf-42b9-b28a-8b18c04bcde3
+          asset:
+            type: string
+            description: Asset to be delivered to the external account.
+            example: USDC
+          quoted_asset:
+            type: string
+            description: Currency the payout is priced in.
+            example: USD
+          payment_type:
+            type: string
+            enum:
+            - payout
+            example: payout
+          total:
+            type: string
+            description: Payout total expressed in the `quoted_asset`.
+            example: '125.08'
+          description:
+            type: string
+            description: Optional free-text description carried through to the resulting payment record.
+            example: Payout for order 12345
+      - title: Payout (quantity)
+        type: object
+        required:
+        - participant_code
+        - obo_participant
+        - external_account_id
+        - asset
+        - quoted_asset
+        - payment_type
+        - quantity
+        properties:
+          participant_code:
+            type: string
+            minLength: 6
+            description: Participant the payout belongs to.
+            example: ABCDEF
+          obo_participant:
+            $ref: '#/components/schemas/OBOParticipantEntity'
+          external_account_id:
+            type: string
+            format: uuid
+            description: External crypto account that will receive the payout.
+            example: b636e754-5cbf-42b9-b28a-8b18c04bcde3
+          asset:
+            type: string
+            description: Asset to be delivered to the external account.
+            example: USDC
+          quoted_asset:
+            type: string
+            description: Currency the payout is priced in.
+            example: USD
+          payment_type:
+            type: string
+            enum:
+            - payout
+            example: payout
+          quantity:
+            type: string
+            description: Payout quantity expressed in the `asset`.
+            example: '6.761693'
+          description:
+            type: string
+            description: Optional free-text description carried through to the resulting payment record.
+            example: Payout for order 12345
+    PostCloseExternalAccountRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - participant_code
+      properties:
+        participant_code:
+          type: string
+          minLength: 6
+          description: Participant that owns the external account being closed.
+          example: ABCDEF
+    PostPaymentsRequestForQuoteResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              format: uuid
+              description: Request identifier echoed back from the request.
+              example: 6fc13022-717b-45ff-bb05-011a7d4f3116
+            participant_code:
+              type: string
+              description: Platform participant code that owns the quote.
+              example: ABCDEF
+            underlying_currency:
+              type: string
+              description: The asset that is being bought or sold.
+              example: XRP
+            quoted_currency:
+              type: string
+              description: The currency that the `underlying_currency` is priced in.
+              example: USD
+            side:
+              type: string
+              enum:
+              - buy
+              - sell
+              description: Participant side of the quote.
+              example: sell
+            quantity:
+              type: string
+              description: Amount expressed in the `underlying_currency`.
+              example: '6.761693'
+            price:
+              type: string
+              description: Unit price of the `underlying_currency` expressed in the `quoted_currency`.
+              example: '1.317844179922575'
+            quote_id:
+              type: string
+              format: uuid
+              description: Identifier of the quote. Pass to `POST /payments/execute` to execute.
+              example: a3790e55-d0cb-4c82-b525-4965966ce24d
+            expire_ts:
+              type: number
+              format: int64
+              description: Quote expiration as a Unix timestamp in milliseconds.
+              example: 1777896067992
+            account_group:
+              type: string
+              description: Account group that will be the counterparty to the trade (typically the zerohash account group).
+              example: 00SCXM
+            account_label:
+              type: string
+              description: Account label on the counterparty side.
+              example: general
+            obo_participant:
+              $ref: '#/components/schemas/OBOParticipantEntity'
+            quote_notional:
+              type: string
+              description: Notional value of the quote in the `quoted_currency` (price × quantity), pre-spread.
+              example: '8.91'
+            disclosed_spread:
+              type: string
+              description: Absolute spread applied to the quote, in `quoted_currency` units.
+              example: '0.468992514024906101025'
+            disclosed_spread_rate:
+              type: string
+              description: Spread rate applied to the quote, in basis points (1 bps = 0.01%).
+              example: '500'
+    PostCloseExternalAccountResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: RequestID
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        external_account:
+          type: object
+          properties:
+            account_number:
+              type: string
+              description: Bank account number
+              example: '123456789'
+            routing_number:
+              type: string
+              description: Routing number, routing number needs to be 9 characters and can only be integers [0-9]
+              example: '011401533'
+            participant_code:
+              type: string
+              description: Participant code
+              example: ALI123
+            platform_code:
+              type: string
+              description: Platform code
+              example: TES123
+            account_nickname:
+              type: string
+              description: Account nickname
+              example: test1
+            account_type:
+              type: string
+              description: Fiat account type
+              enum:
+              - checking
+              - savings
+            status:
+              type: string
+              description: Account status
+              enum:
+              - pending
+              - approved
+              - rejected
+              - locked
+              - disabled
+              - revoked
+              - closed
+            external_account_id:
+              type: string
+              description: Linked account id
+              example: 0f68333e-2114-469d-b505-c850d776e063
+            created_at:
+              type: string
+              format: date-time
+              description: Creation timestamp of the account.
+              example: '2026-05-04T11:54:13.099Z'
+    Payment:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          description: Payment id
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        payment_type:
+          type: string
+          description: type of the payment
+          enum:
+          - payout
+          example: payout
+        payment_details:
+          type: object
+          properties:
+            withdrawal_request_id:
+              description: Withdrawal request linked to the payment
+              type: string
+              example: 0f68333e-2114-469d-b505-c850d776e063
+            trade_id:
+              description: Trade linked to the payment
+              type: string
+              example: 0f68333e-2114-469d-b505-c850d776e063
+            on_chain_transaction_id:
+              description: On chain transaction linked to the payment
+              type: string
+              example: F4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16
+            network_fee_notional:
+              description: total notional value of network fees
+              type: string
+              example: '0.01'
+            network_fee_quantity:
+              description: value of network fees in the proper network token
+              type: string
+              example: '0.0000000384712'
+        participant_code:
+          type: string
+          description: Participant code
+          example: ALI123
+        description:
+          type: string
+          description: Description of payment
+          example: this is a payout
+        total:
+          type: string
+          description: payment total (if total was requested)
+          example: '7.66'
+        quantity:
+          type: string
+          description: payment quantity (if quantity was requested)
+          example: '7.66'
+        asset:
+          type: string
+          description: The asset used for the payment
+          example: USDC
+        quoted_asset:
+          type: string
+          description: The quoted asset used for the payment
+          example: USD
+        status:
+          type: string
+          description: The status of the payment
+          example: settled
+        external_account_id:
+          type: string
+          description: Linked account id
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        network:
+          type: string
+          description: The network in which the payment took place
+          example: ETH
+        obo_participant:
+          $ref: '#/components/schemas/OBOParticipantEntity'
+        created_at:
+          type: string
+          description: Created at date with time
+          example: '1975-08-19T23:15:30.000Z'
+        updated_at:
+          type: string
+          description: Updated at date with time
+          example: '1975-08-19T23:15:30.000Z'
+        failure_reason:
+          type: string
+          description: filled if payment status=failed
+          example: unable to validate external account
+        reference_id:
+          type: string
+          description: platform reference id passed through token
+          example: 0338eee8-8626-4708-aa12-f33646a50423
+    OBOParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
+          type: string
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    GetPendingACHTransactionsResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: Request identifier echoed back from the request.
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/PendingACHTransactions'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 200
+        count:
+          type: number
+          example: 10
+    PostPaymentsRetryResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              format: uuid
+              description: Request identifier echoed back from the request.
+              example: 0f68333e-2114-469d-b505-c850d776e063
+            transaction_id:
+              type: string
+              format: uuid
+              description: Identifier of the new retry transaction.
+              example: 0f68333e-2114-469d-b505-c850d776e063
+            status:
+              type: string
+              enum:
+              - submitted
+              - pending
+              - pending_trade
+              - posted
+              - settled
+              - cancelled
+              - failed
+              - returned
+              - returned_settled
+              - rejected
+              - retried
+              - unspecified
+              description: Initial status of the retried transaction.
+              example: submitted
+    ACHTransactionStatus:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          description: Transaction id
+          example: 0f68333e-2114-469d-b505-c850d776e061
+        participant_code:
+          type: string
+          description: Participant code
+          example: ALI123
+        amount:
+          type: string
+          description: Transaction amount
+          example: '12.01'
+        status:
+          type: string
+          description: transaction status
+          enum:
+          - posted
+          - cancelled
+          - failed
+          - returned
+          - submitted
+          - pending
+          - settled
+          - rejected
+          - pending_trade
+          - returned_settled
+          - retried
+          - unspecified
+        transfer_type:
+          type: string
+          description: transfer type
+          enum:
+          - credit
+          - debit
+          - unspecified
+        bank_transfer_id:
+          type: string
+          description: Bank transfer id
+          example: 0f68333e-2114-469d-b505-c850d776e061
+        trade_id:
+          type: string
+          description: Trade id
+          example: 0f68333e-2114-469d-b505-c850d776e061
+        trade_status:
+          type: string
+          description: Trade status
+          example: terminated
+        velocity_status:
+          type: string
+          description: Status of velocity checks
+          enum:
+          - pending
+          - approved
+          - rejected
+        velocity_failed_rule:
+          type: string
+          description: If velocity_status = rejected, the rule that failed
+          example: participant_transactions(in_flight_transfers_by_participant)
+        ach_failure_reason:
+          type: string
+          description: Failure reason
+          example: Insufficient balance
+        created_at:
+          type: string
+          description: Created at date with time
+          example: '1975-08-19T23:15:30.000Z'
+        updated_at:
+          type: string
+          description: Updated at date with time
+          example: '1975-08-19T23:15:30.000Z'
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetPaymentByIDResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Payment'
+        request_id:
+          type: string
+          description: Request id
+          example: 0f68333e-2114-469d-b505-c850d776e063
+    PostPaymentsResponse:
+      type: object
+      oneOf:
+      - title: Fiat transaction (pre-fund or ACH credit/debit)
+        type: object
+        properties:
+          request_id:
+            type: string
+            format: uuid
+            description: Request identifier echoed back from the request.
+            example: a8eaccdf-7876-4123-94ed-125d8ec0bd1a
+          transaction_id:
+            type: string
+            format: uuid
+            description: Identifier of the created fiat transaction. Use `/payments/status` to poll for lifecycle updates.
+            example: 9dc8b28e-92d4-4728-8777-d2f278e4bafc
+          external_account_id:
+            type: string
+            format: uuid
+            description: External fiat account used for the transaction.
+            example: 12f4b661-1f36-4624-a13c-b0822d2ba1e1
+          trade_id:
+            type: string
+            description: Linked trade identifier when the fiat transaction settles a trade. Empty string for stand-alone pre-funds.
+            example: ''
+          description:
+            type: string
+            description: Echoed `description` from the request (if any).
+            example: pre-fund
+          amount:
+            type: string
+            description: Transaction amount in the `currency` unit.
+            example: '250'
+          status:
+            type: string
+            enum:
+            - submitted
+            - pending
+            - pending_trade
+            - posted
+            - settled
+            - cancelled
+            - failed
+            - returned
+            - returned_settled
+            - rejected
+            - retried
+            - unspecified
+            description: Initial ACH transfer status. Typically `submitted`.
+            example: submitted
+          transfer_type:
+            type: string
+            enum:
+            - credit
+            - debit
+            - unspecified
+            description: Whether the platform is crediting (pay-out) or debiting (pre-fund) the external account.
+            example: debit
+          network:
+            type: string
+            enum:
+            - ach
+            - same_day_ach
+            - wire
+            - rtp
+            - unspecified
+            description: Fiat rail selected for this transaction.
+            example: same_day_ach
+          participant_code:
+            type: string
+            description: Participant the transaction is associated with.
+            example: ABCDEF
+          account_label:
+            type: string
+            description: Account label on the participant side.
+            example: general
+          currency:
+            type: string
+            description: Fiat currency of the transaction.
+            example: USD
+          created_at:
+            type: string
+            format: date-time
+            description: Creation time of the transaction. Omitted when the transaction is in `pending_trade` because the underlying transfer has not been created yet.
+            example: '2026-05-04T11:00:26.260Z'
+          ach_agreement_acceptance:
+            type: object
+            description: Present only when the client submitted `ach_agreement_acceptance` on the request and it was persisted.
+            properties:
+              timestamp:
+                type: number
+                format: int64
+                description: Unix timestamp in seconds when the acceptance was signed.
+                example: 1777895506
+              version:
+                type: string
+                description: Version of the ACH agreement that was accepted.
+                example: '1'
+      - title: Payout
+        type: object
+        properties:
+          request_id:
+            type: string
+            format: uuid
+            description: Request identifier echoed back from the request.
+            example: 85925258-b03e-4661-a7d8-583d8f66321e
+          participant_code:
+            type: string
+            description: Participant the payout belongs to.
+            example: ABCDEF
+          platform_code:
+            type: string
+            description: Platform that initiated the payout.
+            example: DEMO01
+          obo_participant:
+            $ref: '#/components/schemas/OBOParticipantEntity'
+          payment_id:
+            type: string
+            format: uuid
+            description: Identifier of the created payout. Use `/payments/{payment_id}` to fetch lifecycle state.
+            example: f5159852-fb70-4139-8dd8-608781a12e1d
+          asset:
+            type: string
+            description: Asset delivered to the external account.
+            example: USDC
+          network:
+            type: string
+            description: Blockchain network the payout is settled on.
+            example: BASE
+          quoted_asset:
+            type: string
+            description: Currency the payout amount was quoted in.
+            example: USD
+          status:
+            type: string
+            enum:
+            - submitted
+            - pending
+            - posted
+            - settled
+            - failed
+            - initialized
+            - abandoned
+            - unspecified
+            description: Initial payout status; typically `submitted`.
+            example: submitted
+          external_account_id:
+            type: string
+            format: uuid
+            description: External crypto account receiving the payout.
+            example: b636e754-5cbf-42b9-b28a-8b18c04bcde3
+          total:
+            type: string
+            description: Payout total in the `quoted_asset`. Present when the request supplied `total`.
+            example: '125.08'
+          quantity:
+            type: string
+            description: Payout quantity in the `asset`. Present when the request supplied `quantity`.
+            example: '6.761693'
+          reference_id:
+            type: string
+            description: Platform-supplied reference identifier passed through from the generating token. Empty string when not supplied.
+            example: ''
+          created_at:
+            type: string
+            format: date-time
+            description: Creation time of the payout.
+            example: '2026-05-04T11:05:48.307Z'
+    PostPaymentsExecutePaymentRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - participant_code
+      - quote_id
+      - ach_signed_agreement
+      - external_account_id
+      properties:
+        participant_code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          description: Participant code of the customer executing the quote.
+          example: ABCDEF
+        quote_id:
+          type: string
+          format: uuid
+          description: Identifier of the quote returned by `POST /payments/rfq`. Must not have expired.
+          example: b4e04dea-430c-49e9-97e4-bb201a2e1f4a
+        ach_signed_agreement:
+          type: number
+          format: int64
+          description: Unix timestamp in seconds at which the customer accepted the ACH debit authorization.
+          example: 1777895506
+        description:
+          type: string
+          maxLength: 10
+          description: Optional free-text descriptor for the transaction (max 10 characters).
+          example: crypto buy
+        external_account_id:
+          type: string
+          description: Identifier of the previously-linked external fiat account that will be debited.
+          example: 4f941b3b-df5a-4aae-85ee-d15a79077852
+        account_group:
+          type: string
+          description: Optional override of the account group on the customer side. Defaults to the calling platform.
+          example: ABCDEF
+        network:
+          type: array
+          items:
+            type: string
+            enum:
+            - ach
+            - same_day_ach
+            - rtp
+          description: Ordered list of acceptable fiat rails. When omitted, the service picks the best eligible rail for the account.
+          example:
+          - same_day_ach
+    PendingACHTransactions:
+      type: object
+      properties:
+        processing_window_date:
+          type: string
+          format: date-time
+          description: Processing window date the pending transaction is queued for.
+          example: '2026-05-04T00:00:00.000Z'
+        trade_id:
+          type: string
+          format: uuid
+          description: Linked trade identifier.
+          example: 0f34533e-2114-469d-b505-c850d776e061
+        transaction_type:
+          type: string
+          enum:
+          - credit
+          - debit
+          - unspecified
+          description: Direction of the pending ACH transfer. `credit` pays the participant, `debit` pulls funds from the participant.
+        participant_code:
+          type: string
+          description: Participant the pending transaction belongs to.
+          example: ABCDEF
+        amount:
+          type: string
+          description: Transaction amount in USD.
+          example: '12.01'
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostPaymentsExecutePaymentResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              format: uuid
+              description: Request identifier echoed back from the request.
+              example: 0f68333e-2114-469d-b505-c850d776e063
+            transaction_id:
+              type: string
+              format: uuid
+              description: Identifier of the resulting fiat transaction. Use this value to poll `/payments/status` for settlement updates.
+              example: 3c9558d1-2f78-4e5a-a946-40f89dff008b
+            status:
+              type: string
+              enum:
+              - submitted
+              - pending
+              - pending_trade
+              - posted
+              - settled
+              - cancelled
+              - failed
+              - returned
+              - returned_settled
+              - rejected
+              - retried
+              - unspecified
+              description: Initial transfer status on execution; typically `submitted`. Subsequent lifecycle states are surfaced via `/payments/status`.
+              example: submitted
+            warning:
+              type: string
+              description: Non-blocking warning message, e.g. insufficient balance. Empty string when no warning is applicable.
+              example: participant balance appears insufficient for the requested quote, transaction may fail
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    PostPaymentsRequestForQuoteRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - participant_code
+      - side
+      - underlying_currency
+      - quoted_currency
+      properties:
+        participant_code:
+          type: string
+          description: The participant that the quote is being generated for. Typically the end customer.
+          example: CUST01
+        quoted_currency:
+          $ref: '#/components/schemas/QuotedCurrency'
+        underlying_currency:
+          $ref: '#/components/schemas/UnderlyingCurrency'
+        side:
+          type: string
+          description: The participant side of the quote - `buy` or `sell`.
+          example: buy
+          enum:
+          - buy
+          - sell
+        total:
+          type: string
+          description: The desired amount expressed in the `quoted_currency`. Exactly one of `quantity` or `total` must be provided.
+          example: '125.08'
+        quantity:
+          type: string
+          description: The desired amount expressed in the `underlying_currency`. Exactly one of `quantity` or `total` must be provided.
+          example: '6.761693'
+        quote_expiry:
+          type: string
+          description: Requested time-to-live for the quote. Defaults to `5s` when omitted.
+          example: 5m
+          enum:
+          - 5s
+          - 30s
+          - 1m
+          - 5m
+          - 10m
+          - 15m
+    GetExternalAccountsResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Request id
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalAccount'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 200
+        count:
+          type: number
+          example: 10
+    ACHTransactionHistory:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          description: Transaction id
+          example: 0f68333e-2114-469d-b505-c850d776e061
+        participant_code:
+          type: string
+          description: Participant code
+          example: ALI123
+        external_account_id:
+          type: string
+          description: External account id
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        amount:
+          type: string
+          description: Transaction amount
+          example: '12.01'
+        bank_fee:
+          type: string
+          description: Bank fee
+          example: '12.01'
+        network:
+          type: string
+          description: Network type
+          enum:
+          - ach
+          - same_day_ach
+          - wire
+          - unspecified
+          - rtp
+        transfer_type:
+          type: string
+          description: Transfer type
+          enum:
+          - credit
+          - debit
+          - unspecified
+        status_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/ACHStatus'
+        trade_id:
+          type: string
+          description: Trade id
+          example: 0f34533e-2114-469d-b505-c850d776e061
+        bank_transfer_id:
+          type: string
+          description: Bank transfer id
+          example: 0f68333e-2114-469d-b505-c850d776e061
+        created_at:
+          type: string
+          description: Created at date with time
+          example: '1975-08-19T23:15:30.000Z'
+        updated_at:
+          type: string
+          description: Updated at date with time
+          example: '1975-08-19T23:15:30.000Z'
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    PostCreateExternalAccountResponse:
+      type: object
+      oneOf:
+      - properties:
+          request_id:
+            type: string
+            description: RequestID
+            example: 0f68333e-2114-469d-b505-c850d776e063
+          participant_code:
+            type: string
+            description: Participant code
+            example: ALI123
+          platform_code:
+            type: string
+            description: Platform code
+            example: TES123
+          account_nickname:
+            type: string
+            description: Account nickname
+            example: test1
+          status:
+            type: string
+            description: Account status
+            enum:
+            - pending
+            - approved
+            - rejected
+            - locked
+            - disabled
+            - closed
+          external_account_id:
+            type: string
+            description: Linked account id
+            example: 0f68333e-2114-469d-b505-c850d776e063
+          created_at:
+            type: string
+            format: date-time
+            description: Creation timestamp of the account.
+            example: '2026-05-04T11:54:13.099Z'
+      - properties:
+          request_id:
+            type: string
+            description: RequestID
+            example: 0f68333e-2114-469d-b505-c850d776e063
+          participant_code:
+            type: string
+            description: Participant code
+            example: ALI123
+          platform_code:
+            type: string
+            description: Platform code
+            example: TES123
+          account_nickname:
+            type: string
+            description: Account nickname
+            example: polygon_account
+          status:
+            type: string
+            description: Account status
+            enum:
+            - pending
+            - approved
+            - rejected
+            - locked
+            - disabled
+            - revoked
+            - closed
+          status_reason:
+            type: string
+            description: Status reason when there is an error
+          external_account_id:
+            type: string
+            description: Linked account id
+            example: 0f68333e-2114-469d-b505-c850d776e063
+          created_at:
+            type: string
+            format: date-time
+            description: Creation timestamp of the account.
+            example: '2026-05-04T11:54:13.099Z'
+          details:
+            type: object
+            properties:
+              network:
+                description: Blockchain or Fiat rail
+                enum:
+                - ETH
+                - ALGO
+                - ARBITRUM
+                - AVAX
+                - BASE
+                - HBAR
+                - POLYGON
+                - SOL
+                - OP
+                - SUI
+                - XLM
+                - ZK
+                example: ETH
+              supported_assets:
+                description: Tokens or currencies in the provided network
+                type: array
+                items:
+                  type: string
+                example:
+                - USDC
+              supported_symbols:
+                description: Symbol uses dot notation to refer to asset and network
+                type: array
+                items:
+                  type: string
+                example:
+                - USDC.SOL
+              address:
+                type: string
+                description: Destination address
+    ACHStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          description: transaction status
+          enum:
+          - posted
+          - cancelled
+          - failed
+          - returned
+          - submitted
+          - pending
+          - settled
+          - rejected
+          - pending_trade
+          - returned_settled
+          - retried
+          - unspecified
+        timestamp:
+          type: string
+          description: Status update timestamp
+          example: '1975-08-19T23:15:30.000Z'
+    GetACHTransactionStatusResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: Request identifier echoed back from the request.
+          example: 0f68333e-2114-469d-b505-c850d776e063
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/ACHTransactionStatus'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 200
+        count:
+          type: number
+          example: 10
+    ExternalAccount:
+      type: object
+      oneOf:
+      - properties:
+          external_account_id:
+            type: string
+            description: Linked account id
+            example: 0f68333e-2114-469d-b505-c850d776e063
+          account_number:
+            type: string
+            description: Bank account number
+            example: '123456789'
+          routing_number:
+            type: string
+            description: Routing number, routing number needs to be 9 characters and can only be integers [0-9]
+            example: '011401533'
+          account_type:
+            type: string
+            description: Fiat account type
+            enum:
+            - checking
+            - savings
+          account_nickname:
+            type: string
+            description: Fiat account nickname
+            example: test1
+          participant_code:
+            type: string
+            description: Participant code
+            example: ALI123
+          platform_code:
+            type: string
+            description: Platform code
+            example: TES123
+          created_at:
+            type: string
+            format: date-time
+            description: Creation timestamp of the account.
+            example: '2026-05-04T11:54:13.099Z'
+          updated_at:
+            type: string
+            description: Updated at date with time
+            example: '1975-08-19T23:15:30.000Z'
+          status:
+            type: string
+            description: Account status
+            enum:
+            - pending
+            - approved
+            - rejected
+            - locked
+            - disabled
+            - revoked
+            - closed
+          status_reason:
+            type: string
+            description: Will only be filled if the status is "reject". Gives more details about why it was rejected
+            example: invalid processor token
+          networks:
+            type: array
+            items:
+              anyOf:
+              - type: object
+                properties:
+                  ach:
+                    type: object
+                    properties:
+                      credit:
+                        type: boolean
+                      debit:
+                        type: boolean
+              - type: object
+                properties:
+                  same_day_ach:
+                    type: object
+                    properties:
+                      credit:
+                        type: boolean
+                      debit:
+                        type: boolean
+              - type: object
+                properties:
+                  wire:
+                    type: object
+                    properties:
+                      credit:
+                        type: boolean
+                      debit:
+                        type: boolean
+              - type: object
+                properties:
+                  rtp:
+                    type: object
+                    properties:
+                      credit:
+                        type: boolean
+                      debit:
+                        type: boolean
+      - properties:
+          external_account_id:
+            type: string
+            description: Linked account id
+            example: 0f68333e-2114-469d-b505-c850d776e063
+          account_nickname:
+            type: string
+            description: Crypto account nickname
+            example: test1
+          participant_code:
+            type: string
+            description: Participant code
+            example: ALI123
+          platform_code:
+            type: string
+            description: Platform code
+            example: TES123
+          created_at:
+            type: string
+            format: date-time
+            description: Creation timestamp of the account.
+            example: '2026-05-04T11:54:13.099Z'
+          updated_at:
+            type: string
+            description: Updated at date with time
+            example: '1975-08-19T23:15:30.000Z'
+          status:
+            type: string
+            description: Account status
+            enum:
+            - pending
+            - approved
+            - rejected
+            - locked
+            - disabled
+            - revoked
+            - closed
+          status_reason:
+            type: string
+            description: Will only be filled if the status is "reject". Gives more details about why it was rejected
+            example: invalid processor token
+          type:
+            type: string
+            description: Account asset type
+            enum:
+            - crypto
+            - fiat
+            example: crypto
+          details:
+            type: object
+            properties:
+              destination_tag:
+                type: string
+                description: Destination tag
+                example: '123456789'
+              network:
+                description: Blockchain or Fiat rail
+                enum:
+                - ETH
+                - ALGO
+                - ARBITRUM
+                - AVAX
+                - BASE
+                - HBAR
+                - POLYGON
+                - SOL
+                - OP
+                - SUI
+                - XLM
+                - ZK
+                example: ETH
+              supported_assets:
+                description: Tokens or currencies in the provided network
+                type: array
+                items:
+                  type: string
+                example:
+                - USDC
+              supported_symbols:
+                description: Symbol uses dot notation to refer to asset and network
+                type: array
+                items:
+                  type: string
+                example:
+                - USDC.SOL
+              address:
+                type: string
+                description: Destination address
+          reference_id:
+            type: string
+            description: platform reference id passed through token
+            example: 0338eee8-8626-4708-aa12-f33646a50423
+  parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    SimulatorScenario:
+      name: X-Simulator-Scenario
+      in: header
+      description: Optional value to simulate specific success/failure scenarios in the certification environment. Has no effect in production.
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

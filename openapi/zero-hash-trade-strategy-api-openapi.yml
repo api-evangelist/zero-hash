@@ -1,0 +1,1796 @@
+openapi: 3.2.0
+info:
+  title: zerohash Trade Strategy API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Trade Strategy
+paths:
+  /strategies:
+    post:
+      tags:
+      - Trade Strategy
+      summary: Create a Strategy
+      description: Creates a new Strategy under your platform. Synchronous. The `request_id` sent as the `X-REQUEST-ID` header is the idempotency key — re-submitting the same value returns the existing Strategy with its original `id` and `created_at`.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTradeStrategyBody'
+      responses:
+        '201':
+          description: Strategy created. Body is the created Strategy. On idempotent re-submission, the original Strategy is returned and the status code may be `200` instead.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    get:
+      tags:
+      - Trade Strategy
+      summary: List Strategies
+      description: Lists all Strategies under your platform, paginated. Synchronous.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+        description: Items per page. Capped at 200. Defaults to 50.
+      responses:
+        '200':
+          description: Paginated list of Strategies (possibly empty).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTradeStrategiesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/{strategy_id}:
+    get:
+      tags:
+      - Trade Strategy
+      summary: Get a Strategy
+      description: Retrieves a single Strategy by its `id`. Synchronous.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Strategy.
+      responses:
+        '200':
+          description: The requested Strategy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Strategy doesn't exist or belongs to a different platform.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    patch:
+      tags:
+      - Trade Strategy
+      summary: Update a Strategy's metadata
+      description: Updates the Strategy's `metadata`. Synchronous. The submitted value replaces the previous one verbatim (no merge); pass `{}` to clear. Only `metadata` is mutable.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Strategy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTradeStrategyBody'
+      responses:
+        '200':
+          description: The updated Strategy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Strategy doesn't exist or belongs to a different platform.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/{strategy_id}/enroll:
+    post:
+      tags:
+      - Trade Strategy
+      summary: Enroll participants
+      description: Submits a new enrollment Operation. Asynchronous. Each participant is processed independently; participant-level failures do not block the others. Idempotent on (strategy_id, `X-REQUEST-ID`).
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Strategy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTradeStrategyEnrollmentBody'
+      responses:
+        '202':
+          description: Operation accepted and queued for processing. Body is the Operation in its initial `validating` status. Poll `GET /strategies/operations/{operation_id}` or subscribe to webhooks to observe the terminal status. On idempotent re-submission the existing Operation is returned and the status code may be `200` instead.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyOperationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Strategy not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/{strategy_id}/top-up:
+    post:
+      tags:
+      - Trade Strategy
+      summary: Top up participants
+      description: Adds fiat to one or more existing Traders' positions and buys proportionally to the supplied allocations. Asynchronous. Idempotent on (strategy_id, `X-REQUEST-ID`).
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Strategy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTradeStrategyTopUpBody'
+      responses:
+        '202':
+          description: Operation accepted and queued for processing. Body is the Operation in its initial `validating` status. Poll `GET /strategies/operations/{operation_id}` or subscribe to webhooks to observe the terminal status. On idempotent re-submission the existing Operation is returned and the status code may be `200` instead.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyOperationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Strategy not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/{strategy_id}/partial-sell:
+    post:
+      tags:
+      - Trade Strategy
+      summary: Partial sell
+      description: 'Executes a partial sell for one or more existing Traders. `amount` is the fiat the Trader wants back; sells are sized proportionally to the supplied allocations. Asynchronous. PartialSell does NOT produce `skipped` outcomes — a participant whose per-asset slice falls below the instrument minimum gets an Execution with `status: "rejected"` and `status_reason: "below_instrument_minimum"`.'
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Strategy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTradeStrategyPartialSellBody'
+      responses:
+        '202':
+          description: Operation accepted and queued for processing. Body is the Operation in its initial `validating` status. Poll `GET /strategies/operations/{operation_id}` or subscribe to webhooks to observe the terminal status. On idempotent re-submission the existing Operation is returned and the status code may be `200` instead.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyOperationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Strategy not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/{strategy_id}/liquidate:
+    post:
+      tags:
+      - Trade Strategy
+      summary: Liquidate participants
+      description: Fully exits one or more participants from the Strategy by selling everything they currently hold. Asynchronous. No allocations or per-participant amount — zerohash reads each participant's current balance and sells whatever they hold.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Strategy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTradeStrategyLiquidationBody'
+      responses:
+        '202':
+          description: Operation accepted and queued for processing. Body is the Operation in its initial `validating` status. Poll `GET /strategies/operations/{operation_id}` or subscribe to webhooks to observe the terminal status. On idempotent re-submission the existing Operation is returned and the status code may be `200` instead.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyOperationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Strategy not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/{strategy_id}/rebalance:
+    post:
+      tags:
+      - Trade Strategy
+      summary: Rebalance
+      description: 'Re-aligns Traders to the supplied allocations. Asynchronous. If `participants` is omitted, every Trader with `auto_rebalance: true` is targeted; if provided, only those Traders are targeted (ignoring their `auto_rebalance` flag). A weight of `"0"` means "fully exit this asset"; assets the Trader currently holds that are missing from the list are also fully exited.'
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Strategy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTradeStrategyRebalanceBody'
+      responses:
+        '202':
+          description: Operation accepted and queued for processing. Body is the Operation in its initial `validating` status. Poll `GET /strategies/operations/{operation_id}` or subscribe to webhooks to observe the terminal status. On idempotent re-submission the existing Operation is returned and the status code may be `200` instead.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyOperationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Strategy not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/operations:
+    get:
+      tags:
+      - Trade Strategy
+      summary: List Operations
+      description: Lists Operations across one or more Strategies, paginated. Synchronous.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: query
+        schema:
+          type: string
+        description: Filter Operations to a single Strategy.
+      - name: request_id
+        in: query
+        schema:
+          type: string
+        description: Filter by the platform's `request_id` on the Operation (idempotency key lookup — not the per-call correlation id).
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - enrollment
+          - top_up
+          - partial_sell
+          - rebalance
+          - liquidation
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - validating
+          - pricing
+          - settling
+          - settled
+          - skipped
+          - failed
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+        description: Items per page. Capped at 200. Defaults to 50.
+      responses:
+        '200':
+          description: Paginated list of Operations (possibly empty).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTradeStrategyOperationsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/operations/{operation_id}:
+    get:
+      tags:
+      - Trade Strategy
+      summary: Get an Operation
+      description: Retrieves a single Operation by its `id`. Use this to poll until `status` is terminal (`settled`, `skipped`, or `failed`) — or subscribe to webhooks and skip the polling.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: operation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Operation.
+      responses:
+        '200':
+          description: The requested Operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyOperationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Operation doesn't exist or belongs to a different platform.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/traders:
+    get:
+      tags:
+      - Trade Strategy
+      summary: List Traders
+      description: Lists Traders across one or more Strategies, paginated. Synchronous.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: query
+        schema:
+          type: string
+        description: Filter Traders to a single Strategy.
+      - name: participant_code
+        in: query
+        schema:
+          type: string
+        description: Filter Traders to a single end customer.
+      - name: auto_rebalance
+        in: query
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+        description: Filter Traders by their `auto_rebalance` flag.
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+        description: Items per page. Capped at 200. Defaults to 50.
+      responses:
+        '200':
+          description: Paginated list of Traders (possibly empty).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTradeStrategyTradersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/traders/{trader_id}:
+    get:
+      tags:
+      - Trade Strategy
+      summary: Get a Trader
+      description: Retrieves a single Trader by its `id`. Synchronous.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: trader_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Trader.
+      responses:
+        '200':
+          description: The requested Trader.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyTraderResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Trader doesn't exist or belongs to a different platform.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+    patch:
+      tags:
+      - Trade Strategy
+      summary: Update a Trader's settings
+      description: Updates a Trader's settings. Synchronous. Currently the only mutable field is `auto_rebalance`. Does not affect any in-flight Operation; takes effect on the next Rebalance.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: trader_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Trader.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTradeStrategyTraderBody'
+      responses:
+        '200':
+          description: The updated Trader.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyTraderResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Trader not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/executions:
+    get:
+      tags:
+      - Trade Strategy
+      summary: List Executions
+      description: Lists Executions across one or more Strategies, paginated. Each Execution includes the full `instructions[]` array, which can be large — narrow with filters whenever possible. Synchronous.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: strategy_id
+        in: query
+        schema:
+          type: string
+        description: Filter Executions to a single Strategy.
+      - name: operation_id
+        in: query
+        schema:
+          type: string
+        description: Filter Executions to a single Operation.
+      - name: participant_code
+        in: query
+        schema:
+          type: string
+        description: Filter Executions to a single end customer.
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - awaiting_execution
+          - settled
+          - skipped
+          - rejected
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Opaque cursor from a prior response's `next_page_token`. Empty / missing = first page.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 200
+        description: Items per page. Capped at 200. Defaults to 50.
+      responses:
+        '200':
+          description: Paginated list of Executions (possibly empty).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListTradeStrategyExecutionsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /strategies/executions/{execution_id}:
+    get:
+      tags:
+      - Trade Strategy
+      summary: Get an Execution
+      description: Retrieves a single Execution by its `id`. Synchronous. Includes the full `instructions[]` array.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: execution_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier of the Execution.
+      responses:
+        '200':
+          description: The requested Execution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradeStrategyExecutionResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Execution doesn't exist or belongs to a different platform.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    TradeStrategyOperationResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Unique identifier (UUID v4) for the Operation.
+            strategy_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Strategy the Operation runs under.
+            request_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Platform's idempotency key for this Operation (the `X-REQUEST-ID` sent at submission).
+            type:
+              type: string
+              enum:
+              - enrollment
+              - top_up
+              - partial_sell
+              - rebalance
+              - liquidation
+              example: enrollment
+              description: Operation kind.
+            status:
+              type: string
+              enum:
+              - validating
+              - pricing
+              - settling
+              - settled
+              - skipped
+              - failed
+              example: validating
+              description: Lifecycle status. `validating` / `pricing` / `settling` are non-terminal; `settled` / `skipped` / `failed` are terminal.
+            status_reason:
+              type: string
+              example: ''
+              description: 'Set on terminal statuses to explain the outcome. Possible values: `no_executions`, `all_skipped`, `all_rejected`, `partial_success`. Empty on non-terminal and on clean `settled`.'
+            allocations:
+              type: array
+              items:
+                type: object
+                properties:
+                  underlying_currency:
+                    type: string
+                    example: BTC
+                    description: Underlying asset code (e.g., BTC, ETH).
+                  weight:
+                    type: string
+                    description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                    example: '0.50'
+                required:
+                - underlying_currency
+                - weight
+              description: Target weights for this Operation. Present for enrollment / top_up / partial_sell / rebalance; empty for liquidation.
+            created_at:
+              type: string
+              format: date-time
+              description: When the Operation was created.
+              example: '2026-04-17T10:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: When the Operation was last updated.
+              example: '2026-04-17T10:00:00Z'
+    CreateTradeStrategyBody:
+      type: object
+      properties:
+        quoted_currency:
+          type: string
+          example: USD
+          description: Currency the Strategy denominates amounts in.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary JSON object for the platform to attach. Echoed back on reads; zerohash does not interpret the contents.
+      required:
+      - quoted_currency
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    UpdateTradeStrategyBody:
+      type: object
+      properties:
+        metadata:
+          type: object
+          additionalProperties: true
+          description: New value for the Strategy metadata. Replaces the previous value verbatim (no merge). Pass `{}` to clear.
+      required:
+      - metadata
+    CreateTradeStrategyRebalanceBody:
+      type: object
+      properties:
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              underlying_currency:
+                type: string
+                example: BTC
+                description: Underlying asset code (e.g., BTC, ETH).
+              weight:
+                type: string
+                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                example: '0.50'
+            required:
+            - underlying_currency
+            - weight
+          description: New target weights. A weight of `"0"` means "fully exit this asset"; assets the Trader currently holds that are missing from this list are also fully exited.
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+            required:
+            - participant_code
+          description: 'Optional. If present, the Rebalance targets exactly these Traders (ignoring `auto_rebalance`). If omitted, the Rebalance targets every Trader with `auto_rebalance: true`.'
+      required:
+      - allocations
+    ListTradeStrategiesResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            strategies:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Unique identifier (UUID v4) for the Strategy.
+                  request_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Platform's idempotency key for the Strategy (the `X-REQUEST-ID` sent at creation).
+                  quoted_currency:
+                    type: string
+                    example: USD
+                    description: Currency the Strategy denominates participant amounts in (e.g., "USD").
+                  metadata:
+                    type: object
+                    additionalProperties: true
+                    nullable: true
+                    example:
+                      owner_email: ops@example.com
+                      internal_id: STR-2026-Q2-001
+                    description: Arbitrary JSON object the platform attached at creation; persisted verbatim and echoed back on reads. zerohash does not interpret the contents.
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: When the Strategy was created.
+                    example: '2026-04-17T10:00:00Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: When the Strategy was last updated.
+                    example: '2026-04-17T10:00:00Z'
+            next_page_token:
+              type: string
+              description: Opaque cursor for the next page. Empty when iteration is exhausted.
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    CreateTradeStrategyLiquidationBody:
+      type: object
+      properties:
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+            required:
+            - participant_code
+          description: Participants to fully exit. No amount — zerohash reads each participant's current balance and sells whatever they hold.
+      required:
+      - participants
+    ListTradeStrategyExecutionsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            executions:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Unique identifier for the Execution.
+                  strategy_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                  operation_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                  trader_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                  participant_code:
+                    type: string
+                    example: CUST01
+                  account_label:
+                    type: string
+                  status:
+                    type: string
+                    enum:
+                    - awaiting_execution
+                    - settled
+                    - skipped
+                    - rejected
+                    example: settled
+                  status_reason:
+                    type: string
+                    description: 'Set on non-clean terminal states. Possible values: `participant_not_approved`, `participant_not_found`, `trader_already_enrolled`, `insufficient_funds`, `below_instrument_minimum`, `trader_not_found`, `trader_not_enrolled`. Empty on `settled` / `awaiting_execution`.'
+                    example: ''
+                  instructions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        underlying_currency:
+                          type: string
+                          example: BTC
+                        quoted_currency:
+                          type: string
+                          example: USD
+                        side:
+                          type: string
+                          enum:
+                          - buy
+                          - sell
+                          example: buy
+                        amount:
+                          type: string
+                          description: Driver amount. With `notional`, the fiat to spend (buys); with `quantity`, the crypto units to sell (sells).
+                          example: '100.50'
+                        amount_type:
+                          type: string
+                          enum:
+                          - notional
+                          - quantity
+                          example: notional
+                        status:
+                          type: string
+                          enum:
+                          - pending
+                          - waiting_proceeds
+                          - executed
+                          - skipped
+                          - failed
+                          example: executed
+                        status_reason:
+                          type: string
+                          example: ''
+                        price:
+                          type: string
+                          description: Execution price. Empty until status reaches `executed`.
+                          example: '100.50'
+                        quantity:
+                          type: string
+                          description: Executed quantity. Empty until status reaches `executed`.
+                          example: '100.50'
+                        total_notional:
+                          type: string
+                          description: Total notional. Empty until status reaches `executed`.
+                          example: '100.50'
+                        trade_ids:
+                          type: array
+                          items:
+                            type: string
+                            format: uuid
+                          description: Trades booked for this instruction.
+                        executed_at:
+                          type: string
+                          format: date-time
+                          description: When the trade leg executed.
+                          example: '2026-04-17T10:00:00Z'
+                    description: Ordered list of trade legs that make up this Execution.
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp in UTC (RFC 3339).
+                    example: '2026-04-17T10:00:00Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp in UTC (RFC 3339).
+                    example: '2026-04-17T10:00:00Z'
+            next_page_token:
+              type: string
+    TradeStrategyResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Unique identifier (UUID v4) for the Strategy.
+            request_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Platform's idempotency key for the Strategy (the `X-REQUEST-ID` sent at creation).
+            quoted_currency:
+              type: string
+              example: USD
+              description: Currency the Strategy denominates participant amounts in (e.g., "USD").
+            metadata:
+              type: object
+              additionalProperties: true
+              nullable: true
+              example:
+                owner_email: ops@example.com
+                internal_id: STR-2026-Q2-001
+              description: Arbitrary JSON object the platform attached at creation; persisted verbatim and echoed back on reads. zerohash does not interpret the contents.
+            created_at:
+              type: string
+              format: date-time
+              description: When the Strategy was created.
+              example: '2026-04-17T10:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: When the Strategy was last updated.
+              example: '2026-04-17T10:00:00Z'
+    ListTradeStrategyOperationsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            operations:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Unique identifier (UUID v4) for the Operation.
+                  strategy_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Strategy the Operation runs under.
+                  request_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Platform's idempotency key for this Operation (the `X-REQUEST-ID` sent at submission).
+                  type:
+                    type: string
+                    enum:
+                    - enrollment
+                    - top_up
+                    - partial_sell
+                    - rebalance
+                    - liquidation
+                    example: enrollment
+                    description: Operation kind.
+                  status:
+                    type: string
+                    enum:
+                    - validating
+                    - pricing
+                    - settling
+                    - settled
+                    - skipped
+                    - failed
+                    example: validating
+                    description: Lifecycle status. `validating` / `pricing` / `settling` are non-terminal; `settled` / `skipped` / `failed` are terminal.
+                  status_reason:
+                    type: string
+                    example: ''
+                    description: 'Set on terminal statuses to explain the outcome. Possible values: `no_executions`, `all_skipped`, `all_rejected`, `partial_success`. Empty on non-terminal and on clean `settled`.'
+                  allocations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        underlying_currency:
+                          type: string
+                          example: BTC
+                          description: Underlying asset code (e.g., BTC, ETH).
+                        weight:
+                          type: string
+                          description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                          example: '0.50'
+                      required:
+                      - underlying_currency
+                      - weight
+                    description: Target weights for this Operation. Present for enrollment / top_up / partial_sell / rebalance; empty for liquidation.
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: When the Operation was created.
+                    example: '2026-04-17T10:00:00Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: When the Operation was last updated.
+                    example: '2026-04-17T10:00:00Z'
+            next_page_token:
+              type: string
+    CreateTradeStrategyPartialSellBody:
+      type: object
+      properties:
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              underlying_currency:
+                type: string
+                example: BTC
+                description: Underlying asset code (e.g., BTC, ETH).
+              weight:
+                type: string
+                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                example: '0.50'
+            required:
+            - underlying_currency
+            - weight
+          description: Target weights for the Operation. Weights must sum to exactly 1.0; underlying_currency must be unique within the list.
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+              amount:
+                type: string
+                description: Decimal value serialized as a string to preserve precision.
+                example: '3000.00'
+            required:
+            - participant_code
+            - amount
+      required:
+      - allocations
+      - participants
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    TradeStrategyTraderResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Unique identifier (UUID v4) for the Trader.
+            strategy_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Strategy the Trader belongs to.
+            participant_code:
+              type: string
+              example: CUST01
+              description: Platform's identifier for the end customer (≤ 6 chars).
+            account_label:
+              type: string
+              description: Sub-account label used when querying balances upstream.
+            auto_rebalance:
+              type: boolean
+              description: If true, the Trader is included in default Rebalance targeting (when CreateRebalance is called without an explicit participants list).
+            created_at:
+              type: string
+              format: date-time
+              description: When the Trader was created.
+              example: '2026-04-17T10:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: When the Trader was last updated.
+              example: '2026-04-17T10:00:00Z'
+    TradeStrategyExecutionResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Unique identifier for the Execution.
+            strategy_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+            operation_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+            trader_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+            participant_code:
+              type: string
+              example: CUST01
+            account_label:
+              type: string
+            status:
+              type: string
+              enum:
+              - awaiting_execution
+              - settled
+              - skipped
+              - rejected
+              example: settled
+            status_reason:
+              type: string
+              description: 'Set on non-clean terminal states. Possible values: `participant_not_approved`, `participant_not_found`, `trader_already_enrolled`, `insufficient_funds`, `below_instrument_minimum`, `trader_not_found`, `trader_not_enrolled`. Empty on `settled` / `awaiting_execution`.'
+              example: ''
+            instructions:
+              type: array
+              items:
+                type: object
+                properties:
+                  underlying_currency:
+                    type: string
+                    example: BTC
+                  quoted_currency:
+                    type: string
+                    example: USD
+                  side:
+                    type: string
+                    enum:
+                    - buy
+                    - sell
+                    example: buy
+                  amount:
+                    type: string
+                    description: Driver amount. With `notional`, the fiat to spend (buys); with `quantity`, the crypto units to sell (sells).
+                    example: '100.50'
+                  amount_type:
+                    type: string
+                    enum:
+                    - notional
+                    - quantity
+                    example: notional
+                  status:
+                    type: string
+                    enum:
+                    - pending
+                    - waiting_proceeds
+                    - executed
+                    - skipped
+                    - failed
+                    example: executed
+                  status_reason:
+                    type: string
+                    example: ''
+                  price:
+                    type: string
+                    description: Execution price. Empty until status reaches `executed`.
+                    example: '100.50'
+                  quantity:
+                    type: string
+                    description: Executed quantity. Empty until status reaches `executed`.
+                    example: '100.50'
+                  total_notional:
+                    type: string
+                    description: Total notional. Empty until status reaches `executed`.
+                    example: '100.50'
+                  trade_ids:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                    description: Trades booked for this instruction.
+                  executed_at:
+                    type: string
+                    format: date-time
+                    description: When the trade leg executed.
+                    example: '2026-04-17T10:00:00Z'
+              description: Ordered list of trade legs that make up this Execution.
+            created_at:
+              type: string
+              format: date-time
+              description: ISO 8601 timestamp in UTC (RFC 3339).
+              example: '2026-04-17T10:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: ISO 8601 timestamp in UTC (RFC 3339).
+              example: '2026-04-17T10:00:00Z'
+    CreateTradeStrategyEnrollmentBody:
+      type: object
+      properties:
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              underlying_currency:
+                type: string
+                example: BTC
+                description: Underlying asset code (e.g., BTC, ETH).
+              weight:
+                type: string
+                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                example: '0.50'
+            required:
+            - underlying_currency
+            - weight
+          description: Target weights for the Operation. Weights must sum to exactly 1.0; underlying_currency must be unique within the list.
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+              amount:
+                type: string
+                description: Decimal value serialized as a string to preserve precision.
+                example: '10000.00'
+              auto_rebalance:
+                type: boolean
+            required:
+            - participant_code
+            - amount
+            - auto_rebalance
+      required:
+      - allocations
+      - participants
+    ListTradeStrategyTradersResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            traders:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Unique identifier (UUID v4) for the Trader.
+                  strategy_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Strategy the Trader belongs to.
+                  participant_code:
+                    type: string
+                    example: CUST01
+                    description: Platform's identifier for the end customer (≤ 6 chars).
+                  account_label:
+                    type: string
+                    description: Sub-account label used when querying balances upstream.
+                  auto_rebalance:
+                    type: boolean
+                    description: If true, the Trader is included in default Rebalance targeting (when CreateRebalance is called without an explicit participants list).
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: When the Trader was created.
+                    example: '2026-04-17T10:00:00Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: When the Trader was last updated.
+                    example: '2026-04-17T10:00:00Z'
+            next_page_token:
+              type: string
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    UpdateTradeStrategyTraderBody:
+      type: object
+      properties:
+        auto_rebalance:
+          type: boolean
+          description: New value for the Trader's `auto_rebalance` flag.
+      required:
+      - auto_rebalance
+    CreateTradeStrategyTopUpBody:
+      type: object
+      properties:
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              underlying_currency:
+                type: string
+                example: BTC
+                description: Underlying asset code (e.g., BTC, ETH).
+              weight:
+                type: string
+                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                example: '0.50'
+            required:
+            - underlying_currency
+            - weight
+          description: Target weights for the Operation. Weights must sum to exactly 1.0; underlying_currency must be unique within the list.
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+              amount:
+                type: string
+                description: Decimal value serialized as a string to preserve precision.
+                example: '5000.00'
+            required:
+            - participant_code
+            - amount
+      required:
+      - allocations
+      - participants
+  parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

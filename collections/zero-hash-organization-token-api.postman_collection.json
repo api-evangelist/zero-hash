@@ -1,0 +1,237 @@
+{
+  "item": [
+    {
+      "id": "60c0cb4c-dc2f-4f44-aecd-756fa8f3aabc",
+      "name": "Organization Token",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e6446ac7-dce6-4d54-a67f-ab3ebaf24300",
+          "name": "Generate access token",
+          "request": {
+            "name": "Generate access token",
+            "description": {
+              "content": "Request an OAuth2 access token for API authentication. Use the returned token in a subsequent /sessions call.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "api",
+                "v1",
+                "oauth",
+                "token"
+              ],
+              "host": [
+                "api",
+                "sandbox",
+                "connect",
+                "xyz"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_id\": \"<string>\",\n  \"client_secret\": \"<string>\",\n  \"audience\": \"<string>\",\n  \"grant_type\": \"<string>\",\n  \"organization_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fbab63e4-c2b1-4529-8648-46e6c4ac6430",
+              "name": "Access token generated successfully",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "oauth",
+                    "token"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_id\": \"clt_4a7b2f8e9d1c5x6y3z8w2v5u7t9r1q4e\",\n  \"client_secret\": \"cs_9x8w7v6u5t4r3q2p1o9n8m7l6k5j4i3h2g1f0e9d8c7b6a5z4y3x2w1v0u9\",\n  \"audience\": \"https://api.cert.connect.xyz\",\n  \"grant_type\": \"client_credentials\",\n  \"organization_id\": \"f446f14c-4035-4105-892b-1649bff16424\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImlkIn0...\",\n  \"expires_in\": 86400,\n  \"token_type\": \"Bearer\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "59da45b4-bc17-4374-ab49-fad7ad892857",
+              "name": "Bad Request - Invalid client credentials or parameters",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "oauth",
+                    "token"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_id\": \"clt_4a7b2f8e9d1c5x6y3z8w2v5u7t9r1q4e\",\n  \"client_secret\": \"cs_9x8w7v6u5t4r3q2p1o9n8m7l6k5j4i3h2g1f0e9d8c7b6a5z4y3x2w1v0u9\",\n  \"audience\": \"https://api.cert.connect.xyz\",\n  \"grant_type\": \"client_credentials\",\n  \"organization_id\": \"f446f14c-4035-4105-892b-1649bff16424\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"invalid_client\",\n  \"error_description\": \"Invalid client credentials\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c5a9ab3d-2a1a-40b9-9466-7ee5858c12d2",
+              "name": "Unauthorized - Invalid client credentials",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "oauth",
+                    "token"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_id\": \"clt_4a7b2f8e9d1c5x6y3z8w2v5u7t9r1q4e\",\n  \"client_secret\": \"cs_9x8w7v6u5t4r3q2p1o9n8m7l6k5j4i3h2g1f0e9d8c7b6a5z4y3x2w1v0u9\",\n  \"audience\": \"https://api.cert.connect.xyz\",\n  \"grant_type\": \"client_credentials\",\n  \"organization_id\": \"f446f14c-4035-4105-892b-1649bff16424\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"invalid_client\",\n  \"error_description\": \"Client authentication failed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.sandbox.connect.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "9788fb76-e313-470d-82c4-59420d703ce2",
+    "name": "Connect Organization Token API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Session management endpoint for Connect API",
+      "type": "text/plain"
+    }
+  }
+}

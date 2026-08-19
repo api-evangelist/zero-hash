@@ -1,0 +1,177 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Fund API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Fund",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/fund/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves a quote for a fund event for a given participant code and asset. This endpoint response indicates the rate by which a subsequent on-chain deposit will be honored at."
+        },
+        {
+          "info": {
+            "name": "List transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/fund/transactions",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Participant code of the end customer"
+              },
+              {
+                "name": "fund_asset",
+                "value": "",
+                "type": "query",
+                "description": "The asset sent on-chain by the end customer in order to fund an account"
+              },
+              {
+                "name": "deposit_address",
+                "value": "",
+                "type": "query",
+                "description": "The address provided by zerohash that the end customer will send to"
+              },
+              {
+                "name": "fund_id",
+                "value": "",
+                "type": "query",
+                "description": "The zerohash-generated unique identifier associated with an executed fund event"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific page (pagination)"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "The number of results returned per page, with a maximum of 50 transactions per page"
+              },
+              {
+                "name": "success",
+                "value": "",
+                "type": "query",
+                "description": "Filters transactions by successful status. This is a boolean field, please specify either `true` or `false`"
+              },
+              {
+                "name": "deposit_timestamp_gte",
+                "value": "",
+                "type": "query",
+                "description": "Filter for greater than or equal to a given timestamp"
+              },
+              {
+                "name": "deposit_timestamp_gt",
+                "value": "",
+                "type": "query",
+                "description": "Filter for greater than a given timestamp"
+              },
+              {
+                "name": "deposit_timestamp_lt",
+                "value": "",
+                "type": "query",
+                "description": "Filter for less than a given timestamp"
+              },
+              {
+                "name": "deposit_timestamp_lte",
+                "value": "",
+                "type": "query",
+                "description": "Filter for less than or equal to a given timestamp"
+              },
+              {
+                "name": "deposit_intent_id",
+                "value": "",
+                "type": "query",
+                "description": "id returned on JWT creation for correlation purposes"
+              },
+              {
+                "name": "reference_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the client-provided reference ID (set via client_fund_id when creating the RFQ or provided at JWT generation)"
+              }
+            ]
+          },
+          "docs": "You can use the `fund_id` in the response as the “parent” to query `GET /movements?parent_link_id=[fund_id]` to view a trail of all movements related to this fund event."
+        },
+        {
+          "info": {
+            "name": "Create deposit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/fund/deposit",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint is used to create a new Fiat deposit and enable instant buying power."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

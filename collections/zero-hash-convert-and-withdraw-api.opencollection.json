@@ -1,0 +1,195 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Convert and Withdraw API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Convert and Withdraw",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/convert_withdraw/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "side",
+                "value": "",
+                "type": "query",
+                "description": "Allows platforms to specify the side of the quote"
+              },
+              {
+                "name": "underlying",
+                "value": "",
+                "type": "query",
+                "description": "Allows platforms to specify the underlying asset"
+              },
+              {
+                "name": "quoted_currency",
+                "value": "",
+                "type": "query",
+                "description": "Allows platforms to specify the quoted asset"
+              },
+              {
+                "name": "quantity",
+                "value": "",
+                "type": "query",
+                "description": "The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied."
+              },
+              {
+                "name": "total",
+                "value": "",
+                "type": "query",
+                "description": "The `total` of the `quoted_currency` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied."
+              },
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "The participant requesting a quote to buy or sell an asset"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "The account_label that's used to fund the trade"
+              },
+              {
+                "name": "withdrawal_address",
+                "value": "",
+                "type": "query",
+                "description": "The on-chain address where the withdrawal should be sent"
+              },
+              {
+                "name": "fee_inclusive",
+                "value": "",
+                "type": "query",
+                "description": "Allows platforms to specify if fees are inclusive\nThis parameter is only applicable for requests made by `total` "
+              },
+              {
+                "name": "spread",
+                "value": "",
+                "type": "query",
+                "description": "Allows the platform to define the quote spread in basis points"
+              },
+              {
+                "name": "destination_tag",
+                "value": "",
+                "type": "query",
+                "description": "The destination tag or memo ID associated with the transaction. If the asset is EOS, XLM or XRP and no_destination_tag is false, then this is required"
+              },
+              {
+                "name": "no_destination_tag",
+                "value": "",
+                "type": "query",
+                "description": "Whether or not the specific withdrawal and destination address requires a destination tag. If the asset is EOS, XLM or XRP, this field is required. Note: zerohash requires that no_destination_tag be false for EOS"
+              },
+              {
+                "name": "beneficiary_participant_code",
+                "value": "",
+                "type": "query",
+                "description": "The participant benefiting from the quote to buy or sell an asset"
+              },
+              {
+                "name": "beneficiary_first_name",
+                "value": "",
+                "type": "query",
+                "description": "The first name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+              },
+              {
+                "name": "beneficiary_last_name",
+                "value": "",
+                "type": "query",
+                "description": "The last name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+              },
+              {
+                "name": "beneficiary_business_name",
+                "value": "",
+                "type": "query",
+                "description": "The name of the the business participant benefiting from the quote request\n        Only applies to business beneficiaries. Cannot be used along with first/last_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+              }
+            ]
+          },
+          "docs": "Retrieves a quote for the purchase of an asset and the network fees associated with an imminent and automatic withdrawal of the asset. Exactly one of `quantity` or `total` must be supplied."
+        },
+        {
+          "info": {
+            "name": "Get quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/convert_withdraw/rfq",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves a quote for the purchase of an asset and the network fees associated with an imminent and automatic withdrawal of the asset. Exactly one of `quantity` or `total` must be supplied in the request body."
+        },
+        {
+          "info": {
+            "name": "Execute quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/convert_withdraw/execute",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes a convert-and-withdraw quote. The underlying asset will be purchased and automatically withdrawn. Use the returned `withdrawal_request_id` with `GET /withdrawals/requests/{id}` to track the withdrawal."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

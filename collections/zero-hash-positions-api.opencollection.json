@@ -1,0 +1,143 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Positions API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Positions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List positions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/positions",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "platform_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for positions based on the specific platform"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filters for positions based on the account_label"
+              }
+            ]
+          },
+          "docs": "Retrieve all positions maintained at zerohash."
+        },
+        {
+          "info": {
+            "name": "List platform positions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/positions/platform/:platform_code",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "platform_code",
+                "value": "",
+                "type": "path",
+                "description": "Filters for positions based on the specific platform"
+              },
+              {
+                "name": "participant_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for positions based on the specific participant.\n\nNote: multiple participant codes can be provided in the query string, separated by ampersands.\nE.g. `participant_code=PLAT01&participant_code=PLAT02`"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history."
+              }
+            ]
+          },
+          "docs": "Retrieve all platform positions maintained at zerohash."
+        },
+        {
+          "info": {
+            "name": "List participant positions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/positions/participant/:id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Participant code to filter positions for."
+              },
+              {
+                "name": "platform_code",
+                "value": "",
+                "type": "query",
+                "description": "Filters for positions based on the specific platform."
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history."
+              }
+            ]
+          },
+          "docs": "Retrieve all positions for the specified participant maintained at zerohash."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

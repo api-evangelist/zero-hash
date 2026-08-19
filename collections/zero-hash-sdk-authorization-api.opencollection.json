@@ -1,0 +1,76 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash SDK Authorization API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "SDK Authorization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Generate a client access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/client_auth_token",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generates a temporary JWT access token used to initialize zerohash SDK modules on behalf of one of your end users. The platform authenticates to this endpoint with its own HMAC credentials; the returned JWT is then handed to the end-user client. Either `participant_code` or `email` must be provided to identify the end user the token is issued for."
+        },
+        {
+          "info": {
+            "name": "Revoke a client access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cert.zerohash.com/revoke_auth_token",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Revokes a client access token previously issued via `/client_auth_token`, preventing it from being used to initialize SDK modules. The platform authenticates to this endpoint with its own HMAC credentials."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

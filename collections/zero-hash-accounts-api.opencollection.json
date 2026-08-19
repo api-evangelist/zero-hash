@@ -1,0 +1,235 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "zerohash Accounts API",
+    "version": "1.7.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-SCX-API-KEY",
+      "value": "{{X-SCX-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/accounts",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific page (pagination)"
+              },
+              {
+                "name": "account_group",
+                "value": "",
+                "type": "query",
+                "description": "Filters for accounts with a specific account_group"
+              },
+              {
+                "name": "account_label",
+                "value": "",
+                "type": "query",
+                "description": "Filters for accounts with a specific account_label"
+              },
+              {
+                "name": "account_owner",
+                "value": "",
+                "type": "query",
+                "description": "Filters for accounts with a specific account_owner (this field mirrors as a participant_code)"
+              },
+              {
+                "name": "asset",
+                "value": "",
+                "type": "query",
+                "description": "Filters for accounts with a specific asset"
+              },
+              {
+                "name": "account_type",
+                "value": "",
+                "type": "query",
+                "description": "Filters for accounts with a specific account_type"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of all accounts and their current balances."
+        },
+        {
+          "info": {
+            "name": "Get account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/accounts/:account_id",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique account identifier (UUID format)"
+              }
+            ]
+          },
+          "docs": "Retrieves account details for a given `account_id`."
+        },
+        {
+          "info": {
+            "name": "List account movements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/accounts/:account_id/movements",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "This parameter enables the filtering of movements based on the associated account_id."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Filters for a specific page (pagination)"
+              },
+              {
+                "name": "movement_timestamp[gt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements with a timestamp greater than the provided value, which can be defined in milliseconds or nanoseconds"
+              },
+              {
+                "name": "movement_timestamp[gte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements with a timestamp greater than or equal to the provided value, which can be defined in milliseconds or nanoseconds"
+              },
+              {
+                "name": "movement_timestamp[e]",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements with a timestamp that is equal to the provided value, which can be defined in milliseconds or nanoseconds"
+              },
+              {
+                "name": "movement_timestamp[lt]",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements with a timestamp less than the provided value, which can be defined in milliseconds or nanoseconds"
+              },
+              {
+                "name": "movement_timestamp[lte]",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements with a timestamp less than or equals the provided value, which can be defined in milliseconds or nanoseconds"
+              },
+              {
+                "name": "parent_link_id",
+                "value": "",
+                "type": "query",
+                "description": "Filters for movements that are tagged with a specific parent_link_id"
+              }
+            ]
+          },
+          "docs": "Retrieves the history of each itemized movement that has been applied to an account to lead up to its current balance."
+        },
+        {
+          "info": {
+            "name": "List account run history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/accounts/:account_id/run_history",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "Filters for a specific account_id"
+              }
+            ]
+          },
+          "docs": "Retrieves the history of grouped settlements, deposits, withdrawals and other changes that have been applied to an account to lead up to its current balance."
+        },
+        {
+          "info": {
+            "name": "List NDOs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cert.zerohash.com/accounts/net_delivery_obligations",
+            "headers": [
+              {
+                "name": "X-SCX-SIGNED",
+                "value": ""
+              },
+              {
+                "name": "X-SCX-TIMESTAMP",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Returns all net delivery obligations (NDO) across all accounts under your platform."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

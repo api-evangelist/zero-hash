@@ -1,0 +1,1147 @@
+openapi: 3.2.0
+info:
+  title: zerohash Awards API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Awards
+  description: Awards Distribution Service
+paths:
+  /awards/fund:
+    post:
+      tags:
+      - Awards
+      summary: Fund awards account
+      description: Define the quantity, quoted currency, and asset that you plan to distribute to customers through the `POST /awards/distribute` endpoint.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: Awards fund parameters. Provide either `quantity` (amount of `underlying` to purchase) or `total` (amount of `quoted_currency` to spend) — not both.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAwardsBody'
+      responses:
+        '201':
+          description: Successfully funded awards account. Returns the executed quote and booked trade identifiers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostAwardsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /awards/distribute:
+    post:
+      tags:
+      - Awards
+      summary: Distribute awards
+      description: Evenly distribute the purchased crypto among the specified customers.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      requestBody:
+        description: 'Distribution parameters: the asset purchased via `POST /awards/fund`, the per-participant `quantity`, the list of `participant_codes` receiving the award, and the `quoted_currency` those trades settle in.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAwardsDistributeBody'
+      responses:
+        '201':
+          description: Successfully distributed awards. Returns a confirmation per participant containing the booked `trade_id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostAwardsDistributeResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    PostAwardsBody:
+      oneOf:
+      - title: RFQ Standard - Quantity
+        description: Request for quote with `quantity` specified
+        type: object
+        properties:
+          underlying:
+            $ref: '#/components/schemas/UnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/QuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+        required:
+        - underlying
+        - quoted_currency
+        - quantity
+      - title: RFQ Standard - Total
+        description: Request for quote with `total` specified
+        type: object
+        properties:
+          underlying:
+            $ref: '#/components/schemas/UnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/QuotedCurrency'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+        required:
+        - underlying
+        - quoted_currency
+        - total
+    PostAwardsDistributeBody:
+      type: object
+      properties:
+        asset:
+          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+        quantity:
+          type: string
+          description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+          example: '1.00'
+        participant_codes:
+          type: array
+          items:
+            type: string
+          description: The list of customers to receive `quantity` amount of reward
+          example:
+          - CUST01
+          - CUST02
+        quoted_currency:
+          $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+      required:
+      - asset
+      - quantity
+      - participant_codes
+      - quoted_currency
+    DynamicFee:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+    PostAwardsResponse:
+      type: object
+      properties:
+        message:
+          oneOf:
+          - type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+              quote:
+                title: RFQ Base Response
+                description: Response for a request for quote with base fields specified
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    description: The identifier of the RFQ
+                    example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+                  participant_code:
+                    type: string
+                    description: The identifier of the participant making the quote request
+                    example: CUST01
+                  quoted_currency:
+                    $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+                  side:
+                    type: string
+                    description: The participant side of the quote - `buy` or `sell`
+                    example: buy
+                    enum:
+                    - buy
+                    - sell
+                  quantity:
+                    type: string
+                    description: The amount of the underlying currency
+                    example: '1'
+                  price:
+                    type: string
+                    description: The cost per unit of underlying currency
+                    example: '11430.90'
+                  quote_id:
+                    type: string
+                    description: 'The identifier for the quote
+
+                      Note: this is required to execute the quote'
+                    example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+                  expire_ts:
+                    type: number
+                    description: Timestamp when the quote will expire
+                    example: 1568311649602
+                  account_group:
+                    type: string
+                    description: The group that the account is a part of
+                    example: GRP001
+                  account_label:
+                    type: string
+                    description: The account label associated with the account
+                    example: sub_account_test
+                  obo_participant:
+                    $ref: '#/components/schemas/OBOParticipantEntity'
+                  total_notional:
+                    type: string
+                    description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                    example: '2.00'
+                  underlying:
+                    $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+                  asset_cost_notional:
+                    type: string
+                    description: asset_cost_notional is a field that shows the notional cost of the asset
+                    maxLength: 50
+                    example: '2.00'
+                  spread_notional:
+                    type: string
+                    description: The notional of the spread applied to the quote
+                    maxLength: 50
+                    example: '2.12'
+                  spread_bps:
+                    type: string
+                    description: The spread in basis points applied to the quote
+                    maxLength: 50
+                    example: '50'
+                  commission_notional:
+                    type: string
+                    description: The notional commission applied to the quote
+                    maxLength: 50
+                    example: '5.00'
+                  commission_bps:
+                    type: string
+                    description: The commission in basis points applied to the quote
+                    maxLength: 50
+                    example: '25'
+              trade_id:
+                type: string
+                description: 'The unique identifier assigned to the trade. Note: the `quote_id` will be saved as the `client_trade_id`.'
+                example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              trade_ids_list:
+                type: array
+                description: All `trade_id`s booked as part of this fund call. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
+                items:
+                  type: string
+                  format: uuid
+                example:
+                - ba97133e-ab15-4c86-86c1-86671b8420bc
+                - ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              status:
+                type: string
+                description: The status of the trade.
+                example: Completed
+                enum:
+                - Completed
+                - Rejected
+          - type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+              quote:
+                title: RFQ Fees Response
+                description: Response for a request for quote with fees specified
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    description: The identifier of the RFQ
+                    example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+                  participant_code:
+                    type: string
+                    description: The identifier of the participant making the quote request
+                    example: CUST01
+                  quoted_currency:
+                    $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+                  side:
+                    type: string
+                    description: The participant side of the quote - `buy` or `sell`
+                    example: buy
+                    enum:
+                    - buy
+                    - sell
+                  quantity:
+                    type: string
+                    description: The amount of the underlying currency
+                    example: '1'
+                  price:
+                    type: string
+                    description: The cost per unit of underlying currency
+                    example: '11430.90'
+                  quote_id:
+                    type: string
+                    description: 'The identifier for the quote
+
+                      Note: this is required to execute the quote'
+                    example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+                  expire_ts:
+                    type: number
+                    description: Timestamp when the quote will expire
+                    example: 1568311649602
+                  account_group:
+                    type: string
+                    description: The group that the account is a part of
+                    example: GRP001
+                  account_label:
+                    type: string
+                    description: The account label associated with the account
+                    example: sub_account_test
+                  obo_participant:
+                    $ref: '#/components/schemas/OBOParticipantEntity'
+                  total_notional:
+                    type: string
+                    description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                    example: '2.00'
+                  underlying:
+                    $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+                  asset_cost_notional:
+                    type: string
+                    description: asset_cost_notional is a field that shows the notional cost of the asset
+                    maxLength: 50
+                    example: '2.00'
+                  spread_notional:
+                    type: string
+                    description: The notional of the spread applied to the quote
+                    maxLength: 50
+                    example: '2.12'
+                  spread_bps:
+                    type: string
+                    description: The spread in basis points applied to the quote
+                    maxLength: 50
+                    example: '50'
+                  commission_notional:
+                    type: string
+                    description: The notional commission applied to the quote
+                    maxLength: 50
+                    example: '5.00'
+                  commission_bps:
+                    type: string
+                    description: The commission in basis points applied to the quote
+                    maxLength: 50
+                    example: '25'
+                  fees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DynamicFee'
+              trade_id:
+                type: string
+                description: 'The unique identifier assigned to the trade. Note: the `quote_id` will be saved as the `client_trade_id`.'
+                example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              trade_ids_list:
+                type: array
+                description: All `trade_id`s booked as part of this fund call. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
+                items:
+                  type: string
+                  format: uuid
+                example:
+                - ba97133e-ab15-4c86-86c1-86671b8420bc
+                - ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              status:
+                type: string
+                description: The status of the trade.
+                example: Completed
+                enum:
+                - Completed
+                - Rejected
+          - type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+              quote:
+                title: RFQ Payment Processing Fees Response
+                description: Response for a request for quote with payment processing fees specified
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    description: The identifier of the RFQ
+                    example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+                  participant_code:
+                    type: string
+                    description: The identifier of the participant making the quote request
+                    example: CUST01
+                  quoted_currency:
+                    $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+                  side:
+                    type: string
+                    description: The participant side of the quote - `buy` or `sell`
+                    example: buy
+                    enum:
+                    - buy
+                    - sell
+                  quantity:
+                    type: string
+                    description: The amount of the underlying currency
+                    example: '1'
+                  price:
+                    type: string
+                    description: The cost per unit of underlying currency
+                    example: '11430.90'
+                  quote_id:
+                    type: string
+                    description: 'The identifier for the quote
+
+                      Note: this is required to execute the quote'
+                    example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+                  expire_ts:
+                    type: number
+                    description: Timestamp when the quote will expire
+                    example: 1568311649602
+                  account_group:
+                    type: string
+                    description: The group that the account is a part of
+                    example: GRP001
+                  account_label:
+                    type: string
+                    description: The account label associated with the account
+                    example: sub_account_test
+                  obo_participant:
+                    $ref: '#/components/schemas/OBOParticipantEntity'
+                  total_notional:
+                    type: string
+                    description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                    example: '2.00'
+                  underlying:
+                    $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+                  asset_cost_notional:
+                    type: string
+                    description: asset_cost_notional is a field that shows the notional cost of the asset
+                    maxLength: 50
+                    example: '2.00'
+                  spread_notional:
+                    type: string
+                    description: The notional of the spread applied to the quote
+                    maxLength: 50
+                    example: '2.12'
+                  spread_bps:
+                    type: string
+                    description: The spread in basis points applied to the quote
+                    maxLength: 50
+                    example: '50'
+                  commission_notional:
+                    type: string
+                    description: The notional commission applied to the quote
+                    maxLength: 50
+                    example: '5.00'
+                  commission_bps:
+                    type: string
+                    description: The commission in basis points applied to the quote
+                    maxLength: 50
+                    example: '25'
+                  fees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DynamicFee'
+                  payment_processor:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: The name of the payment processor
+                        example: checkout.com
+                      id:
+                        type: string
+                        description: The unique identifier of the payment according to the PSP
+                        example: 593dd810-f051-40a9-9f26-d45280efe8f3
+              trade_id:
+                type: string
+                description: 'The unique identifier assigned to the trade. Note: the `quote_id` will be saved as the `client_trade_id`.'
+                example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              trade_ids_list:
+                type: array
+                description: All `trade_id`s booked as part of this fund call. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
+                items:
+                  type: string
+                  format: uuid
+                example:
+                - ba97133e-ab15-4c86-86c1-86671b8420bc
+                - ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              status:
+                type: string
+                description: The status of the trade.
+                example: Completed
+                enum:
+                - Completed
+                - Rejected
+          - type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+              quote:
+                title: RFQ Response with issuer fees applied
+                description: Response for a quote where the token issuer has applied fees.
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    description: The identifier of the RFQ
+                    example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+                  participant_code:
+                    type: string
+                    description: The identifier of the participant making the quote request
+                    example: CUST01
+                  quoted_currency:
+                    $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+                  side:
+                    type: string
+                    description: The participant side of the quote - `buy` or `sell`
+                    example: buy
+                    enum:
+                    - buy
+                    - sell
+                  quantity:
+                    type: string
+                    description: The amount of the underlying currency
+                    example: '1'
+                  price:
+                    type: string
+                    description: The cost per unit of underlying currency
+                    example: '11430.90'
+                  quote_id:
+                    type: string
+                    description: 'The identifier for the quote
+
+                      Note: this is required to execute the quote'
+                    example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+                  expire_ts:
+                    type: number
+                    description: Timestamp when the quote will expire
+                    example: 1568311649602
+                  account_group:
+                    type: string
+                    description: The group that the account is a part of
+                    example: GRP001
+                  account_label:
+                    type: string
+                    description: The account label associated with the account
+                    example: sub_account_test
+                  obo_participant:
+                    $ref: '#/components/schemas/OBOParticipantEntity'
+                  total_notional:
+                    type: string
+                    description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                    example: '2.00'
+                  underlying:
+                    $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+                  asset_cost_notional:
+                    type: string
+                    description: asset_cost_notional is a field that shows the notional cost of the asset
+                    maxLength: 50
+                    example: '2.00'
+                  spread_notional:
+                    type: string
+                    description: The notional of the spread applied to the quote
+                    maxLength: 50
+                    example: '2.12'
+                  spread_bps:
+                    type: string
+                    description: The spread in basis points applied to the quote
+                    maxLength: 50
+                    example: '50'
+                  commission_notional:
+                    type: string
+                    description: The notional commission applied to the quote
+                    maxLength: 50
+                    example: '5.00'
+                  commission_bps:
+                    type: string
+                    description: The commission in basis points applied to the quote
+                    maxLength: 50
+                    example: '25'
+                  issuer_fee_payor_type:
+                    type: string
+                    description: Quote issuer fee payor type
+                    example: CUSTOMER
+                    enum:
+                    - CUSTOMER
+                    - PLATFORM
+                  issuer_fee_rate:
+                    type: string
+                    description: The issuer fee in basis points applied to the quote
+                    maxLength: 50
+                    example: '50'
+                  issuer_fee_amount:
+                    type: string
+                    description: The notional of the issuer fee applied to the quote
+                    maxLength: 50
+                    example: '1.5'
+              trade_id:
+                type: string
+                description: 'The unique identifier assigned to the trade. Note: the `quote_id` will be saved as the `client_trade_id`.'
+                example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              trade_ids_list:
+                type: array
+                description: All `trade_id`s booked as part of this fund call. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
+                items:
+                  type: string
+                  format: uuid
+                example:
+                - ba97133e-ab15-4c86-86c1-86671b8420bc
+                - ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              status:
+                type: string
+                description: The status of the trade.
+                example: Completed
+                enum:
+                - Completed
+                - Rejected
+          - type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+              quote:
+                title: RFQ Full Response
+                description: Response for a request for quote with all details specified
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    description: The identifier of the RFQ
+                    example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+                  participant_code:
+                    type: string
+                    description: The identifier of the participant making the quote request
+                    example: CUST01
+                  quoted_currency:
+                    $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+                  side:
+                    type: string
+                    description: The participant side of the quote - `buy` or `sell`
+                    example: buy
+                    enum:
+                    - buy
+                    - sell
+                  quantity:
+                    type: string
+                    description: The amount of the underlying currency
+                    example: '1'
+                  price:
+                    type: string
+                    description: The cost per unit of underlying currency
+                    example: '11430.90'
+                  quote_id:
+                    type: string
+                    description: 'The identifier for the quote
+
+                      Note: this is required to execute the quote'
+                    example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+                  expire_ts:
+                    type: number
+                    description: Timestamp when the quote will expire
+                    example: 1568311649602
+                  account_group:
+                    type: string
+                    description: The group that the account is a part of
+                    example: GRP001
+                  account_label:
+                    type: string
+                    description: The account label associated with the account
+                    example: sub_account_test
+                  obo_participant:
+                    $ref: '#/components/schemas/OBOParticipantEntity'
+                  total_notional:
+                    type: string
+                    description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                    example: '2.00'
+                  underlying:
+                    $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+                  asset_cost_notional:
+                    type: string
+                    description: asset_cost_notional is a field that shows the notional cost of the asset
+                    maxLength: 50
+                    example: '2.00'
+                  spread_notional:
+                    type: string
+                    description: The notional of the spread applied to the quote
+                    maxLength: 50
+                    example: '2.12'
+                  spread_bps:
+                    type: string
+                    description: The spread in basis points applied to the quote
+                    maxLength: 50
+                    example: '50'
+                  commission_notional:
+                    type: string
+                    description: The notional commission applied to the quote
+                    maxLength: 50
+                    example: '5.00'
+                  commission_bps:
+                    type: string
+                    description: The commission in basis points applied to the quote
+                    maxLength: 50
+                    example: '25'
+                  issuer_fee_payor_type:
+                    type: string
+                    description: Quote issuer fee payor type
+                    example: CUSTOMER
+                    enum:
+                    - CUSTOMER
+                    - PLATFORM
+                  issuer_fee_rate:
+                    type: string
+                    description: The issuer fee in basis points applied to the quote
+                    maxLength: 50
+                    example: '50'
+                  issuer_fee_amount:
+                    type: string
+                    description: The notional of the issuer fee applied to the quote
+                    maxLength: 50
+                    example: '1.5'
+                  fees:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DynamicFee'
+                  payment_processor:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: The name of the payment processor
+                        example: checkout.com
+                      id:
+                        type: string
+                        description: The unique identifier of the payment according to the PSP
+                        example: 593dd810-f051-40a9-9f26-d45280efe8f3
+                  settlement_type:
+                    type: string
+                    description: Quote settlement type
+                    example: STANDARD
+                    enum:
+                    - STANDARD
+              trade_id:
+                type: string
+                description: 'The unique identifier assigned to the trade. Note: the `quote_id` will be saved as the `client_trade_id`.'
+                example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              trade_ids_list:
+                type: array
+                description: All `trade_id`s booked as part of this fund call. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
+                items:
+                  type: string
+                  format: uuid
+                example:
+                - ba97133e-ab15-4c86-86c1-86671b8420bc
+                - ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              status:
+                type: string
+                description: The status of the trade.
+                example: Completed
+                enum:
+                - Completed
+                - Rejected
+    LiquidityEnabledQuotedCurrency:
+      type: string
+      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      example: USD
+      enum:
+      - USD
+      - EUR
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    OBOParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
+          type: string
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    LiquidityEnabledUnderlyingCurrency:
+      type: string
+      description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
+      example: BTC
+      enum:
+      - USDC.OPTIMISM
+      - USDC.SUI
+      - DOT
+      - FIL
+      - PYUSD.ETH
+      - TRX
+      - ZRX
+      - DAI.ETH
+      - USDC.WORLDCHAIN
+      - USDP
+      - USDT.BSC
+      - USDT.CELO
+      - PEPE.ETH
+      - SAND
+      - USDC.DOTHUB
+      - USDC.SEI
+      - USDC.SOL
+      - USDC.ZKSYNC
+      - ENA.ETH
+      - MANA.ETH
+      - PYTH.SOL
+      - SOL
+      - USDC.BASE
+      - USDC.CELO
+      - USDT
+      - ADA
+      - INJ.ETH
+      - MATIC.POLYGON
+      - PAXG
+      - USD
+      - AAVE.ETH
+      - ALGO
+      - EURC.XLM
+      - KNC.ETH
+      - PNUT.SOL
+      - SHIB
+      - BCH
+      - DOGE
+      - EGLD
+      - JTO.SOL
+      - UNI.ETH
+      - USDC
+      - USDC.ARBITRUM
+      - ONDO.ETH
+      - PENGU.SOL
+      - USD
+      - WLFI.ETH
+      - XLM
+      - APT
+      - CC
+      - ETH.OPTIMISM
+      - ETH.WORLDCHAIN
+      - LDO.ETH
+      - MORPHO.ETH
+      - SEI
+      - ETH.ZKSYNC
+      - USDC.AVAX
+      - USDC.XLM
+      - USDT.DOTHUB
+      - USDT.SOL
+      - MANA
+      - USDC.ALGO
+      - MATIC.ETH
+      - NEAR
+      - UNI
+      - USDT.ARBITRUM
+      - USDT.AVAX
+      - OMG
+      - ARB.ARBITRUM
+      - COMP.ETH
+      - GRT.ETH
+      - USDC.POLYGON
+      - AVAX
+      - AAVE
+      - CELO
+      - PYUSD.SOL
+      - PAXG.ETH
+      - USDC.MONAD
+      - BAT
+      - COMP
+      - ETH.ARBITRUM
+      - ETH.BASE
+      - OP.OPTIMISM
+      - TRUMP.SOL
+      - ENJ.ETH
+      - SUI
+      - USDT.ETH
+      - USDT.OPTIMISM
+      - USDT.TRX
+      - USDT.XPL
+      - OMG.ETH
+      - XRP
+      - HBAR
+      - USDC.APT
+      - USDC.ETH
+      - BNB
+      - ATOM
+      - BAT.ETH
+      - GRT
+      - LINK.ETH
+      - USDP.SOL
+      - ZK.ZKSYNC
+      - BONK.SOL
+      - KNC
+      - TIA
+      - ZRO.ETH
+      - ZRX.ETH
+      - PUMP.SOL
+      - USD
+      - XTZ
+      - CRV.ETH
+      - GALA.ETH
+      - TON
+      - USDT.POLYGON
+      - WBTC.ETH
+      - XPL
+      - BTC
+      - MON
+      - SHIB.ETH
+      - USDC.BSC
+      - WLD.WORLDCHAIN
+      - W.SOL
+      - LTC
+      - RLUSD.ETH
+      - WBTC
+      - LINK
+      - USDCX.CANTON
+      - ETH
+      - WIF.SOL
+      - APE.ETH
+      - EURC
+      - MKR.ETH
+      - RLUSD.XRP
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostAwardsDistributeResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              description: The identifier of the request
+              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+            confirms:
+              type: array
+              items:
+                type: object
+                properties:
+                  participant_code:
+                    type: string
+                    description: Participant code
+                    example: CUST01
+                  trade_id:
+                    type: string
+                    description: The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades`
+                    example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              description: A list of participant_code plus trade identifiers for the executed trades confirm
+              example:
+              - participant_code: CUST01
+                trade_id: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              - participant_code: CUST02
+                trade_id: ba97133e-ab15-4c86-86c1-86671b8420bc
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

@@ -1,0 +1,3521 @@
+{
+  "item": [
+    {
+      "id": "5495dfd2-29c9-4925-8f19-3eb1d916c05c",
+      "name": "Individual Participants",
+      "description": {
+        "content": "Create and Manage Individual Participants",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "937cc6b3-9254-46e9-b8d9-7d3c09d86743",
+          "name": "Create customer",
+          "request": {
+            "name": "Create customer",
+            "description": {
+              "content": "Submits a customer to your platform.\nThis endpoint is only available to certain participants leveraging zerohash for customer settlements. Please contact us for more information on enabling this endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "participants",
+                "customers",
+                "new"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"<string>\",\n  \"last_name\": \"<string>\",\n  \"email\": \"<string>\",\n  \"address_one\": \"<string>\",\n  \"city\": \"<string>\",\n  \"jurisdiction_code\": \"<string>\",\n  \"date_of_birth\": \"<string>\",\n  \"citizenship_code\": \"<string>\",\n  \"kyc\": \"<string>\",\n  \"kyc_timestamp\": \"<number>\",\n  \"sanction_screening\": \"<string>\",\n  \"sanction_screening_timestamp\": \"<number>\",\n  \"phone_number\": \"<string>\",\n  \"signed_timestamp\": \"<number>\",\n  \"signed_agreements\": [\n    {\n      \"type\": \"<string>\",\n      \"region\": \"<string>\",\n      \"signed_timestamp\": \"<number>\"\n    },\n    {\n      \"type\": \"<string>\",\n      \"region\": \"<string>\",\n      \"signed_timestamp\": \"<number>\"\n    }\n  ],\n  \"idv\": \"<string>\",\n  \"liveness_check\": \"<string>\",\n  \"employment_status\": \"<string>\",\n  \"risk_rating\": \"<string>\",\n  \"industry\": \"<string>\",\n  \"source_of_funds\": \"<string>\",\n  \"savings_and_investments\": \"<string>\",\n  \"postal_code\": \"<string>\",\n  \"id_number_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\",\n  \"id_expiration_date\": \"<string>\",\n  \"id_number\": \"<string>\",\n  \"tax_id\": \"<string>\",\n  \"tax_residence\": {\n    \"jurisdiction_code\": \"<string>\",\n    \"address_one\": \"<string>\",\n    \"address_two\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postal_code\": \"<string>\"\n  },\n  \"self_certification_timestamp\": \"<number>\",\n  \"middle_name\": \"<string>\",\n  \"place_of_birth\": {\n    \"country_code\": \"<string>\",\n    \"place_name\": \"<string>\"\n  },\n  \"address_two\": \"<string>\",\n  \"id_issuing_date\": \"<string>\",\n  \"id_issuing_locality\": \"<string>\",\n  \"salary\": \"<string>\",\n  \"tx_equivalent_annual_volume\": \"<string>\",\n  \"tx_frequency_of_use\": \"<string>\",\n  \"tx_type_of_service\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"tx_relationship_term_with_service\": \"<string>\",\n  \"tx_relationship_term_with_service_other_explanation\": \"<string>\",\n  \"tin_jurisdiction_reason\": \"<string>\",\n  \"proof_of_address_coordinates\": {\n    \"latitude\": \"<string>\",\n    \"longitude\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "817bfcc5-6396-48c1-86a3-c7033a541bcf",
+              "name": "Successfully created customer participant. Returns the created resource with generated IDs and timestamps.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"test@example.com\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"citizenship_code\": \"US\",\n  \"kyc\": \"pass\",\n  \"kyc_timestamp\": 1603378501286,\n  \"sanction_screening\": \"pass\",\n  \"sanction_screening_timestamp\": 1603378501286,\n  \"phone_number\": \"15557778888\",\n  \"signed_timestamp\": 1603378501286,\n  \"signed_agreements\": [\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    },\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    }\n  ],\n  \"idv\": \"pass\",\n  \"liveness_check\": \"pass\",\n  \"employment_status\": \"full_time\",\n  \"risk_rating\": \"<string>\",\n  \"industry\": \"adult_entertainment\",\n  \"source_of_funds\": \"salary\",\n  \"savings_and_investments\": \"under_10000\",\n  \"postal_code\": \"12345\",\n  \"id_number_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\",\n  \"id_expiration_date\": \"2026-12-25\",\n  \"id_number\": \"123456789\",\n  \"tax_id\": \"000-00-0000\",\n  \"tax_residence\": {\n    \"jurisdiction_code\": \"PT-11\",\n    \"address_one\": \"<string>\",\n    \"address_two\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postal_code\": \"<string>\"\n  },\n  \"self_certification_timestamp\": 1667504636159,\n  \"middle_name\": \"Middle\",\n  \"place_of_birth\": {\n    \"country_code\": \"NL\",\n    \"place_name\": \"Amsterdam\"\n  },\n  \"address_two\": \"Suite 1000\",\n  \"id_issuing_date\": \"2020-12-16\",\n  \"id_issuing_locality\": \"<string>\",\n  \"salary\": \"under_3500\",\n  \"tx_equivalent_annual_volume\": \"25k_to_100k\",\n  \"tx_frequency_of_use\": \"up_to_12\",\n  \"tx_type_of_service\": [\n    \"buy_crypto\",\n    \"sell_crypto\"\n  ],\n  \"tx_relationship_term_with_service\": \"long_term\",\n  \"tx_relationship_term_with_service_other_explanation\": \"some free form explanation here in case of other type of tx_relationship_term_with_service\",\n  \"tin_jurisdiction_reason\": \"working_abroad\",\n  \"proof_of_address_coordinates\": {\n    \"latitude\": \"<string>\",\n    \"longitude\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"first_name\": \"John\",\n    \"middle_name\": \"Middle\",\n    \"last_name\": \"Smith\",\n    \"former_name\": \"Whale\",\n    \"email\": \"test@example.com\",\n    \"phone_number\": \"15557778888\",\n    \"address_one\": \"123 Main St.\",\n    \"address_two\": \"Suite 1000\",\n    \"country\": \"USA\",\n    \"city\": \"Chicago\",\n    \"zip\": \"12345\",\n    \"postal_code\": \"12345\",\n    \"jurisdiction_code\": \"US-IL\",\n    \"citizenship_code\": \"US\",\n    \"date_of_birth\": \"1985-09-02\",\n    \"tax_id\": \"000-00-0000\",\n    \"id_number_type\": \"us_passport\",\n    \"id_number\": \"123456789\",\n    \"non_us_other_type\": \"string\",\n    \"id_issuing_authority\": \"string\",\n    \"risk_rating\": \"high\",\n    \"signed_timestamp\": 1603378501286,\n    \"prefunded\": false,\n    \"metadata\": {},\n    \"kyc\": \"pass\",\n    \"kyc_timestamp\": 1603378501286,\n    \"onboarding_profile\": \"kyc_track\",\n    \"onboarded_location\": \"US-FL\",\n    \"sanction_screening\": \"pass\",\n    \"sanction_screening_timestamp\": 1603378501286,\n    \"idv\": \"pass\",\n    \"liveness_check\": \"pass\",\n    \"employment_status\": \"full_time\",\n    \"industry\": \"adult_entertainment\",\n    \"source_of_funds\": \"salary\",\n    \"signed_agreements\": [\n      {\n        \"type\": \"zhllc_third_party_disclosures_v1\",\n        \"region\": \"us\",\n        \"signed_timestamp\": 1603378501286\n      },\n      {\n        \"type\": \"zhllc_regulatory_disclosures_v1\",\n        \"region\": \"us\",\n        \"signed_timestamp\": 1603378501286\n      }\n    ],\n    \"salary\": \"under_3500\",\n    \"savings_and_investments\": \"under_10000\",\n    \"investor_category\": \"restricted\",\n    \"distribution_channel\": \"XYZ\",\n    \"ip_address\": \"10.132.5.50\",\n    \"place_of_birth\": {\n      \"country_code\": \"NL\",\n      \"place_name\": \"Amsterdam\"\n    },\n    \"id_expiration_date\": \"2026-12-25\",\n    \"id_issuing_date\": \"2020-12-16\",\n    \"id_issuing_locality\": \"string\",\n    \"tx_equivalent_annual_volume\": \"25k_to_100k\",\n    \"tx_frequency_of_use\": \"up_to_12\",\n    \"tx_type_of_service\": [\n      \"buy_crypto\",\n      \"sell_crypto\"\n    ],\n    \"tx_relationship_term_with_service\": \"long_term\",\n    \"tx_relationship_term_with_service_other_explanation\": \"some free form explanation here in case of other type of tx_relationship_term_with_service\",\n    \"gender\": \"male\",\n    \"purpose_of_transactions\": \"payments_personal\",\n    \"purpose_of_transactions_other_explanation\": \"some free form explanation here in case of other type of purpose_of_transactions\",\n    \"expected_monthly_transaction_count\": \"between_11_and_100\",\n    \"expected_usd_equivalent_daily_volume\": \"between_1001_and_10000\",\n    \"gross_annual_salary_amount\": \"10000\",\n    \"self_certification_timestamp\": 1667504636159,\n    \"tax_residence\": {\n      \"jurisdiction_code\": \"PT-11\",\n      \"address_one\": \"string\",\n      \"address_two\": \"string\",\n      \"city\": \"string\",\n      \"postal_code\": \"string\"\n    },\n    \"tin_jurisdiction_reason\": \"working_abroad\",\n    \"additional_tax_residences\": [\n      {\n        \"tax_id\": \"string\",\n        \"jurisdiction_code\": \"US-IL\"\n      },\n      {\n        \"tax_id\": \"string\",\n        \"jurisdiction_code\": \"US-IL\"\n      }\n    ],\n    \"tin_jurisdiction_other\": \"string\",\n    \"proof_of_address_coordinates\": {\n      \"latitude\": \"51.511164\",\n      \"longitude\": \"-0.083317\"\n    },\n    \"b_notice_receipt\": true,\n    \"is_w_form_certified\": true,\n    \"w_form_certification\": 1667504636159,\n    \"physical_delivery\": false,\n    \"signature\": \"signature_data\",\n    \"signature_timestamp\": 1667504636159,\n    \"payee_exemption\": \"NONE\",\n    \"fatca_reporting_exemption\": \"NONE\",\n    \"is_not_subject_backup_withholding\": false,\n    \"platform_code\": \"XXXXXX\",\n    \"participant_code\": \"XXXXXX\",\n    \"status\": \"approved\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "309e60ab-6f1e-4dd1-9f95-c1e50ac1df38",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"test@example.com\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"citizenship_code\": \"US\",\n  \"kyc\": \"pass\",\n  \"kyc_timestamp\": 1603378501286,\n  \"sanction_screening\": \"pass\",\n  \"sanction_screening_timestamp\": 1603378501286,\n  \"phone_number\": \"15557778888\",\n  \"signed_timestamp\": 1603378501286,\n  \"signed_agreements\": [\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    },\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    }\n  ],\n  \"idv\": \"pass\",\n  \"liveness_check\": \"pass\",\n  \"employment_status\": \"full_time\",\n  \"risk_rating\": \"<string>\",\n  \"industry\": \"adult_entertainment\",\n  \"source_of_funds\": \"salary\",\n  \"savings_and_investments\": \"under_10000\",\n  \"postal_code\": \"12345\",\n  \"id_number_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\",\n  \"id_expiration_date\": \"2026-12-25\",\n  \"id_number\": \"123456789\",\n  \"tax_id\": \"000-00-0000\",\n  \"tax_residence\": {\n    \"jurisdiction_code\": \"PT-11\",\n    \"address_one\": \"<string>\",\n    \"address_two\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postal_code\": \"<string>\"\n  },\n  \"self_certification_timestamp\": 1667504636159,\n  \"middle_name\": \"Middle\",\n  \"place_of_birth\": {\n    \"country_code\": \"NL\",\n    \"place_name\": \"Amsterdam\"\n  },\n  \"address_two\": \"Suite 1000\",\n  \"id_issuing_date\": \"2020-12-16\",\n  \"id_issuing_locality\": \"<string>\",\n  \"salary\": \"under_3500\",\n  \"tx_equivalent_annual_volume\": \"25k_to_100k\",\n  \"tx_frequency_of_use\": \"up_to_12\",\n  \"tx_type_of_service\": [\n    \"buy_crypto\",\n    \"sell_crypto\"\n  ],\n  \"tx_relationship_term_with_service\": \"long_term\",\n  \"tx_relationship_term_with_service_other_explanation\": \"some free form explanation here in case of other type of tx_relationship_term_with_service\",\n  \"tin_jurisdiction_reason\": \"working_abroad\",\n  \"proof_of_address_coordinates\": {\n    \"latitude\": \"<string>\",\n    \"longitude\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5eb73495-846c-446f-b7c1-d999a383d845",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"test@example.com\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"citizenship_code\": \"US\",\n  \"kyc\": \"pass\",\n  \"kyc_timestamp\": 1603378501286,\n  \"sanction_screening\": \"pass\",\n  \"sanction_screening_timestamp\": 1603378501286,\n  \"phone_number\": \"15557778888\",\n  \"signed_timestamp\": 1603378501286,\n  \"signed_agreements\": [\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    },\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    }\n  ],\n  \"idv\": \"pass\",\n  \"liveness_check\": \"pass\",\n  \"employment_status\": \"full_time\",\n  \"risk_rating\": \"<string>\",\n  \"industry\": \"adult_entertainment\",\n  \"source_of_funds\": \"salary\",\n  \"savings_and_investments\": \"under_10000\",\n  \"postal_code\": \"12345\",\n  \"id_number_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\",\n  \"id_expiration_date\": \"2026-12-25\",\n  \"id_number\": \"123456789\",\n  \"tax_id\": \"000-00-0000\",\n  \"tax_residence\": {\n    \"jurisdiction_code\": \"PT-11\",\n    \"address_one\": \"<string>\",\n    \"address_two\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postal_code\": \"<string>\"\n  },\n  \"self_certification_timestamp\": 1667504636159,\n  \"middle_name\": \"Middle\",\n  \"place_of_birth\": {\n    \"country_code\": \"NL\",\n    \"place_name\": \"Amsterdam\"\n  },\n  \"address_two\": \"Suite 1000\",\n  \"id_issuing_date\": \"2020-12-16\",\n  \"id_issuing_locality\": \"<string>\",\n  \"salary\": \"under_3500\",\n  \"tx_equivalent_annual_volume\": \"25k_to_100k\",\n  \"tx_frequency_of_use\": \"up_to_12\",\n  \"tx_type_of_service\": [\n    \"buy_crypto\",\n    \"sell_crypto\"\n  ],\n  \"tx_relationship_term_with_service\": \"long_term\",\n  \"tx_relationship_term_with_service_other_explanation\": \"some free form explanation here in case of other type of tx_relationship_term_with_service\",\n  \"tin_jurisdiction_reason\": \"working_abroad\",\n  \"proof_of_address_coordinates\": {\n    \"latitude\": \"<string>\",\n    \"longitude\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f9a162e4-42a8-42bb-90a8-a5ef920f58af",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"test@example.com\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"citizenship_code\": \"US\",\n  \"kyc\": \"pass\",\n  \"kyc_timestamp\": 1603378501286,\n  \"sanction_screening\": \"pass\",\n  \"sanction_screening_timestamp\": 1603378501286,\n  \"phone_number\": \"15557778888\",\n  \"signed_timestamp\": 1603378501286,\n  \"signed_agreements\": [\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    },\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    }\n  ],\n  \"idv\": \"pass\",\n  \"liveness_check\": \"pass\",\n  \"employment_status\": \"full_time\",\n  \"risk_rating\": \"<string>\",\n  \"industry\": \"adult_entertainment\",\n  \"source_of_funds\": \"salary\",\n  \"savings_and_investments\": \"under_10000\",\n  \"postal_code\": \"12345\",\n  \"id_number_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\",\n  \"id_expiration_date\": \"2026-12-25\",\n  \"id_number\": \"123456789\",\n  \"tax_id\": \"000-00-0000\",\n  \"tax_residence\": {\n    \"jurisdiction_code\": \"PT-11\",\n    \"address_one\": \"<string>\",\n    \"address_two\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postal_code\": \"<string>\"\n  },\n  \"self_certification_timestamp\": 1667504636159,\n  \"middle_name\": \"Middle\",\n  \"place_of_birth\": {\n    \"country_code\": \"NL\",\n    \"place_name\": \"Amsterdam\"\n  },\n  \"address_two\": \"Suite 1000\",\n  \"id_issuing_date\": \"2020-12-16\",\n  \"id_issuing_locality\": \"<string>\",\n  \"salary\": \"under_3500\",\n  \"tx_equivalent_annual_volume\": \"25k_to_100k\",\n  \"tx_frequency_of_use\": \"up_to_12\",\n  \"tx_type_of_service\": [\n    \"buy_crypto\",\n    \"sell_crypto\"\n  ],\n  \"tx_relationship_term_with_service\": \"long_term\",\n  \"tx_relationship_term_with_service_other_explanation\": \"some free form explanation here in case of other type of tx_relationship_term_with_service\",\n  \"tin_jurisdiction_reason\": \"working_abroad\",\n  \"proof_of_address_coordinates\": {\n    \"latitude\": \"<string>\",\n    \"longitude\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "011920e0-a788-4001-9ffa-ff166eae934c",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"test@example.com\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"citizenship_code\": \"US\",\n  \"kyc\": \"pass\",\n  \"kyc_timestamp\": 1603378501286,\n  \"sanction_screening\": \"pass\",\n  \"sanction_screening_timestamp\": 1603378501286,\n  \"phone_number\": \"15557778888\",\n  \"signed_timestamp\": 1603378501286,\n  \"signed_agreements\": [\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    },\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    }\n  ],\n  \"idv\": \"pass\",\n  \"liveness_check\": \"pass\",\n  \"employment_status\": \"full_time\",\n  \"risk_rating\": \"<string>\",\n  \"industry\": \"adult_entertainment\",\n  \"source_of_funds\": \"salary\",\n  \"savings_and_investments\": \"under_10000\",\n  \"postal_code\": \"12345\",\n  \"id_number_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\",\n  \"id_expiration_date\": \"2026-12-25\",\n  \"id_number\": \"123456789\",\n  \"tax_id\": \"000-00-0000\",\n  \"tax_residence\": {\n    \"jurisdiction_code\": \"PT-11\",\n    \"address_one\": \"<string>\",\n    \"address_two\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postal_code\": \"<string>\"\n  },\n  \"self_certification_timestamp\": 1667504636159,\n  \"middle_name\": \"Middle\",\n  \"place_of_birth\": {\n    \"country_code\": \"NL\",\n    \"place_name\": \"Amsterdam\"\n  },\n  \"address_two\": \"Suite 1000\",\n  \"id_issuing_date\": \"2020-12-16\",\n  \"id_issuing_locality\": \"<string>\",\n  \"salary\": \"under_3500\",\n  \"tx_equivalent_annual_volume\": \"25k_to_100k\",\n  \"tx_frequency_of_use\": \"up_to_12\",\n  \"tx_type_of_service\": [\n    \"buy_crypto\",\n    \"sell_crypto\"\n  ],\n  \"tx_relationship_term_with_service\": \"long_term\",\n  \"tx_relationship_term_with_service_other_explanation\": \"some free form explanation here in case of other type of tx_relationship_term_with_service\",\n  \"tin_jurisdiction_reason\": \"working_abroad\",\n  \"proof_of_address_coordinates\": {\n    \"latitude\": \"<string>\",\n    \"longitude\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "36e2f0a3-7761-4635-beb2-d2f92e9758be",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"email\": \"test@example.com\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"citizenship_code\": \"US\",\n  \"kyc\": \"pass\",\n  \"kyc_timestamp\": 1603378501286,\n  \"sanction_screening\": \"pass\",\n  \"sanction_screening_timestamp\": 1603378501286,\n  \"phone_number\": \"15557778888\",\n  \"signed_timestamp\": 1603378501286,\n  \"signed_agreements\": [\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    },\n    {\n      \"type\": \"<string>\",\n      \"region\": \"us\",\n      \"signed_timestamp\": 1603378501286\n    }\n  ],\n  \"idv\": \"pass\",\n  \"liveness_check\": \"pass\",\n  \"employment_status\": \"full_time\",\n  \"risk_rating\": \"<string>\",\n  \"industry\": \"adult_entertainment\",\n  \"source_of_funds\": \"salary\",\n  \"savings_and_investments\": \"under_10000\",\n  \"postal_code\": \"12345\",\n  \"id_number_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\",\n  \"id_expiration_date\": \"2026-12-25\",\n  \"id_number\": \"123456789\",\n  \"tax_id\": \"000-00-0000\",\n  \"tax_residence\": {\n    \"jurisdiction_code\": \"PT-11\",\n    \"address_one\": \"<string>\",\n    \"address_two\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postal_code\": \"<string>\"\n  },\n  \"self_certification_timestamp\": 1667504636159,\n  \"middle_name\": \"Middle\",\n  \"place_of_birth\": {\n    \"country_code\": \"NL\",\n    \"place_name\": \"Amsterdam\"\n  },\n  \"address_two\": \"Suite 1000\",\n  \"id_issuing_date\": \"2020-12-16\",\n  \"id_issuing_locality\": \"<string>\",\n  \"salary\": \"under_3500\",\n  \"tx_equivalent_annual_volume\": \"25k_to_100k\",\n  \"tx_frequency_of_use\": \"up_to_12\",\n  \"tx_type_of_service\": [\n    \"buy_crypto\",\n    \"sell_crypto\"\n  ],\n  \"tx_relationship_term_with_service\": \"long_term\",\n  \"tx_relationship_term_with_service_other_explanation\": \"some free form explanation here in case of other type of tx_relationship_term_with_service\",\n  \"tin_jurisdiction_reason\": \"working_abroad\",\n  \"proof_of_address_coordinates\": {\n    \"latitude\": \"<string>\",\n    \"longitude\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e03aa38d-73d1-4ee1-a50f-065143c16ee7",
+          "name": "Submit documents",
+          "request": {
+            "name": "Submit documents",
+            "description": {
+              "content": "Submits a document on behalf of you or a customer if you operate a platform on zerohash.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "participants",
+                "documents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document\": \"<string>\",\n  \"mime\": \"<string>\",\n  \"file_name\": \"<string>\",\n  \"participant_code\": \"<string>\",\n  \"document_type\": \"<string>\",\n  \"id_front\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "880a33c1-1ae9-4526-8494-e767a25f84cd",
+              "name": "Successfully created participant document. Returns the created resource with generated IDs and timestamps.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"document\": \"aGVsbG8gd29ybGQ=\",\n  \"mime\": \"pdf\",\n  \"file_name\": \"supporting_document.pdf\",\n  \"participant_code\": \"CUST01\",\n  \"document_type\": \"us_drivers_license\",\n  \"id_front\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"state\": \"Success\",\n    \"file_name\": \"supporting_document.pdf\",\n    \"created_at\": 1572899177383\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a5983099-3545-440b-b11a-051b18a47bb8",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"document\": \"aGVsbG8gd29ybGQ=\",\n  \"mime\": \"pdf\",\n  \"file_name\": \"supporting_document.pdf\",\n  \"participant_code\": \"CUST01\",\n  \"document_type\": \"us_drivers_license\",\n  \"id_front\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd041272-ec4e-4346-b490-f4cd2c7190bb",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"document\": \"aGVsbG8gd29ybGQ=\",\n  \"mime\": \"pdf\",\n  \"file_name\": \"supporting_document.pdf\",\n  \"participant_code\": \"CUST01\",\n  \"document_type\": \"us_drivers_license\",\n  \"id_front\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d3e54688-c7c6-48e3-ba44-38586d0978ec",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"document\": \"aGVsbG8gd29ybGQ=\",\n  \"mime\": \"pdf\",\n  \"file_name\": \"supporting_document.pdf\",\n  \"participant_code\": \"CUST01\",\n  \"document_type\": \"us_drivers_license\",\n  \"id_front\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "99df8c36-3e92-4a04-bacb-26f32baca62a",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"document\": \"aGVsbG8gd29ybGQ=\",\n  \"mime\": \"pdf\",\n  \"file_name\": \"supporting_document.pdf\",\n  \"participant_code\": \"CUST01\",\n  \"document_type\": \"us_drivers_license\",\n  \"id_front\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80d8f3a6-c49d-4343-aa3e-a5b5de13f4b7",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "documents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"document\": \"aGVsbG8gd29ybGQ=\",\n  \"mime\": \"pdf\",\n  \"file_name\": \"supporting_document.pdf\",\n  \"participant_code\": \"CUST01\",\n  \"document_type\": \"us_drivers_license\",\n  \"id_front\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "62ecfe54-19ed-4392-a2ac-f8b345e90209",
+          "name": "Update customer",
+          "request": {
+            "name": "Update customer",
+            "description": {
+              "content": "Updates a customer of your platform.\nThis endpoint is only available to certain participants leveraging zerohash for customer settlements. Please contact us for more information on enabling this endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "participants",
+                "customers",
+                ":participant_code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "participant_code",
+                  "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"platform_updated_at\": \"<number>\",\n  \"first_name\": \"<string>\",\n  \"middle_name\": \"<string>\",\n  \"last_name\": \"<string>\",\n  \"former_name\": \"<string>\",\n  \"gender\": \"<string>\",\n  \"address_one\": \"<string>\",\n  \"address_two\": \"<string>\",\n  \"country\": \"<string>\",\n  \"jurisdiction_code\": \"<string>\",\n  \"city\": \"<string>\",\n  \"zip\": \"<string>\",\n  \"postal_code\": \"<string>\",\n  \"email\": \"<string>\",\n  \"date_of_birth\": \"<string>\",\n  \"phone_number\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "db5e2b62-01e2-4bdd-a0d4-4d31dfd57da3",
+              "name": "Successfully updated customer participant. Returns the updated resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"postal_code\": \"60601\",\n  \"platform_updated_at\": 1680643465352\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\",\n    \"country\": \"USA\",\n    \"jurisdiction_code\": \"US-IL\",\n    \"email\": \"test@example.com\",\n    \"signed_timestamp\": 1603378501286,\n    \"signed_agreements\": [\n      {\n        \"type\": \"account_link\",\n        \"region\": \"us\",\n        \"signed_timestamp\": 1603378501286\n      },\n      {\n        \"type\": \"payment_services_terms\",\n        \"region\": \"us\",\n        \"signed_timestamp\": 1603378501286\n      }\n    ],\n    \"platform_code\": \"XXXXXX\",\n    \"participant_code\": \"XXXXXX\",\n    \"phone_number\": \"15557778888\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8f8bd799-8278-4ca8-9be8-164a94dfeba3",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"postal_code\": \"60601\",\n  \"platform_updated_at\": 1680643465352\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "738ddfe3-4d55-4d5b-a72a-a19c427739a6",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"postal_code\": \"60601\",\n  \"platform_updated_at\": 1680643465352\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "41d367b7-b0b1-4df6-85d4-b7aaa7f40bfa",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"postal_code\": \"60601\",\n  \"platform_updated_at\": 1680643465352\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5052068-4e90-4463-b1e1-33b7edd7d893",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"postal_code\": \"60601\",\n  \"platform_updated_at\": 1680643465352\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ce522ce9-5901-4b1a-9f94-555ef24606d3",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"address_one\": \"123 Main St.\",\n  \"city\": \"Chicago\",\n  \"postal_code\": \"60601\",\n  \"platform_updated_at\": 1680643465352\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5f427438-a5eb-4d5c-8b47-f0a3d68c609b",
+          "name": "Lock customer",
+          "request": {
+            "name": "Lock customer",
+            "description": {
+              "content": "When platforms terminate a customer, they may alert zerohash through this endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "participants",
+                "customers",
+                ":participant_code",
+                "lock"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "participant_code",
+                  "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "text/plain"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason_code\": \"<string>\",\n  \"notes\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b030e2fe-4a63-4b5b-b2da-e271209ae3f1",
+              "name": "Successfully locked customer.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code",
+                    "lock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/plain"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason_code\": \"compliance_issue\",\n  \"notes\": \"confirmed fraud\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "OK",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5cdc1aa3-7c03-461f-8457-59bb12add6f5",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code",
+                    "lock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason_code\": \"compliance_issue\",\n  \"notes\": \"confirmed fraud\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a4f19a05-02aa-4369-b311-215977ab8885",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code",
+                    "lock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason_code\": \"compliance_issue\",\n  \"notes\": \"confirmed fraud\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b9f8a236-0754-45e1-8466-b1356925ee30",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code",
+                    "lock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason_code\": \"compliance_issue\",\n  \"notes\": \"confirmed fraud\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6336fa75-f165-4313-bc8e-38db8930efdb",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code",
+                    "lock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason_code\": \"compliance_issue\",\n  \"notes\": \"confirmed fraud\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4a23c889-d1e2-4de5-8450-2a6b7da973c6",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "customers",
+                    ":participant_code",
+                    "lock"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason_code\": \"compliance_issue\",\n  \"notes\": \"confirmed fraud\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "db136a08-175e-4445-8c76-a2d29489d452",
+          "name": "Create beneficiary",
+          "request": {
+            "name": "Create beneficiary",
+            "description": {
+              "content": "Submits a beneficiary to your platform.\nThis endpoint is only available to certain participants leveraging zerohash for beneficiary services. Please contact us for more information on enabling this endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "participants",
+                "beneficiaries",
+                "new"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                "key": "X-Request-Id",
+                "value": "<uuid>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"<string>\",\n  \"last_name\": \"<string>\",\n  \"address_one\": \"<string>\",\n  \"jurisdiction_code\": \"<string>\",\n  \"city\": \"<string>\",\n  \"date_of_birth\": \"<string>\",\n  \"email\": \"<string>\",\n  \"phone_number\": \"<string>\",\n  \"address_two\": \"<string>\",\n  \"zip\": \"<string>\",\n  \"tax_id\": \"<string>\",\n  \"id_number_type\": \"<string>\",\n  \"id_number\": \"<string>\",\n  \"citizenship_code\": \"<string>\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3c402610-fb31-4a6f-8b68-7352b5d117cb",
+              "name": "Successfully created beneficiary participant. Returns the created resource with generated IDs and timestamps.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"address_one\": \"123 Main St.\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_two\": \"Suite 1000\",\n  \"zip\": \"12345\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\",\n    \"email\": \"test@example.com\",\n    \"address_one\": \"123 Main St.\",\n    \"address_two\": \"Suite 1000\",\n    \"jurisdiction_code\": \"US-IL\",\n    \"city\": \"Chicago\",\n    \"zip\": \"12345\",\n    \"date_of_birth\": \"1985-09-02\",\n    \"id_number_type\": \"us_passport\",\n    \"id_number\": \"123456789\",\n    \"citizenship_code\": \"US\",\n    \"non_us_other_type\": \"string\",\n    \"id_issuing_authority\": \"string\",\n    \"phone_number\": \"15557778888\",\n    \"platform_code\": \"XXXXXX\",\n    \"participant_code\": \"XXXXXX\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4a0462aa-be89-4321-937c-c82d5de3e03f",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"address_one\": \"123 Main St.\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_two\": \"Suite 1000\",\n  \"zip\": \"12345\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8b3133b8-cc90-477f-9730-f3f7538d0db6",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"address_one\": \"123 Main St.\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_two\": \"Suite 1000\",\n  \"zip\": \"12345\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1cba7fa5-9fe1-498e-8e1d-7c845ebed007",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"address_one\": \"123 Main St.\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_two\": \"Suite 1000\",\n  \"zip\": \"12345\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "76187fd6-ef2a-4c27-adf1-6777a77c3e8a",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"address_one\": \"123 Main St.\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_two\": \"Suite 1000\",\n  \"zip\": \"12345\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "01ee2c3c-d8b4-41fb-b4b3-1c4293f163be",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    "new"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"address_one\": \"123 Main St.\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_two\": \"Suite 1000\",\n  \"zip\": \"12345\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8ac09ff3-a375-4aed-ac6f-777fd24d75ee",
+          "name": "Update beneficiary",
+          "request": {
+            "name": "Update beneficiary",
+            "description": {
+              "content": "Updates a beneficiary from your platform.\nThis endpoint is only available to certain participants leveraging zerohash for beneficiary services. Please contact us for more information on enabling this endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "participants",
+                "beneficiaries",
+                ":participant_code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "participant_code",
+                  "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                "key": "X-Request-Id",
+                "value": "<uuid>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"<string>\",\n  \"last_name\": \"<string>\",\n  \"jurisdiction_code\": \"<string>\",\n  \"city\": \"<string>\",\n  \"zip\": \"<string>\",\n  \"email\": \"<string>\",\n  \"phone_number\": \"<string>\",\n  \"address_one\": \"<string>\",\n  \"address_two\": \"<string>\",\n  \"date_of_birth\": \"<string>\",\n  \"tax_id\": \"<string>\",\n  \"id_number_type\": \"<string>\",\n  \"id_number\": \"<string>\",\n  \"citizenship_code\": \"<string>\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "13445e6f-f134-4c10-be03-09d9e6d698e7",
+              "name": "Successfully updated beneficiary participant. Returns the updated resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"zip\": \"12345\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_one\": \"123 Main St.\",\n  \"address_two\": \"Suite 1000\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Smith\",\n    \"email\": \"test@example.com\",\n    \"address_one\": \"123 Main St.\",\n    \"address_two\": \"Suite 1000\",\n    \"jurisdiction_code\": \"US-IL\",\n    \"city\": \"Chicago\",\n    \"zip\": \"12345\",\n    \"date_of_birth\": \"1985-09-02\",\n    \"id_number_type\": \"us_passport\",\n    \"id_number\": \"123456789\",\n    \"citizenship_code\": \"US\",\n    \"non_us_other_type\": \"string\",\n    \"id_issuing_authority\": \"string\",\n    \"phone_number\": \"15557778888\",\n    \"platform_code\": \"XXXXXX\",\n    \"participant_code\": \"XXXXXX\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "570cc740-e688-49e5-81e4-8ff05ab14591",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"zip\": \"12345\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_one\": \"123 Main St.\",\n  \"address_two\": \"Suite 1000\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a9135029-9e9b-4c9a-bf2c-9adc6bcca6d5",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"zip\": \"12345\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_one\": \"123 Main St.\",\n  \"address_two\": \"Suite 1000\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e6b27ff4-79d3-4690-988d-953da73f6c2b",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"zip\": \"12345\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_one\": \"123 Main St.\",\n  \"address_two\": \"Suite 1000\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e123b23-1b1f-4a60-bea8-feadf0bfb1e8",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"zip\": \"12345\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_one\": \"123 Main St.\",\n  \"address_two\": \"Suite 1000\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "98aa4567-b766-4195-b797-9416907f2583",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participants",
+                    "beneficiaries",
+                    ":participant_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.",
+                    "key": "X-Request-Id",
+                    "value": "<uuid>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"jurisdiction_code\": \"US-IL\",\n  \"city\": \"Chicago\",\n  \"zip\": \"12345\",\n  \"email\": \"test@example.com\",\n  \"phone_number\": \"15557778888\",\n  \"address_one\": \"123 Main St.\",\n  \"address_two\": \"Suite 1000\",\n  \"date_of_birth\": \"1985-09-02\",\n  \"tax_id\": \"000-00-0000\",\n  \"id_number_type\": \"us_passport\",\n  \"id_number\": \"123456789\",\n  \"citizenship_code\": \"US\",\n  \"non_us_other_type\": \"<string>\",\n  \"id_issuing_authority\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6eca8228-2d49-4625-8755-0a75ee28e5c9",
+          "name": "Update participant limits",
+          "request": {
+            "name": "Update participant limits",
+            "description": {
+              "content": "Updates transaction limits for a participant. Allows platforms to configure custom limits by transaction type, time period, and asset. This endpoint is available when the platform is configured accordingly to use custom limits.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "participant",
+                ":participant_code",
+                "limits"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "participant_code",
+                  "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                "key": "X-SCX-SIGNED",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                "key": "X-SCX-TIMESTAMP",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"limits\": [\n    {\n      \"type\": [\n        \"<string>\"\n      ],\n      \"period\": \"<number>\",\n      \"configured_limit\": \"<string>\",\n      \"asset\": \"<string>\"\n    },\n    {\n      \"type\": [\n        \"<string>\"\n      ],\n      \"period\": \"<number>\",\n      \"configured_limit\": \"<string>\",\n      \"asset\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "971e0255-cbea-4ee5-bbc7-d8e22a22ce79",
+              "name": "Limits updated successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participant",
+                    ":participant_code",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limits\": [\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    },\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Participant limits updated successfully\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b99e5e8-a7b7-4757-9793-65504ed6b01e",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participant",
+                    ":participant_code",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limits\": [\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    },\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    \"body/amount must be >= 0\",\n    \"body/asset is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fcc86c55-4bd0-4e33-bd4f-c03b9ee66b10",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participant",
+                    ":participant_code",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limits\": [\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    },\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"message\": \"This api key does not have write permission to this endpoint\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "73fcf68b-0ccb-4bd6-86d3-bd9f28543c4c",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participant",
+                    ":participant_code",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limits\": [\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    },\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Not Found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "db5defe6-b5f5-455c-a592-b9fa5a828815",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participant",
+                    ":participant_code",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limits\": [\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    },\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8924e723-3421-4dab-91f3-6a74bfbde950",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "participant",
+                    ":participant_code",
+                    "limits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "participant_code",
+                      "description": "(Required) Unique participant identifier. Always 6 uppercase alphanumeric characters."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-SCX-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.",
+                    "key": "X-SCX-SIGNED",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.",
+                    "key": "X-SCX-TIMESTAMP",
+                    "value": "1678901234"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limits\": [\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    },\n    {\n      \"type\": [\n        \"trades\"\n      ],\n      \"period\": 24,\n      \"configured_limit\": \"25000\",\n      \"asset\": \"USD\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cert.zerohash.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-SCX-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "c9461ec3-96e9-4080-82ac-52f36fabbaec",
+    "name": "zerohash Individual Participants API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n### Authentication\n\nzerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)\n\n<a href=\"/zh-swagger.json\">Download zerohash OpenAPI Schema as JSON</a>\n",
+      "type": "text/plain"
+    }
+  }
+}

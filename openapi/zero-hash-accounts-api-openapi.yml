@@ -1,0 +1,736 @@
+openapi: 3.2.0
+info:
+  title: zerohash Accounts API
+  description: '
+
+    ### Authentication
+
+
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+
+
+    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
+
+    '
+  version: 1.7.0
+servers:
+- url: https://api.cert.zerohash.com
+  description: Certification API server
+security:
+- apiKey: []
+  apiPassphrase: []
+tags:
+- name: Accounts
+  description: Create and Manage Accounts
+paths:
+  /accounts:
+    get:
+      tags:
+      - Accounts
+      summary: List accounts
+      description: Retrieves a list of all accounts and their current balances.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: page
+        in: query
+        description: Filters for a specific page (pagination)
+        required: false
+        schema:
+          type: string
+      - name: account_group
+        in: query
+        description: Filters for accounts with a specific account_group
+        required: false
+        schema:
+          type: string
+      - name: account_label
+        in: query
+        description: Filters for accounts with a specific account_label
+        required: false
+        schema:
+          type: string
+      - name: account_owner
+        in: query
+        description: Filters for accounts with a specific account_owner (this field mirrors as a participant_code)
+        required: false
+        schema:
+          type: string
+      - name: asset
+        in: query
+        description: Filters for accounts with a specific asset
+        required: false
+        schema:
+          $ref: '#/components/schemas/Asset'
+      - name: account_type
+        in: query
+        description: Filters for accounts with a specific account_type
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of accounts with current balances with optional filters: page, account_group, account_label, account_owner, asset, account_type.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{account_id}:
+    get:
+      tags:
+      - Accounts
+      summary: Get account
+      description: Retrieves account details for a given `account_id`.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: account_id
+        in: path
+        description: Unique account identifier (UUID format)
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+      responses:
+        '200':
+          description: Successfully retrieved account details including balance, owner, and account type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{account_id}/movements:
+    get:
+      tags:
+      - Accounts
+      summary: List account movements
+      description: Retrieves the history of each itemized movement that has been applied to an account to lead up to its current balance.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: account_id
+        in: path
+        description: This parameter enables the filtering of movements based on the associated account_id.
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Filters for a specific page (pagination)
+        required: false
+        schema:
+          type: string
+      - name: movement_timestamp[gt]
+        in: query
+        description: Filters for movements with a timestamp greater than the provided value, which can be defined in milliseconds or nanoseconds
+        required: false
+        schema:
+          type: number
+      - name: movement_timestamp[gte]
+        in: query
+        description: Filters for movements with a timestamp greater than or equal to the provided value, which can be defined in milliseconds or nanoseconds
+        required: false
+        schema:
+          type: number
+      - name: movement_timestamp[e]
+        in: query
+        description: Filters for movements with a timestamp that is equal to the provided value, which can be defined in milliseconds or nanoseconds
+        required: false
+        schema:
+          type: number
+      - name: movement_timestamp[lt]
+        in: query
+        description: Filters for movements with a timestamp less than the provided value, which can be defined in milliseconds or nanoseconds
+        required: false
+        schema:
+          type: number
+      - name: movement_timestamp[lte]
+        in: query
+        description: Filters for movements with a timestamp less than or equals the provided value, which can be defined in milliseconds or nanoseconds
+        required: false
+        schema:
+          type: number
+      - name: parent_link_id
+        in: query
+        description: Filters for movements that are tagged with a specific parent_link_id
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Successfully retrieved paginated list of account movements with optional filters: page, movement_timestamp filters, parent_link_id.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountMovementsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/{account_id}/run_history:
+    get:
+      tags:
+      - Accounts
+      summary: List account run history
+      description: Retrieves the history of grouped settlements, deposits, withdrawals and other changes that have been applied to an account to lead up to its current balance.
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      - name: account_id
+        in: path
+        description: Filters for a specific account_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved account run history. Returns grouped settlements, deposits, withdrawals and other changes applied to the account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRunHistoryResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+  /accounts/net_delivery_obligations:
+    get:
+      tags:
+      - Accounts
+      parameters:
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Timestamp'
+      summary: List NDOs
+      description: Returns all net delivery obligations (NDO) across all accounts under your platform.
+      responses:
+        '200':
+          description: Successfully retrieved paginated list of net delivery obligations (NDOs) across all platform accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountsNetDeliveryObligationsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code403'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code404'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code503'
+components:
+  schemas:
+    Asset:
+      type: string
+      description: The list of assets available in the certification environment
+      example: USD
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    AccountsResponseEntity:
+      type: object
+      title: Accounts Response Entity
+      properties:
+        asset:
+          type: string
+          description: The asset code for the specific account, e.g. `USD`
+          example: USD
+        account_owner:
+          type: string
+          description: The code of the participant that owns the account
+          example: ABCDEF
+        account_type:
+          type: string
+          description: The type of the account (balance bucket).
+          enum:
+          - available
+          - collateral
+          - payable
+          - receivable
+          - collateral_deficiency
+          - staked
+          example: available
+        account_group:
+          type: string
+          description: The group that the account is a part of
+          example: XYZ456
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+        balance:
+          type: string
+          description: The balance in the account
+          example: '0.00'
+        account_id:
+          type: string
+          format: uuid
+          description: Unique ID of the specific account
+          example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+        last_update:
+          type: number
+          format: int64
+          description: Timestamp when the account balance was updated (Unix milliseconds)
+          example: 1554395972174
+    AccountsNetDeliveryObligationsResponseEntity:
+      type: object
+      title: Accounts Net Delivery Obligations Response Entity
+      properties:
+        asset:
+          type: string
+          description: The asset code for the specific account, e.g. `USD`
+          example: USD
+        amount:
+          type: string
+          description: The amount owed
+          example: '10532.15'
+        account_group:
+          type: string
+          description: The group that the account is a part of
+          example: XYZ456
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    GetAccountsResponse:
+      type: object
+      title: Get Accounts Response
+      description: Response schema for retrieving zerohash account information.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountsResponseEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
+    AccountMovementsEntity:
+      type: object
+      title: Movements Entity
+      description: Entity schema for an itemized account movement.
+      properties:
+        order_id:
+          type: number
+          description: Sequence order of the movement within its run. Only present when enabled for the requesting platform.
+          example: 123
+        run_id:
+          type: string
+          description: A unique ID for the run that produced this movement.
+          example: '500'
+        movement_timestamp:
+          type: number
+          format: int64
+          description: Unix timestamp in milliseconds indicating when the movement was applied.
+          example: 1777911679783
+        movement_id:
+          type: string
+          format: uuid
+          description: A unique ID for the specific account movement.
+          example: ab938734-0aa6-4378-baa1-2cc56aeee757
+        movement_type:
+          type: string
+          description: The type of movement.
+          example: transfer
+          enum:
+          - initial_margin
+          - deposit
+          - execution_fee
+          - final_settlement
+          - final_settlement_default
+          - final_settlement_default_fallback
+          - final_settlement_default_partial
+          - final_settlement_outstanding
+          - interest_payment
+          - collateralize_loan
+          - loan_collateral_return
+          - network_fee
+          - otc_final_settlement
+          - principal_swap
+          - repayment
+          - transfer
+          - variation_margin
+          - variation_margin_call
+          - withdrawal
+          - withdrawal_confirmed
+          - withdrawal_pending
+          - commission
+          - bank_fee
+          - transaction_fee
+        trade_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Unique identifier of the trade or loan that resulted in the movement, when the movement was due to a trade or loan. Equal to the `trade_id` field returned by the `/trades` endpoint. Returns null when the movement is not trade-related.
+          example: 3ad29e08-8b4f-435b-89aa-17b7a298b350
+        deposit_reference_id:
+          type: string
+          nullable: true
+          description: External identifier associated with the deposit, when the movement was due to a deposit. Equal to the `reference_id` field returned by the `/deposits` endpoint. Returns null when the movement is not a deposit.
+          example: null
+        withdrawal_request_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Withdrawal request ID, when the movement was due to a withdrawal. Equal to the `id` field returned by the `/withdrawals/requests` endpoint. Returns null when the movement is not a withdrawal.
+          example: null
+        change:
+          type: string
+          description: Signed decimal change to the account balance due to this movement, expressed as a string to preserve precision.
+          example: '-14.77'
+        parent_link_id:
+          type: string
+          nullable: true
+          description: Unique identifier of the parent transaction that produced this movement (e.g. the trade ID for trade-settlement movements). Returns null when the movement has no linked parent transaction.
+          example: 3ad29e08-8b4f-435b-89aa-17b7a298b350
+        origin:
+          type: string
+          enum:
+          - null
+          - rest_api
+          - sdk
+          - secondary
+          nullable: true
+          description: 'Indicates how the movement was initiated: via the REST API, SDK, or Secondary Portal. Returns null for movements without a recorded origin (e.g. automated system-generated movements).'
+          example: rest_api
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetAccountMovementsResponse:
+      type: object
+      title: Get Account Movements Response
+      description: Response schema for retrieving account movements information.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountMovementsEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
+    GetAccountsNetDeliveryObligationsResponse:
+      type: object
+      title: Get Accounts Net Delivery Obligations Response
+      description: Response schema for retrieving accounts net delivery obligations information.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountsNetDeliveryObligationsResponseEntity'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetRunHistoryResponse:
+      type: object
+      title: Get Run History Response
+      description: Response schema for retrieving run history information.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunHistoryEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    GetAccountResponse:
+      type: object
+      title: Get Account Response
+      description: Response schema for retrieving a specific account information.
+      properties:
+        message:
+          $ref: '#/components/schemas/AccountsResponseEntity'
+    RunHistoryEntity:
+      type: object
+      title: Run History Entity
+      properties:
+        run_timestamp:
+          type: number
+          format: int64
+          description: Unix timestamp in milliseconds indicating when the run was executed.
+          example: 1777910260713
+        run_type:
+          type: string
+          description: A run is a group of movements that pertain to the same type of change to an account.
+          example: settlement
+          enum:
+          - deposit
+          - execution_fee
+          - network_fee
+          - settlement
+          - transfer
+          - withdrawal
+          - stake
+          - unstake
+          - reward_distribution
+        run_id:
+          type: string
+          description: A unique ID for the particular run.
+          example: '67507578'
+        change:
+          type: string
+          description: Signed decimal net change to the account balance due to all movements within the run.
+          example: '4.440000000000000000'
+        new_balance:
+          type: string
+          description: The account balance after the run was applied.
+          example: '5091.100000000000000000'
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: Your API public key. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for how to obtain keys.
+      in: header
+      name: X-SCX-API-KEY
+    apiPassphrase:
+      type: apiKey
+      description: The passphrase associated with your API key, set when the key was created.
+      in: header
+      name: X-SCX-PASSPHRASE
+x-readme:
+  proxy-enabled: false

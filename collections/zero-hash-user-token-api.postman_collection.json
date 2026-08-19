@@ -1,0 +1,487 @@
+{
+  "item": [
+    {
+      "id": "9dbaae95-4553-44b6-bac3-358efa8d9be0",
+      "name": "User Token",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "15d3d84b-f575-4e4c-b77f-2d0ab5cd8e5b",
+          "name": "Initialize session",
+          "request": {
+            "name": "Initialize session",
+            "description": {
+              "content": "Create a new session and receive a JWT for authenticated API requests.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "api",
+                "v1",
+                "sessions"
+              ],
+              "host": [
+                "api",
+                "sandbox",
+                "connect",
+                "xyz"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Client ID that must match the organization ID in the JWT token",
+                "key": "x-connect-client-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Request signature for validation (required for most organizations)",
+                "key": "Signature",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) Timestamp used for signature validation",
+                "key": "timestamp",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account\": {\n    \"reference_id\": \"<string>\"\n  },\n  \"session\": {\n    \"metadata\": {\n      \"key_0\": 2750,\n      \"key_1\": true\n    },\n    \"withdrawal_details\": {\n      \"asset\": \"<string>\",\n      \"network\": \"<string>\",\n      \"amount\": \"<string>\",\n      \"account_label\": \"<string>\"\n    },\n    \"deposit_details\": {\n      \"account_label\": \"<string>\"\n    }\n  },\n  \"request_id\": \"<string>\",\n  \"scopes\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9e787e69-ff17-45b7-8dda-5076f29dfe10",
+              "name": "Session created successfully",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "sessions"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Client ID that must match the organization ID in the JWT token",
+                    "key": "x-connect-client-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Request signature for validation (required for most organizations)",
+                    "key": "Signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Timestamp used for signature validation",
+                    "key": "timestamp",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"account\": {\n    \"reference_id\": \"07NVS8\"\n  },\n  \"session\": {\n    \"metadata\": {\n      \"organization_metadata\": \"test-01-10-001\",\n      \"user_agent\": \"Mozilla/5.0...\",\n      \"ip_address\": \"192.168.1.1\"\n    },\n    \"withdrawal_details\": {\n      \"asset\": \"BTC\",\n      \"network\": \"bitcoin\",\n      \"amount\": \"0.001\",\n      \"account_label\": \"Main Account\"\n    },\n    \"deposit_details\": {\n      \"account_label\": \"Main Account\"\n    }\n  },\n  \"scopes\": [\n    \"user:deposit:send\",\n    \"user:recovery:send\",\n    \"user:withdrawal:request\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"jwt\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"expires_in\": 3600\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c95f56cc-b597-4935-b142-2e7f460e978f",
+              "name": "Bad Request - Invalid input parameters",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "sessions"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Client ID that must match the organization ID in the JWT token",
+                    "key": "x-connect-client-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Request signature for validation (required for most organizations)",
+                    "key": "Signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Timestamp used for signature validation",
+                    "key": "timestamp",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"account\": {\n    \"reference_id\": \"07NVS8\"\n  },\n  \"session\": {\n    \"metadata\": {\n      \"organization_metadata\": \"test-01-10-001\",\n      \"user_agent\": \"Mozilla/5.0...\",\n      \"ip_address\": \"192.168.1.1\"\n    },\n    \"withdrawal_details\": {\n      \"asset\": \"BTC\",\n      \"network\": \"bitcoin\",\n      \"amount\": \"0.001\",\n      \"account_label\": \"Main Account\"\n    },\n    \"deposit_details\": {\n      \"account_label\": \"Main Account\"\n    }\n  },\n  \"scopes\": [\n    \"user:deposit:send\",\n    \"user:recovery:send\",\n    \"user:withdrawal:request\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 6927,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b21b4c82-65cf-4cd1-a94c-ea9ff1caabe1",
+              "name": "Unauthorized - Invalid or missing JWT token",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "sessions"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Client ID that must match the organization ID in the JWT token",
+                    "key": "x-connect-client-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Request signature for validation (required for most organizations)",
+                    "key": "Signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Timestamp used for signature validation",
+                    "key": "timestamp",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"account\": {\n    \"reference_id\": \"07NVS8\"\n  },\n  \"session\": {\n    \"metadata\": {\n      \"organization_metadata\": \"test-01-10-001\",\n      \"user_agent\": \"Mozilla/5.0...\",\n      \"ip_address\": \"192.168.1.1\"\n    },\n    \"withdrawal_details\": {\n      \"asset\": \"BTC\",\n      \"network\": \"bitcoin\",\n      \"amount\": \"0.001\",\n      \"account_label\": \"Main Account\"\n    },\n    \"deposit_details\": {\n      \"account_label\": \"Main Account\"\n    }\n  },\n  \"scopes\": [\n    \"user:deposit:send\",\n    \"user:recovery:send\",\n    \"user:withdrawal:request\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 6927,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8d495566-994d-4409-9c06-a3342f7521a1",
+              "name": "Forbidden - Invalid scopes or signature validation failed",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "sessions"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Client ID that must match the organization ID in the JWT token",
+                    "key": "x-connect-client-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Request signature for validation (required for most organizations)",
+                    "key": "Signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Timestamp used for signature validation",
+                    "key": "timestamp",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"account\": {\n    \"reference_id\": \"07NVS8\"\n  },\n  \"session\": {\n    \"metadata\": {\n      \"organization_metadata\": \"test-01-10-001\",\n      \"user_agent\": \"Mozilla/5.0...\",\n      \"ip_address\": \"192.168.1.1\"\n    },\n    \"withdrawal_details\": {\n      \"asset\": \"BTC\",\n      \"network\": \"bitcoin\",\n      \"amount\": \"0.001\",\n      \"account_label\": \"Main Account\"\n    },\n    \"deposit_details\": {\n      \"account_label\": \"Main Account\"\n    }\n  },\n  \"scopes\": [\n    \"user:deposit:send\",\n    \"user:recovery:send\",\n    \"user:withdrawal:request\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 6927,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea52c7d4-d4d9-4039-a275-4c1fde639a47",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "v1",
+                    "sessions"
+                  ],
+                  "host": [
+                    "api",
+                    "sandbox",
+                    "connect",
+                    "xyz"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Client ID that must match the organization ID in the JWT token",
+                    "key": "x-connect-client-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Request signature for validation (required for most organizations)",
+                    "key": "Signature",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) Timestamp used for signature validation",
+                    "key": "timestamp",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"request_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"account\": {\n    \"reference_id\": \"07NVS8\"\n  },\n  \"session\": {\n    \"metadata\": {\n      \"organization_metadata\": \"test-01-10-001\",\n      \"user_agent\": \"Mozilla/5.0...\",\n      \"ip_address\": \"192.168.1.1\"\n    },\n    \"withdrawal_details\": {\n      \"asset\": \"BTC\",\n      \"network\": \"bitcoin\",\n      \"amount\": \"0.001\",\n      \"account_label\": \"Main Account\"\n    },\n    \"deposit_details\": {\n      \"account_label\": \"Main Account\"\n    }\n  },\n  \"scopes\": [\n    \"user:deposit:send\",\n    \"user:recovery:send\",\n    \"user:withdrawal:request\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"code\": 6927,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.sandbox.connect.xyz",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "f414bacd-2e5e-473e-8467-5efcc5065185",
+    "name": "Connect User Token API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Session management endpoint for Connect API",
+      "type": "text/plain"
+    }
+  }
+}
