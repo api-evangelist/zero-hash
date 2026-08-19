@@ -16,7 +16,7 @@ image: https://cdn.prod.website-files.com/68c59605946d2fed8ac8bcbd/6a0c76136695e
 url: https://raw.githubusercontent.com/api-evangelist/zero-hash/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-specificationVersion: '0.21'
+specificationVersion: '0.23'
 created: '2026-08-05'
 modified: '2026-08-05'
 tags:
