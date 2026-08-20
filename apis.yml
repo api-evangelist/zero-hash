@@ -21,6 +21,27 @@ created: '2026-08-05'
 modified: '2026-08-05'
 tags:
 - Company
+- Crypto Infrastructure
+- Digital Assets
+- Stablecoins
+- Payments
+- Payouts
+- Tokenization
+- Custody
+- Staking
+- Settlement
+- Embedded Finance
+- On-Off Ramp
+- Liquidity
+- FIX Protocol
+- Webhook
+- WebSockets
+- KYC
+- Compliance
+- Remittances
+- Agentic Finance
+tags_raw:
+- Company
 - crypto-infrastructure
 - digital-assets
 - stablecoins
@@ -50,6 +71,10 @@ apis:
   humanURL: https://docs.zerohash.com/reference/private-websocket-api
   baseURL: https://ws.zerohash.com
   tags:
+  - WebSockets
+  - Market Data
+  - Digital Assets
+  tags_raw:
   - websockets
   - market-data
   - digital-assets
@@ -64,6 +89,8 @@ apis:
   humanURL: https://docs.zerohash.com/reference
   baseURL: https://api.zerohash.com
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
