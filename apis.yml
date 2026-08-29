@@ -12,6 +12,18 @@ description: >-
   signing, a private WebSocket feed for balances and RFQ prices, a FIX gateway for CLOB order entry and market data,
   an outbound webhook catalog, and a large family of embeddable JavaScript/React SDK modules for buy, sell, onboarding,
   funding, withdrawals and account linking.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://cdn.prod.website-files.com/68c59605946d2fed8ac8bcbd/6a0c76136695e559d8cffe0f_zerohash%20-%20512.png
 url: https://raw.githubusercontent.com/api-evangelist/zero-hash/refs/heads/main/apis.yml
 x-type: company
