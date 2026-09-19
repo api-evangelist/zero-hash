@@ -61,7 +61,7 @@ tags:
 - Liquidity
 - FIX Protocol
 - Webhook
-- WebSockets
+- WebSocket
 - KYC
 - Compliance
 - Remittances
@@ -97,7 +97,7 @@ apis:
   humanURL: https://docs.zerohash.com/reference/private-websocket-api
   baseURL: https://ws.zerohash.com
   tags:
-  - WebSockets
+  - WebSocket
   - Market Data
   - Digital Assets
   tags_raw:
@@ -661,6 +661,8 @@ apis:
   humanURL: https://docs.zerohash.com/reference
   baseURL: https://api.zerohash.com
   tags:
+  - Pay-In
+  tags_raw:
   - Payins
   properties:
   - type: OpenAPI
@@ -1001,6 +1003,8 @@ apis:
   humanURL: https://docs.zerohash.com/reference
   baseURL: https://api.zerohash.com
   tags:
+  - Trade
+  tags_raw:
   - Trades
   properties:
   - type: OpenAPI
