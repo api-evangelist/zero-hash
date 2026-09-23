@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Payins API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -28,7 +24,25 @@ paths:
       tags:
       - Payins
       summary: Request a payin quote
-      description: "\nRetrieves a quote for a pay event for a given participant code and asset.\nThe response includes a deposit address and rate at which a subsequent on-chain deposit will be honored.\n\nThe quote has an expiry timestamp (`price_expire_ts`) — for volatile assets, the platform must execute the deposit before this time,\nor a new quote can be requested for the same payment to refresh the price.\nFor stablecoins, `price_expire_ts` will be `null`.\n\nThe `request_id` you send (via the `X-Request-Id` header) is the idempotency key for this endpoint: re-submitting the same `request_id` returns the existing active quote — same `transaction_id`, deposit address, and rate — instead of creating a new one.\n\nUse the returned `transaction_id` as the path parameter when calling `POST /pay/{id}/rfq` to refresh a quote.\n\nAfter the on-chain deposit settles or fails, a `crypto_pay_status_changed` webhook reports the outcome (`success` + `status_reason_code`).\n  "
+      description: 'Retrieves a quote for a pay event for a given participant code and asset.
+
+        The response includes a deposit address and rate at which a subsequent on-chain deposit will be honored.
+
+
+        The quote has an expiry timestamp (`price_expire_ts`) — for volatile assets, the platform must execute the deposit before this time,
+
+        or a new quote can be requested for the same payment to refresh the price.
+
+        For stablecoins, `price_expire_ts` will be `null`.
+
+
+        The `request_id` you send (via the `X-Request-Id` header) is the idempotency key for this endpoint: re-submitting the same `request_id` returns the existing active quote — same `transaction_id`, deposit address, and rate — instead of creating a new one.
+
+
+        Use the returned `transaction_id` as the path parameter when calling `POST /pay/{id}/rfq` to refresh a quote.
+
+
+        After the on-chain deposit settles or fails, a `crypto_pay_status_changed` webhook reports the outcome (`success` + `status_reason_code`).'
       parameters:
       - $ref: '#/components/parameters/Signature'
       - $ref: '#/components/parameters/Timestamp'
@@ -100,12 +114,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postPayRfq
+      x-operation-id-source: derived
   /pay/{id}/rfq:
     post:
       tags:
       - Payins
       summary: Refresh a payin quote
-      description: "\nRefreshes an existing pay quote identified by its transaction ID.\nThis is used when a previously issued quote is near to expire and the platform wants a new rate for the same deposit address.\nAlready expired quotes can't be refreshed.\n\nThe response format is identical to `POST /pay/rfq` — it returns an updated rate, expiry timestamp, and the same deposit address.\n  "
+      description: 'Refreshes an existing pay quote identified by its transaction ID.
+
+        This is used when a previously issued quote is near to expire and the platform wants a new rate for the same deposit address.
+
+        Already expired quotes can''t be refreshed.
+
+
+        The response format is identical to `POST /pay/rfq` — it returns an updated rate, expiry timestamp, and the same deposit address.'
       parameters:
       - $ref: '#/components/parameters/Signature'
       - $ref: '#/components/parameters/Timestamp'
@@ -162,12 +185,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postPayByIdRfq
+      x-operation-id-source: derived
   /pay/transactions:
     get:
       tags:
       - Payins
       summary: List payin transactions
-      description: "\nRetrieves a paginated list of pay transactions for the authenticated platform.\nResults can be filtered by participant, asset, deposit status, and timestamps.\nEach deposit also emits a `crypto_pay_status_changed` webhook when it settles or fails.\n\n**Note:** Some filtering capabilities may not be available for all platforms. Contact support if you need access to additional filters.\n  "
+      description: 'Retrieves a paginated list of pay transactions for the authenticated platform.
+
+        Results can be filtered by participant, asset, deposit status, and timestamps.
+
+        Each deposit also emits a `crypto_pay_status_changed` webhook when it settles or fails.
+
+
+        **Note:** Some filtering capabilities may not be available for all platforms. Contact support if you need access to additional filters.'
       parameters:
       - $ref: '#/components/parameters/Signature'
       - $ref: '#/components/parameters/Timestamp'
@@ -291,12 +323,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getPayTransactions
+      x-operation-id-source: derived
   /pay/limits:
     get:
       tags:
       - Payins
       summary: Get payin authorization limits
-      description: "\nRetrieves the current authorization level, per-window limits, and volume totals for an\nend-user participant on the authenticated platform. Optionally scoped to a specific\nmerchant when `merchant_participant_code` is supplied (the authenticated platform must\noperate for that merchant).\n  "
+      description: 'Retrieves the current authorization level, per-window limits, and volume totals for an
+
+        end-user participant on the authenticated platform. Optionally scoped to a specific
+
+        merchant when `merchant_participant_code` is supplied (the authenticated platform must
+
+        operate for that merchant).'
       parameters:
       - $ref: '#/components/parameters/Signature'
       - $ref: '#/components/parameters/Timestamp'
@@ -349,12 +389,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getPayLimits
+      x-operation-id-source: derived
   /pay/{id}/approval:
     delete:
       tags:
       - Payins
       summary: Cancel a pending manual approval
-      description: "\nCancels a pending or approved manual approval for a Tier 4 payin transaction,\nsetting it to REJECTED state.\n\nUse this endpoint when a platform or shopper wants to withdraw a transaction\nthat is awaiting compliance review. Once cancelled, the transaction cannot\nbe reinstated — a new `POST /pay/rfq` must be issued.\n\nThe `merchant_code` query parameter is optional. When omitted, the\nauthenticated platform code is used as the merchant identifier.\n  "
+      description: 'Cancels a pending or approved manual approval for a Tier 4 payin transaction,
+
+        setting it to REJECTED state.
+
+
+        Use this endpoint when a platform or shopper wants to withdraw a transaction
+
+        that is awaiting compliance review. Once cancelled, the transaction cannot
+
+        be reinstated — a new `POST /pay/rfq` must be issued.
+
+
+        The `merchant_code` query parameter is optional. When omitted, the
+
+        authenticated platform code is used as the merchant identifier.'
       parameters:
       - $ref: '#/components/parameters/Signature'
       - $ref: '#/components/parameters/Timestamp'
@@ -419,142 +475,103 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: deletePayByIdApproval
+      x-operation-id-source: derived
 components:
   schemas:
-    PayinsTransactionNotAuthorizedError:
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    PayinsAuthorizationLimitError:
       type: object
       required:
       - error
       properties:
         error:
           type: string
-          example: Transaction not authorized
-          description: Generic authorization denial with no remediation. Returned with HTTP 403 — `{"error":"Transaction not authorized"}` when the authorizer rejection has no specific mapping or reports no missing fields, or `{"error":"Transaction not permitted"}` when the participant is not permitted to transact (e.g. geographic restriction) — and with HTTP 422 (`{"error":"Participant is not authorized to transact"}`) when the participant/merchant context precludes authorization.
-    PostPayRfqByIdBody:
+          example: Shopper's Daily Spend Limit for this type of transaction have been hit.
+          description: Returned with a 403 status when the shopper has exceeded their daily or lifetime spend aggregate at the current authorization level. Lifting the limit requires manual review.
+    PayTransactionSource:
       type: object
-      required:
-      - participant_code
+      description: Source of the auth transaction. Only present if Auth Embedded is enabled for the platform.
       properties:
-        participant_code:
+        type:
           type: string
-          description: The participant code for the shopper whose quote is being refreshed
-          example: ABCDEF
-    GetPayLimitsResponse:
+          description: Type of transaction source.
+          enum:
+          - CUSTODIAL
+          - NON_CUSTODIAL
+          - MANUAL
+          example: CUSTODIAL
+        integration:
+          type: string
+          description: Integration identifier (if applicable).
+          example: coinbase
+    GetPayTransactionsResponse:
       type: object
       properties:
         message:
-          type: object
-          properties:
-            request_id:
-              type: string
-              description: The unique identifier echoed from the request.
-              example: test-request-id
-            participant_code:
-              type: string
-              description: The shopper participant code.
-              example: SHOPP1
-            merchant_participant_code:
-              type: string
-              description: The merchant participant code.
-              example: MERCH1
-            merchant_classification:
-              type: string
-              description: Classification of the merchant (e.g. NON-TRANSFERABLE-3).
-              example: NON-TRANSFERABLE-3
-            current_level:
-              type: integer
-              description: Current authorization level for this participant (1–4).
-              example: 2
-            current_limits:
-              type: array
-              description: Authorization limits for each time window at the current level.
-              items:
-                $ref: '#/components/schemas/PayCurrentLimit'
-            platform_totals:
-              type: array
-              description: Aggregated transaction volume totals across the platform.
-              items:
-                $ref: '#/components/schemas/PayVolumeTotal'
-            merchant_totals:
-              type: array
-              description: Aggregated transaction volume totals for the merchant.
-              items:
-                $ref: '#/components/schemas/PayVolumeTotal'
-    PayFeeTierBreakdown:
-      type: object
-      description: Breakdown of how the fee was calculated across tiers.
-      properties:
-        tier:
-          type: number
-          description: The tier number (1-based).
+          type: array
+          description: Array of pay transactions
+          items:
+            $ref: '#/components/schemas/PayTransaction'
+        page:
+          type: integer
+          format: int32
+          description: Current page number (1-indexed)
           example: 1
-        amount_in_tier:
-          type: string
-          description: The deposit amount that fell into this tier.
-          example: '100.00'
-        fee_bps:
-          type: string
-          description: The fee rate in basis points applied for this tier.
-          example: '40'
-        fee_amount:
-          type: string
-          description: The fee amount calculated for this tier.
-          example: '0.40'
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    PayinsAuthorizationManualApprovalError:
-      type: object
-      required:
-      - error
-      - transaction_id
-      properties:
-        error:
-          type: string
-          example: Manual approval required for this transaction
-          description: 'Human-readable error message. Possible values: "Manual approval required for this transaction" (no approval on file yet), "Approval pending, shopper must wait" (an approval request is already in review), "Manual approval for this transaction was rejected" (the approval was rejected by compliance or the platform), or "Manual approval for this transaction has already been finalized" (the approval was already consumed).'
-        transaction_id:
-          type: string
-          example: txn_01HZF7QWXJ8XK3VYNS6TKDM4G2
-          description: Identifier of the manual approval review. Persist this and re-use it when checking approval status or cancelling the request.
-    PayVolumeTotal:
+        page_size:
+          type: integer
+          format: int32
+          description: Number of items per page (capped at 50)
+          example: 50
+        total_pages:
+          type: integer
+          format: int32
+          description: Total number of pages available
+          example: 1
+    PayCurrentLimit:
       type: object
       properties:
+        limit:
+          type: string
+          description: The authorized limit for this window, expressed as a decimal string.
+          example: '1000.00'
+        spent:
+          type: string
+          description: Amount spent within this window, expressed as a decimal string.
+          example: '250.00'
+        remaining:
+          type: string
+          description: Remaining capacity within this window, expressed as a decimal string.
+          example: '750.00'
         window:
           type: string
-          description: The time window for this total.
+          description: The time window this limit applies to.
           enum:
           - daily
           - annual
           - lifetime
           example: daily
-        currency:
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
           type: string
-          description: Currency of the total amount.
-          example: USD
-        total_amount:
-          type: string
-          description: Total transacted amount in this window, expressed as a decimal string.
-          example: '5000.00'
-        transaction_count:
-          type: integer
-          description: Number of transactions in this window.
-          example: 12
+          example: Internal Server Error
     PostPayRfqBody:
       type: object
       required:
@@ -597,6 +614,33 @@ components:
           maxLength: 50
           description: Optional participant code of the merchant tied to this transaction. When omitted, the platform itself is treated as the merchant.
           example: MERCH01
+    PayinsAuthorizationManualApprovalError:
+      type: object
+      required:
+      - error
+      - transaction_id
+      properties:
+        error:
+          type: string
+          example: Manual approval required for this transaction
+          description: 'Human-readable error message. Possible values: "Manual approval required for this transaction" (no approval on file yet), "Approval pending, shopper must wait" (an approval request is already in review), "Manual approval for this transaction was rejected" (the approval was rejected by compliance or the platform), or "Manual approval for this transaction has already been finalized" (the approval was already consumed).'
+        transaction_id:
+          type: string
+          example: txn_01HZF7QWXJ8XK3VYNS6TKDM4G2
+          description: Identifier of the manual approval review. Persist this and re-use it when checking approval status or cancelling the request.
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     PayinsAuthorizationKycError:
       type: object
       required:
@@ -616,83 +660,6 @@ components:
           - last_name
           - date_of_birth
           description: List of participant fields that must be collected or updated for the shopper to pass authorization at the requested amount and merchant MCC tier.
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    GetPayTransactionsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          description: Array of pay transactions
-          items:
-            $ref: '#/components/schemas/PayTransaction'
-        page:
-          type: integer
-          format: int32
-          description: Current page number (1-indexed)
-          example: 1
-        page_size:
-          type: integer
-          format: int32
-          description: Number of items per page (capped at 50)
-          example: 50
-        total_pages:
-          type: integer
-          format: int32
-          description: Total number of pages available
-          example: 1
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    PayinsAuthorizationLimitError:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Shopper's Daily Spend Limit for this type of transaction have been hit.
-          description: Returned with a 403 status when the shopper has exceeded their daily or lifetime spend aggregate at the current authorization level. Lifting the limit requires manual review.
-    PayCurrentLimit:
-      type: object
-      properties:
-        limit:
-          type: string
-          description: The authorized limit for this window, expressed as a decimal string.
-          example: '1000.00'
-        spent:
-          type: string
-          description: Amount spent within this window, expressed as a decimal string.
-          example: '250.00'
-        remaining:
-          type: string
-          description: Remaining capacity within this window, expressed as a decimal string.
-          example: '750.00'
-        window:
-          type: string
-          description: The time window this limit applies to.
-          enum:
-          - daily
-          - annual
-          - lifetime
-          example: daily
     PayTransaction:
       type: object
       properties:
@@ -807,35 +774,117 @@ components:
           type: string
           description: The merchant participant code associated with this payment. Only present when a merchant is linked to the transaction.
           example: MERCH01
-    Code400:
+    Code503:
       type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
       required:
-      - errors
+      - error
       properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    PayTransactionSource:
+        error:
+          type: string
+          example: Service Unavailable
+    PayinsTransactionNotAuthorizedError:
       type: object
-      description: Source of the auth transaction. Only present if Auth Embedded is enabled for the platform.
+      required:
+      - error
       properties:
-        type:
+        error:
           type: string
-          description: Type of transaction source.
+          example: Transaction not authorized
+          description: Generic authorization denial with no remediation. Returned with HTTP 403 — `{"error":"Transaction not authorized"}` when the authorizer rejection has no specific mapping or reports no missing fields, or `{"error":"Transaction not permitted"}` when the participant is not permitted to transact (e.g. geographic restriction) — and with HTTP 422 (`{"error":"Participant is not authorized to transact"}`) when the participant/merchant context precludes authorization.
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetPayLimitsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              description: The unique identifier echoed from the request.
+              example: test-request-id
+            participant_code:
+              type: string
+              description: The shopper participant code.
+              example: SHOPP1
+            merchant_participant_code:
+              type: string
+              description: The merchant participant code.
+              example: MERCH1
+            merchant_classification:
+              type: string
+              description: Classification of the merchant (e.g. NON-TRANSFERABLE-3).
+              example: NON-TRANSFERABLE-3
+            current_level:
+              type: integer
+              description: Current authorization level for this participant (1–4).
+              example: 2
+            current_limits:
+              type: array
+              description: Authorization limits for each time window at the current level.
+              items:
+                $ref: '#/components/schemas/PayCurrentLimit'
+            platform_totals:
+              type: array
+              description: Aggregated transaction volume totals across the platform.
+              items:
+                $ref: '#/components/schemas/PayVolumeTotal'
+            merchant_totals:
+              type: array
+              description: Aggregated transaction volume totals for the merchant.
+              items:
+                $ref: '#/components/schemas/PayVolumeTotal'
+    PayVolumeTotal:
+      type: object
+      properties:
+        window:
+          type: string
+          description: The time window for this total.
           enum:
-          - CUSTODIAL
-          - NON_CUSTODIAL
-          - MANUAL
-          example: CUSTODIAL
-        integration:
+          - daily
+          - annual
+          - lifetime
+          example: daily
+        currency:
           type: string
-          description: Integration identifier (if applicable).
-          example: coinbase
+          description: Currency of the total amount.
+          example: USD
+        total_amount:
+          type: string
+          description: Total transacted amount in this window, expressed as a decimal string.
+          example: '5000.00'
+        transaction_count:
+          type: integer
+          description: Number of transactions in this window.
+          example: 12
+    PayFeeTierBreakdown:
+      type: object
+      description: Breakdown of how the fee was calculated across tiers.
+      properties:
+        tier:
+          type: number
+          description: The tier number (1-based).
+          example: 1
+        amount_in_tier:
+          type: string
+          description: The deposit amount that fell into this tier.
+          example: '100.00'
+        fee_bps:
+          type: string
+          description: The fee rate in basis points applied for this tier.
+          example: '40'
+        fee_amount:
+          type: string
+          description: The fee amount calculated for this tier.
+          example: '0.40'
     PostPayRfqResponse:
       type: object
       properties:
@@ -896,6 +945,15 @@ components:
               type: string
               description: The merchant participant code associated with this payment. Only present when a merchant is linked to the transaction.
               example: MERCH01
+    PostPayRfqByIdBody:
+      type: object
+      required:
+      - participant_code
+      properties:
+        participant_code:
+          type: string
+          description: The participant code for the shopper whose quote is being refreshed
+          example: ABCDEF
   parameters:
     Signature:
       name: X-SCX-SIGNED

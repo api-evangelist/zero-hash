@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Participant Jurisdictions API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -69,6 +65,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getJurisdictionCountries
+      x-operation-id-source: derived
   /jurisdiction/subdivisions:
     get:
       tags:
@@ -373,6 +371,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getJurisdictionSubdivisions
+      x-operation-id-source: derived
   /jurisdiction/evaluate-onboarding:
     post:
       tags:
@@ -427,6 +427,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postJurisdictionEvaluateOnboarding
+      x-operation-id-source: derived
 components:
   parameters:
     Timestamp:
@@ -454,57 +456,6 @@ components:
         error:
           type: string
           example: Service Unavailable
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    GetCountriesResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          code:
-            type: string
-            example: US
-          name:
-            type: string
-            example: United States
-    GetSubdivisionsResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          code:
-            type: string
-            example: US-NY
-          name:
-            type: string
-            example: New York
-    PostEvaluateOnboardingResponse:
-      type: object
-      properties:
-        allowed:
-          type: boolean
-          description: whether participant onboarding is allowed or not for the given jurisdiction
-          example: true
     Code403:
       type: object
       description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
@@ -527,6 +478,57 @@ components:
         error:
           type: string
           example: Internal Server Error
+    GetCountriesResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          code:
+            type: string
+            example: US
+          name:
+            type: string
+            example: United States
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    PostEvaluateOnboardingResponse:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          description: whether participant onboarding is allowed or not for the given jurisdiction
+          example: true
+    GetSubdivisionsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          code:
+            type: string
+            example: US-NY
+          name:
+            type: string
+            example: New York
   securitySchemes:
     apiKey:
       type: apiKey

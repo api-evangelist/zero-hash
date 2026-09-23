@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Assets API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -115,6 +111,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAssets
+      x-operation-id-source: derived
   /assets/{asset}/staking_info:
     get:
       tags:
@@ -169,8 +167,87 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAssetsByAssetStakingInfo
+      x-operation-id-source: derived
 components:
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   schemas:
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    StakeableAssetInfoEntity:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: Asset symbol
+          example: ETH
+        apy_net:
+          type: string
+          description: Annual percentage yield net of fees
+          example: '3.47'
+        activation_period_days:
+          type: integer
+          description: Number of days until stake becomes active
+          example: 2
+        payout_frequency:
+          type: string
+          description: Frequency of reward payouts
+          example: daily
+        unstaking_period_days:
+          type: integer
+          description: Number of days for unstaking cooldown period
+          example: 8
+    GetAssetsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetsResponseEntity'
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
     GetAssetStakingInfoResponse:
       type: object
       properties:
@@ -191,22 +268,6 @@ components:
               format: date-time
               description: Timestamp when staking info was last updated
               example: '2025-08-24T15:30:00Z'
-    GetAssetsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetsResponseEntity'
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -220,15 +281,6 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
     Network:
       type: object
       properties:
@@ -344,67 +396,15 @@ components:
           type: boolean
           description: Shows if the asset is allowed to be used in the Staking API
           example: false
-    StakeableAssetInfoEntity:
+    Code404:
       type: object
-      properties:
-        symbol:
-          type: string
-          description: Asset symbol
-          example: ETH
-        apy_net:
-          type: string
-          description: Annual percentage yield net of fees
-          example: '3.47'
-        activation_period_days:
-          type: integer
-          description: Number of days until stake becomes active
-          example: 2
-        payout_frequency:
-          type: string
-          description: Frequency of reward payouts
-          example: daily
-        unstaking_period_days:
-          type: integer
-          description: Number of days for unstaking cooldown period
-          example: 8
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      description: The requested resource does not exist or is not visible to the caller.
       required:
       - error
       properties:
         error:
           type: string
-          example: Internal Server Error
-  parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
+          example: Not Found
   securitySchemes:
     apiKey:
       type: apiKey

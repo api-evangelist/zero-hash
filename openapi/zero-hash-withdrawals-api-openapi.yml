@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Withdrawals API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -28,7 +24,9 @@ paths:
       tags:
       - Withdrawals
       summary: Create withdrawal request
-      description: "Creates new withdrawal requests to be settled. Withdrawal requests created through the API go directly into an APPROVED state. \nTo retrieve withdrawal account IDs use the `GET /withdrawals/digital_asset_addresses` and `GET /withdrawals/fiat_accounts` endpoints."
+      description: 'Creates new withdrawal requests to be settled. Withdrawal requests created through the API go directly into an APPROVED state.
+
+        To retrieve withdrawal account IDs use the `GET /withdrawals/digital_asset_addresses` and `GET /withdrawals/fiat_accounts` endpoints.'
       parameters:
       - $ref: '#/components/parameters/Signature'
       - $ref: '#/components/parameters/Timestamp'
@@ -75,6 +73,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postWithdrawalsRequests
+      x-operation-id-source: derived
     get:
       tags:
       - Withdrawals
@@ -205,6 +205,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsRequests
+      x-operation-id-source: derived
   /withdrawals/requests/{id}:
     get:
       tags:
@@ -257,6 +259,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsRequestsById
+      x-operation-id-source: derived
     delete:
       tags:
       - Withdrawals
@@ -308,6 +312,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: deleteWithdrawalsRequestsById
+      x-operation-id-source: derived
   /withdrawals/execute:
     post:
       tags:
@@ -360,6 +366,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postWithdrawalsExecute
+      x-operation-id-source: derived
   /withdrawals/uma:
     post:
       tags:
@@ -412,6 +420,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postWithdrawalsUma
+      x-operation-id-source: derived
   /withdrawals/umalookup/{recipient}:
     get:
       tags:
@@ -465,6 +475,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsUmalookupByRecipient
+      x-operation-id-source: derived
   /withdrawals/digital_asset_addresses:
     get:
       tags:
@@ -523,6 +535,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsDigitalAssetAddresses
+      x-operation-id-source: derived
   /withdrawals/digital_asset_addresses/{id}:
     get:
       tags:
@@ -575,6 +589,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsDigitalAssetAddressesById
+      x-operation-id-source: derived
   /withdrawals/locked_network_fee:
     get:
       tags:
@@ -690,6 +706,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsLockedNetworkFee
+      x-operation-id-source: derived
   /withdrawals/fiat_accounts:
     get:
       tags:
@@ -738,6 +756,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsFiatAccounts
+      x-operation-id-source: derived
   /withdrawals/fiat_accounts/{id}:
     get:
       tags:
@@ -790,6 +810,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsFiatAccountsById
+      x-operation-id-source: derived
   /withdrawals/estimate_network_fee:
     get:
       tags:
@@ -866,6 +888,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsEstimateNetworkFee
+      x-operation-id-source: derived
   /withdrawals/validate_address:
     get:
       tags:
@@ -932,266 +956,123 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getWithdrawalsValidateAddress
+      x-operation-id-source: derived
 components:
   schemas:
-    GetWithdrawalAccountById:
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetNetworkEstimateFeeResponse:
       type: object
       properties:
         message:
-          $ref: '#/components/schemas/WithdrawalAddressesEntity'
-    PostWithdrawalRequestsBody:
-      type: object
-      title: Post Withdrawal Requests Body, all accepted fields
-      properties:
-        client_withdrawal_request_id:
-          type: string
-          description: "A unique identifier for the withdrawal, generally produced by the Platform on which the trade was executed\n      Note: this must be unique, per platform, per 24 hour period"
-          example: c6af3d80-1aca-4280-b96b-a9b8d7ced46a
-        withdrawal_account_id:
-          type: string
-          description: "The whitelisted withdrawal account or address to withdraw funds to\n      Note: only one of withdrawal_account_id, address or account{} can be submitted per withdrawal, but zerohash will always respond with withdrawal_account_id"
-          example: '146'
-        address:
-          type: string
-          description: "The whitelisted withdrawal account or address to withdraw funds to\n        Note: only one of withdrawal_account_id, address or account{} can be submitted per withdrawal, but zerohash will always respond with withdrawal_account_id"
-          example: 2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG
-        account:
-          type: object
-          description: "The whitelisted withdrawal account or address to withdraw funds to\n        Note: only one of withdrawal_account_id, address or account{} can be submitted per withdrawal, but zerohash will always respond with withdrawal_account_id"
-          properties:
-            name:
-              type: string
-              description: "The nickname given to the withdrawal account\n            Note: zerohash will append the last 4 digits of the account number to this when saving it"
-            limit:
-              type: number
-              description: The limit applied to the account on a per-withdrawal basis
-            type:
-              type: string
-              description: 'The type of account: REAL_TIME_FIAT for 24/7 USD withdrawals, DOMESTIC_FIAT for US wires or INTERNATIONAL_FIAT for international wires'
-            beneficiary_name:
-              type: string
-              description: The owner of the account at the withdrawal destination
-            account_number:
-              type: string
-              description: The unique IBAN or account number for the final withdrawal destination
-            bank_name:
-              type: string
-              description: The name of the destination financial institution
-            routing_number:
-              type: string
-              description: For US wires, the ABA routing number identifies the destination financial institution
-            swift_code:
-              type: string
-              description: SWIFT code, if applicable
-            recipient_instructions:
-              type: string
-              description: Per-request memo or wire reference for this withdrawal. Overrides the account-level default if provided. An empty string explicitly clears the memo. Omitting this field leaves the account-level value unchanged. Max 255 characters.
-              maxLength: 255
-              example: 'Invoice #123'
-            intermediary_bank:
-              type: boolean
-              description: Whether or not an intermediary bank is used
-            intermediary_bank_name:
-              type: string
-              description: Intermediary bank name, if applicable
-            intermediary_bank_code_type:
-              type: string
-              description: "Intermediary bank identifier code type, if applicable\n          Options include SWIFT"
-            intermediary_bank_code:
-              type: string
-              description: Intermediary bank identifier that corresponds to intermediary_bank_code_type, if applicable
-            intermediary_bank_account_number:
-              type: string
-              description: Intermediary bank IBAN or account number, if applicable
-            correspondent_bank_name:
-              type: string
-              description: Correspondent bank name, if applicable
-            correspondent_bank_code_type:
-              type: string
-              description: "Correspondent bank identifier code type, if applicable\n          Options include SWIFT"
-            correspondent_bank_code:
-              type: string
-              description: Correspondent bank identifier that corresponds to correspondent_bank_code_type, if applicable
-            correspondent_bank_account_number:
-              type: string
-              description: Correspondent bank IBAN or account number, if applicable
-        participant_code:
-          type: string
-          description: The participant code against whom the withdrawal will be made
-          example: ABCDEF
-        beneficiary_participant_code:
-          type: string
-          description: The identifier of the participant benefiting from the withdrawal request.
-          example: BENEFI
-        sender_participant_code:
-          type: string
-          description: The identifier of the participant initiating the withdrawal on behalf of `participant_code`. Only applicable when operating on behalf of a third party.
-          example: SENDER
-        beneficiary_first_name:
-          type: string
-          description: "The first name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
-          example: John
-        beneficiary_last_name:
-          type: string
-          description: "The last name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
-          example: Doe
-        beneficiary_business_name:
-          type: string
-          description: "The name of the the business participant benefiting from the quote request\n        Only applies to business beneficiaries. Cannot be used along with first/last_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
-          example: ACME Inc.
-        account_group:
-          type: string
-          description: The account group to withdraw against, e.g. 00SCXM for the Seed Digital Commodities Market account group
-          example: 00SCXM
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: sub_account_test
-        amount:
-          type: string
-          description: The amount to withdraw
-          example: '20.1'
-        asset:
-          type: string
-          enum:
-          - XRP
-          - XLM
-          - EOS
-          - ADA
-          - ALGO
-          description: The asset code for the withdrawal request, e.g. XRP.
-          example: BTC
-        destination_tag:
-          type: string
-          description: "The destination tag or memo ID associated with the transaction\n      If the asset is EOS, XLM or XRP and no_destination_tag is false, then this is required"
-        no_destination_tag:
-          type: boolean
-          description: "Whether or not the specific withdrawal and destination address requires a destination tag.If the asset `model` is `tag`, this field is required\n **Note: zerohash requires that `no_destination_tag` be `false` for `EOS`**."
-          example: false
-        gas_price:
-          type: string
-          description: Applicable only for ERC-20 tokens, the transaction fee payable on the Ethereum network - refer to our FAQ on how this works
-          example: '0.0001'
-        input_data:
-          type: string
-          description: Applicable only for smart contract executions on the Ethereum blockchain. This is the ABI encoding of the function and its arguments in RLP format.
-        trade_id:
-          type: string
-          description: If provided will apply the earlier agreed-upon network fee amount from the provided trade.
-          example: a81bc81b-dead-4e5d-abff-90865d1e13b1
-    WithdrawalUmaLookupResponse:
+          $ref: '#/components/schemas/NetworkFeeEntity'
+    DeleteWithdrawalRequestResponse:
       type: object
       properties:
-        currencies:
+        message:
           type: array
           items:
-            type: object
-            properties:
-              code:
-                type: string
-                description: The ISO 4217 (if applicable) currency code. For cryptocurrencies, this will be a ticker symbol, such as BTC for Bitcoin.
-                example: USD
-              symbol:
-                type: string
-                description: The display symbol of the currency.
-                example: $
-              name:
-                type: string
-                description: The full display name of the currency.
-                example: US Dollars
-              multiplier:
-                type: string
-                description: The estimated exchange rate in satoshis per smallest "unit" of this currency.
-                example: '0.062'
-              decimals:
-                type: number
-                description: The number of digits after the decimal point for display on the sender side, and to add clarity around what the "smallest unit" of the currency is. For example, in USD, by convention, there are 2 digits for cents - 5.95 USD. In this case, `decimals` would be 2. Note that the multiplier is still always in the smallest unit (cents).
-                example: 2
-              min:
-                type: string
-                description: The smallest amount of this currency that can be sent in a transaction.
-                example: '100'
-              max:
-                type: string
-                description: The largest amount of this currency that can be sent in a transaction.
-                example: '250000'
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    WithdrawalUmaResponse:
+            $ref: '#/components/schemas/WithdrawalRequestEntity'
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    WithdrawalUmaRequest:
       type: object
       properties:
-        platform_code:
-          type: string
-          description: zerohash platform code of the submitting platform.
-          example: JDNQGG
         participant_code:
           type: string
-          description: The participant code of the sender.
+          description: "The participant code against whom the withdrawal will be made. \n        Note: this participant should have an existing UMA address. (Required)"
           example: D3SCYB
-        sender_uma_address:
-          type: string
-          description: The registered UMA address of the sender.
-          example: $sender@uma.zerohash.id
         recipient_uma_address:
           type: string
-          description: The UMA address of the recipient.
+          description: The UMA address of the recipient. (Required)
           example: $satoshi@vasp.com
         amount_sats:
           type: string
-          description: The amount to be sent specified in Satoshis.
-          example: '900'
-        sender_fee_sats:
-          type: string
-          description: Satoshis charged (by zerohash and the estimated network fee) for the withdrawal.
-          example: '179'
+          description: The amount to be sent specified in Satoshis. (Optional)
+          example: '1000'
         receiving_currency:
           type: string
-          description: Currency to be received by the recipient (this is converted by the receiving VASP).
+          description: If specified, the receiving VASP will convert the incoming BTC into this currency. (Optional)
           example: SAT
         amount_receiving_currency:
           type: string
-          description: The final amount to be received in the 'receiving_currency'.
-          example: '900'
-        receiving_currency_multiplier:
+          description: The amount to be sent specified in the smallest unit of the receiving currency (eg. cents for USD). (Optional)
+          example: '1000'
+        client_withdrawal_request_id:
           type: string
-          description: Satoshis per unit of receiving currency as quoted by the receiving VASP.
-          example: '1.000000000'
-        receiver_exchange_fee_sats:
-          type: string
-          description: Satoshis to perform the currency exchange to 'receiving_currency' as quoted by the receiving VASP.
-          example: '100'
-        decimals:
-          type: number
-          description: The number of digits after the decimal point for the receiving_currency
-          example: '0'
-        invoice:
-          type: string
-          description: "Bolt11 invoice for the withdrawal. This string can be submitted to \n      'POST /withdrawals/requests' as a 'destination_address' to initiate payment."
-          example: lnbcrt...nvrx9
-        payee_name:
-          type: string
-          description: The name of the payee receiving the withdrawal.
-          example: John Doe
-        payee_email:
-          type: string
-          description: The email address of the payee receiving the withdrawal.
-          example: john.doe@example.com
+          description: A unique identifier for the withdrawal produced by the Platform. (Optional)
+          example: 5c080f8a-f993-4cc4-9b33-326c4b765105
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
     WithdrawalRequestBody:
       oneOf:
       - $ref: '#/components/schemas/PostWithdrawalRequestsBody'
@@ -1567,42 +1448,6 @@ components:
         - amount
         - asset
         - account
-    GetValidateAddressValidResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: The message will be “valid” if the address is valid for the given asset
-          example: the address is valid
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    GetWithdrawalFiatAccountById:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/FiatAccountsEntity'
     LockedNetworkFeeEntity:
       type: object
       description: Locked network fee quote returned by GET /withdrawals/locked_network_fee. The quote is valid for 30 seconds and must be referenced by `withdrawal_quote_id` when calling POST /withdrawals/execute.
@@ -1676,11 +1521,59 @@ components:
           type: string
           description: The withdrawal fee (denominated in the withdrawn asset) that will be charged by zerohash. Returns "0" when no withdrawal fee applies.
           example: '0'
-    GetNetworkEstimateFeeResponse:
+    WithdrawalAddressesEntity:
+      type: object
+      properties:
+        withdrawal_account_id:
+          type: number
+          description: The ID of the withdrawal account the address belongs to
+          example: 78
+        name:
+          type: string
+          description: The nickname the address was given when it was created
+          example: Fund ABC Wallet
+        address:
+          type: string
+          description: The blockchain address
+          example: M9zjMhjaPfwaeyeH2SY6aWyGqdTS9feg8Z
+        status:
+          type: string
+          description: The approval status of the address
+          example: APPROVED
+          enum:
+          - PENDING
+          - APPROVED
+          - REJECTED
+          - DELETED
+        asset:
+          type: string
+          description: The asset code for the specific account, e.g. BTC
+          example: LTC
+        limit:
+          type: number
+          description: "The limit applied to the account on a per-withdrawal basis\t"
+          example: 1000
+        last_update:
+          type: number
+          description: Timestamp for when the withdrawal address last update
+          example: '1554395972174'
+        submitted_address:
+          type: string
+          description: This is the original value for an address submitted by you, that was converted into a newer format supported by zerohash - this will be null if no conversion is necessary
+          example: BTC
+        account_group:
+          type: string
+          description: The account group the request was made against, e.g. 00SCXM for the Seed Digital Commodities Market account group
+          example: 33nb3pKcSZ69rUNNvZYkksisWvrzCmi3Jt
+        participant_code:
+          type: string
+          description: The participant the request belongs to, e.g. ABCDEF
+          example: ABCDEF
+    PostWithdrawalRequestsResponse:
       type: object
       properties:
         message:
-          $ref: '#/components/schemas/NetworkFeeEntity'
+          $ref: '#/components/schemas/WithdrawalRequestEntity'
     GetWithdrawalFiatAccountsResponse:
       type: object
       properties:
@@ -1778,136 +1671,6 @@ components:
           type: string
           description: The participant the request belongs to, e.g. ABCDEF
           example: ABCDEF
-    WithdrawalAddressesEntity:
-      type: object
-      properties:
-        withdrawal_account_id:
-          type: number
-          description: The ID of the withdrawal account the address belongs to
-          example: 78
-        name:
-          type: string
-          description: The nickname the address was given when it was created
-          example: Fund ABC Wallet
-        address:
-          type: string
-          description: The blockchain address
-          example: M9zjMhjaPfwaeyeH2SY6aWyGqdTS9feg8Z
-        status:
-          type: string
-          description: The approval status of the address
-          example: APPROVED
-          enum:
-          - PENDING
-          - APPROVED
-          - REJECTED
-          - DELETED
-        asset:
-          type: string
-          description: The asset code for the specific account, e.g. BTC
-          example: LTC
-        limit:
-          type: number
-          description: "The limit applied to the account on a per-withdrawal basis\t"
-          example: 1000
-        last_update:
-          type: number
-          description: Timestamp for when the withdrawal address last update
-          example: '1554395972174'
-        submitted_address:
-          type: string
-          description: This is the original value for an address submitted by you, that was converted into a newer format supported by zerohash - this will be null if no conversion is necessary
-          example: BTC
-        account_group:
-          type: string
-          description: The account group the request was made against, e.g. 00SCXM for the Seed Digital Commodities Market account group
-          example: 33nb3pKcSZ69rUNNvZYkksisWvrzCmi3Jt
-        participant_code:
-          type: string
-          description: The participant the request belongs to, e.g. ABCDEF
-          example: ABCDEF
-    ExecuteResponse:
-      type: object
-      description: Response body returned by POST /withdrawals/execute, describing the executed withdrawal.
-      properties:
-        request_id:
-          type: string
-          format: uuid
-          description: Server-generated request identifier for this execution. Returned as part of the audit trail for the call.
-          example: 81904785-c092-41cd-9497-9198749e1b67
-        withdrawal_quote_id:
-          type: string
-          format: uuid
-          description: The locked network fee quote ID that was executed. Matches the `withdrawal_quote_id` supplied on the request.
-          example: bdc4c936-8505-4e61-b859-f3a5a6bdc880
-        withdrawal_request_id:
-          type: string
-          format: uuid
-          description: The underlying withdrawal request ID created as a result of this execution. Use this value with GET /withdrawals/requests/{id} to poll status.
-          example: ffbfce91-8256-47b5-b079-e12a2c0198a2
-        participant_code:
-          type: string
-          description: The participant code the withdrawal is debited against.
-          example: ABCDEF
-        account_group:
-          type: string
-          description: The `account_group` for the source account the withdrawal is debited from.
-          example: JMCH0H
-        account_label:
-          type: string
-          description: The `account_label` for the source account the withdrawal is debited from.
-          example: general
-        withdrawal_address:
-          type: string
-          description: The on-chain address that will receive the crypto asset. Only populated when the quote was requested by address (rather than by `withdrawal_account_id`).
-          example: bc1qy08yh0cm565gvtx2z80dz6dnyr635mwtknl36e
-        withdrawal_account_id:
-          type: string
-          description: The whitelisted withdrawal account identifier used for the withdrawal. Only populated when the quote was requested by `withdrawal_account_id`.
-          example: '146'
-        destination_tag:
-          type: string
-          description: The destination tag or memo ID associated with the transaction. Required when the asset is EOS, XLM, or XRP and `no_destination_tag` is false. Returned as an empty string when not applicable.
-          example: ''
-        no_destination_tag:
-          type: boolean
-          description: Whether the destination address requires a destination tag. False for tag-based assets when a tag is included. zerohash requires `no_destination_tag` to be `false` for EOS.
-          example: false
-        asset:
-          type: string
-          description: The asset being withdrawn.
-          example: BTC
-        amount:
-          type: string
-          description: The requested withdrawal amount.
-          example: '0.04867615'
-        amount_notional:
-          type: string
-          description: The notional value of the withdrawal amount in USD at the time the quote was locked.
-          example: '3832.51'
-        network_fee:
-          type: string
-          description: The network fee quantity being deducted from the requested withdrawal amount.
-          example: '0.00000282'
-        network_fee_notional:
-          type: string
-          description: The network fee notional value in USD.
-          example: '0.22'
-        on_chain_status:
-          type: string
-          description: The status of the withdrawal on the blockchain at the time of execution. Newly executed withdrawals return `PENDING`; the status transitions to `CONFIRMED` once the transaction is confirmed on-chain.
-          enum:
-          - CONFIRMED
-          - PENDING
-          example: PENDING
-        withdrawal_fee:
-          type: string
-          description: The withdrawal fee (denominated in the withdrawn asset) charged by zerohash for this execution. Returns "0" when no withdrawal fee applies.
-          example: '0'
-        client_withdrawal_request_id:
-          type: string
-          description: The client-supplied `client_withdrawal_request_id` echoed back, or an empty string when none was supplied.
-          example: ''
     Code500:
       type: object
       description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
@@ -1917,107 +1680,6 @@ components:
         error:
           type: string
           example: Internal Server Error
-    UnderlyingCurrency:
-      type: string
-      description: the underlying asset
-      example: BTC
-      enum:
-      - AAVE.ETH
-      - ADA
-      - ALGO
-      - AVAX
-      - BAT.ETH
-      - BCH
-      - BTC
-      - BUSD.ETH
-      - COMP.ETH
-      - DAI.ETH
-      - DOGE
-      - DOT
-      - EGLD
-      - EOS
-      - ETC
-      - ETH
-      - ETH.ARBITRUM
-      - GRT.ETH
-      - GYEN.ETH
-      - HBAR
-      - LINK.ETH
-      - LTC
-      - LUNA
-      - MATIC.ETH
-      - MATIC.POLYGON
-      - MKR.ETH
-      - MOB
-      - SAND.ETH
-      - SOL
-      - UNI.ETH
-      - USDC.ETH
-      - USDC.ALGO
-      - USDC.POLYGON
-      - USDC.SOL
-      - USDC.HBAR
-      - USDC.XLM
-      - USDC.AVAX
-      - USDT.ETH
-      - UST
-      - WBTC.ETH
-      - XEM
-      - XLM
-      - XRP
-      - XTZ
-      - ZUSD.ETH
-    WithdrawalExecuteResponse:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/ExecuteResponse'
-    PostWithdrawalRequestsResponse:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/WithdrawalRequestEntity'
-    WithdrawalExecuteRequest:
-      type: object
-      properties:
-        withdrawal_quote_id:
-          type: string
-          description: The unique id associated with a locked network fee quote
-        client_withdrawal_request_id:
-          type: string
-          description: A unique id for the withdrawal produced by the Platform
-        beneficiary_participant_code:
-          type: string
-          description: The identifier of the participant benefiting from the withdrawal request
-        beneficiary_first_name:
-          type: string
-          description: "The first name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
-        beneficiary_last_name:
-          type: string
-          description: "The last name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
-        beneficiary_business_name:
-          type: string
-          description: "The name of the the business participant benefiting from the quote request\n        Only applies to business beneficiaries. Cannot be used along with first/last_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    GetWithdrawalRequestResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/WithdrawalRequestEntity'
     WithdrawalRequestEntity:
       type: object
       properties:
@@ -2221,11 +1883,222 @@ components:
           nullable: true
           description: Recipient instructions for this withdrawal request (e.g. wire memo). Returns the request-level memo if provided, otherwise the account default, or null when none is set.
           example: 'Invoice #123'
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    WithdrawalUmaLookupResponse:
+      type: object
+      properties:
+        currencies:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                description: The ISO 4217 (if applicable) currency code. For cryptocurrencies, this will be a ticker symbol, such as BTC for Bitcoin.
+                example: USD
+              symbol:
+                type: string
+                description: The display symbol of the currency.
+                example: $
+              name:
+                type: string
+                description: The full display name of the currency.
+                example: US Dollars
+              multiplier:
+                type: string
+                description: The estimated exchange rate in satoshis per smallest "unit" of this currency.
+                example: '0.062'
+              decimals:
+                type: number
+                description: The number of digits after the decimal point for display on the sender side, and to add clarity around what the "smallest unit" of the currency is. For example, in USD, by convention, there are 2 digits for cents - 5.95 USD. In this case, `decimals` would be 2. Note that the multiplier is still always in the smallest unit (cents).
+                example: 2
+              min:
+                type: string
+                description: The smallest amount of this currency that can be sent in a transaction.
+                example: '100'
+              max:
+                type: string
+                description: The largest amount of this currency that can be sent in a transaction.
+                example: '250000'
     GetLockedNetworkFeeResponse:
       type: object
       properties:
         message:
           $ref: '#/components/schemas/LockedNetworkFeeEntity'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    GetWithdrawalAddressesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/WithdrawalAddressesEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
+    PostWithdrawalRequestsBody:
+      type: object
+      title: Post Withdrawal Requests Body, all accepted fields
+      properties:
+        client_withdrawal_request_id:
+          type: string
+          description: "A unique identifier for the withdrawal, generally produced by the Platform on which the trade was executed\n      Note: this must be unique, per platform, per 24 hour period"
+          example: c6af3d80-1aca-4280-b96b-a9b8d7ced46a
+        withdrawal_account_id:
+          type: string
+          description: "The whitelisted withdrawal account or address to withdraw funds to\n      Note: only one of withdrawal_account_id, address or account{} can be submitted per withdrawal, but zerohash will always respond with withdrawal_account_id"
+          example: '146'
+        address:
+          type: string
+          description: "The whitelisted withdrawal account or address to withdraw funds to\n        Note: only one of withdrawal_account_id, address or account{} can be submitted per withdrawal, but zerohash will always respond with withdrawal_account_id"
+          example: 2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG
+        account:
+          type: object
+          description: "The whitelisted withdrawal account or address to withdraw funds to\n        Note: only one of withdrawal_account_id, address or account{} can be submitted per withdrawal, but zerohash will always respond with withdrawal_account_id"
+          properties:
+            name:
+              type: string
+              description: "The nickname given to the withdrawal account\n            Note: zerohash will append the last 4 digits of the account number to this when saving it"
+            limit:
+              type: number
+              description: The limit applied to the account on a per-withdrawal basis
+            type:
+              type: string
+              description: 'The type of account: REAL_TIME_FIAT for 24/7 USD withdrawals, DOMESTIC_FIAT for US wires or INTERNATIONAL_FIAT for international wires'
+            beneficiary_name:
+              type: string
+              description: The owner of the account at the withdrawal destination
+            account_number:
+              type: string
+              description: The unique IBAN or account number for the final withdrawal destination
+            bank_name:
+              type: string
+              description: The name of the destination financial institution
+            routing_number:
+              type: string
+              description: For US wires, the ABA routing number identifies the destination financial institution
+            swift_code:
+              type: string
+              description: SWIFT code, if applicable
+            recipient_instructions:
+              type: string
+              description: Per-request memo or wire reference for this withdrawal. Overrides the account-level default if provided. An empty string explicitly clears the memo. Omitting this field leaves the account-level value unchanged. Max 255 characters.
+              maxLength: 255
+              example: 'Invoice #123'
+            intermediary_bank:
+              type: boolean
+              description: Whether or not an intermediary bank is used
+            intermediary_bank_name:
+              type: string
+              description: Intermediary bank name, if applicable
+            intermediary_bank_code_type:
+              type: string
+              description: "Intermediary bank identifier code type, if applicable\n          Options include SWIFT"
+            intermediary_bank_code:
+              type: string
+              description: Intermediary bank identifier that corresponds to intermediary_bank_code_type, if applicable
+            intermediary_bank_account_number:
+              type: string
+              description: Intermediary bank IBAN or account number, if applicable
+            correspondent_bank_name:
+              type: string
+              description: Correspondent bank name, if applicable
+            correspondent_bank_code_type:
+              type: string
+              description: "Correspondent bank identifier code type, if applicable\n          Options include SWIFT"
+            correspondent_bank_code:
+              type: string
+              description: Correspondent bank identifier that corresponds to correspondent_bank_code_type, if applicable
+            correspondent_bank_account_number:
+              type: string
+              description: Correspondent bank IBAN or account number, if applicable
+        participant_code:
+          type: string
+          description: The participant code against whom the withdrawal will be made
+          example: ABCDEF
+        beneficiary_participant_code:
+          type: string
+          description: The identifier of the participant benefiting from the withdrawal request.
+          example: BENEFI
+        sender_participant_code:
+          type: string
+          description: The identifier of the participant initiating the withdrawal on behalf of `participant_code`. Only applicable when operating on behalf of a third party.
+          example: SENDER
+        beneficiary_first_name:
+          type: string
+          description: "The first name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+          example: John
+        beneficiary_last_name:
+          type: string
+          description: "The last name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+          example: Doe
+        beneficiary_business_name:
+          type: string
+          description: "The name of the the business participant benefiting from the quote request\n        Only applies to business beneficiaries. Cannot be used along with first/last_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+          example: ACME Inc.
+        account_group:
+          type: string
+          description: The account group to withdraw against, e.g. 00SCXM for the Seed Digital Commodities Market account group
+          example: 00SCXM
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: sub_account_test
+        amount:
+          type: string
+          description: The amount to withdraw
+          example: '20.1'
+        asset:
+          type: string
+          enum:
+          - XRP
+          - XLM
+          - EOS
+          - ADA
+          - ALGO
+          description: The asset code for the withdrawal request, e.g. XRP.
+          example: BTC
+        destination_tag:
+          type: string
+          description: "The destination tag or memo ID associated with the transaction\n      If the asset is EOS, XLM or XRP and no_destination_tag is false, then this is required"
+        no_destination_tag:
+          type: boolean
+          description: "Whether or not the specific withdrawal and destination address requires a destination tag.If the asset `model` is `tag`, this field is required\n **Note: zerohash requires that `no_destination_tag` be `false` for `EOS`**."
+          example: false
+        gas_price:
+          type: string
+          description: Applicable only for ERC-20 tokens, the transaction fee payable on the Ethereum network - refer to our FAQ on how this works
+          example: '0.0001'
+        input_data:
+          type: string
+          description: Applicable only for smart contract executions on the Ethereum blockchain. This is the ABI encoding of the function and its arguments in RLP format.
+        trade_id:
+          type: string
+          description: If provided will apply the earlier agreed-upon network fee amount from the provided trade.
+          example: a81bc81b-dead-4e5d-abff-90865d1e13b1
     NetworkFeeEntity:
       type: object
       description: network fee
@@ -2246,6 +2119,46 @@ components:
           type: string
           description: fee_amount x (index price for fee_currency quoted in quoted_currency)
           example: '2.867469544894346440'
+    WithdrawalExecuteResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/ExecuteResponse'
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetWithdrawalFiatAccountById:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/FiatAccountsEntity'
+    GetValidateAddressValidResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The message will be “valid” if the address is valid for the given asset
+          example: the address is valid
+    GetValidateAddressInvalidResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The message will be “invalid” if the address is invalid for the given asset, or indicate that a destination tag/memo is required
+          example: the address is invalid
+    GetWithdrawalRequestResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/WithdrawalRequestEntity'
     GetWithdrawalRequestsResponse:
       type: object
       properties:
@@ -2265,60 +2178,173 @@ components:
         count:
           type: number
           example: 1
-    GetWithdrawalAddressesResponse:
+    WithdrawalExecuteRequest:
       type: object
       properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/WithdrawalAddressesEntity'
-        page:
-          type: number
-          example: 1
-        total_pages:
-          type: number
-          example: 1
-    GetValidateAddressInvalidResponse:
-      type: object
-      properties:
-        message:
+        withdrawal_quote_id:
           type: string
-          description: The message will be “invalid” if the address is invalid for the given asset, or indicate that a destination tag/memo is required
-          example: the address is invalid
-    DeleteWithdrawalRequestResponse:
+          description: The unique id associated with a locked network fee quote
+        client_withdrawal_request_id:
+          type: string
+          description: A unique id for the withdrawal produced by the Platform
+        beneficiary_participant_code:
+          type: string
+          description: The identifier of the participant benefiting from the withdrawal request
+        beneficiary_first_name:
+          type: string
+          description: "The first name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+        beneficiary_last_name:
+          type: string
+          description: "The last name of the participant benefiting from the quote request\n        Only applies to individual beneficiaries. Cannot be used along with business_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+        beneficiary_business_name:
+          type: string
+          description: "The name of the the business participant benefiting from the quote request\n        Only applies to business beneficiaries. Cannot be used along with first/last_beneficiary_name.\n        Note: Redundant if beneficiary_participant_code is provided in request"
+    WithdrawalUmaResponse:
       type: object
       properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/WithdrawalRequestEntity'
-    WithdrawalUmaRequest:
-      type: object
-      properties:
+        platform_code:
+          type: string
+          description: zerohash platform code of the submitting platform.
+          example: JDNQGG
         participant_code:
           type: string
-          description: "The participant code against whom the withdrawal will be made. \n        Note: this participant should have an existing UMA address. (Required)"
+          description: The participant code of the sender.
           example: D3SCYB
+        sender_uma_address:
+          type: string
+          description: The registered UMA address of the sender.
+          example: $sender@uma.zerohash.id
         recipient_uma_address:
           type: string
-          description: The UMA address of the recipient. (Required)
+          description: The UMA address of the recipient.
           example: $satoshi@vasp.com
         amount_sats:
           type: string
-          description: The amount to be sent specified in Satoshis. (Optional)
-          example: '1000'
+          description: The amount to be sent specified in Satoshis.
+          example: '900'
+        sender_fee_sats:
+          type: string
+          description: Satoshis charged (by zerohash and the estimated network fee) for the withdrawal.
+          example: '179'
         receiving_currency:
           type: string
-          description: If specified, the receiving VASP will convert the incoming BTC into this currency. (Optional)
+          description: Currency to be received by the recipient (this is converted by the receiving VASP).
           example: SAT
         amount_receiving_currency:
           type: string
-          description: The amount to be sent specified in the smallest unit of the receiving currency (eg. cents for USD). (Optional)
-          example: '1000'
+          description: The final amount to be received in the 'receiving_currency'.
+          example: '900'
+        receiving_currency_multiplier:
+          type: string
+          description: Satoshis per unit of receiving currency as quoted by the receiving VASP.
+          example: '1.000000000'
+        receiver_exchange_fee_sats:
+          type: string
+          description: Satoshis to perform the currency exchange to 'receiving_currency' as quoted by the receiving VASP.
+          example: '100'
+        decimals:
+          type: number
+          description: The number of digits after the decimal point for the receiving_currency
+          example: '0'
+        invoice:
+          type: string
+          description: "Bolt11 invoice for the withdrawal. This string can be submitted to \n      'POST /withdrawals/requests' as a 'destination_address' to initiate payment."
+          example: lnbcrt...nvrx9
+        payee_name:
+          type: string
+          description: The name of the payee receiving the withdrawal.
+          example: John Doe
+        payee_email:
+          type: string
+          description: The email address of the payee receiving the withdrawal.
+          example: john.doe@example.com
+    GetWithdrawalAccountById:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/WithdrawalAddressesEntity'
+    ExecuteResponse:
+      type: object
+      description: Response body returned by POST /withdrawals/execute, describing the executed withdrawal.
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: Server-generated request identifier for this execution. Returned as part of the audit trail for the call.
+          example: 81904785-c092-41cd-9497-9198749e1b67
+        withdrawal_quote_id:
+          type: string
+          format: uuid
+          description: The locked network fee quote ID that was executed. Matches the `withdrawal_quote_id` supplied on the request.
+          example: bdc4c936-8505-4e61-b859-f3a5a6bdc880
+        withdrawal_request_id:
+          type: string
+          format: uuid
+          description: The underlying withdrawal request ID created as a result of this execution. Use this value with GET /withdrawals/requests/{id} to poll status.
+          example: ffbfce91-8256-47b5-b079-e12a2c0198a2
+        participant_code:
+          type: string
+          description: The participant code the withdrawal is debited against.
+          example: ABCDEF
+        account_group:
+          type: string
+          description: The `account_group` for the source account the withdrawal is debited from.
+          example: JMCH0H
+        account_label:
+          type: string
+          description: The `account_label` for the source account the withdrawal is debited from.
+          example: general
+        withdrawal_address:
+          type: string
+          description: The on-chain address that will receive the crypto asset. Only populated when the quote was requested by address (rather than by `withdrawal_account_id`).
+          example: bc1qy08yh0cm565gvtx2z80dz6dnyr635mwtknl36e
+        withdrawal_account_id:
+          type: string
+          description: The whitelisted withdrawal account identifier used for the withdrawal. Only populated when the quote was requested by `withdrawal_account_id`.
+          example: '146'
+        destination_tag:
+          type: string
+          description: The destination tag or memo ID associated with the transaction. Required when the asset is EOS, XLM, or XRP and `no_destination_tag` is false. Returned as an empty string when not applicable.
+          example: ''
+        no_destination_tag:
+          type: boolean
+          description: Whether the destination address requires a destination tag. False for tag-based assets when a tag is included. zerohash requires `no_destination_tag` to be `false` for EOS.
+          example: false
+        asset:
+          type: string
+          description: The asset being withdrawn.
+          example: BTC
+        amount:
+          type: string
+          description: The requested withdrawal amount.
+          example: '0.04867615'
+        amount_notional:
+          type: string
+          description: The notional value of the withdrawal amount in USD at the time the quote was locked.
+          example: '3832.51'
+        network_fee:
+          type: string
+          description: The network fee quantity being deducted from the requested withdrawal amount.
+          example: '0.00000282'
+        network_fee_notional:
+          type: string
+          description: The network fee notional value in USD.
+          example: '0.22'
+        on_chain_status:
+          type: string
+          description: The status of the withdrawal on the blockchain at the time of execution. Newly executed withdrawals return `PENDING`; the status transitions to `CONFIRMED` once the transaction is confirmed on-chain.
+          enum:
+          - CONFIRMED
+          - PENDING
+          example: PENDING
+        withdrawal_fee:
+          type: string
+          description: The withdrawal fee (denominated in the withdrawn asset) charged by zerohash for this execution. Returns "0" when no withdrawal fee applies.
+          example: '0'
         client_withdrawal_request_id:
           type: string
-          description: A unique identifier for the withdrawal produced by the Platform. (Optional)
-          example: 5c080f8a-f993-4cc4-9b33-326c4b765105
+          description: The client-supplied `client_withdrawal_request_id` echoed back, or an empty string when none was supplied.
+          example: ''
   parameters:
     Signature:
       name: X-SCX-SIGNED

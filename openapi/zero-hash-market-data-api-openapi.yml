@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Market Data API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -83,6 +79,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getMarketDataSymbolData
+      x-operation-id-source: derived
   /market_data/ohlcv:
     get:
       tags:
@@ -173,6 +171,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getMarketDataOhlcv
+      x-operation-id-source: derived
   /market_data/news/latest:
     get:
       tags:
@@ -464,6 +464,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getMarketDataNewsLatest
+      x-operation-id-source: derived
   /market_data/news/feeds:
     get:
       tags:
@@ -510,6 +512,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getMarketDataNewsFeeds
+      x-operation-id-source: derived
   /market_data/news/categories:
     get:
       tags:
@@ -556,6 +560,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getMarketDataNewsCategories
+      x-operation-id-source: derived
   /market_data/image/{path}:
     get:
       tags:
@@ -618,45 +624,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getMarketDataImageByPath
+      x-operation-id-source: derived
 components:
   schemas:
-    LiquidityEnabledQuotedCurrency:
-      type: string
-      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
-      example: USD
-      enum:
-      - USD
-      - EUR
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    GetNewsFeedsResponse:
+    GetLatestNewsResponse:
       type: array
-      description: List of available news feeds.
+      description: List of market news articles.
       items:
-        $ref: '#/components/schemas/GetNewsFeed'
-    DecimalValue:
-      type: object
-      description: Decimal value represented as a stringified number.
-      properties:
-        value:
-          type: string
-          example: '24774.07'
+        $ref: '#/components/schemas/GetLatestNewsArticle'
     GetNewsFeed:
       properties:
         key:
@@ -688,11 +664,75 @@ components:
         message:
           type: string
           example: This api key does not have write permission to this endpoint
-    GetLatestNewsResponse:
+    GetLatestNewsArticle:
+      properties:
+        published_on:
+          description: Timestamp when the article was published
+          type: object
+          properties:
+            seconds:
+              type: number
+              example: 1684928
+            nanos:
+              type: number
+              example: 819000000
+          example:
+            seconds: 1684928
+            nanos: 819000000
+        image_url:
+          example: /resources/news/21/example.jpeg
+          description: The image URL for the market data
+          type: string
+        title:
+          example: Example Title
+          description: ' Article title'
+          type: string
+        url:
+          example: https://www.externalsource.com/all/article_url/
+          description: Link to news article
+          type: string
+        body:
+          example: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur
+          description: Text of the article
+          type: string
+        tagsList:
+          description: Associated tags
+          type: array
+          example:
+          - All
+        language:
+          example: EN
+          description: English (EN) or Portuguese (PT)
+          type: string
+        up_votes:
+          example: 2
+          description: 'Number of upvotes for article '
+          type: number
+        down_votes:
+          example: 5
+          description: 'Number of downvotes for article     '
+          type: number
+        categoriesList:
+          description: Associated categories with the article
+          type: array
+          example:
+          - MARKET|BTC
+        sourceInfo:
+          description: Information about the source of the article
+          type: object
+          example:
+            name: ExampleSource
+            img: /images/news/default/example.png
+            language: EN
+        source:
+          example: exampleSource
+          description: Source of the article
+          type: string
+    GetNewsFeedsResponse:
       type: array
-      description: List of market news articles.
+      description: List of available news feeds.
       items:
-        $ref: '#/components/schemas/GetLatestNewsArticle'
+        $ref: '#/components/schemas/GetNewsFeed'
     OHLCVResponseEntity:
       type: object
       properties:
@@ -728,18 +768,294 @@ components:
           type: number
           description: Average transaction price (in units of the quoted currency)
           example: 28029.6220768072
-    GetNewsCategory:
+    LiquidityEnabledQuotedCurrency:
+      type: string
+      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      example: USD
+      enum:
+      - USD
+      - EUR
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
       properties:
-        categoryName:
-          description: Name of news category
+        error:
           type: string
-          example: DOGE
-        wordsAssociatedWithCategoryList:
-          description: Additional words associated with each category
+          example: Internal Server Error
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
           type: array
+          items:
+            type: string
           example:
-          - DOGE
-          - DOGECOIN
+          - body/amount must be >= 0
+          - body/asset is required
+    GetNewsCategoriesResponse:
+      type: array
+      description: List of available news categories.
+      items:
+        $ref: '#/components/schemas/GetNewsCategory'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    LiquidityEnabledUnderlyingCurrency:
+      type: string
+      description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
+      example: BTC
+      enum:
+      - USDC.OPTIMISM
+      - USDC.SUI
+      - DOT
+      - FIL
+      - PYUSD.ETH
+      - TRX
+      - ZRX
+      - DAI.ETH
+      - USDC.WORLDCHAIN
+      - USDP
+      - USDT.BSC
+      - USDT.CELO
+      - PEPE.ETH
+      - SAND
+      - USDC.DOTHUB
+      - USDC.SEI
+      - USDC.SOL
+      - USDC.ZKSYNC
+      - ENA.ETH
+      - MANA.ETH
+      - PYTH.SOL
+      - SOL
+      - USDC.BASE
+      - USDC.CELO
+      - USDT
+      - ADA
+      - INJ.ETH
+      - MATIC.POLYGON
+      - PAXG
+      - USD
+      - AAVE.ETH
+      - ALGO
+      - EURC.XLM
+      - KNC.ETH
+      - PNUT.SOL
+      - SHIB
+      - BCH
+      - DOGE
+      - EGLD
+      - JTO.SOL
+      - UNI.ETH
+      - USDC
+      - USDC.ARBITRUM
+      - ONDO.ETH
+      - PENGU.SOL
+      - USD
+      - WLFI.ETH
+      - XLM
+      - APT
+      - CC
+      - ETH.OPTIMISM
+      - ETH.WORLDCHAIN
+      - LDO.ETH
+      - MORPHO.ETH
+      - SEI
+      - ETH.ZKSYNC
+      - USDC.AVAX
+      - USDC.XLM
+      - USDT.DOTHUB
+      - USDT.SOL
+      - MANA
+      - USDC.ALGO
+      - MATIC.ETH
+      - NEAR
+      - UNI
+      - USDT.ARBITRUM
+      - USDT.AVAX
+      - OMG
+      - ARB.ARBITRUM
+      - COMP.ETH
+      - GRT.ETH
+      - USDC.POLYGON
+      - AVAX
+      - AAVE
+      - CELO
+      - PYUSD.SOL
+      - PAXG.ETH
+      - USDC.MONAD
+      - BAT
+      - COMP
+      - ETH.ARBITRUM
+      - ETH.BASE
+      - OP.OPTIMISM
+      - TRUMP.SOL
+      - ENJ.ETH
+      - SUI
+      - USDT.ETH
+      - USDT.OPTIMISM
+      - USDT.TRX
+      - USDT.XPL
+      - OMG.ETH
+      - XRP
+      - HBAR
+      - USDC.APT
+      - USDC.ETH
+      - BNB
+      - ATOM
+      - BAT.ETH
+      - GRT
+      - LINK.ETH
+      - USDP.SOL
+      - ZK.ZKSYNC
+      - BONK.SOL
+      - KNC
+      - TIA
+      - ZRO.ETH
+      - ZRX.ETH
+      - PUMP.SOL
+      - USD
+      - XTZ
+      - CRV.ETH
+      - GALA.ETH
+      - TON
+      - USDT.POLYGON
+      - WBTC.ETH
+      - XPL
+      - BTC
+      - MON
+      - SHIB.ETH
+      - USDC.BSC
+      - WLD.WORLDCHAIN
+      - W.SOL
+      - LTC
+      - RLUSD.ETH
+      - WBTC
+      - LINK
+      - USDCX.CANTON
+      - ETH
+      - WIF.SOL
+      - APE.ETH
+      - EURC
+      - MKR.ETH
+      - RLUSD.XRP
+    GetSymbolDataResponse:
+      type: array
+      description: 'Array of tuples keyed by underlying symbol. Each tuple is `[underlyingSymbol, { marketDataMap: [[quotedSymbol, GetSymbolData], ...] }]`.'
+      items:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+        - type: string
+          description: Underlying asset symbol (e.g. `BTC`).
+          example: BTC
+        - type: object
+          required:
+          - marketDataMap
+          properties:
+            marketDataMap:
+              type: array
+              description: Array of `[quotedSymbol, GetSymbolData]` tuples for the given underlying.
+              items:
+                type: array
+                minItems: 2
+                maxItems: 2
+                items:
+                - type: string
+                  description: Quoted currency symbol (e.g. `USD`).
+                  example: USD
+                - $ref: '#/components/schemas/GetSymbolData'
+      example:
+      - - BTC
+        - marketDataMap:
+          - - USD
+            - underlyingSymbol: BTC
+              quotedSymbol: USD
+              price:
+                value: '63523.1267818274'
+              lastTimestamp:
+                seconds: 1780942
+                nanos: 100000000
+              median:
+                value: '63523.1267818274'
+              lastVolume:
+                value: '0.00000017'
+              lastUnderlyingVolume:
+                value: '0.0107958126'
+              lastTradeId: '1204043756'
+              dayUnderlyingVolume:
+                value: '23877.59071385'
+              dayQuotedVolume:
+                value: '1513703665.67374'
+              h24UnderlyingVolume:
+                value: '33691.54917206'
+              h24QuotedVolume:
+                value: '2126242561.78843'
+              dayOpen:
+                value: '63315.1065321782'
+              dayHigh:
+                value: '64199.9776710545'
+              dayLow:
+                value: '62393.1022759814'
+              h24Open:
+                value: '62014.926566741'
+              h24High:
+                value: '64199.9776710545'
+              h24Low:
+                value: '61166.479991137'
+              hourUnderlyingVolume:
+                value: '105.6514879'
+              hourQuotedVolume:
+                value: '6717810.00305892'
+              hourOpen:
+                value: '63534.1678453974'
+              hourHigh:
+                value: '63624.8539896268'
+              hourLow:
+                value: '63519.9494427626'
+              h24Change:
+                value: '1508.200215086399'
+              h24PctChange:
+                value: '2.431995486543487'
+              dayChange:
+                value: '208.02024964919838'
+              dayPctChange:
+                value: '0.3285475789944027'
+              hourChange:
+                value: '-11.041063570002734'
+              hourPctChange:
+                value: '-0.017378150913804062'
+              supply: 20039087
+              mktcap:
+                value: '1272945464093.0693'
+              circulatingSupply: 20039087
+              circulatingSupplyMktcap:
+                value: '1272945464093.0693'
+              h24UnderlyingTotalVolume:
+                value: '326752.617229663'
+              h24QuotedTotalVolume:
+                value: '20742397942.829296'
+              imageUrl: //media/37746251/btc.png
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
     GetSymbolData:
       type: object
       properties:
@@ -893,333 +1209,6 @@ components:
           type: string
           example: //media/37746251/btc.png
           description: Image URL for the underlying asset.
-    GetLatestNewsArticle:
-      properties:
-        published_on:
-          description: Timestamp when the article was published
-          type: object
-          properties:
-            seconds:
-              type: number
-              example: 1684928
-            nanos:
-              type: number
-              example: 819000000
-          example:
-            seconds: 1684928
-            nanos: 819000000
-        image_url:
-          example: /resources/news/21/example.jpeg
-          description: The image URL for the market data
-          type: string
-        title:
-          example: Example Title
-          description: ' Article title'
-          type: string
-        url:
-          example: https://www.externalsource.com/all/article_url/
-          description: Link to news article
-          type: string
-        body:
-          example: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur
-          description: Text of the article
-          type: string
-        tagsList:
-          description: Associated tags
-          type: array
-          example:
-          - All
-        language:
-          example: EN
-          description: English (EN) or Portuguese (PT)
-          type: string
-        up_votes:
-          example: 2
-          description: 'Number of upvotes for article '
-          type: number
-        down_votes:
-          example: 5
-          description: 'Number of downvotes for article     '
-          type: number
-        categoriesList:
-          description: Associated categories with the article
-          type: array
-          example:
-          - MARKET|BTC
-        sourceInfo:
-          description: Information about the source of the article
-          type: object
-          example:
-            name: ExampleSource
-            img: /images/news/default/example.png
-            language: EN
-        source:
-          example: exampleSource
-          description: Source of the article
-          type: string
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    LiquidityEnabledUnderlyingCurrency:
-      type: string
-      description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
-      example: BTC
-      enum:
-      - USDC.OPTIMISM
-      - USDC.SUI
-      - DOT
-      - FIL
-      - PYUSD.ETH
-      - TRX
-      - ZRX
-      - DAI.ETH
-      - USDC.WORLDCHAIN
-      - USDP
-      - USDT.BSC
-      - USDT.CELO
-      - PEPE.ETH
-      - SAND
-      - USDC.DOTHUB
-      - USDC.SEI
-      - USDC.SOL
-      - USDC.ZKSYNC
-      - ENA.ETH
-      - MANA.ETH
-      - PYTH.SOL
-      - SOL
-      - USDC.BASE
-      - USDC.CELO
-      - USDT
-      - ADA
-      - INJ.ETH
-      - MATIC.POLYGON
-      - PAXG
-      - USD
-      - AAVE.ETH
-      - ALGO
-      - EURC.XLM
-      - KNC.ETH
-      - PNUT.SOL
-      - SHIB
-      - BCH
-      - DOGE
-      - EGLD
-      - JTO.SOL
-      - UNI.ETH
-      - USDC
-      - USDC.ARBITRUM
-      - ONDO.ETH
-      - PENGU.SOL
-      - USD
-      - WLFI.ETH
-      - XLM
-      - APT
-      - CC
-      - ETH.OPTIMISM
-      - ETH.WORLDCHAIN
-      - LDO.ETH
-      - MORPHO.ETH
-      - SEI
-      - ETH.ZKSYNC
-      - USDC.AVAX
-      - USDC.XLM
-      - USDT.DOTHUB
-      - USDT.SOL
-      - MANA
-      - USDC.ALGO
-      - MATIC.ETH
-      - NEAR
-      - UNI
-      - USDT.ARBITRUM
-      - USDT.AVAX
-      - OMG
-      - ARB.ARBITRUM
-      - COMP.ETH
-      - GRT.ETH
-      - USDC.POLYGON
-      - AVAX
-      - AAVE
-      - CELO
-      - PYUSD.SOL
-      - PAXG.ETH
-      - USDC.MONAD
-      - BAT
-      - COMP
-      - ETH.ARBITRUM
-      - ETH.BASE
-      - OP.OPTIMISM
-      - TRUMP.SOL
-      - ENJ.ETH
-      - SUI
-      - USDT.ETH
-      - USDT.OPTIMISM
-      - USDT.TRX
-      - USDT.XPL
-      - OMG.ETH
-      - XRP
-      - HBAR
-      - USDC.APT
-      - USDC.ETH
-      - BNB
-      - ATOM
-      - BAT.ETH
-      - GRT
-      - LINK.ETH
-      - USDP.SOL
-      - ZK.ZKSYNC
-      - BONK.SOL
-      - KNC
-      - TIA
-      - ZRO.ETH
-      - ZRX.ETH
-      - PUMP.SOL
-      - USD
-      - XTZ
-      - CRV.ETH
-      - GALA.ETH
-      - TON
-      - USDT.POLYGON
-      - WBTC.ETH
-      - XPL
-      - BTC
-      - MON
-      - SHIB.ETH
-      - USDC.BSC
-      - WLD.WORLDCHAIN
-      - W.SOL
-      - LTC
-      - RLUSD.ETH
-      - WBTC
-      - LINK
-      - USDCX.CANTON
-      - ETH
-      - WIF.SOL
-      - APE.ETH
-      - EURC
-      - MKR.ETH
-      - RLUSD.XRP
-    GetNewsCategoriesResponse:
-      type: array
-      description: List of available news categories.
-      items:
-        $ref: '#/components/schemas/GetNewsCategory'
-    GetSymbolDataResponse:
-      type: array
-      description: 'Array of tuples keyed by underlying symbol. Each tuple is `[underlyingSymbol, { marketDataMap: [[quotedSymbol, GetSymbolData], ...] }]`.'
-      items:
-        type: array
-        minItems: 2
-        maxItems: 2
-        items:
-        - type: string
-          description: Underlying asset symbol (e.g. `BTC`).
-          example: BTC
-        - type: object
-          required:
-          - marketDataMap
-          properties:
-            marketDataMap:
-              type: array
-              description: Array of `[quotedSymbol, GetSymbolData]` tuples for the given underlying.
-              items:
-                type: array
-                minItems: 2
-                maxItems: 2
-                items:
-                - type: string
-                  description: Quoted currency symbol (e.g. `USD`).
-                  example: USD
-                - $ref: '#/components/schemas/GetSymbolData'
-      example:
-      - - BTC
-        - marketDataMap:
-          - - USD
-            - underlyingSymbol: BTC
-              quotedSymbol: USD
-              price:
-                value: '63523.1267818274'
-              lastTimestamp:
-                seconds: 1780942
-                nanos: 100000000
-              median:
-                value: '63523.1267818274'
-              lastVolume:
-                value: '0.00000017'
-              lastUnderlyingVolume:
-                value: '0.0107958126'
-              lastTradeId: '1204043756'
-              dayUnderlyingVolume:
-                value: '23877.59071385'
-              dayQuotedVolume:
-                value: '1513703665.67374'
-              h24UnderlyingVolume:
-                value: '33691.54917206'
-              h24QuotedVolume:
-                value: '2126242561.78843'
-              dayOpen:
-                value: '63315.1065321782'
-              dayHigh:
-                value: '64199.9776710545'
-              dayLow:
-                value: '62393.1022759814'
-              h24Open:
-                value: '62014.926566741'
-              h24High:
-                value: '64199.9776710545'
-              h24Low:
-                value: '61166.479991137'
-              hourUnderlyingVolume:
-                value: '105.6514879'
-              hourQuotedVolume:
-                value: '6717810.00305892'
-              hourOpen:
-                value: '63534.1678453974'
-              hourHigh:
-                value: '63624.8539896268'
-              hourLow:
-                value: '63519.9494427626'
-              h24Change:
-                value: '1508.200215086399'
-              h24PctChange:
-                value: '2.431995486543487'
-              dayChange:
-                value: '208.02024964919838'
-              dayPctChange:
-                value: '0.3285475789944027'
-              hourChange:
-                value: '-11.041063570002734'
-              hourPctChange:
-                value: '-0.017378150913804062'
-              supply: 20039087
-              mktcap:
-                value: '1272945464093.0693'
-              circulatingSupply: 20039087
-              circulatingSupplyMktcap:
-                value: '1272945464093.0693'
-              h24UnderlyingTotalVolume:
-                value: '326752.617229663'
-              h24QuotedTotalVolume:
-                value: '20742397942.829296'
-              imageUrl: //media/37746251/btc.png
     GetOHLCVResponse:
       type: object
       properties:
@@ -1227,6 +1216,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OHLCVResponseEntity'
+    GetNewsCategory:
+      properties:
+        categoryName:
+          description: Name of news category
+          type: string
+          example: DOGE
+        wordsAssociatedWithCategoryList:
+          description: Additional words associated with each category
+          type: array
+          example:
+          - DOGE
+          - DOGECOIN
+    DecimalValue:
+      type: object
+      description: Decimal value represented as a stringified number.
+      properties:
+        value:
+          type: string
+          example: '24774.07'
   parameters:
     Signature:
       name: X-SCX-SIGNED

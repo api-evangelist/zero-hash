@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Movements API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -130,6 +126,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getMovements
+      x-operation-id-source: derived
 components:
   parameters:
     Timestamp:
@@ -167,19 +165,6 @@ components:
       schema:
         type: string
   schemas:
-    GetMovementsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/MovementsEntity'
-        page:
-          type: number
-          example: 1
-        total_pages:
-          type: number
-          example: 1
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -189,28 +174,6 @@ components:
         error:
           type: string
           example: Service Unavailable
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
     Code403:
       type: object
       description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
@@ -233,6 +196,19 @@ components:
         error:
           type: string
           example: Internal Server Error
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     MovementsEntity:
       type: object
       properties:
@@ -366,6 +342,28 @@ components:
           - null
           description: Method through which the movement was initiated (`rest_api`, `sdk`, or `secondary`). `null` when the movement was not initiated by a client request (e.g. on-chain deposit credit).
           example: rest_api
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetMovementsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovementsEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
   securitySchemes:
     apiKey:
       type: apiKey

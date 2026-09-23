@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Accounts API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -105,6 +101,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAccounts
+      x-operation-id-source: derived
   /accounts/{account_id}:
     get:
       tags:
@@ -159,6 +157,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAccountsByAccountId
+      x-operation-id-source: derived
   /accounts/{account_id}/movements:
     get:
       tags:
@@ -253,6 +253,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAccountsByAccountIdMovements
+      x-operation-id-source: derived
   /accounts/{account_id}/run_history:
     get:
       tags:
@@ -305,6 +307,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAccountsByAccountIdRunHistory
+      x-operation-id-source: derived
   /accounts/net_delivery_obligations:
     get:
       tags:
@@ -351,8 +355,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAccountsNetDeliveryObligations
+      x-operation-id-source: derived
 components:
   schemas:
+    GetAccountsNetDeliveryObligationsResponse:
+      type: object
+      title: Get Accounts Net Delivery Obligations Response
+      description: Response schema for retrieving accounts net delivery obligations information.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountsNetDeliveryObligationsResponseEntity'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    GetAccountMovementsResponse:
+      type: object
+      title: Get Account Movements Response
+      description: Response schema for retrieving account movements information.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountMovementsEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
     Asset:
       type: string
       description: The list of assets available in the certification environment
@@ -403,51 +442,19 @@ components:
       - XRP
       - XTZ
       - ZUSD.ETH
-    AccountsResponseEntity:
+    Code403:
       type: object
-      title: Accounts Response Entity
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
       properties:
-        asset:
+        error:
+          type: boolean
+          example: true
+        message:
           type: string
-          description: The asset code for the specific account, e.g. `USD`
-          example: USD
-        account_owner:
-          type: string
-          description: The code of the participant that owns the account
-          example: ABCDEF
-        account_type:
-          type: string
-          description: The type of the account (balance bucket).
-          enum:
-          - available
-          - collateral
-          - payable
-          - receivable
-          - collateral_deficiency
-          - staked
-          example: available
-        account_group:
-          type: string
-          description: The group that the account is a part of
-          example: XYZ456
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
-        balance:
-          type: string
-          description: The balance in the account
-          example: '0.00'
-        account_id:
-          type: string
-          format: uuid
-          description: Unique ID of the specific account
-          example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-        last_update:
-          type: number
-          format: int64
-          description: Timestamp when the account balance was updated (Unix milliseconds)
-          example: 1554395972174
+          example: This api key does not have write permission to this endpoint
     AccountsNetDeliveryObligationsResponseEntity:
       type: object
       title: Accounts Net Delivery Obligations Response Entity
@@ -468,43 +475,15 @@ components:
           type: string
           description: The account label associated with the account
           example: general
-    Code503:
+    Code500:
       type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
       required:
       - error
       properties:
         error:
           type: string
-          example: Service Unavailable
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    GetAccountsResponse:
-      type: object
-      title: Get Accounts Response
-      description: Response schema for retrieving zerohash account information.
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccountsResponseEntity'
-        page:
-          type: number
-          example: 1
-        total_pages:
-          type: number
-          example: 1
+          example: Internal Server Error
     AccountMovementsEntity:
       type: object
       title: Movements Entity
@@ -593,83 +572,34 @@ components:
           nullable: true
           description: 'Indicates how the movement was initiated: via the REST API, SDK, or Secondary Portal. Returns null for movements without a recorded origin (e.g. automated system-generated movements).'
           example: rest_api
-    Code404:
+    Code400:
       type: object
-      description: The requested resource does not exist or is not visible to the caller.
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
       required:
-      - error
+      - errors
       properties:
-        error:
-          type: string
-          example: Not Found
-    GetAccountMovementsResponse:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    GetAccountsResponse:
       type: object
-      title: Get Account Movements Response
-      description: Response schema for retrieving account movements information.
+      title: Get Accounts Response
+      description: Response schema for retrieving zerohash account information.
       properties:
         message:
           type: array
           items:
-            $ref: '#/components/schemas/AccountMovementsEntity'
+            $ref: '#/components/schemas/AccountsResponseEntity'
         page:
           type: number
           example: 1
         total_pages:
           type: number
           example: 1
-    GetAccountsNetDeliveryObligationsResponse:
-      type: object
-      title: Get Accounts Net Delivery Obligations Response
-      description: Response schema for retrieving accounts net delivery obligations information.
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccountsNetDeliveryObligationsResponseEntity'
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    GetRunHistoryResponse:
-      type: object
-      title: Get Run History Response
-      description: Response schema for retrieving run history information.
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunHistoryEntity'
-        page:
-          type: number
-          example: 1
-        total_pages:
-          type: number
-          example: 1
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    GetAccountResponse:
-      type: object
-      title: Get Account Response
-      description: Response schema for retrieving a specific account information.
-      properties:
-        message:
-          $ref: '#/components/schemas/AccountsResponseEntity'
     RunHistoryEntity:
       type: object
       title: Run History Entity
@@ -705,6 +635,82 @@ components:
           type: string
           description: The account balance after the run was applied.
           example: '5091.100000000000000000'
+    GetRunHistoryResponse:
+      type: object
+      title: Get Run History Response
+      description: Response schema for retrieving run history information.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunHistoryEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetAccountResponse:
+      type: object
+      title: Get Account Response
+      description: Response schema for retrieving a specific account information.
+      properties:
+        message:
+          $ref: '#/components/schemas/AccountsResponseEntity'
+    AccountsResponseEntity:
+      type: object
+      title: Accounts Response Entity
+      properties:
+        asset:
+          type: string
+          description: The asset code for the specific account, e.g. `USD`
+          example: USD
+        account_owner:
+          type: string
+          description: The code of the participant that owns the account
+          example: ABCDEF
+        account_type:
+          type: string
+          description: The type of the account (balance bucket).
+          enum:
+          - available
+          - collateral
+          - payable
+          - receivable
+          - collateral_deficiency
+          - staked
+          example: available
+        account_group:
+          type: string
+          description: The group that the account is a part of
+          example: XYZ456
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+        balance:
+          type: string
+          description: The balance in the account
+          example: '0.00'
+        account_id:
+          type: string
+          format: uuid
+          description: Unique ID of the specific account
+          example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+        last_update:
+          type: number
+          format: int64
+          description: Timestamp when the account balance was updated (Unix milliseconds)
+          example: 1554395972174
   parameters:
     Timestamp:
       name: X-SCX-TIMESTAMP

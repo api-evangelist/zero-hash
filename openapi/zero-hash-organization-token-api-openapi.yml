@@ -63,38 +63,6 @@ paths:
                 error_description: Client authentication failed
 components:
   schemas:
-    TokenResponse:
-      type: object
-      required:
-      - access_token
-      - expires_in
-      - token_type
-      properties:
-        access_token:
-          type: string
-          description: JWT access token
-          example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImlkIn0...
-        expires_in:
-          type: integer
-          description: Token expiration time in seconds
-          example: 86400
-        token_type:
-          type: string
-          description: Token type
-          example: Bearer
-    AuthError:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: OAuth2 error code
-          example: invalid_client
-        error_description:
-          type: string
-          description: Human-readable error description
-          example: Invalid client credentials
     TokenRequest:
       type: object
       required:
@@ -126,6 +94,38 @@ components:
           type: string
           description: Organization identifier
           example: f446f14c-4035-4105-892b-1649bff16424
+    AuthError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: OAuth2 error code
+          example: invalid_client
+        error_description:
+          type: string
+          description: Human-readable error description
+          example: Invalid client credentials
+    TokenResponse:
+      type: object
+      required:
+      - access_token
+      - expires_in
+      - token_type
+      properties:
+        access_token:
+          type: string
+          description: JWT access token
+          example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImlkIn0...
+        expires_in:
+          type: integer
+          description: Token expiration time in seconds
+          example: 86400
+        token_type:
+          type: string
+          description: Token type
+          example: Bearer
   securitySchemes:
     BearerAuth:
       type: http

@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Liquidity API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -139,6 +135,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getLiquidityRfq
+      x-operation-id-source: derived
     post:
       tags:
       - Liquidity
@@ -190,6 +188,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postLiquidityRfq
+      x-operation-id-source: derived
     patch:
       tags:
       - Liquidity
@@ -241,6 +241,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: patchLiquidityRfq
+      x-operation-id-source: derived
   /liquidity/execute:
     post:
       tags:
@@ -293,676 +295,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postLiquidityExecute
+      x-operation-id-source: derived
 components:
   schemas:
-    PostExecuteQuoteBody:
-      type: object
-      properties:
-        quote_id:
-          type: string
-          description: 'The identifier for the quote
-
-            Note: this is required to execute the quote'
-          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-        withdrawal_request_id:
-          type: string
-          description: Optional withdrawal request ID to associate with the execution. Used by flows that pre-create a withdrawal record and then execute a quote against it.
-          example: a81bc81b-dead-4e5d-abff-90865d1e13b1
-        always_allocate:
-          type: boolean
-          description: When true, force allocation of the trade even if the quote has expired or partially filled.
-          example: false
-        funding_details:
-          type: object
-          description: ACH funding details, required only for ACH-funded executions. Supply either an `inbound_reference_id` (to settle against an already-received inbound) or the `external_account_id`/`description`/`bank_fee` trio (to initiate a new ACH pull).
-          oneOf:
-          - type: object
-            title: Funding Details Object - Inbound ACH Transfer
-            description: Funding details for an inbound ACH transfer. `inbound_reference_id` is the unique identifier for the payment.
-            additionalProperties: false
-            required:
-            - inbound_reference_id
-            properties:
-              inbound_reference_id:
-                type: string
-                description: Reference ID of an already-received inbound ACH payment to settle this trade against.
-          - type: object
-            title: Funding Details Object - External Account
-            description: Funding details for an external account transfer.
-            additionalProperties: false
-            required:
-            - external_account_id
-            - description
-            - bank_fee
-            properties:
-              external_account_id:
-                type: string
-                description: Registered external bank account to pull funds from.
-              description:
-                type: string
-                maxLength: 10
-                description: Short free-form description written to the ACH statement (max 10 characters).
-              bank_fee:
-                type: string
-                description: Bank fee notional (decimal string) applied to this ACH pull.
-      required:
-      - quote_id
-    LiquidityEnabledQuotedCurrency:
-      type: string
-      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
-      example: USD
-      enum:
-      - USD
-      - EUR
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    PostRequestForQuoteBody:
-      oneOf:
-      - title: RFQ Base - Quantity
-        description: Request for quote with `quantity` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          quantity:
-            type: string
-            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '1.00'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - quantity
-      - title: RFQ Base - Total
-        description: Request for quote with `total` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          total:
-            type: string
-            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '3600.00'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - total
-      - title: RFQ Custom Spread - Quantity
-        description: Request for quote with custom `spread` and `quantity` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          quantity:
-            type: string
-            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '1.00'
-          spread:
-            type: string
-            description: Define the quote spread in basis points
-            example: '30'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - quantity
-      - title: RFQ Custom Spread - Total
-        description: Request for quote with custom `spread` and `total` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          total:
-            type: string
-            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '3600.00'
-          spread:
-            type: string
-            description: Define the quote spread in basis points
-            example: '30'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - total
-      - title: RFQ Custom Commission - Quantity
-        description: Request for quote with custom `commission` and `quantity` specified. Only allowed when the commission feature is enabled.
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          quantity:
-            type: string
-            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '1.00'
-          commission:
-            type: string
-            description: Define the quote commission in basis points. Only allowed when the commission feature is enabled for the platform. Mutually exclusive with spread.
-            example: '30'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - quantity
-      - title: RFQ Custom Commission - Total
-        description: Request for quote with custom `commission` and `total` specified. Only allowed when the commission feature is enabled.
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          total:
-            type: string
-            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '3600.00'
-          commission:
-            type: string
-            description: Define the quote commission in basis points. Only allowed when the commission feature is enabled for the platform. Mutually exclusive with spread.
-            example: '30'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - total
-      - title: RFQ Fees - Quantity
-        description: Request for quote with `quantity` and `fees` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          quantity:
-            type: string
-            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '1.00'
-          fees:
-            type: array
-            items:
-              $ref: '#/components/schemas/DynamicFeeRequest'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - quantity
-        - fees
-      - title: RFQ Fees - Total
-        description: Request for quote with `total` and `fees` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          total:
-            type: string
-            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '3600.00'
-          fees:
-            type: array
-            items:
-              $ref: '#/components/schemas/DynamicFeeRequest'
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - total
-        - fees
-      - title: RFQ Payment Processor Fees - Quantity
-        description: Request for quote with `quantity`, `fees`, and `payment_processor` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          quantity:
-            type: string
-            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '1.00'
-          fees:
-            type: array
-            items:
-              $ref: '#/components/schemas/DynamicFeeRequest'
-          payment_processor:
-            type: object
-            properties:
-              name:
-                type: string
-                description: The name of the payment processor
-                example: checkout.com
-              id:
-                type: string
-                description: The unique identifier of the payment according to the PSP
-                example: 593dd810-f051-40a9-9f26-d45280efe8f3
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - quantity
-        - fees
-        - payment_processor
-      - title: RFQ Payment Processor Fees - Total
-        description: Request for quote with `total`, `fees`, and `payment_processor` specified
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          total:
-            type: string
-            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '3600.00'
-          fees:
-            type: array
-            items:
-              $ref: '#/components/schemas/DynamicFeeRequest'
-          payment_processor:
-            type: object
-            properties:
-              name:
-                type: string
-                description: The name of the payment processor
-                example: checkout.com
-              id:
-                type: string
-                description: The unique identifier of the payment according to the PSP
-                example: 593dd810-f051-40a9-9f26-d45280efe8f3
-        required:
-        - side
-        - underlying
-        - quoted_currency
-        - total
-        - fees
-        - payment_processor
-      - title: RFQ Full response
-        description: Full response object for a request for quote
-        type: object
-        properties:
-          participant_code:
-            type: string
-            description: The participant code
-            example: CUST01
-          account_label:
-            type: string
-            description: The account_label that's used to fund the trade. Case sensitive.
-            example: general
-          side:
-            type: string
-            enum:
-            - buy
-            - sell
-            description: The side of the transaction
-            example: buy
-          underlying:
-            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-          quantity:
-            type: string
-            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '1.00'
-          total:
-            type: string
-            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '3600.00'
-          fees:
-            type: array
-            items:
-              $ref: '#/components/schemas/DynamicFeeRequest'
-          spread:
-            type: string
-            description: Define the quote spread in basis points
-            example: '30'
-          commission:
-            type: string
-            description: Define the quote commission in basis points. Only allowed when the commission feature is enabled for the platform. Mutually exclusive with spread.
-            example: '30'
-          payment_processor:
-            type: object
-            properties:
-              name:
-                type: string
-                description: The name of the payment processor
-                example: checkout.com
-              id:
-                type: string
-                description: The unique identifier of the payment according to the PSP
-                example: 593dd810-f051-40a9-9f26-d45280efe8f3
-          quote_expiry:
-            type: string
-            description: Quote expiration
-            example: 5s
-            enum:
-            - 5s
-            - 30s
-            - 1m
-            - 5m
-            - 10m
-            - 15m
-          settlement_type:
-            type: string
-            description: Quote settlement type
-            example: STANDARD
-            enum:
-            - STANDARD
-    OBOParticipantEntity:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: The identifier of the participant making the request
-          example: 20XRLH
-        account_group:
-          type: string
-          description: The identifier of the the account group
-          example: WRD1K0
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
-    GetRequestForQuoteResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            request_id:
-              type: string
-              description: The identifier of the RFQ
-              example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-            participant_code:
-              type: string
-              description: The identifier of the participant making the quote request
-              example: CUST01
-            quoted_currency:
-              $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-            side:
-              type: string
-              description: The participant side of the quote - `buy` or `sell`.
-              example: buy
-              enum:
-              - buy
-              - sell
-            quantity:
-              type: string
-              description: The amount of the underlying currency
-              example: '1'
-            price:
-              type: string
-              description: The cost per unit of underlying currency
-              example: '11430.90'
-            quote_id:
-              type: string
-              description: 'The identifier for the quote
-
-                Note: this is required to execute the quote'
-              example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-            expire_ts:
-              type: number
-              description: Timestamp when the quote will expire
-              example: 1568311649602
-            account_group:
-              type: string
-              description: The group that the account is a part of
-              example: GRP001
-            account_label:
-              type: string
-              description: The account label associated with the account
-              example: sub_account_test
-            obo_participant:
-              $ref: '#/components/schemas/OBOParticipantEntity'
-            total_notional:
-              type: string
-              description: Total notional is the full cost inclusive of fees or the total proceeds after fees
-              example: '2.00'
-            settlement_type:
-              type: string
-              nullable: true
-              description: Quote settlement type. Returns `null` for quotes without an explicit settlement override.
-              example: STANDARD
-              enum:
-              - STANDARD
-              - null
-            issuer_fee_payor_type:
-              type: string
-              nullable: true
-              description: Indicates which party bears the issuer fee on this quote. Returns `null` when no issuer fee is applied.
-              example: null
-              enum:
-              - CUSTOMER
-              - PLATFORM
-              - null
-            issuer_fee_rate:
-              type: string
-              nullable: true
-              description: Issuer fee in basis points applied to the quote. Returns `null` when no issuer fee is applied.
-              maxLength: 50
-              example: null
-            issuer_fee_amount:
-              type: string
-              nullable: true
-              description: Notional of the issuer fee applied to the quote. Returns `null` when no issuer fee is applied.
-              maxLength: 50
-              example: null
-            underlying:
-              $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-            asset_cost_notional:
-              type: string
-              description: asset_cost_notional is a field that shows the notional cost of the asset
-              maxLength: 50
-              example: '2.00'
-            spread_notional:
-              type: string
-              description: The notional of the spread applied to the quote
-              maxLength: 50
-              example: '2.12'
-            spread_bps:
-              type: string
-              description: The spread in basis points applied to the quote
-              maxLength: 50
-              example: '50'
-            payment_processor:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: The name of the payment processor
-                  example: checkout.com
-                id:
-                  type: string
-                  description: The unique identifier of the payment according to the PSP
-                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
     Code403:
       type: object
       description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
@@ -976,485 +312,6 @@ components:
         message:
           type: string
           example: This api key does not have write permission to this endpoint
-    PostRequestForQuoteResponse:
-      type: object
-      properties:
-        message:
-          oneOf:
-          - title: RFQ Base Response
-            description: Response for a request for quote with base fields specified
-            type: object
-            properties:
-              request_id:
-                type: string
-                description: The identifier of the RFQ
-                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-              participant_code:
-                type: string
-                description: The identifier of the participant making the quote request
-                example: CUST01
-              quoted_currency:
-                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-              side:
-                type: string
-                description: The participant side of the quote - `buy` or `sell`
-                example: buy
-                enum:
-                - buy
-                - sell
-              quantity:
-                type: string
-                description: The amount of the underlying currency
-                example: '1'
-              price:
-                type: string
-                description: The cost per unit of underlying currency
-                example: '11430.90'
-              quote_id:
-                type: string
-                description: 'The identifier for the quote
-
-                  Note: this is required to execute the quote'
-                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-              expire_ts:
-                type: number
-                description: Timestamp when the quote will expire
-                example: 1568311649602
-              account_group:
-                type: string
-                description: The group that the account is a part of
-                example: GRP001
-              account_label:
-                type: string
-                description: The account label associated with the account
-                example: sub_account_test
-              obo_participant:
-                $ref: '#/components/schemas/OBOParticipantEntity'
-              total_notional:
-                type: string
-                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
-                example: '2.00'
-              underlying:
-                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-              asset_cost_notional:
-                type: string
-                description: asset_cost_notional is a field that shows the notional cost of the asset
-                maxLength: 50
-                example: '2.00'
-              spread_notional:
-                type: string
-                description: The notional of the spread applied to the quote
-                maxLength: 50
-                example: '2.12'
-              spread_bps:
-                type: string
-                description: The spread in basis points applied to the quote
-                maxLength: 50
-                example: '50'
-              commission_notional:
-                type: string
-                description: The notional commission applied to the quote
-                maxLength: 50
-                example: '5.00'
-              commission_bps:
-                type: string
-                description: The commission in basis points applied to the quote
-                maxLength: 50
-                example: '25'
-          - title: RFQ Fees Response
-            description: Response for a request for quote with fees specified
-            type: object
-            properties:
-              request_id:
-                type: string
-                description: The identifier of the RFQ
-                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-              participant_code:
-                type: string
-                description: The identifier of the participant making the quote request
-                example: CUST01
-              quoted_currency:
-                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-              side:
-                type: string
-                description: The participant side of the quote - `buy` or `sell`
-                example: buy
-                enum:
-                - buy
-                - sell
-              quantity:
-                type: string
-                description: The amount of the underlying currency
-                example: '1'
-              price:
-                type: string
-                description: The cost per unit of underlying currency
-                example: '11430.90'
-              quote_id:
-                type: string
-                description: 'The identifier for the quote
-
-                  Note: this is required to execute the quote'
-                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-              expire_ts:
-                type: number
-                description: Timestamp when the quote will expire
-                example: 1568311649602
-              account_group:
-                type: string
-                description: The group that the account is a part of
-                example: GRP001
-              account_label:
-                type: string
-                description: The account label associated with the account
-                example: sub_account_test
-              obo_participant:
-                $ref: '#/components/schemas/OBOParticipantEntity'
-              total_notional:
-                type: string
-                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
-                example: '2.00'
-              underlying:
-                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-              asset_cost_notional:
-                type: string
-                description: asset_cost_notional is a field that shows the notional cost of the asset
-                maxLength: 50
-                example: '2.00'
-              spread_notional:
-                type: string
-                description: The notional of the spread applied to the quote
-                maxLength: 50
-                example: '2.12'
-              spread_bps:
-                type: string
-                description: The spread in basis points applied to the quote
-                maxLength: 50
-                example: '50'
-              commission_notional:
-                type: string
-                description: The notional commission applied to the quote
-                maxLength: 50
-                example: '5.00'
-              commission_bps:
-                type: string
-                description: The commission in basis points applied to the quote
-                maxLength: 50
-                example: '25'
-              fees:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DynamicFee'
-          - title: RFQ Payment Processing Fees Response
-            description: Response for a request for quote with payment processing fees specified
-            type: object
-            properties:
-              request_id:
-                type: string
-                description: The identifier of the RFQ
-                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-              participant_code:
-                type: string
-                description: The identifier of the participant making the quote request
-                example: CUST01
-              quoted_currency:
-                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-              side:
-                type: string
-                description: The participant side of the quote - `buy` or `sell`
-                example: buy
-                enum:
-                - buy
-                - sell
-              quantity:
-                type: string
-                description: The amount of the underlying currency
-                example: '1'
-              price:
-                type: string
-                description: The cost per unit of underlying currency
-                example: '11430.90'
-              quote_id:
-                type: string
-                description: 'The identifier for the quote
-
-                  Note: this is required to execute the quote'
-                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-              expire_ts:
-                type: number
-                description: Timestamp when the quote will expire
-                example: 1568311649602
-              account_group:
-                type: string
-                description: The group that the account is a part of
-                example: GRP001
-              account_label:
-                type: string
-                description: The account label associated with the account
-                example: sub_account_test
-              obo_participant:
-                $ref: '#/components/schemas/OBOParticipantEntity'
-              total_notional:
-                type: string
-                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
-                example: '2.00'
-              underlying:
-                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-              asset_cost_notional:
-                type: string
-                description: asset_cost_notional is a field that shows the notional cost of the asset
-                maxLength: 50
-                example: '2.00'
-              spread_notional:
-                type: string
-                description: The notional of the spread applied to the quote
-                maxLength: 50
-                example: '2.12'
-              spread_bps:
-                type: string
-                description: The spread in basis points applied to the quote
-                maxLength: 50
-                example: '50'
-              commission_notional:
-                type: string
-                description: The notional commission applied to the quote
-                maxLength: 50
-                example: '5.00'
-              commission_bps:
-                type: string
-                description: The commission in basis points applied to the quote
-                maxLength: 50
-                example: '25'
-              fees:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DynamicFee'
-              payment_processor:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: The name of the payment processor
-                    example: checkout.com
-                  id:
-                    type: string
-                    description: The unique identifier of the payment according to the PSP
-                    example: 593dd810-f051-40a9-9f26-d45280efe8f3
-          - title: RFQ Response with issuer fees applied
-            description: Response for a quote where the token issuer has applied fees.
-            type: object
-            properties:
-              request_id:
-                type: string
-                description: The identifier of the RFQ
-                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-              participant_code:
-                type: string
-                description: The identifier of the participant making the quote request
-                example: CUST01
-              quoted_currency:
-                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-              side:
-                type: string
-                description: The participant side of the quote - `buy` or `sell`
-                example: buy
-                enum:
-                - buy
-                - sell
-              quantity:
-                type: string
-                description: The amount of the underlying currency
-                example: '1'
-              price:
-                type: string
-                description: The cost per unit of underlying currency
-                example: '11430.90'
-              quote_id:
-                type: string
-                description: 'The identifier for the quote
-
-                  Note: this is required to execute the quote'
-                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-              expire_ts:
-                type: number
-                description: Timestamp when the quote will expire
-                example: 1568311649602
-              account_group:
-                type: string
-                description: The group that the account is a part of
-                example: GRP001
-              account_label:
-                type: string
-                description: The account label associated with the account
-                example: sub_account_test
-              obo_participant:
-                $ref: '#/components/schemas/OBOParticipantEntity'
-              total_notional:
-                type: string
-                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
-                example: '2.00'
-              underlying:
-                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-              asset_cost_notional:
-                type: string
-                description: asset_cost_notional is a field that shows the notional cost of the asset
-                maxLength: 50
-                example: '2.00'
-              spread_notional:
-                type: string
-                description: The notional of the spread applied to the quote
-                maxLength: 50
-                example: '2.12'
-              spread_bps:
-                type: string
-                description: The spread in basis points applied to the quote
-                maxLength: 50
-                example: '50'
-              commission_notional:
-                type: string
-                description: The notional commission applied to the quote
-                maxLength: 50
-                example: '5.00'
-              commission_bps:
-                type: string
-                description: The commission in basis points applied to the quote
-                maxLength: 50
-                example: '25'
-              issuer_fee_payor_type:
-                type: string
-                description: Quote issuer fee payor type
-                example: CUSTOMER
-                enum:
-                - CUSTOMER
-                - PLATFORM
-              issuer_fee_rate:
-                type: string
-                description: The issuer fee in basis points applied to the quote
-                maxLength: 50
-                example: '50'
-              issuer_fee_amount:
-                type: string
-                description: The notional of the issuer fee applied to the quote
-                maxLength: 50
-                example: '1.5'
-          - title: RFQ Full Response
-            description: Response for a request for quote with all details specified
-            type: object
-            properties:
-              request_id:
-                type: string
-                description: The identifier of the RFQ
-                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-              participant_code:
-                type: string
-                description: The identifier of the participant making the quote request
-                example: CUST01
-              quoted_currency:
-                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-              side:
-                type: string
-                description: The participant side of the quote - `buy` or `sell`
-                example: buy
-                enum:
-                - buy
-                - sell
-              quantity:
-                type: string
-                description: The amount of the underlying currency
-                example: '1'
-              price:
-                type: string
-                description: The cost per unit of underlying currency
-                example: '11430.90'
-              quote_id:
-                type: string
-                description: 'The identifier for the quote
-
-                  Note: this is required to execute the quote'
-                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-              expire_ts:
-                type: number
-                description: Timestamp when the quote will expire
-                example: 1568311649602
-              account_group:
-                type: string
-                description: The group that the account is a part of
-                example: GRP001
-              account_label:
-                type: string
-                description: The account label associated with the account
-                example: sub_account_test
-              obo_participant:
-                $ref: '#/components/schemas/OBOParticipantEntity'
-              total_notional:
-                type: string
-                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
-                example: '2.00'
-              underlying:
-                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-              asset_cost_notional:
-                type: string
-                description: asset_cost_notional is a field that shows the notional cost of the asset
-                maxLength: 50
-                example: '2.00'
-              spread_notional:
-                type: string
-                description: The notional of the spread applied to the quote
-                maxLength: 50
-                example: '2.12'
-              spread_bps:
-                type: string
-                description: The spread in basis points applied to the quote
-                maxLength: 50
-                example: '50'
-              commission_notional:
-                type: string
-                description: The notional commission applied to the quote
-                maxLength: 50
-                example: '5.00'
-              commission_bps:
-                type: string
-                description: The commission in basis points applied to the quote
-                maxLength: 50
-                example: '25'
-              issuer_fee_payor_type:
-                type: string
-                description: Quote issuer fee payor type
-                example: CUSTOMER
-                enum:
-                - CUSTOMER
-                - PLATFORM
-              issuer_fee_rate:
-                type: string
-                description: The issuer fee in basis points applied to the quote
-                maxLength: 50
-                example: '50'
-              issuer_fee_amount:
-                type: string
-                description: The notional of the issuer fee applied to the quote
-                maxLength: 50
-                example: '1.5'
-              fees:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DynamicFee'
-              payment_processor:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: The name of the payment processor
-                    example: checkout.com
-                  id:
-                    type: string
-                    description: The unique identifier of the payment according to the PSP
-                    example: 593dd810-f051-40a9-9f26-d45280efe8f3
-              settlement_type:
-                type: string
-                description: Quote settlement type
-                example: STANDARD
-                enum:
-                - STANDARD
     PostExecuteQuoteResponse:
       type: object
       properties:
@@ -1974,7 +831,7 @@ components:
                   type: string
                 payment_amount:
                   type: string
-    DynamicFeeRequest:
+    DynamicFee:
       type: object
       required:
       - name
@@ -1986,42 +843,39 @@ components:
         amount:
           type: string
           example: '1.95'
-        type:
-          type: string
-          enum:
-          - notional
-          - bps
-          description: Fee amount type. Default is notional
-          example: notional
-    PatchRequestForQuoteBody:
+    OBOParticipantEntity:
       type: object
       properties:
-        quote_id:
+        participant_code:
           type: string
-          description: 'The identifier for the quote
-
-            Note: this is required to execute the quote'
-          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-        total:
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
           type: string
-          description: The total amount of the `quoted_currency` requested in the quote. Only allowed to update the `total` field, not `quantity`. Must be less than or equal to the original `total` amount in the quote.
-          example: '3600.00'
-        fees:
-          type: array
-          items:
-            $ref: '#/components/schemas/DynamicFeeRequest'
-      required:
-      - quote_id
-      - total
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
           type: string
-          example: Internal Server Error
+          description: The account label associated with the account
+          example: general
+    LiquidityEnabledQuotedCurrency:
+      type: string
+      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      example: USD
+      enum:
+      - USD
+      - EUR
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
     UnderlyingCurrency:
       type: string
       description: the underlying asset
@@ -2072,18 +926,15 @@ components:
       - XRP
       - XTZ
       - ZUSD.ETH
-    DynamicFee:
+    Code500:
       type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
       required:
-      - name
-      - amount
+      - error
       properties:
-        name:
+        error:
           type: string
-          example: sample
-        amount:
-          type: string
-          example: '1.95'
+          example: Internal Server Error
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -2097,6 +948,39 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
+    PatchRequestForQuoteResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/PostRequestForQuoteResponse'
+    DynamicFeeRequest:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+        type:
+          type: string
+          enum:
+          - notional
+          - bps
+          description: Fee amount type. Default is notional
+          example: notional
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -2235,11 +1119,1131 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
-    PatchRequestForQuoteResponse:
+    GetRequestForQuoteResponse:
       type: object
       properties:
         message:
-          $ref: '#/components/schemas/PostRequestForQuoteResponse'
+          type: object
+          properties:
+            request_id:
+              type: string
+              description: The identifier of the RFQ
+              example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+            participant_code:
+              type: string
+              description: The identifier of the participant making the quote request
+              example: CUST01
+            quoted_currency:
+              $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+            side:
+              type: string
+              description: The participant side of the quote - `buy` or `sell`.
+              example: buy
+              enum:
+              - buy
+              - sell
+            quantity:
+              type: string
+              description: The amount of the underlying currency
+              example: '1'
+            price:
+              type: string
+              description: The cost per unit of underlying currency
+              example: '11430.90'
+            quote_id:
+              type: string
+              description: 'The identifier for the quote
+
+                Note: this is required to execute the quote'
+              example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+            expire_ts:
+              type: number
+              description: Timestamp when the quote will expire
+              example: 1568311649602
+            account_group:
+              type: string
+              description: The group that the account is a part of
+              example: GRP001
+            account_label:
+              type: string
+              description: The account label associated with the account
+              example: sub_account_test
+            obo_participant:
+              $ref: '#/components/schemas/OBOParticipantEntity'
+            total_notional:
+              type: string
+              description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+              example: '2.00'
+            settlement_type:
+              type: string
+              nullable: true
+              description: Quote settlement type. Returns `null` for quotes without an explicit settlement override.
+              example: STANDARD
+              enum:
+              - STANDARD
+              - null
+            issuer_fee_payor_type:
+              type: string
+              nullable: true
+              description: Indicates which party bears the issuer fee on this quote. Returns `null` when no issuer fee is applied.
+              example: null
+              enum:
+              - CUSTOMER
+              - PLATFORM
+              - null
+            issuer_fee_rate:
+              type: string
+              nullable: true
+              description: Issuer fee in basis points applied to the quote. Returns `null` when no issuer fee is applied.
+              maxLength: 50
+              example: null
+            issuer_fee_amount:
+              type: string
+              nullable: true
+              description: Notional of the issuer fee applied to the quote. Returns `null` when no issuer fee is applied.
+              maxLength: 50
+              example: null
+            underlying:
+              $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+            asset_cost_notional:
+              type: string
+              description: asset_cost_notional is a field that shows the notional cost of the asset
+              maxLength: 50
+              example: '2.00'
+            spread_notional:
+              type: string
+              description: The notional of the spread applied to the quote
+              maxLength: 50
+              example: '2.12'
+            spread_bps:
+              type: string
+              description: The spread in basis points applied to the quote
+              maxLength: 50
+              example: '50'
+            payment_processor:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the payment processor
+                  example: checkout.com
+                id:
+                  type: string
+                  description: The unique identifier of the payment according to the PSP
+                  example: 593dd810-f051-40a9-9f26-d45280efe8f3
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    PatchRequestForQuoteBody:
+      type: object
+      properties:
+        quote_id:
+          type: string
+          description: 'The identifier for the quote
+
+            Note: this is required to execute the quote'
+          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+        total:
+          type: string
+          description: The total amount of the `quoted_currency` requested in the quote. Only allowed to update the `total` field, not `quantity`. Must be less than or equal to the original `total` amount in the quote.
+          example: '3600.00'
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/DynamicFeeRequest'
+      required:
+      - quote_id
+      - total
+    PostRequestForQuoteBody:
+      oneOf:
+      - title: RFQ Base - Quantity
+        description: Request for quote with `quantity` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - quantity
+      - title: RFQ Base - Total
+        description: Request for quote with `total` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - total
+      - title: RFQ Custom Spread - Quantity
+        description: Request for quote with custom `spread` and `quantity` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+          spread:
+            type: string
+            description: Define the quote spread in basis points
+            example: '30'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - quantity
+      - title: RFQ Custom Spread - Total
+        description: Request for quote with custom `spread` and `total` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+          spread:
+            type: string
+            description: Define the quote spread in basis points
+            example: '30'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - total
+      - title: RFQ Custom Commission - Quantity
+        description: Request for quote with custom `commission` and `quantity` specified. Only allowed when the commission feature is enabled.
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+          commission:
+            type: string
+            description: Define the quote commission in basis points. Only allowed when the commission feature is enabled for the platform. Mutually exclusive with spread.
+            example: '30'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - quantity
+      - title: RFQ Custom Commission - Total
+        description: Request for quote with custom `commission` and `total` specified. Only allowed when the commission feature is enabled.
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+          commission:
+            type: string
+            description: Define the quote commission in basis points. Only allowed when the commission feature is enabled for the platform. Mutually exclusive with spread.
+            example: '30'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - total
+      - title: RFQ Fees - Quantity
+        description: Request for quote with `quantity` and `fees` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFeeRequest'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - quantity
+        - fees
+      - title: RFQ Fees - Total
+        description: Request for quote with `total` and `fees` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFeeRequest'
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - total
+        - fees
+      - title: RFQ Payment Processor Fees - Quantity
+        description: Request for quote with `quantity`, `fees`, and `payment_processor` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFeeRequest'
+          payment_processor:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The name of the payment processor
+                example: checkout.com
+              id:
+                type: string
+                description: The unique identifier of the payment according to the PSP
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - quantity
+        - fees
+        - payment_processor
+      - title: RFQ Payment Processor Fees - Total
+        description: Request for quote with `total`, `fees`, and `payment_processor` specified
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFeeRequest'
+          payment_processor:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The name of the payment processor
+                example: checkout.com
+              id:
+                type: string
+                description: The unique identifier of the payment according to the PSP
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+        required:
+        - side
+        - underlying
+        - quoted_currency
+        - total
+        - fees
+        - payment_processor
+      - title: RFQ Full response
+        description: Full response object for a request for quote
+        type: object
+        properties:
+          participant_code:
+            type: string
+            description: The participant code
+            example: CUST01
+          account_label:
+            type: string
+            description: The account_label that's used to fund the trade. Case sensitive.
+            example: general
+          side:
+            type: string
+            enum:
+            - buy
+            - sell
+            description: The side of the transaction
+            example: buy
+          underlying:
+            $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+          fees:
+            type: array
+            items:
+              $ref: '#/components/schemas/DynamicFeeRequest'
+          spread:
+            type: string
+            description: Define the quote spread in basis points
+            example: '30'
+          commission:
+            type: string
+            description: Define the quote commission in basis points. Only allowed when the commission feature is enabled for the platform. Mutually exclusive with spread.
+            example: '30'
+          payment_processor:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The name of the payment processor
+                example: checkout.com
+              id:
+                type: string
+                description: The unique identifier of the payment according to the PSP
+                example: 593dd810-f051-40a9-9f26-d45280efe8f3
+          quote_expiry:
+            type: string
+            description: Quote expiration
+            example: 5s
+            enum:
+            - 5s
+            - 30s
+            - 1m
+            - 5m
+            - 10m
+            - 15m
+          settlement_type:
+            type: string
+            description: Quote settlement type
+            example: STANDARD
+            enum:
+            - STANDARD
+    PostExecuteQuoteBody:
+      type: object
+      properties:
+        quote_id:
+          type: string
+          description: 'The identifier for the quote
+
+            Note: this is required to execute the quote'
+          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+        withdrawal_request_id:
+          type: string
+          description: Optional withdrawal request ID to associate with the execution. Used by flows that pre-create a withdrawal record and then execute a quote against it.
+          example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+        always_allocate:
+          type: boolean
+          description: When true, force allocation of the trade even if the quote has expired or partially filled.
+          example: false
+        funding_details:
+          type: object
+          description: ACH funding details, required only for ACH-funded executions. Supply either an `inbound_reference_id` (to settle against an already-received inbound) or the `external_account_id`/`description`/`bank_fee` trio (to initiate a new ACH pull).
+          oneOf:
+          - type: object
+            title: Funding Details Object - Inbound ACH Transfer
+            description: Funding details for an inbound ACH transfer. `inbound_reference_id` is the unique identifier for the payment.
+            additionalProperties: false
+            required:
+            - inbound_reference_id
+            properties:
+              inbound_reference_id:
+                type: string
+                description: Reference ID of an already-received inbound ACH payment to settle this trade against.
+          - type: object
+            title: Funding Details Object - External Account
+            description: Funding details for an external account transfer.
+            additionalProperties: false
+            required:
+            - external_account_id
+            - description
+            - bank_fee
+            properties:
+              external_account_id:
+                type: string
+                description: Registered external bank account to pull funds from.
+              description:
+                type: string
+                maxLength: 10
+                description: Short free-form description written to the ACH statement (max 10 characters).
+              bank_fee:
+                type: string
+                description: Bank fee notional (decimal string) applied to this ACH pull.
+      required:
+      - quote_id
+    PostRequestForQuoteResponse:
+      type: object
+      properties:
+        message:
+          oneOf:
+          - title: RFQ Base Response
+            description: Response for a request for quote with base fields specified
+            type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              participant_code:
+                type: string
+                description: The identifier of the participant making the quote request
+                example: CUST01
+              quoted_currency:
+                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+              side:
+                type: string
+                description: The participant side of the quote - `buy` or `sell`
+                example: buy
+                enum:
+                - buy
+                - sell
+              quantity:
+                type: string
+                description: The amount of the underlying currency
+                example: '1'
+              price:
+                type: string
+                description: The cost per unit of underlying currency
+                example: '11430.90'
+              quote_id:
+                type: string
+                description: 'The identifier for the quote
+
+                  Note: this is required to execute the quote'
+                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+              expire_ts:
+                type: number
+                description: Timestamp when the quote will expire
+                example: 1568311649602
+              account_group:
+                type: string
+                description: The group that the account is a part of
+                example: GRP001
+              account_label:
+                type: string
+                description: The account label associated with the account
+                example: sub_account_test
+              obo_participant:
+                $ref: '#/components/schemas/OBOParticipantEntity'
+              total_notional:
+                type: string
+                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                example: '2.00'
+              underlying:
+                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+              asset_cost_notional:
+                type: string
+                description: asset_cost_notional is a field that shows the notional cost of the asset
+                maxLength: 50
+                example: '2.00'
+              spread_notional:
+                type: string
+                description: The notional of the spread applied to the quote
+                maxLength: 50
+                example: '2.12'
+              spread_bps:
+                type: string
+                description: The spread in basis points applied to the quote
+                maxLength: 50
+                example: '50'
+              commission_notional:
+                type: string
+                description: The notional commission applied to the quote
+                maxLength: 50
+                example: '5.00'
+              commission_bps:
+                type: string
+                description: The commission in basis points applied to the quote
+                maxLength: 50
+                example: '25'
+          - title: RFQ Fees Response
+            description: Response for a request for quote with fees specified
+            type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              participant_code:
+                type: string
+                description: The identifier of the participant making the quote request
+                example: CUST01
+              quoted_currency:
+                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+              side:
+                type: string
+                description: The participant side of the quote - `buy` or `sell`
+                example: buy
+                enum:
+                - buy
+                - sell
+              quantity:
+                type: string
+                description: The amount of the underlying currency
+                example: '1'
+              price:
+                type: string
+                description: The cost per unit of underlying currency
+                example: '11430.90'
+              quote_id:
+                type: string
+                description: 'The identifier for the quote
+
+                  Note: this is required to execute the quote'
+                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+              expire_ts:
+                type: number
+                description: Timestamp when the quote will expire
+                example: 1568311649602
+              account_group:
+                type: string
+                description: The group that the account is a part of
+                example: GRP001
+              account_label:
+                type: string
+                description: The account label associated with the account
+                example: sub_account_test
+              obo_participant:
+                $ref: '#/components/schemas/OBOParticipantEntity'
+              total_notional:
+                type: string
+                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                example: '2.00'
+              underlying:
+                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+              asset_cost_notional:
+                type: string
+                description: asset_cost_notional is a field that shows the notional cost of the asset
+                maxLength: 50
+                example: '2.00'
+              spread_notional:
+                type: string
+                description: The notional of the spread applied to the quote
+                maxLength: 50
+                example: '2.12'
+              spread_bps:
+                type: string
+                description: The spread in basis points applied to the quote
+                maxLength: 50
+                example: '50'
+              commission_notional:
+                type: string
+                description: The notional commission applied to the quote
+                maxLength: 50
+                example: '5.00'
+              commission_bps:
+                type: string
+                description: The commission in basis points applied to the quote
+                maxLength: 50
+                example: '25'
+              fees:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DynamicFee'
+          - title: RFQ Payment Processing Fees Response
+            description: Response for a request for quote with payment processing fees specified
+            type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              participant_code:
+                type: string
+                description: The identifier of the participant making the quote request
+                example: CUST01
+              quoted_currency:
+                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+              side:
+                type: string
+                description: The participant side of the quote - `buy` or `sell`
+                example: buy
+                enum:
+                - buy
+                - sell
+              quantity:
+                type: string
+                description: The amount of the underlying currency
+                example: '1'
+              price:
+                type: string
+                description: The cost per unit of underlying currency
+                example: '11430.90'
+              quote_id:
+                type: string
+                description: 'The identifier for the quote
+
+                  Note: this is required to execute the quote'
+                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+              expire_ts:
+                type: number
+                description: Timestamp when the quote will expire
+                example: 1568311649602
+              account_group:
+                type: string
+                description: The group that the account is a part of
+                example: GRP001
+              account_label:
+                type: string
+                description: The account label associated with the account
+                example: sub_account_test
+              obo_participant:
+                $ref: '#/components/schemas/OBOParticipantEntity'
+              total_notional:
+                type: string
+                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                example: '2.00'
+              underlying:
+                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+              asset_cost_notional:
+                type: string
+                description: asset_cost_notional is a field that shows the notional cost of the asset
+                maxLength: 50
+                example: '2.00'
+              spread_notional:
+                type: string
+                description: The notional of the spread applied to the quote
+                maxLength: 50
+                example: '2.12'
+              spread_bps:
+                type: string
+                description: The spread in basis points applied to the quote
+                maxLength: 50
+                example: '50'
+              commission_notional:
+                type: string
+                description: The notional commission applied to the quote
+                maxLength: 50
+                example: '5.00'
+              commission_bps:
+                type: string
+                description: The commission in basis points applied to the quote
+                maxLength: 50
+                example: '25'
+              fees:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DynamicFee'
+              payment_processor:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The name of the payment processor
+                    example: checkout.com
+                  id:
+                    type: string
+                    description: The unique identifier of the payment according to the PSP
+                    example: 593dd810-f051-40a9-9f26-d45280efe8f3
+          - title: RFQ Response with issuer fees applied
+            description: Response for a quote where the token issuer has applied fees.
+            type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              participant_code:
+                type: string
+                description: The identifier of the participant making the quote request
+                example: CUST01
+              quoted_currency:
+                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+              side:
+                type: string
+                description: The participant side of the quote - `buy` or `sell`
+                example: buy
+                enum:
+                - buy
+                - sell
+              quantity:
+                type: string
+                description: The amount of the underlying currency
+                example: '1'
+              price:
+                type: string
+                description: The cost per unit of underlying currency
+                example: '11430.90'
+              quote_id:
+                type: string
+                description: 'The identifier for the quote
+
+                  Note: this is required to execute the quote'
+                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+              expire_ts:
+                type: number
+                description: Timestamp when the quote will expire
+                example: 1568311649602
+              account_group:
+                type: string
+                description: The group that the account is a part of
+                example: GRP001
+              account_label:
+                type: string
+                description: The account label associated with the account
+                example: sub_account_test
+              obo_participant:
+                $ref: '#/components/schemas/OBOParticipantEntity'
+              total_notional:
+                type: string
+                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                example: '2.00'
+              underlying:
+                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+              asset_cost_notional:
+                type: string
+                description: asset_cost_notional is a field that shows the notional cost of the asset
+                maxLength: 50
+                example: '2.00'
+              spread_notional:
+                type: string
+                description: The notional of the spread applied to the quote
+                maxLength: 50
+                example: '2.12'
+              spread_bps:
+                type: string
+                description: The spread in basis points applied to the quote
+                maxLength: 50
+                example: '50'
+              commission_notional:
+                type: string
+                description: The notional commission applied to the quote
+                maxLength: 50
+                example: '5.00'
+              commission_bps:
+                type: string
+                description: The commission in basis points applied to the quote
+                maxLength: 50
+                example: '25'
+              issuer_fee_payor_type:
+                type: string
+                description: Quote issuer fee payor type
+                example: CUSTOMER
+                enum:
+                - CUSTOMER
+                - PLATFORM
+              issuer_fee_rate:
+                type: string
+                description: The issuer fee in basis points applied to the quote
+                maxLength: 50
+                example: '50'
+              issuer_fee_amount:
+                type: string
+                description: The notional of the issuer fee applied to the quote
+                maxLength: 50
+                example: '1.5'
+          - title: RFQ Full Response
+            description: Response for a request for quote with all details specified
+            type: object
+            properties:
+              request_id:
+                type: string
+                description: The identifier of the RFQ
+                example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              participant_code:
+                type: string
+                description: The identifier of the participant making the quote request
+                example: CUST01
+              quoted_currency:
+                $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+              side:
+                type: string
+                description: The participant side of the quote - `buy` or `sell`
+                example: buy
+                enum:
+                - buy
+                - sell
+              quantity:
+                type: string
+                description: The amount of the underlying currency
+                example: '1'
+              price:
+                type: string
+                description: The cost per unit of underlying currency
+                example: '11430.90'
+              quote_id:
+                type: string
+                description: 'The identifier for the quote
+
+                  Note: this is required to execute the quote'
+                example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+              expire_ts:
+                type: number
+                description: Timestamp when the quote will expire
+                example: 1568311649602
+              account_group:
+                type: string
+                description: The group that the account is a part of
+                example: GRP001
+              account_label:
+                type: string
+                description: The account label associated with the account
+                example: sub_account_test
+              obo_participant:
+                $ref: '#/components/schemas/OBOParticipantEntity'
+              total_notional:
+                type: string
+                description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+                example: '2.00'
+              underlying:
+                $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+              asset_cost_notional:
+                type: string
+                description: asset_cost_notional is a field that shows the notional cost of the asset
+                maxLength: 50
+                example: '2.00'
+              spread_notional:
+                type: string
+                description: The notional of the spread applied to the quote
+                maxLength: 50
+                example: '2.12'
+              spread_bps:
+                type: string
+                description: The spread in basis points applied to the quote
+                maxLength: 50
+                example: '50'
+              commission_notional:
+                type: string
+                description: The notional commission applied to the quote
+                maxLength: 50
+                example: '5.00'
+              commission_bps:
+                type: string
+                description: The commission in basis points applied to the quote
+                maxLength: 50
+                example: '25'
+              issuer_fee_payor_type:
+                type: string
+                description: Quote issuer fee payor type
+                example: CUSTOMER
+                enum:
+                - CUSTOMER
+                - PLATFORM
+              issuer_fee_rate:
+                type: string
+                description: The issuer fee in basis points applied to the quote
+                maxLength: 50
+                example: '50'
+              issuer_fee_amount:
+                type: string
+                description: The notional of the issuer fee applied to the quote
+                maxLength: 50
+                example: '1.5'
+              fees:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DynamicFee'
+              payment_processor:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The name of the payment processor
+                    example: checkout.com
+                  id:
+                    type: string
+                    description: The unique identifier of the payment according to the PSP
+                    example: 593dd810-f051-40a9-9f26-d45280efe8f3
+              settlement_type:
+                type: string
+                description: Quote settlement type
+                example: STANDARD
+                enum:
+                - STANDARD
   parameters:
     Signature:
       name: X-SCX-SIGNED

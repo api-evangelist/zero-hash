@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
-  title: zerohash Customer Accounts (MTA) Customer Accounts (MTA) API
-  description: '
-
-    ### Authentication
+  title: zerohash Customer Accounts (MTA) API
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -75,12 +71,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccounts
+      x-operation-id-source: derived
   /accounts/{zrn}:
     patch:
       tags:
       - Customer Accounts (MTA)
       summary: Update customer account
-      description: 'Updates prefunded and tier values for an existing customer account. '
+      description: Updates prefunded and tier values for an existing customer account.
       parameters:
       - $ref: '#/components/parameters/Signature'
       - $ref: '#/components/parameters/Timestamp'
@@ -133,6 +131,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: patchAccountsByZrn
+      x-operation-id-source: derived
   /accounts/{zrn}/details:
     get:
       tags:
@@ -185,6 +185,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAccountsByZrnDetails
+      x-operation-id-source: derived
   /accounts/{zrn}/lock:
     post:
       tags:
@@ -244,6 +246,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnLock
+      x-operation-id-source: derived
   /accounts/{zrn}/unlock:
     post:
       tags:
@@ -303,6 +307,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnUnlock
+      x-operation-id-source: derived
   /accounts/{zrn}/withdraw_lock:
     post:
       tags:
@@ -362,6 +368,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnWithdrawLock
+      x-operation-id-source: derived
   /accounts/{zrn}/withdraw_unlock:
     post:
       tags:
@@ -421,6 +429,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnWithdrawUnlock
+      x-operation-id-source: derived
   /accounts/{zrn}/divest:
     post:
       tags:
@@ -480,6 +490,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnDivest
+      x-operation-id-source: derived
   /accounts/{zrn}/advisors:
     post:
       tags:
@@ -539,6 +551,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnAdvisors
+      x-operation-id-source: derived
   /accounts/{zrn}/tenants:
     post:
       tags:
@@ -598,6 +612,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnTenants
+      x-operation-id-source: derived
   /accounts/{zrn}/advisors/{financial_advisor}:
     delete:
       tags:
@@ -660,6 +676,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: deleteAccountsByZrnAdvisorsByFinancialAdvisor
+      x-operation-id-source: derived
   /accounts/{zrn}/tenants/{tenant}:
     delete:
       tags:
@@ -724,6 +742,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: deleteAccountsByZrnTenantsByTenant
+      x-operation-id-source: derived
   /accounts/{zrn}/close:
     post:
       tags:
@@ -783,6 +803,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postAccountsByZrnClose
+      x-operation-id-source: derived
   /account/{zrn}/status_reason:
     get:
       tags:
@@ -835,8 +857,244 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getAccountByZrnStatusReason
+      x-operation-id-source: derived
 components:
   schemas:
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    WithdrawLockCustomerAccountBody:
+      type: object
+      title: Withdraw Lock Customer Account Request Body
+      description: Request body for withdraw-locking a customer account. Withdraw-locking an account prevents any new withdrawal requests from being created on the account, but does not impact the ability to create trades or deposits. This is typically used as a precautionary measure when suspicious activity is detected on an account, in order to prevent potential funds outflows while an investigation is conducted.
+      properties: {}
+    UnlockCustomerAccountBody:
+      type: object
+      properties: {}
+    CloseCustomerAccountBody:
+      type: object
+      properties: {}
+    GetCustomerAccountStatusReasonBody:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            zrn:
+              type: string
+              description: Customer account ZRN
+              example: zrn:zh:us:accounts:customer:c761fc96-5c44-40d4-8eb2-3fcd5d06754b
+            participant_code:
+              type: string
+              description: Unique participant code
+              example: CUST01
+            platform_code:
+              type: string
+              description: The code of the platform
+              example: PLAT01
+            account_label:
+              type: string
+              description: The account label associated with the account
+              example: account-label
+            type:
+              type: string
+              enum:
+              - individual
+              - business
+              - jtic
+              - jtwros
+              - trust
+              - utma
+              description: The account type
+              example: individual
+            tier:
+              type: string
+              enum:
+              - lite
+              - pro
+              - bronze
+              - silver
+              - gold
+              description: The account tier
+              example: gold
+            status:
+              type: string
+              enum:
+              - open
+              - closed
+              - locked
+              - withdraw_locked
+              - divesting
+              description: The current status of the customer account
+              example: locked
+            author_type:
+              type: string
+              enum:
+              - customer
+              - system
+              - admin
+              - platform
+              description: The type of author who performed the last action
+              example: admin
+            reason:
+              type: string
+              enum:
+              - unknown
+              - user_request
+              - compliance_issue
+              - ach
+              - deprecated_policy
+              - minor_attained_age_of_majority
+              - policy_rule_matched
+              description: Reason code for the account status change
+              example: compliance_issue
+            compliance_reasons:
+              type: array
+              items:
+                type: string
+                enum:
+                - restricted_jurisdiction
+                - abandoned_escheat
+                - child_abuse_material
+                - darknet_market
+                - gambling
+                - illicit
+                - merchant
+                - mixer
+                - nft_marketplace
+                - scam
+                - terrorist_organization
+                - thief
+                - shielded
+                - victim_of_fraud_or_illicit_activity
+                - fraud
+                - cash_spike_incoming
+                - cash_spike_outgoing
+                - structured_transactions
+                - cannabis_name_match
+                - potential_elder_financial_exploitation
+                - other_aml_cft_illicit_activity
+                - sanctions_possible_match
+                - sanctions_confirmed_match
+                - politically_exposed_person_foreign
+                - politically_exposed_person_domestic
+                - other_cdd_issue
+                - other_financial_crimes
+                - referral_from_platform
+                - impossible_travel_rule
+                - multiple_incorrect_dob_rule
+                - blocklisted_pii
+                - referral_from_platform_imposter_scam
+                - referral_from_le
+                - other
+                - fincen_primary_ml_concern
+                - sanctions_direct
+                - sanctions_indirect
+                - other_high_risk_entity_exposure
+                - market_abuse_manipulation
+                - ach_return_unauthorized_transaction
+                - ach_return_insufficient_funds
+                - ach_return_other
+                - gsc_pep
+                - gsc_adverse_media
+                - deceased
+                - discontinued_customer
+                - edd_required
+                - kyc_refresh
+              description: Array of compliance issue reason codes
+              example:
+              - fraud
+              - sanctions_confirmed_match
+            notes:
+              type: string
+              description: Additional notes about the account status
+              example: Account flagged for suspicious activity
+            case_number:
+              type: string
+              description: Case number associated with the account status
+              example: CASE-2024-001
+            tenants:
+              type: array
+              items:
+                type: string
+              description: Tenants are the second owners of account
+              example:
+              - PAR002
+            financial_advisors:
+              type: array
+              items:
+                type: string
+              description: Financial advisors of the account
+              example:
+              - PAR003
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    UpdateCustomerAccountBody:
+      type: object
+      properties:
+        prefunded:
+          type: boolean
+          description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+          example: false
+        tier:
+          type: string
+          enum:
+          - lite
+          - pro
+          - bronze
+          - silver
+          - gold
+          description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+          example: pro
+      required:
+      - tier
+      - prefunded
+    LockCustomerAccountBody:
+      type: object
+      properties: {}
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    AddAdvisorToCustomerAccountBody:
+      type: object
+      required:
+      - participant_code
+      properties:
+        participant_code:
+          type: string
+          description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
+          minLength: 1
+          maxLength: 6
+          pattern: ^[a-zA-Z0-9_-]+$
+          example: PART01
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -855,6 +1113,11 @@ components:
         error:
           type: string
           example: Not Found
+    WithdrawUnlockCustomerAccountBody:
+      type: object
+      title: Withdraw Unlock Customer Account Request Body
+      description: Request body for withdraw-unlocking a customer account. Withdraw-unlocking an account removes the restriction on creating new withdrawal requests on the account. This is typically used to lift a withdraw-lock that was previously placed on an account as a precautionary measure when suspicious activity was detected, after the investigation has concluded and any issues have been resolved.
+      properties: {}
     AddTenantToCustomerAccountBody:
       type: object
       required:
@@ -867,96 +1130,6 @@ components:
           maxLength: 6
           pattern: ^[a-zA-Z0-9_-]+$
           example: PART01
-    CustomerAccountResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            zrn:
-              type: string
-              description: The unique zerohash Account Identifier.
-              example: zrn:zh:us:accounts:customer:c761fc96-5c44-40d4-8eb2-3fcd5d06754b
-            participant_code:
-              type: string
-              description: The `participant_code` is the primary account holder.
-              example: PAR001
-            platform_code:
-              type: string
-              description: The code of the platform associated with the newly created account.
-              example: PLAT01
-            prefunded:
-              type: boolean
-              description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
-              example: false
-            account_label:
-              type: string
-              description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
-              example: custom-account-label
-            account_group:
-              type: string
-              description: The group that the account is a part of
-              example: XYZ456
-            type:
-              type: string
-              enum:
-              - individual
-              - business
-              - jtic
-              - jtwros
-              - trust
-              - utma
-              description: The account type associated with the account
-              example: individual
-            tier:
-              type: string
-              enum:
-              - lite
-              - pro
-              - bronze
-              - silver
-              - gold
-              description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
-              example: pro
-            status:
-              type: string
-              enum:
-              - open
-              - locked
-              - withdraw_locked
-              - divesting
-              - closed
-              description: The status of the customer account
-              example: open
-            tenants:
-              type: array
-              items:
-                type: string
-              description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
-              example:
-              - PAR002
-            financial_advisors:
-              type: array
-              items:
-                type: string
-              description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
-              example:
-              - PAR003
-    AddAdvisorToCustomerAccountBody:
-      type: object
-      required:
-      - participant_code
-      properties:
-        participant_code:
-          type: string
-          description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
-          minLength: 1
-          maxLength: 6
-          pattern: ^[a-zA-Z0-9_-]+$
-          example: PART01
-    CloseCustomerAccountBody:
-      type: object
-      properties: {}
     PostCustomerAccountRequest:
       oneOf:
       - type: object
@@ -1332,42 +1505,12 @@ components:
         - account_label
         - type
         - tier
-    Code403:
+    DivestCustomerAccountBody:
       type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    WithdrawLockCustomerAccountBody:
-      type: object
-      title: Withdraw Lock Customer Account Request Body
-      description: Request body for withdraw-locking a customer account. Withdraw-locking an account prevents any new withdrawal requests from being created on the account, but does not impact the ability to create trades or deposits. This is typically used as a precautionary measure when suspicious activity is detected on an account, in order to prevent potential funds outflows while an investigation is conducted.
+      title: Divest Customer Account Request Body
+      description: Request body for divesting a customer account. Divesting an account initiates the process of liquidating the account's assets and closing the account. This is typically used when an account is being closed or transferred to another entity.
       properties: {}
-    UnlockCustomerAccountBody:
-      type: object
-      properties: {}
-    WithdrawUnlockCustomerAccountBody:
-      type: object
-      title: Withdraw Unlock Customer Account Request Body
-      description: Request body for withdraw-unlocking a customer account. Withdraw-unlocking an account removes the restriction on creating new withdrawal requests on the account. This is typically used to lift a withdraw-lock that was previously placed on an account as a precautionary measure when suspicious activity was detected, after the investigation has concluded and any issues have been resolved.
-      properties: {}
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    GetCustomerAccountStatusReasonBody:
+    CustomerAccountResponse:
       type: object
       properties:
         message:
@@ -1375,20 +1518,28 @@ components:
           properties:
             zrn:
               type: string
-              description: Customer account ZRN
+              description: The unique zerohash Account Identifier.
               example: zrn:zh:us:accounts:customer:c761fc96-5c44-40d4-8eb2-3fcd5d06754b
             participant_code:
               type: string
-              description: Unique participant code
-              example: CUST01
+              description: The `participant_code` is the primary account holder.
+              example: PAR001
             platform_code:
               type: string
-              description: The code of the platform
+              description: The code of the platform associated with the newly created account.
               example: PLAT01
+            prefunded:
+              type: boolean
+              description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
+              example: false
             account_label:
               type: string
-              description: The account label associated with the account
-              example: account-label
+              description: The platform-dictated account label for the participants account. Accounts labels created for the same participant must have a different `account_label` value, and all maintain an individual balance.
+              example: custom-account-label
+            account_group:
+              type: string
+              description: The group that the account is a part of
+              example: XYZ456
             type:
               type: string
               enum:
@@ -1398,7 +1549,7 @@ components:
               - jtwros
               - trust
               - utma
-              description: The account type
+              description: The account type associated with the account
               example: individual
             tier:
               type: string
@@ -1408,159 +1559,32 @@ components:
               - bronze
               - silver
               - gold
-              description: The account tier
-              example: gold
+              description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
+              example: pro
             status:
               type: string
               enum:
               - open
-              - closed
               - locked
               - withdraw_locked
               - divesting
-              description: The current status of the customer account
-              example: locked
-            author_type:
-              type: string
-              enum:
-              - customer
-              - system
-              - admin
-              - platform
-              description: The type of author who performed the last action
-              example: admin
-            reason:
-              type: string
-              enum:
-              - unknown
-              - user_request
-              - compliance_issue
-              - ach
-              - deprecated_policy
-              - minor_attained_age_of_majority
-              - policy_rule_matched
-              description: Reason code for the account status change
-              example: compliance_issue
-            compliance_reasons:
-              type: array
-              items:
-                type: string
-                enum:
-                - restricted_jurisdiction
-                - abandoned_escheat
-                - child_abuse_material
-                - darknet_market
-                - gambling
-                - illicit
-                - merchant
-                - mixer
-                - nft_marketplace
-                - scam
-                - terrorist_organization
-                - thief
-                - shielded
-                - victim_of_fraud_or_illicit_activity
-                - fraud
-                - cash_spike_incoming
-                - cash_spike_outgoing
-                - structured_transactions
-                - cannabis_name_match
-                - potential_elder_financial_exploitation
-                - other_aml_cft_illicit_activity
-                - sanctions_possible_match
-                - sanctions_confirmed_match
-                - politically_exposed_person_foreign
-                - politically_exposed_person_domestic
-                - other_cdd_issue
-                - other_financial_crimes
-                - referral_from_platform
-                - impossible_travel_rule
-                - multiple_incorrect_dob_rule
-                - blocklisted_pii
-                - referral_from_platform_imposter_scam
-                - referral_from_le
-                - other
-                - fincen_primary_ml_concern
-                - sanctions_direct
-                - sanctions_indirect
-                - other_high_risk_entity_exposure
-                - market_abuse_manipulation
-                - ach_return_unauthorized_transaction
-                - ach_return_insufficient_funds
-                - ach_return_other
-                - gsc_pep
-                - gsc_adverse_media
-                - deceased
-                - discontinued_customer
-                - edd_required
-                - kyc_refresh
-              description: Array of compliance issue reason codes
-              example:
-              - fraud
-              - sanctions_confirmed_match
-            notes:
-              type: string
-              description: Additional notes about the account status
-              example: Account flagged for suspicious activity
-            case_number:
-              type: string
-              description: Case number associated with the account status
-              example: CASE-2024-001
+              - closed
+              description: The status of the customer account
+              example: open
             tenants:
               type: array
               items:
                 type: string
-              description: Tenants are the second owners of account
+              description: Tenants are the second owners of the account and have the same permissions as the primary account holder. Each tenant must be an onboarded participant to zerohash and not the same as the primary account holder.
               example:
               - PAR002
             financial_advisors:
               type: array
               items:
                 type: string
-              description: Financial advisors of the account
+              description: The Financial Advisors of the participant which must be an onboarded participant to zerohash and not the same as the primary account holder.
               example:
               - PAR003
-    DivestCustomerAccountBody:
-      type: object
-      title: Divest Customer Account Request Body
-      description: Request body for divesting a customer account. Divesting an account initiates the process of liquidating the account's assets and closing the account. This is typically used when an account is being closed or transferred to another entity.
-      properties: {}
-    LockCustomerAccountBody:
-      type: object
-      properties: {}
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    UpdateCustomerAccountBody:
-      type: object
-      properties:
-        prefunded:
-          type: boolean
-          description: "Indicates whether the participant is using a prefunded model, or using the plaform float funding model to fund buy trades. \n\n - If `true`, the participant is prefunding their account and will be responsible for ensuring they have sufficient balance in their account to cover trades. \n - If `false`, the platform will fund trades from their float balance at zerohash, on behalf of the participant and settle at the end of the day. "
-          example: false
-        tier:
-          type: string
-          enum:
-          - lite
-          - pro
-          - bronze
-          - silver
-          - gold
-          description: The account `tier` associated with the account with regards to the commission structure defined by the platform. The specific tier values available depend on the platform configuration.
-          example: pro
-      required:
-      - tier
-      - prefunded
   parameters:
     Signature:
       name: X-SCX-SIGNED

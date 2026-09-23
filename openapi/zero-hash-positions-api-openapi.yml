@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Positions API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -81,6 +77,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getPositions
+      x-operation-id-source: derived
   /positions/platform/{platform_code}:
     get:
       tags:
@@ -145,6 +143,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getPositionsPlatformByPlatformCode
+      x-operation-id-source: derived
   /positions/participant/{id}:
     get:
       tags:
@@ -205,16 +205,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getPositionsParticipantById
+      x-operation-id-source: derived
 components:
   parameters:
-    AccountLabelQuery:
-      name: account_label
-      in: query
-      description: Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history.
-      required: false
-      schema:
-        type: string
-        example: general
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -223,6 +217,14 @@ components:
       schema:
         type: string
         example: '1678901234'
+    AccountLabelQuery:
+      name: account_label
+      in: query
+      description: Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history.
+      required: false
+      schema:
+        type: string
+        example: general
     Signature:
       name: X-SCX-SIGNED
       in: header
@@ -231,13 +233,6 @@ components:
       schema:
         type: string
   schemas:
-    GetPositionsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/PositionsResponseEntity'
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -247,35 +242,6 @@ components:
         error:
           type: string
           example: Service Unavailable
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    GetPlatformPositionsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/PositionsResponseEntity'
     Code403:
       type: object
       description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
@@ -289,6 +255,35 @@ components:
         message:
           type: string
           example: This api key does not have write permission to this endpoint
+    GetPlatformPositionsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionsResponseEntity'
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     PositionsResponseEntity:
       type: object
       properties:
@@ -328,15 +323,22 @@ components:
           example:
           - 0003eb17-43b8-4c40-aec5-317b1080d6c3
           - 1f9142b8-57f2-4b4a-8e72-b94df84cf4e9
-    Code500:
+    GetPositionsResponse:
       type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionsResponseEntity'
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
       required:
       - error
       properties:
         error:
           type: string
-          example: Internal Server Error
+          example: Not Found
   securitySchemes:
     apiKey:
       type: apiKey

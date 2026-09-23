@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Payouts API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -87,6 +83,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getPayouts
+      x-operation-id-source: derived
     post:
       tags:
       - Payouts
@@ -201,159 +199,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postPayouts
+      x-operation-id-source: derived
 components:
   schemas:
-    PayorIndividualInfo:
+    Code403:
       type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
       required:
-      - first_name
-      - last_name
-      - date_of_birth
-      - address_one
-      - city
-      - jurisdiction_code
-      - id_number_type
-      - id_number
-      - id_issuing_authority
-      - tax_id
-      - sanction_screening
-      - sanction_screening_timestamp
-      - signed_agreements
+      - error
+      - message
       properties:
-        first_name:
+        error:
+          type: boolean
+          example: true
+        message:
           type: string
-        last_name:
-          type: string
-        email:
-          type: string
-          format: email
-        phone_number:
-          type: string
-        date_of_birth:
-          type: string
-          format: date
-        address_one:
-          type: string
-        address_two:
-          type: string
-        city:
-          type: string
-        state_or_province:
-          type: string
-        postal_code:
-          type: string
-        jurisdiction_code:
-          type: string
-        citizenship_code:
-          type: string
-          example: US
-        id_number_type:
-          type: string
-          example: passport
-        id_number:
-          type: string
-        id_issuing_authority:
-          type: string
-        tax_id:
-          type: string
-        sanction_screening:
+          example: This api key does not have write permission to this endpoint
+    PostPayoutsRequest:
+      type: object
+      description: 'Payout submission or pre-flight validation. When `validate: true`, zerohash runs the full validation pipeline (schema, business-logic, and address-validity checks) and returns 200 with an empty body on success or 400/422 on failure — nothing is persisted. When `validate` is omitted or false, the request is idempotent (require `Idempotency-Key` header) and on success returns 202 with a slim acknowledgement.'
+      required:
+      - payor
+      - beneficiary
+      - payment
+      - account_model
+      properties:
+        validate:
+          type: boolean
+          description: When `true`, runs the full validation pipeline with no side effects (nothing persisted, no downstream resource creation). When omitted or `false`, zerohash executes the payout.
+          default: false
+          example: false
+        payor:
+          $ref: '#/components/schemas/Payor'
+        beneficiary:
+          $ref: '#/components/schemas/BeneficiaryBlock'
+        payment:
+          $ref: '#/components/schemas/PaymentBlock'
+        account_model:
           type: string
           enum:
-          - pass
-          - fail
-        sanction_screening_timestamp:
-          type: integer
-          format: int64
-        signed_agreements:
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-            - type
-            - region
-            - signed_timestamp
-            properties:
-              type:
-                type: string
-                example: user_agreement
-              region:
-                type: string
-                example: us
-              signed_timestamp:
-                type: integer
-                format: int64
-                example: 1603378501286
-    PayoutResources:
-      type: object
-      description: Lifecycle snapshot of the payout's downstream resources. Each sub-object is `null` until the corresponding resource is created. Full PII (beneficiary natural-person fields, the inline payor `info.entity` block) is intentionally NOT surfaced here — call the per-resource GET endpoints when full details are required.
-      properties:
-        payor:
-          $ref: '#/components/schemas/PayoutResourcePayor'
-        beneficiary:
-          anyOf:
-          - $ref: '#/components/schemas/PayoutResourceBeneficiary'
-          - type: 'null'
-        payment:
-          anyOf:
-          - $ref: '#/components/schemas/PayoutResourcePayment'
-          - type: 'null'
-    PayoutResourcePayor:
-      type: object
-      description: Lifecycle view of the payor chain. Top level carries `participant_code` (the onboarded merchant); the nested `payor` (if present) carries the upstream originator's `participant_code` and `status`. Inline `info` blocks are NOT echoed back on GET — fetch the originator via `GET /participants/{participant_code}` when full details are required.
-      properties:
-        participant_code:
-          type: string
-          example: PAYOR1
-        payor:
-          type: object
-          properties:
-            participant_code:
-              type: string
-              example: ORIG01
-            status:
-              type: string
-              enum:
-              - submitted
-              - pending_approval
-              - approved
-              - rejected
-              example: approved
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    PayoutMetadata:
-      type: object
-      description: 'Caller-supplied free-form key-value pairs attached to the payout, supplied on the `POST /payouts` request body. **Write-only**: metadata is NOT returned on the `POST /payouts` response, NOT returned on `GET /payouts`, and NOT included on any `payout.status_updated` webhook. It is retained internally and is part of the idempotency body hash — replays with the same `Idempotency-Key` but different metadata return HTTP 400 payload-mismatch.
+          - omnibus
+          - fully_disclosed
+          description: 'Compliance setup applied to this payout. Required. Determines which party is treated as zerohash''s legal customer for this transaction and which `signed_agreements` coverage is required:
 
 
-        **Limits**: maximum 50 keys per object; each key 1–40 UTF-8 characters; each value 0–500 UTF-8 characters; **strings only** (no nested objects, arrays, numbers, booleans, or `null` values).
+            - `omnibus` — the top-level Payor is the legal customer. The Payor''s onboarded `signed_agreements` must include `user_agreement`.
+
+            - `fully_disclosed` — the Ultimate Payor (nested `payor.payor`) is the legal customer. The inline `payor.payor.info.signed_agreements` must include `user_agreement`.
 
 
-        **Caller responsibility — NO PII**: Do NOT place sensitive data — government IDs, full names tied to financial data, account numbers, dates of birth, home addresses, crypto addresses, or any other PII — in metadata values. zerohash treats metadata as opaque.'
-      additionalProperties:
-        type: string
-        maxLength: 500
-      maxProperties: 50
-      example:
-        client_ref: order-9182
-        region: us-west
-        campaign: weekly-payout
-    Code404:
+            Validated on submission (schema and signed-agreements checks). Echoed on `GET /payouts`. Immutable per payout — replays of the same `Idempotency-Key` with a different value return HTTP 400 payload-mismatch.'
+          example: omnibus
+        metadata:
+          $ref: '#/components/schemas/PayoutMetadata'
+    BeneficiaryBlock:
       type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
+      description: Beneficiary block — the participant receiving the funds. Exactly one of `participant_code` (references an existing approved beneficiary) or `info` (inline entity/individual data to be onboarded by zerohash) must be supplied. `external_account` is always required and identifies the destination wallet.
+      oneOf:
+      - title: Existing participant
+        type: object
+        required:
+        - participant_code
+        - external_account
+        properties:
+          participant_code:
+            type: string
+            description: References an existing approved beneficiary on the caller's platform.
+            example: BENE01
+          external_account:
+            $ref: '#/components/schemas/BeneficiaryExternalAccountRequest'
+      - title: Inline onboarding
+        type: object
+        required:
+        - info
+        - external_account
+        properties:
+          info:
+            $ref: '#/components/schemas/BeneficiaryInfo'
+          external_account:
+            $ref: '#/components/schemas/BeneficiaryExternalAccountRequest'
     BeneficiaryEntityInfo:
       type: object
       required:
@@ -442,6 +367,85 @@ components:
           - payouts_beneficiary
           description: Per-role onboarding profile. Required. Must equal `payouts_beneficiary` on the beneficiary entity block.
           example: payouts_beneficiary
+    PaymentBlock:
+      type: object
+      required:
+      - asset
+      - quoted_asset
+      - total
+      properties:
+        asset:
+          type: string
+          description: Crypto symbol to deliver (e.g., `USDC`, `USDT`). Must be supported on the supplied network.
+          example: USDC
+        quoted_asset:
+          type: string
+          description: Fiat ISO 4217 currency that the `total` amount is denominated in.
+          example: USD
+        total:
+          type: string
+          description: Payout amount in `quoted_asset`, expressed as a decimal string.
+          example: '100.00'
+        description:
+          type: string
+          description: Free-text label for the payment. Echoed on `GET /payouts` and on the `payout.status_updated` webhook; caller is responsible for any PII it embeds.
+          example: Monthly payout
+    PayoutResourceBeneficiary:
+      type: object
+      description: Beneficiary lifecycle view. Full beneficiary PII (name, DOB, address, ID numbers, etc.) is NOT included here — fetch via `GET /participants/{participant_code}`.
+      properties:
+        participant_code:
+          type: string
+          example: PART_7e2a4f9c
+        status:
+          type: string
+          enum:
+          - submitted
+          - pending_approval
+          - approved
+          - rejected
+          example: approved
+        external_account:
+          $ref: '#/components/schemas/PayoutResourceExternalAccount'
+    PayoutResourcePaymentDetails:
+      type: object
+      description: On-chain and zerohash references produced during payment execution. Populated progressively as the payment transitions through `posted` and `settled`.
+      properties:
+        withdrawal_request_id:
+          type: string
+          example: wr_uuid_xyz
+        trade_id:
+          type: string
+          example: tr_uuid_qrs
+        on_chain_transaction_id:
+          type: string
+          description: Public on-chain transaction identifier.
+          example: 0xabc123...
+        network_fee_notional:
+          type: string
+          description: Network fee expressed in `quoted_asset`, decimal string.
+          example: '0.01'
+        network_fee_quantity:
+          type: string
+          description: Network fee in the native asset of the chain, decimal string.
+          example: '0.0000000384712'
+    PayoutMetadata:
+      type: object
+      description: 'Caller-supplied free-form key-value pairs attached to the payout, supplied on the `POST /payouts` request body. **Write-only**: metadata is NOT returned on the `POST /payouts` response, NOT returned on `GET /payouts`, and NOT included on any `payout.status_updated` webhook. It is retained internally and is part of the idempotency body hash — replays with the same `Idempotency-Key` but different metadata return HTTP 400 payload-mismatch.
+
+
+        **Limits**: maximum 50 keys per object; each key 1–40 UTF-8 characters; each value 0–500 UTF-8 characters; **strings only** (no nested objects, arrays, numbers, booleans, or `null` values).
+
+
+        **Caller responsibility — NO PII**: Do NOT place sensitive data — government IDs, full names tied to financial data, account numbers, dates of birth, home addresses, crypto addresses, or any other PII — in metadata values. zerohash treats metadata as opaque.'
+      additionalProperties:
+        type: string
+        maxLength: 500
+      maxProperties: 50
+      example:
+        client_ref: order-9182
+        region: us-west
+        campaign: weekly-payout
     BeneficiaryIndividualInfo:
       type: object
       description: Beneficiary natural-person data.
@@ -528,130 +532,28 @@ components:
           - payouts_beneficiary
           description: Per-role onboarding profile. Required. Must equal `payouts_beneficiary` on the beneficiary block. Determines the required-field set and approval policy applied to this participant.
           example: payouts_beneficiary
-    GetPayoutsResponse:
+    Code500:
       type: object
-      description: Lifecycle-only view of a payout. PII (beneficiary natural-person fields, inline payor `info.entity` data, etc.) is NOT returned here — fetch from the per-resource GET endpoints when needed.
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
       required:
-      - payout_id
-      - idempotency_key
-      - account_model
-      - status
-      - created_at
-      - updated_at
-      - resources
+      - error
       properties:
-        payout_id:
+        error:
           type: string
-          format: uuid
-          example: f47ac10b-58cc-4372-a567-0e02b2c3d479
-        idempotency_key:
-          type: string
-          example: client-supplied-uuid
-        status:
-          type: string
-          enum:
-          - pending
-          - completed
-          - rejected
-          - failed
-          example: completed
-        sub_status:
-          type: string
-          nullable: true
-          description: 'Current sub-status (JSON-path notation mirroring the request tree). `null` on the initial pending webhook; non-null on every subsequent transition. One of: `payor.payor.submitted`, `payor.payor.pending_approval`, `payor.payor.approved`, `payor.payor.rejected`, `beneficiary.submitted`, `beneficiary.pending_approval`, `beneficiary.approved`, `beneficiary.rejected`, `beneficiary.external_account.submitted`, `beneficiary.external_account.approved`, `beneficiary.external_account.rejected`, `payment.submitted`, `payment.posted`, `payment.settled`, `payment.failed`.'
-          example: payment.settled
-        previous_sub_status:
-          type: string
-          nullable: true
-          description: Null on the initial pending state.
-          example: payment.posted
-        created_at:
-          type: string
-          format: date-time
-          example: '2026-05-06T12:00:00Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp of the most recent sub-status transition. On terminal states (`payment.settled` / `*.rejected` / `payment.failed`) this is effectively the completion time.
-          example: '2026-05-06T12:01:45Z'
-        failure_reason:
-          type: string
-          nullable: true
-          enum:
-          - on_chain_transaction_failed
-          - payment_submission_failed
-          - beneficiary_creation_failed
-          - ultimate_payor_creation_failed
-          - external_account_rejected
-          - beneficiary_rejected
-          - ultimate_payor_rejected
-          - beneficiary_not_approved
-          - ultimate_payor_not_approved
-          description: Machine-readable failure code, present (non-null) on terminal `*.rejected` / `payment.failed` states.
-          example: null
-        resources:
-          $ref: '#/components/schemas/PayoutResources'
-        account_model:
-          type: string
-          enum:
-          - omnibus
-          - fully_disclosed
-          description: Echo of the `account_model` supplied at submit time. Immutable per payout.
-          example: omnibus
-    Payor:
+          example: Internal Server Error
+    Code400:
       type: object
-      description: Top-level payor — the participant directly debited for the payout. **Must be pre-onboarded** via `POST /participants/entity/new` and referenced here by `participant_code`. The top-level payor is not onboarded inline. An optional nested `payor` represents the upstream originator (e.g., the merchant's customer), which MAY be inline-onboarded via `PayorBlock`.
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
       required:
-      - participant_code
+      - errors
       properties:
-        participant_code:
-          type: string
-          description: References an existing approved participant on the caller's platform (the top-level payor / merchant).
-          example: PAYOR1
-        payor:
-          $ref: '#/components/schemas/PayorBlock'
-    PayoutResourcePaymentDetails:
-      type: object
-      description: On-chain and zerohash references produced during payment execution. Populated progressively as the payment transitions through `posted` and `settled`.
-      properties:
-        withdrawal_request_id:
-          type: string
-          example: wr_uuid_xyz
-        trade_id:
-          type: string
-          example: tr_uuid_qrs
-        on_chain_transaction_id:
-          type: string
-          description: Public on-chain transaction identifier.
-          example: 0xabc123...
-        network_fee_notional:
-          type: string
-          description: Network fee expressed in `quoted_asset`, decimal string.
-          example: '0.01'
-        network_fee_quantity:
-          type: string
-          description: Network fee in the native asset of the chain, decimal string.
-          example: '0.0000000384712'
-    BeneficiaryExternalAccountRequest:
-      type: object
-      description: Destination wallet for the payout. Exactly one of `external_account_id` (references an existing approved external account on the resolved beneficiary) or `info` (inline crypto-account data) must be supplied.
-      oneOf:
-      - title: Existing external account
-        type: object
-        required:
-        - external_account_id
-        properties:
-          external_account_id:
+        errors:
+          type: array
+          items:
             type: string
-            description: References an existing approved external account belonging to the resolved beneficiary.
-            example: ea_3b1d8e4a
-      - title: Inline onboarding
-        type: object
-        required:
-        - info
-        properties:
-          info:
-            $ref: '#/components/schemas/ExternalAccountInfo'
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     BeneficiaryInfo:
       type: object
       description: Exactly one of `individual` or `entity` is required. Provide `individual` for natural-person beneficiaries and `entity` for legal entities (corporations, LLCs, etc.).
@@ -670,6 +572,18 @@ components:
         properties:
           entity:
             $ref: '#/components/schemas/BeneficiaryEntityInfo'
+    Payor:
+      type: object
+      description: Top-level payor — the participant directly debited for the payout. **Must be pre-onboarded** via `POST /participants/entity/new` and referenced here by `participant_code`. The top-level payor is not onboarded inline. An optional nested `payor` represents the upstream originator (e.g., the merchant's customer), which MAY be inline-onboarded via `PayorBlock`.
+      required:
+      - participant_code
+      properties:
+        participant_code:
+          type: string
+          description: References an existing approved participant on the caller's platform (the top-level payor / merchant).
+          example: PAYOR1
+        payor:
+          $ref: '#/components/schemas/PayorBlock'
     PayorEntityInfo:
       type: object
       required:
@@ -763,122 +677,58 @@ components:
           - payouts_payor_ultimate
           description: Per-role onboarding profile. Required. Must equal `payouts_payor_ultimate` on the Ultimate Payor entity block. Determines the required-field set and approval policy applied to this participant.
           example: payouts_payor_ultimate
-    PayoutResourceBeneficiary:
+    BeneficiaryExternalAccountRequest:
       type: object
-      description: Beneficiary lifecycle view. Full beneficiary PII (name, DOB, address, ID numbers, etc.) is NOT included here — fetch via `GET /participants/{participant_code}`.
-      properties:
-        participant_code:
-          type: string
-          example: PART_7e2a4f9c
-        status:
-          type: string
-          enum:
-          - submitted
-          - pending_approval
-          - approved
-          - rejected
-          example: approved
-        external_account:
-          $ref: '#/components/schemas/PayoutResourceExternalAccount'
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    PaymentBlock:
-      type: object
-      required:
-      - asset
-      - quoted_asset
-      - total
-      properties:
-        asset:
-          type: string
-          description: Crypto symbol to deliver (e.g., `USDC`, `USDT`). Must be supported on the supplied network.
-          example: USDC
-        quoted_asset:
-          type: string
-          description: Fiat ISO 4217 currency that the `total` amount is denominated in.
-          example: USD
-        total:
-          type: string
-          description: Payout amount in `quoted_asset`, expressed as a decimal string.
-          example: '100.00'
-        description:
-          type: string
-          description: Free-text label for the payment. Echoed on `GET /payouts` and on the `payout.status_updated` webhook; caller is responsible for any PII it embeds.
-          example: Monthly payout
-    PostPayoutsRequest:
-      type: object
-      description: 'Payout submission or pre-flight validation. When `validate: true`, zerohash runs the full validation pipeline (schema, business-logic, and address-validity checks) and returns 200 with an empty body on success or 400/422 on failure — nothing is persisted. When `validate` is omitted or false, the request is idempotent (require `Idempotency-Key` header) and on success returns 202 with a slim acknowledgement.'
-      required:
-      - payor
-      - beneficiary
-      - payment
-      - account_model
-      properties:
-        validate:
-          type: boolean
-          description: When `true`, runs the full validation pipeline with no side effects (nothing persisted, no downstream resource creation). When omitted or `false`, zerohash executes the payout.
-          default: false
-          example: false
-        payor:
-          $ref: '#/components/schemas/Payor'
-        beneficiary:
-          $ref: '#/components/schemas/BeneficiaryBlock'
-        payment:
-          $ref: '#/components/schemas/PaymentBlock'
-        account_model:
-          type: string
-          enum:
-          - omnibus
-          - fully_disclosed
-          description: 'Compliance setup applied to this payout. Required. Determines which party is treated as zerohash''s legal customer for this transaction and which `signed_agreements` coverage is required:
-
-
-            - `omnibus` — the top-level Payor is the legal customer. The Payor''s onboarded `signed_agreements` must include `user_agreement`.
-
-            - `fully_disclosed` — the Ultimate Payor (nested `payor.payor`) is the legal customer. The inline `payor.payor.info.signed_agreements` must include `user_agreement`.
-
-
-            Validated on submission (schema and signed-agreements checks). Echoed on `GET /payouts`. Immutable per payout — replays of the same `Idempotency-Key` with a different value return HTTP 400 payload-mismatch.'
-          example: omnibus
-        metadata:
-          $ref: '#/components/schemas/PayoutMetadata'
-    BeneficiaryBlock:
-      type: object
-      description: Beneficiary block — the participant receiving the funds. Exactly one of `participant_code` (references an existing approved beneficiary) or `info` (inline entity/individual data to be onboarded by zerohash) must be supplied. `external_account` is always required and identifies the destination wallet.
+      description: Destination wallet for the payout. Exactly one of `external_account_id` (references an existing approved external account on the resolved beneficiary) or `info` (inline crypto-account data) must be supplied.
       oneOf:
-      - title: Existing participant
+      - title: Existing external account
         type: object
         required:
-        - participant_code
-        - external_account
+        - external_account_id
         properties:
-          participant_code:
+          external_account_id:
             type: string
-            description: References an existing approved beneficiary on the caller's platform.
-            example: BENE01
-          external_account:
-            $ref: '#/components/schemas/BeneficiaryExternalAccountRequest'
+            description: References an existing approved external account belonging to the resolved beneficiary.
+            example: ea_3b1d8e4a
       - title: Inline onboarding
         type: object
         required:
         - info
-        - external_account
         properties:
           info:
-            $ref: '#/components/schemas/BeneficiaryInfo'
-          external_account:
-            $ref: '#/components/schemas/BeneficiaryExternalAccountRequest'
+            $ref: '#/components/schemas/ExternalAccountInfo'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    PostPayoutsSubmitResponse:
+      type: object
+      required:
+      - idempotency_key
+      - payout_id
+      - status
+      description: Slim acknowledgement returned for submit-mode requests (HTTP 202). Full resource state is retrieved via `GET /payouts` or observed via `payout.status_updated` webhooks.
+      properties:
+        idempotency_key:
+          type: string
+          description: Echo of the value supplied in the `Idempotency-Key` request header.
+          example: client-supplied-uuid
+        payout_id:
+          type: string
+          format: uuid
+          description: Public-facing identifier for the payout. Stable across the lifecycle; use for `GET /payouts?payout_id=...` and as the correlation key on `payout.status_updated` webhooks.
+          example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        status:
+          type: string
+          enum:
+          - pending
+          description: Top-level lifecycle status. Always `pending` on the 202 acknowledgement.
+          example: pending
     PayorInfo:
       type: object
       description: Exactly one of `entity` or `individual` is required. Provide `entity` for legal entities (corporations, LLCs, etc.) and `individual` for natural persons.
@@ -897,6 +747,99 @@ components:
         properties:
           individual:
             $ref: '#/components/schemas/PayorIndividualInfo'
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    GetPayoutsResponse:
+      type: object
+      description: Lifecycle-only view of a payout. PII (beneficiary natural-person fields, inline payor `info.entity` data, etc.) is NOT returned here — fetch from the per-resource GET endpoints when needed.
+      required:
+      - payout_id
+      - idempotency_key
+      - account_model
+      - status
+      - created_at
+      - updated_at
+      - resources
+      properties:
+        payout_id:
+          type: string
+          format: uuid
+          example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        idempotency_key:
+          type: string
+          example: client-supplied-uuid
+        status:
+          type: string
+          enum:
+          - pending
+          - completed
+          - rejected
+          - failed
+          example: completed
+        sub_status:
+          type: string
+          nullable: true
+          description: 'Current sub-status (JSON-path notation mirroring the request tree). `null` on the initial pending webhook; non-null on every subsequent transition. One of: `payor.payor.submitted`, `payor.payor.pending_approval`, `payor.payor.approved`, `payor.payor.rejected`, `beneficiary.submitted`, `beneficiary.pending_approval`, `beneficiary.approved`, `beneficiary.rejected`, `beneficiary.external_account.submitted`, `beneficiary.external_account.approved`, `beneficiary.external_account.rejected`, `payment.submitted`, `payment.posted`, `payment.settled`, `payment.failed`.'
+          example: payment.settled
+        previous_sub_status:
+          type: string
+          nullable: true
+          description: Null on the initial pending state.
+          example: payment.posted
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-05-06T12:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp of the most recent sub-status transition. On terminal states (`payment.settled` / `*.rejected` / `payment.failed`) this is effectively the completion time.
+          example: '2026-05-06T12:01:45Z'
+        failure_reason:
+          type: string
+          nullable: true
+          enum:
+          - on_chain_transaction_failed
+          - payment_submission_failed
+          - beneficiary_creation_failed
+          - ultimate_payor_creation_failed
+          - external_account_rejected
+          - beneficiary_rejected
+          - ultimate_payor_rejected
+          - beneficiary_not_approved
+          - ultimate_payor_not_approved
+          description: Machine-readable failure code, present (non-null) on terminal `*.rejected` / `payment.failed` states.
+          example: null
+        resources:
+          $ref: '#/components/schemas/PayoutResources'
+        account_model:
+          type: string
+          enum:
+          - omnibus
+          - fully_disclosed
+          description: Echo of the `account_model` supplied at submit time. Immutable per payout.
+          example: omnibus
+    PayoutResources:
+      type: object
+      description: Lifecycle snapshot of the payout's downstream resources. Each sub-object is `null` until the corresponding resource is created. Full PII (beneficiary natural-person fields, the inline payor `info.entity` block) is intentionally NOT surfaced here — call the per-resource GET endpoints when full details are required.
+      properties:
+        payor:
+          $ref: '#/components/schemas/PayoutResourcePayor'
+        beneficiary:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutResourceBeneficiary'
+          - type: 'null'
+        payment:
+          anyOf:
+          - $ref: '#/components/schemas/PayoutResourcePayment'
+          - type: 'null'
     PayoutResourceExternalAccount:
       type: object
       description: External account lifecycle + non-PII details. `crypto_address`, `account_nickname`, and `destination_tag` are returned on GET but NOT on webhooks.
@@ -940,6 +883,39 @@ components:
           type: string
           format: date-time
           example: '2026-05-06T12:01:20Z'
+    ExternalAccountInfo:
+      type: object
+      description: Crypto external account belonging to the beneficiary.
+      required:
+      - network
+      - crypto_address
+      - supported_symbols
+      properties:
+        network:
+          type: string
+          description: Blockchain network identifier.
+          example: SOL
+        crypto_address:
+          type: string
+          description: Destination wallet address. Validated against (a) the zerohash deny list and (b) network format compatibility.
+          example: ab123...
+        supported_symbols:
+          type: array
+          minItems: 1
+          items:
+            type: string
+          example:
+          - USDC
+        account_nickname:
+          type: string
+          description: Caller-supplied label for the account.
+          example: Max's USDC wallet
+        destination_tag:
+          type: string
+          description: 'Destination tag for chains that require it (e.g., XRP, XLM). Omit (or use `no_destination_tag: true`) when the network does not require one.'
+        no_destination_tag:
+          type: boolean
+          description: Set to `true` to assert that no destination tag is required for this address. Mutually exclusive with `destination_tag`.
     PayorBlock:
       type: object
       description: Nested payor block representing the upstream originator — the Ultimate Payor (e.g., the merchant's customer). Exactly one of `participant_code` (references an existing approved participant) or `info` (inline entity/individual data to be onboarded by zerohash) must be supplied.
@@ -960,15 +936,108 @@ components:
         properties:
           info:
             $ref: '#/components/schemas/PayorInfo'
-    Code500:
+    PayorIndividualInfo:
       type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
       required:
-      - error
+      - first_name
+      - last_name
+      - date_of_birth
+      - address_one
+      - city
+      - jurisdiction_code
+      - id_number_type
+      - id_number
+      - id_issuing_authority
+      - tax_id
+      - sanction_screening
+      - sanction_screening_timestamp
+      - signed_agreements
       properties:
-        error:
+        first_name:
           type: string
-          example: Internal Server Error
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+        date_of_birth:
+          type: string
+          format: date
+        address_one:
+          type: string
+        address_two:
+          type: string
+        city:
+          type: string
+        state_or_province:
+          type: string
+        postal_code:
+          type: string
+        jurisdiction_code:
+          type: string
+        citizenship_code:
+          type: string
+          example: US
+        id_number_type:
+          type: string
+          example: passport
+        id_number:
+          type: string
+        id_issuing_authority:
+          type: string
+        tax_id:
+          type: string
+        sanction_screening:
+          type: string
+          enum:
+          - pass
+          - fail
+        sanction_screening_timestamp:
+          type: integer
+          format: int64
+        signed_agreements:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - type
+            - region
+            - signed_timestamp
+            properties:
+              type:
+                type: string
+                example: user_agreement
+              region:
+                type: string
+                example: us
+              signed_timestamp:
+                type: integer
+                format: int64
+                example: 1603378501286
+    PayoutResourcePayor:
+      type: object
+      description: Lifecycle view of the payor chain. Top level carries `participant_code` (the onboarded merchant); the nested `payor` (if present) carries the upstream originator's `participant_code` and `status`. Inline `info` blocks are NOT echoed back on GET — fetch the originator via `GET /participants/{participant_code}` when full details are required.
+      properties:
+        participant_code:
+          type: string
+          example: PAYOR1
+        payor:
+          type: object
+          properties:
+            participant_code:
+              type: string
+              example: ORIG01
+            status:
+              type: string
+              enum:
+              - submitted
+              - pending_approval
+              - approved
+              - rejected
+              example: approved
     PayoutResourcePayment:
       type: object
       description: Payment lifecycle + execution details.
@@ -1017,75 +1086,6 @@ components:
           type: string
           format: date-time
           example: '2026-05-06T12:01:45Z'
-    PostPayoutsSubmitResponse:
-      type: object
-      required:
-      - idempotency_key
-      - payout_id
-      - status
-      description: Slim acknowledgement returned for submit-mode requests (HTTP 202). Full resource state is retrieved via `GET /payouts` or observed via `payout.status_updated` webhooks.
-      properties:
-        idempotency_key:
-          type: string
-          description: Echo of the value supplied in the `Idempotency-Key` request header.
-          example: client-supplied-uuid
-        payout_id:
-          type: string
-          format: uuid
-          description: Public-facing identifier for the payout. Stable across the lifecycle; use for `GET /payouts?payout_id=...` and as the correlation key on `payout.status_updated` webhooks.
-          example: f47ac10b-58cc-4372-a567-0e02b2c3d479
-        status:
-          type: string
-          enum:
-          - pending
-          description: Top-level lifecycle status. Always `pending` on the 202 acknowledgement.
-          example: pending
-    ExternalAccountInfo:
-      type: object
-      description: Crypto external account belonging to the beneficiary.
-      required:
-      - network
-      - crypto_address
-      - supported_symbols
-      properties:
-        network:
-          type: string
-          description: Blockchain network identifier.
-          example: SOL
-        crypto_address:
-          type: string
-          description: Destination wallet address. Validated against (a) the zerohash deny list and (b) network format compatibility.
-          example: ab123...
-        supported_symbols:
-          type: array
-          minItems: 1
-          items:
-            type: string
-          example:
-          - USDC
-        account_nickname:
-          type: string
-          description: Caller-supplied label for the account.
-          example: Max's USDC wallet
-        destination_tag:
-          type: string
-          description: 'Destination tag for chains that require it (e.g., XRP, XLM). Omit (or use `no_destination_tag: true`) when the network does not require one.'
-        no_destination_tag:
-          type: boolean
-          description: Set to `true` to assert that no destination tag is required for this address. Mutually exclusive with `destination_tag`.
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
   parameters:
     Signature:
       name: X-SCX-SIGNED

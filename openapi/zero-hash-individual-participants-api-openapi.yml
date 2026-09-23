@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Individual Participants API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -77,6 +73,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postParticipantsCustomersNew
+      x-operation-id-source: derived
   /participants/documents:
     post:
       tags:
@@ -129,6 +127,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postParticipantsDocuments
+      x-operation-id-source: derived
   /participants/customers/{participant_code}:
     patch:
       tags:
@@ -184,6 +184,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: patchParticipantsCustomersByParticipantCode
+      x-operation-id-source: derived
   /participants/customers/{participant_code}/lock:
     post:
       tags:
@@ -238,6 +240,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postParticipantsCustomersByParticipantCodeLock
+      x-operation-id-source: derived
   /participants/beneficiaries/new:
     post:
       tags:
@@ -293,6 +297,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postParticipantsBeneficiariesNew
+      x-operation-id-source: derived
   /participants/beneficiaries/{participant_code}:
     patch:
       tags:
@@ -349,6 +355,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: patchParticipantsBeneficiariesByParticipantCode
+      x-operation-id-source: derived
   /participant/{participant_code}/limits:
     patch:
       tags:
@@ -403,8 +411,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: patchParticipantByParticipantCodeLimits
+      x-operation-id-source: derived
 components:
   schemas:
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    LockCustomersBody:
+      type: object
+      required:
+      - reason_code
+      - notes
+      additionalProperties: false
+      properties:
+        reason_code:
+          type: string
+          enum:
+          - user_request
+          - compliance_issue
+          description: Reason the customer is being locked.
+          example: compliance_issue
+        notes:
+          type: string
+          description: Additional detail on the lock. Including useful context here can meaningfully speed up investigations on the zerohash side.
+          example: confirmed fraud
     AdditionalTaxResidence:
       type: object
       required:
@@ -418,446 +459,1148 @@ components:
           type: string
           description: The ISO 3166-2 subdivision code that the participant resides in
           example: US-IL
-    PostBeneficiariesResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            first_name:
-              type: string
-              description: The first name of the customer being onboarded.
-              example: John
-            last_name:
-              type: string
-              description: The last name of the customer being onboarded.
-              example: Smith
-            email:
-              type: string
-              description: 'Customer email address, required.
-
-                Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
-              example: test@example.com
-            address_one:
-              type: string
-              description: 'First line for the customer''s address.
-
-
-                Notes:
-
-                - The regular maximum length is 80 characters.
-
-                - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
-
-                - PO Box addresses are not accepted.'
-              example: 123 Main St.
-            address_two:
-              type: string
-              description: 'Extra information, like an apartment or suite number.
+    PatchCustomersBody:
+      oneOf:
+      - title: Standard User Details Patch
+        type: object
+        description: Patch for standard user details such as address, phone, name, etc.
+        properties:
+          first_name:
+            type: string
+            description: The first name of the customer being onboarded.
+            example: John
+          middle_name:
+            type: string
+            description: The middle name of the customer being onboarded.
+            example: Middle
+          last_name:
+            type: string
+            description: The last name of the customer being onboarded.
+            example: Smith
+          former_name:
+            type: string
+            description: The former name of the customer being onboarded.
+            example: Whale
+          gender:
+            type: string
+            enum:
+            - male
+            - female
+            - other
+            example: male
+            description: Customer gender.
+          address_one:
+            type: string
+            description: 'First line for the customer''s address.
 
 
-                Notes:
+              Notes:
 
-                - The maximum length is `50` characters for platform using KYCaaS through zerohash.
+              - The regular maximum length is 80 characters.
 
-                - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
+              - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
 
-                - PO Box addresses are not accepted.'
-              example: Suite 1000
-            jurisdiction_code:
-              type: string
-              description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
-              example: US-IL
-              enum:
-              - US-AL
-              - US-AK
-              - US-AZ
-              - US-AR
-              - US-CA
-              - US-CO
-              - US-CT
-              - US-DE
-              - US-FL
-              - US-GA
-              - US-HI
-              - US-ID
-              - US-IL
-              - US-IN
-              - US-IA
-              - US-KS
-              - US-KY
-              - US-LA
-              - US-ME
-              - US-MD
-              - US-MA
-              - US-MI
-              - US-MN
-              - US-MS
-              - US-MO
-              - US-MT
-              - US-NE
-              - US-NV
-              - US-NH
-              - US-NJ
-              - US-NM
-              - US-NY
-              - US-NC
-              - US-ND
-              - US-OH
-              - US-OK
-              - US-OR
-              - US-PA
-              - US-RI
-              - US-SC
-              - US-SD
-              - US-TN
-              - US-TX
-              - US-UT
-              - US-VT
-              - US-VA
-              - US-WA
-              - US-WV
-              - US-WI
-              - US-WY
-              - US-DC
-              - US-AS
-              - US-GU
-              - US-MP
-              - US-PR
-              - US-UM
-              - US-VI
-            city:
-              type: string
-              description: The city customer resides in.
-              example: Chicago
-            zip:
-              type: string
-              description: Zip code of the customer, required if `country` is `USA`, min 5 characters or `<5digits>-<4digits>`, no leading or trailing spaces", e.g. 77777 or 77777-7777.
-              example: '12345'
-            date_of_birth:
-              type: string
-              description: Date of birth of the customer in the format `YYYY-MM-DD`
-              example: '1985-09-02'
-            id_number_type:
-              type: string
-              enum:
-              - us_drivers_license
-              - us_passport
-              - us_passport_card
-              - us_permanent_resident_card
-              - us_border_crossing_card
-              - us_alien_card
-              - us_id_card
-              - non_us_passport
-              - non_us_other
-              - passport
-              - eu_drivers_license
-              - national_id
-              - legal_entity_identifier
-              - chamber_of_commerce_number
-              - value_added_tax_number
-              description: "The id number type field is required when; \n - `citizenship` is not `US`\n - `citizenship=US` and `tax_id` starts with `9` (is an ITIN, a 9-digit US ID that begins with the number 9).\nPassport, EU Drivers License, National ID are EU-specific types. EU platforms also accept us_passport, non_us_passport, non_us_other, us_drivers_license, us_id_card, us_passport_card"
-              example: us_passport
-            id_number:
-              type: string
-              description: "The ID number for the customer. \n - Required when `citizenship_code` is not `US`\n - Required when `citizenship_code : US` but `tax_id` is an ITIN (a 9-digit US ID that begins with the number `9`)."
-              example: '123456789'
-            citizenship_code:
-              type: string
-              example: US
-              description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
-              enum:
-              - AD
-              - AE
-              - AF
-              - AG
-              - AI
-              - AL
-              - AM
-              - AO
-              - AQ
-              - AR
-              - AS
-              - AT
-              - AU
-              - AW
-              - AX
-              - AZ
-              - BA
-              - BB
-              - BD
-              - BE
-              - BF
-              - BG
-              - BH
-              - BI
-              - BJ
-              - BL
-              - BM
-              - BN
-              - BO
-              - BQ
-              - BR
-              - BS
-              - BT
-              - BV
-              - BW
-              - BY
-              - BZ
-              - CA
-              - CC
-              - CD
-              - CF
-              - CG
-              - CH
-              - CI
-              - CK
-              - CL
-              - CM
-              - CN
-              - CO
-              - CR
-              - CU
-              - CV
-              - CW
-              - CX
-              - CY
-              - CZ
-              - DE
-              - DJ
-              - DK
-              - DM
-              - DO
-              - DZ
-              - EC
-              - EE
-              - EG
-              - EH
-              - ER
-              - ES
-              - ET
-              - FI
-              - FJ
-              - FK
-              - FM
-              - FO
-              - FR
-              - GA
-              - GB
-              - GD
-              - GE
-              - GF
-              - GG
-              - GH
-              - GI
-              - GL
-              - GM
-              - GN
-              - GP
-              - GQ
-              - GR
-              - GS
-              - GT
-              - GU
-              - GW
-              - GY
-              - HK
-              - HM
-              - HN
-              - HR
-              - HT
-              - HU
-              - ID
-              - IE
-              - IL
-              - IM
-              - IN
-              - IO
-              - IQ
-              - IR
-              - IS
-              - IT
-              - JE
-              - JM
-              - JO
-              - JP
-              - KE
-              - KG
-              - KH
-              - KI
-              - KM
-              - KN
-              - KP
-              - KR
-              - KW
-              - KY
-              - KZ
-              - LA
-              - LB
-              - LC
-              - LI
-              - LK
-              - LR
-              - LS
-              - LT
-              - LU
-              - LV
-              - LY
-              - MA
-              - MC
-              - MD
-              - ME
-              - MF
-              - MG
-              - MH
-              - MK
-              - ML
-              - MM
-              - MN
-              - MO
-              - MP
-              - MQ
-              - MR
-              - MS
-              - MT
-              - MU
-              - MV
-              - MW
-              - MX
-              - MY
-              - MZ
-              - NA
-              - NC
-              - NE
-              - NF
-              - NG
-              - NI
-              - NL
-              - 'NO'
-              - NP
-              - NR
-              - NU
-              - NZ
-              - OM
-              - PA
-              - PE
-              - PF
-              - PG
-              - PH
-              - PK
-              - PL
-              - PM
-              - PN
-              - PR
-              - PS
-              - PT
-              - PW
-              - PY
-              - QA
-              - RE
-              - RO
-              - RS
-              - RW
-              - SA
-              - SB
-              - SC
-              - SD
-              - SE
-              - SG
-              - SH
-              - SI
-              - SJ
-              - SK
-              - SL
-              - SM
-              - SN
-              - SO
-              - SR
-              - SS
-              - ST
-              - SV
-              - SX
-              - SY
-              - SZ
-              - TC
-              - TD
-              - TF
-              - TG
-              - TH
-              - TJ
-              - TK
-              - TL
-              - TM
-              - TN
-              - TO
-              - TR
-              - TT
-              - TV
-              - TW
-              - TZ
-              - UA
-              - UG
-              - UM
-              - US
-              - UY
-              - UZ
-              - VA
-              - VC
-              - VE
-              - VG
-              - VI
-              - VN
-              - VU
-              - WF
-              - WS
-              - YE
-              - YT
-              - ZA
-              - ZM
-              - ZW
-            non_us_other_type:
-              type: string
-              description: This is required if you select `non_us_other` for the `id_number_type` - a freeform string to describe the ID type
-              example: null
-            id_issuing_authority:
-              type: string
-              description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
-              example: null
-            phone_number:
-              type: string
-              description: The phone number of the participant
-              example: '15557778888'
-            platform_code:
-              type: string
-              example: XXXXXX
-            participant_code:
-              type: string
-              example: XXXXXX
-    PatchParticipantLimitsResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Success message
-          example: Participant limits updated successfully
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
+              - PO Box addresses are not accepted.'
+            example: 123 Main St.
+          address_two:
+            type: string
+            description: 'Extra information, like an apartment or suite number.
+
+
+              Notes:
+
+              - The maximum length is `50` characters for platform using KYCaaS through zerohash.
+
+              - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
+
+              - PO Box addresses are not accepted.'
+            example: Suite 1000
+          country:
+            type: string
+            example: USA
+            description: 'The ISO-3166-1 alpha3 country, e.g.`USA`, `IRL`. '
+            enum:
+            - AND
+            - ARE
+            - AFG
+            - ATG
+            - AIA
+            - ALB
+            - ARM
+            - AGO
+            - ATA
+            - ARG
+            - ASM
+            - AUT
+            - AUS
+            - ABW
+            - ALA
+            - AZE
+            - BIH
+            - BRB
+            - BGD
+            - BEL
+            - BFA
+            - BGR
+            - BHR
+            - BDI
+            - BEN
+            - BLM
+            - BMU
+            - BRN
+            - BOL
+            - BES
+            - BRA
+            - BHS
+            - BTN
+            - BVT
+            - BWA
+            - BLR
+            - BLZ
+            - CAN
+            - CCK
+            - COD
+            - CAF
+            - COG
+            - CHE
+            - CIV
+            - COK
+            - CHL
+            - CMR
+            - CHN
+            - COL
+            - CRI
+            - CUB
+            - CPV
+            - CUW
+            - CXR
+            - CYP
+            - CZE
+            - DEU
+            - DJI
+            - DNK
+            - DMA
+            - DOM
+            - DZA
+            - ECU
+            - EST
+            - EGY
+            - ESH
+            - ERI
+            - ESP
+            - ETH
+            - FIN
+            - FJI
+            - FLK
+            - FSM
+            - FRO
+            - FRA
+            - GAB
+            - GBR
+            - GRD
+            - GEO
+            - GUF
+            - GGY
+            - GHA
+            - GIB
+            - GRL
+            - GMB
+            - GIN
+            - GLP
+            - GNQ
+            - GRC
+            - SGS
+            - GTM
+            - GUM
+            - GNB
+            - GUY
+            - HKG
+            - HMD
+            - HND
+            - HRV
+            - HTI
+            - HUN
+            - IDN
+            - IRL
+            - ISR
+            - IMN
+            - IND
+            - IOT
+            - IRQ
+            - IRN
+            - ISL
+            - ITA
+            - JEY
+            - JAM
+            - JOR
+            - JPN
+            - KEN
+            - KGZ
+            - KHM
+            - KIR
+            - COM
+            - KNA
+            - PRK
+            - KOR
+            - KWT
+            - CYM
+            - KAZ
+            - LAO
+            - LBN
+            - LCA
+            - LIE
+            - LKA
+            - LBR
+            - LSO
+            - LTU
+            - LUX
+            - LVA
+            - LBY
+            - MAR
+            - MCO
+            - MDA
+            - MNE
+            - MAF
+            - MDG
+            - MHL
+            - MKD
+            - MLI
+            - MMR
+            - MNG
+            - MAC
+            - MNP
+            - MTQ
+            - MRT
+            - MSR
+            - MLT
+            - MUS
+            - MDV
+            - MWI
+            - MEX
+            - MYS
+            - MOZ
+            - NAM
+            - NCL
+            - NER
+            - NFK
+            - NGA
+            - NIC
+            - NLD
+            - NOR
+            - NPL
+            - NRU
+            - NIU
+            - NZL
+            - OMN
+            - PAN
+            - PER
+            - PYF
+            - PNG
+            - PHL
+            - PAK
+            - POL
+            - SPM
+            - PCN
+            - PRI
+            - PSE
+            - PRT
+            - PLW
+            - PRY
+            - QAT
+            - REU
+            - ROU
+            - SRB
+            - RUS
+            - RWA
+            - SAU
+            - SLB
+            - SYC
+            - SDN
+            - SWE
+            - SGP
+            - SHN
+            - SVN
+            - SJM
+            - SVK
+            - SLE
+            - SMR
+            - SEN
+            - SOM
+            - SUR
+            - SSD
+            - STP
+            - SLV
+            - SXM
+            - SYR
+            - SWZ
+            - TCA
+            - TCD
+            - ATF
+            - TGO
+            - THA
+            - TJK
+            - TKL
+            - TLS
+            - TKM
+            - TUN
+            - TON
+            - TUR
+            - TTO
+            - TUV
+            - TWN
+            - TZA
+            - UKR
+            - UGA
+            - UMI
+            - USA
+            - URY
+            - UZB
+            - VAT
+            - VCT
+            - VEN
+            - VGB
+            - VIR
+            - VNM
+            - VUT
+            - WLF
+            - WSM
+            - YEM
+            - MYT
+            - ZAF
+            - ZMB
+            - ZWE
+          jurisdiction_code:
+            type: string
+            description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
+            example: US-IL
+            enum:
+            - US-AL
+            - US-AK
+            - US-AZ
+            - US-AR
+            - US-CA
+            - US-CO
+            - US-CT
+            - US-DE
+            - US-FL
+            - US-GA
+            - US-HI
+            - US-ID
+            - US-IL
+            - US-IN
+            - US-IA
+            - US-KS
+            - US-KY
+            - US-LA
+            - US-ME
+            - US-MD
+            - US-MA
+            - US-MI
+            - US-MN
+            - US-MS
+            - US-MO
+            - US-MT
+            - US-NE
+            - US-NV
+            - US-NH
+            - US-NJ
+            - US-NM
+            - US-NY
+            - US-NC
+            - US-ND
+            - US-OH
+            - US-OK
+            - US-OR
+            - US-PA
+            - US-RI
+            - US-SC
+            - US-SD
+            - US-TN
+            - US-TX
+            - US-UT
+            - US-VT
+            - US-VA
+            - US-WA
+            - US-WV
+            - US-WI
+            - US-WY
+            - US-DC
+            - US-AS
+            - US-GU
+            - US-MP
+            - US-PR
+            - US-UM
+            - US-VI
+          city:
+            type: string
+            description: The city customer resides in.
+            example: Chicago
+          zip:
+            type: string
+            description: Zip code of the customer, required if `country` is `USA`, min 5 characters or `<5digits>-<4digits>`, no leading or trailing spaces", e.g. 77777 or 77777-7777.
+            example: '12345'
+          postal_code:
+            type: string
+            description: Same as `zip`. Postal code of the customer, in the format "min 4 characters, no leading or trailing spaces".
+            example: '12345'
+            minLength: 4
+          email:
+            type: string
+            description: 'Customer email address, required.
+
+              Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
+            example: test@example.com
+          date_of_birth:
+            type: string
+            description: Date of birth of the customer in the format `YYYY-MM-DD`
+            example: '1985-09-02'
+          phone_number:
+            type: string
+            description: The phone number of the participant
+            example: '15557778888'
+          platform_updated_at:
+            type: number
+            minLength: 13
+            maxLength: 13
+            example: 1667504636159
+            description: Platform updated timestamp
+        required:
+        - platform_updated_at
+        example:
+          first_name: John
+          last_name: Doe
+          address_one: 123 Main St.
+          city: Chicago
+          postal_code: '60601'
+          platform_updated_at: 1680643465352
+      - title: W-9 Form Update
+        type: object
+        description: Patch for W-9 form certification, signature, and exemption fields.
+        properties:
+          is_w_form_certified:
+            type: boolean
+            description: "Indicates whether the participant is W-Form certified, required for customers onboarded to a US platform.\n\n - When `true`, user can be onboarded without restriction, so long as other mandatory fields are provided at time of onboarding.\n - When `false`, user is restricted and ineligible to transact on the platform."
+            example: true
+          w_form_certification:
+            type: number
+            description: 'Must be provided with `is_w_form_certified` boolean field to indicate the time at which the user certified their W-form.
+
+
+              In the event the user transitions from an uncertified to a certified, the platform must provide a new `w_form_certification` and update `is_w_form_certified` from `false` to `true`.'
+            example: 1667504636159
+          signature:
+            type: string
+            description: This field is used to capture the customer's first and last name as used on the W-form.
+            example: signature_data
+          signature_timestamp:
+            type: number
+            description: This field captures the timestamp at which the user signed their W-form, used in conjunction with the `signature` field.
+            example: 1667504636159
+          payee_exemption:
+            type: string
+            enum:
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+            - '6'
+            - '7'
+            - '8'
+            - '9'
+            - '10'
+            - '11'
+            - '12'
+            - '13'
+            - NONE
+            description: Payee exemption field that captures enum values for any applicable payee exemption codes 1 - 13, or NONE if no exemption applies. Required for customers onboarded to a US platform.
+            example: NONE
+          fatca_reporting_exemption:
+            type: string
+            enum:
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+            - '6'
+            - '7'
+            - '8'
+            - '9'
+            - '10'
+            - '11'
+            - '12'
+            - '13'
+            - NONE
+            description: FATCA reporting exemption code (1-13 or NONE)
+            example: NONE
+          is_not_subject_backup_withholding:
+            type: boolean
+            description: "Backup withholding attestation flag. Required for customers onboarded to a US platform.\n - If the participant confirms they are **not** subject to backup withholding, this field should be set to `true`.\n - If the participant **is** subject to backup withholding, this field should be set to `false`.\nThis acts as a positive attestation that the participant confirms they are not subject to backup withholding."
+            example: false
+          platform_updated_at:
+            type: number
+            minLength: 13
+            maxLength: 13
+            example: 1667504636159
+            description: Platform updated timestamp
+        required:
+        - is_w_form_certified
+        - w_form_certification
+        - signature
+        - signature_timestamp
+        - payee_exemption
+        - fatca_reporting_exemption
+        - is_not_subject_backup_withholding
+        - platform_updated_at
+        example:
+          is_w_form_certified: true
+          w_form_certification: 1680643465352
+          signature: John Doe
+          signature_timestamp: 1680643465352
+          payee_exemption: NONE
+          fatca_reporting_exemption: NONE
+          is_not_subject_backup_withholding: false
+          platform_updated_at: 1680643465352
+          signed_agreements:
+          - type: user_agreement
+            region: us
+            signed_timestamp: 1680643465352
+      - title: W-9 Exemption Update
+        type: object
+        description: Patch for updating only W-9 exemption fields.
+        properties:
+          payee_exemption:
+            type: string
+            enum:
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+            - '6'
+            - '7'
+            - '8'
+            - '9'
+            - '10'
+            - '11'
+            - '12'
+            - '13'
+            - NONE
+            description: Payee exemption field that captures enum values for any applicable payee exemption codes 1 - 13, or NONE if no exemption applies. Required for customers onboarded to a US platform.
+            example: NONE
+          fatca_reporting_exemption:
+            type: string
+            enum:
+            - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+            - '6'
+            - '7'
+            - '8'
+            - '9'
+            - '10'
+            - '11'
+            - '12'
+            - '13'
+            - NONE
+            description: FATCA reporting exemption code (1-13 or NONE)
+            example: NONE
+          is_not_subject_backup_withholding:
+            type: boolean
+            description: "Backup withholding attestation flag. Required for customers onboarded to a US platform.\n - If the participant confirms they are **not** subject to backup withholding, this field should be set to `true`.\n - If the participant **is** subject to backup withholding, this field should be set to `false`.\nThis acts as a positive attestation that the participant confirms they are not subject to backup withholding."
+            example: false
+          platform_updated_at:
+            type: number
+            minLength: 13
+            maxLength: 13
+            example: 1667504636159
+            description: Platform updated timestamp
+        required:
+        - payee_exemption
+        - fatca_reporting_exemption
+        - is_not_subject_backup_withholding
+        - platform_updated_at
+        example:
+          payee_exemption: '2'
+          fatca_reporting_exemption: NONE
+          is_not_subject_backup_withholding: false
+          platform_updated_at: 1680643465352
+      - title: Tax Withholding Update
+        type: object
+        description: Patch for updating tax withholding related fields.
+        properties:
+          tax_id:
+            type: string
+            description: "The national ID of the participant, e.g. a social security number.\n - Required when `citizenship_code` is `US`.\n - Optional when `citizenship_code` is not `US`, but if provided, must be accompanied by a valid `id_number` and `id_number_type`.\n - If the tax ID provided is a US ITIN (a 9-digit US ID that begins with the number `9`), then `id_number_type` will be required."
+            example: 000-00-0000
+          b_notice_receipt:
+            type: boolean
+            description: Indicates whether a user has been flagged in an IRS B-Notice as not having up-to-date tax information on file. Required for customers onboarded to a US platform.
+            example: true
+          tin_jurisdiction_reason:
+            type: string
+            enum:
+            - working_abroad
+            - studying_abroad
+            - dual_residency
+            - business_abroad
+            - real_estate_abroad
+            - other
+            description: Optional. Reason for the tax residence jurisdiction differing from the legal jurisdiction. Defaults to "unknown" if not provided.
+            example: working_abroad
+          tin_jurisdiction_other:
+            type: string
+            description: Optional. Free text explanation when tin_jurisdiction_reason is "other"
+          additional_tax_residences:
+            type: array
+            maxItems: 25
+            items:
+              $ref: '#/components/schemas/AdditionalTaxResidence'
+            description: Optional. Additional tax residences when the participant has tax obligations in multiple jurisdictions. Maximum 25 items.
+          platform_updated_at:
+            type: number
+            minLength: 13
+            maxLength: 13
+            example: 1667504636159
+            description: Platform updated timestamp
+        required:
+        - platform_updated_at
+        example:
+          tax_id: 000-00-0000
+          b_notice_receipt: true
+          tin_jurisdiction_reason: working_abroad
+          platform_updated_at: 1680643465352
+      - title: Change of Address
+        type: object
+        description: Patch for updating address fields only.
+        properties:
+          address_one:
+            type: string
+            description: 'First line for the customer''s address.
+
+
+              Notes:
+
+              - The regular maximum length is 80 characters.
+
+              - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
+
+              - PO Box addresses are not accepted.'
+            example: 123 Main St.
+          address_two:
+            type: string
+            description: 'Extra information, like an apartment or suite number.
+
+
+              Notes:
+
+              - The maximum length is `50` characters for platform using KYCaaS through zerohash.
+
+              - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
+
+              - PO Box addresses are not accepted.'
+            example: Suite 1000
+          city:
+            type: string
+            description: The city customer resides in.
+            example: Chicago
+          postal_code:
+            type: string
+            description: Same as `zip`. Postal code of the customer, in the format "min 4 characters, no leading or trailing spaces".
+            example: '12345'
+            minLength: 4
+          jurisdiction_code:
+            type: string
+            description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
+            example: US-IL
+            enum:
+            - US-AL
+            - US-AK
+            - US-AZ
+            - US-AR
+            - US-CA
+            - US-CO
+            - US-CT
+            - US-DE
+            - US-FL
+            - US-GA
+            - US-HI
+            - US-ID
+            - US-IL
+            - US-IN
+            - US-IA
+            - US-KS
+            - US-KY
+            - US-LA
+            - US-ME
+            - US-MD
+            - US-MA
+            - US-MI
+            - US-MN
+            - US-MS
+            - US-MO
+            - US-MT
+            - US-NE
+            - US-NV
+            - US-NH
+            - US-NJ
+            - US-NM
+            - US-NY
+            - US-NC
+            - US-ND
+            - US-OH
+            - US-OK
+            - US-OR
+            - US-PA
+            - US-RI
+            - US-SC
+            - US-SD
+            - US-TN
+            - US-TX
+            - US-UT
+            - US-VT
+            - US-VA
+            - US-WA
+            - US-WV
+            - US-WI
+            - US-WY
+            - US-DC
+            - US-AS
+            - US-GU
+            - US-MP
+            - US-PR
+            - US-UM
+            - US-VI
+          platform_updated_at:
+            type: number
+            minLength: 13
+            maxLength: 13
+            example: 1667504636159
+            description: Platform updated timestamp
+        required:
+        - address_one
+        - city
+        - postal_code
+        - jurisdiction_code
+        - platform_updated_at
+        example:
+          address_one: 456 New Ave.
+          city: New York
+          postal_code: '10001'
+          jurisdiction_code: US-NY
+          platform_updated_at: 1680643465352
+      - title: Change of Name
+        type: object
+        description: 'Patch for updating customer name fields.
+
+          Providing supporting documentation proving the name change (e.g., marriage certificate, court order, identity documents) are required for this update.'
+        properties:
+          first_name:
+            type: string
+            description: The first name of the customer being onboarded.
+            example: John
+          middle_name:
+            type: string
+            description: The middle name of the customer being onboarded.
+            example: Middle
+          last_name:
+            type: string
+            description: The last name of the customer being onboarded.
+            example: Smith
+          former_name:
+            type: string
+            description: The former name of the customer being onboarded.
+            example: Whale
+          platform_updated_at:
+            type: number
+            minLength: 13
+            maxLength: 13
+            example: 1667504636159
+            description: Platform updated timestamp
+        required:
+        - first_name
+        - last_name
+        - former_name
+        - platform_updated_at
+        example:
+          first_name: John
+          last_name: Doe-Smith
+          former_name: John Doe
+          platform_updated_at: 1680643465352
+      - title: Update Requiring Supporting Documentation
+        type: object
+        description: Patch for updates that require supporting documentation. The  update to the participant should be accompanied by supporting documentation using the [`POST /participants/documents` endpoint](https://docs.zerohash.com/reference/post_participants-documents) with the supported `document_type`'s.
+        properties:
+          first_name:
+            type: string
+            description: The first name of the customer being onboarded.
+            example: John
+          middle_name:
+            type: string
+            description: The middle name of the customer being onboarded.
+            example: Middle
+          last_name:
+            type: string
+            description: The last name of the customer being onboarded.
+            example: Smith
+          former_name:
+            type: string
+            description: The former name of the customer being onboarded.
+            example: Whale
+          date_of_birth:
+            type: string
+            description: Date of birth of the customer in the format `YYYY-MM-DD`
+            example: '1985-09-02'
+          tax_id:
+            type: string
+            description: "The national ID of the participant, e.g. a social security number.\n - Required when `citizenship_code` is `US`.\n - Optional when `citizenship_code` is not `US`, but if provided, must be accompanied by a valid `id_number` and `id_number_type`.\n - If the tax ID provided is a US ITIN (a 9-digit US ID that begins with the number `9`), then `id_number_type` will be required."
+            example: 000-00-0000
+          citizenship_code:
+            type: string
+            example: US
+            description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
+            enum:
+            - AD
+            - AE
+            - AF
+            - AG
+            - AI
+            - AL
+            - AM
+            - AO
+            - AQ
+            - AR
+            - AS
+            - AT
+            - AU
+            - AW
+            - AX
+            - AZ
+            - BA
+            - BB
+            - BD
+            - BE
+            - BF
+            - BG
+            - BH
+            - BI
+            - BJ
+            - BL
+            - BM
+            - BN
+            - BO
+            - BQ
+            - BR
+            - BS
+            - BT
+            - BV
+            - BW
+            - BY
+            - BZ
+            - CA
+            - CC
+            - CD
+            - CF
+            - CG
+            - CH
+            - CI
+            - CK
+            - CL
+            - CM
+            - CN
+            - CO
+            - CR
+            - CU
+            - CV
+            - CW
+            - CX
+            - CY
+            - CZ
+            - DE
+            - DJ
+            - DK
+            - DM
+            - DO
+            - DZ
+            - EC
+            - EE
+            - EG
+            - EH
+            - ER
+            - ES
+            - ET
+            - FI
+            - FJ
+            - FK
+            - FM
+            - FO
+            - FR
+            - GA
+            - GB
+            - GD
+            - GE
+            - GF
+            - GG
+            - GH
+            - GI
+            - GL
+            - GM
+            - GN
+            - GP
+            - GQ
+            - GR
+            - GS
+            - GT
+            - GU
+            - GW
+            - GY
+            - HK
+            - HM
+            - HN
+            - HR
+            - HT
+            - HU
+            - ID
+            - IE
+            - IL
+            - IM
+            - IN
+            - IO
+            - IQ
+            - IR
+            - IS
+            - IT
+            - JE
+            - JM
+            - JO
+            - JP
+            - KE
+            - KG
+            - KH
+            - KI
+            - KM
+            - KN
+            - KP
+            - KR
+            - KW
+            - KY
+            - KZ
+            - LA
+            - LB
+            - LC
+            - LI
+            - LK
+            - LR
+            - LS
+            - LT
+            - LU
+            - LV
+            - LY
+            - MA
+            - MC
+            - MD
+            - ME
+            - MF
+            - MG
+            - MH
+            - MK
+            - ML
+            - MM
+            - MN
+            - MO
+            - MP
+            - MQ
+            - MR
+            - MS
+            - MT
+            - MU
+            - MV
+            - MW
+            - MX
+            - MY
+            - MZ
+            - NA
+            - NC
+            - NE
+            - NF
+            - NG
+            - NI
+            - NL
+            - 'NO'
+            - NP
+            - NR
+            - NU
+            - NZ
+            - OM
+            - PA
+            - PE
+            - PF
+            - PG
+            - PH
+            - PK
+            - PL
+            - PM
+            - PN
+            - PR
+            - PS
+            - PT
+            - PW
+            - PY
+            - QA
+            - RE
+            - RO
+            - RS
+            - RW
+            - SA
+            - SB
+            - SC
+            - SD
+            - SE
+            - SG
+            - SH
+            - SI
+            - SJ
+            - SK
+            - SL
+            - SM
+            - SN
+            - SO
+            - SR
+            - SS
+            - ST
+            - SV
+            - SX
+            - SY
+            - SZ
+            - TC
+            - TD
+            - TF
+            - TG
+            - TH
+            - TJ
+            - TK
+            - TL
+            - TM
+            - TN
+            - TO
+            - TR
+            - TT
+            - TV
+            - TW
+            - TZ
+            - UA
+            - UG
+            - UM
+            - US
+            - UY
+            - UZ
+            - VA
+            - VC
+            - VE
+            - VG
+            - VI
+            - VN
+            - VU
+            - WF
+            - WS
+            - YE
+            - YT
+            - ZA
+            - ZM
+            - ZW
+          id_number_type:
+            type: string
+            enum:
+            - us_drivers_license
+            - us_passport
+            - us_passport_card
+            - us_permanent_resident_card
+            - us_border_crossing_card
+            - us_alien_card
+            - us_id_card
+            - non_us_passport
+            - non_us_other
+            - passport
+            - eu_drivers_license
+            - national_id
+            description: "\n### Region-specific guidelines\n\n### Platforms integrated to zerohash USA;\n - Required when `citizenship_code` is not `US`.\n - Required when `citizenship_code=US` but `tax_id` is an ITIN (a 9-digit US ID that begins with the number `9`).\n---\n### Platforms integrated to zerohash EU;\nThe following enums are EU-specific types:\n- `passport`\n- `eu_drivers_license`\n- `national_id`\n\nEU platforms can also accept:\n- `us_passport`\n- `non_us_passport` \n- `non_us_other`\n- `us_drivers_license`\n- `us_id_card`\n- `us_passport_card`"
+            example: us_passport
+          tax_residence:
+            type: object
+            description: Tax residence address for the customer
+            required:
+            - jurisdiction_code
+            properties:
+              address_one:
+                type: string
+                description: First line of tax residence address
+              address_two:
+                type: string
+                description: Second line of tax residence address (optional)
+              city:
+                type: string
+                description: City of tax residence
+              jurisdiction_code:
+                type: string
+                description: Jurisdiction code in ISO-3166-2 format
+                example: PT-11
+              postal_code:
+                type: string
+                description: Postal code of tax residence
+          address_one:
+            type: string
+            description: 'First line for the customer''s address.
+
+
+              Notes:
+
+              - The regular maximum length is 80 characters.
+
+              - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
+
+              - PO Box addresses are not accepted.'
+            example: 123 Main St.
+          city:
+            type: string
+            description: The city customer resides in.
+            example: Chicago
+          postal_code:
+            type: string
+            description: Same as `zip`. Postal code of the customer, in the format "min 4 characters, no leading or trailing spaces".
+            example: '12345'
+            minLength: 4
+          gross_annual_income_amount:
+            type: string
+            enum:
+            - up_to_5k
+            - 5k_to_25k
+            - 25k_to_100k
+            - 100k_and_up
+            example: 25k_to_100k
+            description: The individual's total pre-tax income from all sources annually, in a currency (e.g., USD, EUR depends on region).
+          gross_annual_salary_amount:
+            type: string
+            description: The individual's gross annual salary amount, in a currency (e.g., USD, EUR depends on region).
+            example: '10000'
+          platform_updated_at:
+            type: number
+            minLength: 13
+            maxLength: 13
+            example: 1667504636159
+            description: Platform updated timestamp
+        required:
+        - platform_updated_at
+        example:
+          first_name: John
+          last_name: Doe-Smith
+          address_one: 456 New Ave.
+          city: New York
+          postal_code: '10001'
+          tax_id: 000-00-0000
+          platform_updated_at: 1680643465352
     PatchCustomersResponse:
       type: object
       properties:
@@ -1251,6 +1994,13 @@ components:
               type: string
               description: Customer phone number. Only included in the response for platforms where phone number echo is enabled.
               example: '15557778888'
+    PatchParticipantLimitsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message
+          example: Participant limits updated successfully
     PostDocumentsResponse:
       type: object
       properties:
@@ -1270,6 +2020,475 @@ components:
               format: int64
               description: Unix timestamp in milliseconds indicating when the document upload was recorded.
               example: 1572899177383
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostBeneficiariesBody:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: The first name of the customer being onboarded.
+          example: John
+        last_name:
+          type: string
+          description: The last name of the customer being onboarded.
+          example: Smith
+        email:
+          type: string
+          description: 'Customer email address, required.
+
+            Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
+          example: test@example.com
+        phone_number:
+          type: string
+          description: The phone number of the participant
+          example: '15557778888'
+        address_one:
+          type: string
+          description: 'First line for the customer''s address.
+
+
+            Notes:
+
+            - The regular maximum length is 80 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
+
+            - PO Box addresses are not accepted.'
+          example: 123 Main St.
+        address_two:
+          type: string
+          description: 'Extra information, like an apartment or suite number.
+
+
+            Notes:
+
+            - The maximum length is `50` characters for platform using KYCaaS through zerohash.
+
+            - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
+
+            - PO Box addresses are not accepted.'
+          example: Suite 1000
+        city:
+          type: string
+          description: The city customer resides in.
+          example: Chicago
+        zip:
+          type: string
+          description: Zip code of the customer, required if `country` is `USA`, min 5 characters or `<5digits>-<4digits>`, no leading or trailing spaces", e.g. 77777 or 77777-7777.
+          example: '12345'
+        jurisdiction_code:
+          type: string
+          description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
+          example: US-IL
+          enum:
+          - US-AL
+          - US-AK
+          - US-AZ
+          - US-AR
+          - US-CA
+          - US-CO
+          - US-CT
+          - US-DE
+          - US-FL
+          - US-GA
+          - US-HI
+          - US-ID
+          - US-IL
+          - US-IN
+          - US-IA
+          - US-KS
+          - US-KY
+          - US-LA
+          - US-ME
+          - US-MD
+          - US-MA
+          - US-MI
+          - US-MN
+          - US-MS
+          - US-MO
+          - US-MT
+          - US-NE
+          - US-NV
+          - US-NH
+          - US-NJ
+          - US-NM
+          - US-NY
+          - US-NC
+          - US-ND
+          - US-OH
+          - US-OK
+          - US-OR
+          - US-PA
+          - US-RI
+          - US-SC
+          - US-SD
+          - US-TN
+          - US-TX
+          - US-UT
+          - US-VT
+          - US-VA
+          - US-WA
+          - US-WV
+          - US-WI
+          - US-WY
+          - US-DC
+          - US-AS
+          - US-GU
+          - US-MP
+          - US-PR
+          - US-UM
+          - US-VI
+        date_of_birth:
+          type: string
+          description: Date of birth of the customer in the format `YYYY-MM-DD`
+          example: '1985-09-02'
+        tax_id:
+          type: string
+          description: "The national ID of the participant, e.g. a social security number.\n - Required when `citizenship_code` is `US`.\n - Optional when `citizenship_code` is not `US`, but if provided, must be accompanied by a valid `id_number` and `id_number_type`.\n - If the tax ID provided is a US ITIN (a 9-digit US ID that begins with the number `9`), then `id_number_type` will be required."
+          example: 000-00-0000
+        id_number_type:
+          type: string
+          enum:
+          - us_drivers_license
+          - us_passport
+          - us_passport_card
+          - us_permanent_resident_card
+          - us_border_crossing_card
+          - us_alien_card
+          - us_id_card
+          - non_us_passport
+          - non_us_other
+          - passport
+          - eu_drivers_license
+          - national_id
+          - legal_entity_identifier
+          - chamber_of_commerce_number
+          - value_added_tax_number
+          description: "The id number type field is required when; \n - `citizenship` is not `US`\n - `citizenship=US` and `tax_id` starts with `9` (is an ITIN, a 9-digit US ID that begins with the number 9).\nPassport, EU Drivers License, National ID are EU-specific types. EU platforms also accept us_passport, non_us_passport, non_us_other, us_drivers_license, us_id_card, us_passport_card"
+          example: us_passport
+        id_number:
+          type: string
+          description: "The ID number for the customer. \n - Required when `citizenship_code` is not `US`\n - Required when `citizenship_code : US` but `tax_id` is an ITIN (a 9-digit US ID that begins with the number `9`)."
+          example: '123456789'
+        citizenship_code:
+          type: string
+          example: US
+          description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
+          enum:
+          - AD
+          - AE
+          - AF
+          - AG
+          - AI
+          - AL
+          - AM
+          - AO
+          - AQ
+          - AR
+          - AS
+          - AT
+          - AU
+          - AW
+          - AX
+          - AZ
+          - BA
+          - BB
+          - BD
+          - BE
+          - BF
+          - BG
+          - BH
+          - BI
+          - BJ
+          - BL
+          - BM
+          - BN
+          - BO
+          - BQ
+          - BR
+          - BS
+          - BT
+          - BV
+          - BW
+          - BY
+          - BZ
+          - CA
+          - CC
+          - CD
+          - CF
+          - CG
+          - CH
+          - CI
+          - CK
+          - CL
+          - CM
+          - CN
+          - CO
+          - CR
+          - CU
+          - CV
+          - CW
+          - CX
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DK
+          - DM
+          - DO
+          - DZ
+          - EC
+          - EE
+          - EG
+          - EH
+          - ER
+          - ES
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FM
+          - FO
+          - FR
+          - GA
+          - GB
+          - GD
+          - GE
+          - GF
+          - GG
+          - GH
+          - GI
+          - GL
+          - GM
+          - GN
+          - GP
+          - GQ
+          - GR
+          - GS
+          - GT
+          - GU
+          - GW
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IE
+          - IL
+          - IM
+          - IN
+          - IO
+          - IQ
+          - IR
+          - IS
+          - IT
+          - JE
+          - JM
+          - JO
+          - JP
+          - KE
+          - KG
+          - KH
+          - KI
+          - KM
+          - KN
+          - KP
+          - KR
+          - KW
+          - KY
+          - KZ
+          - LA
+          - LB
+          - LC
+          - LI
+          - LK
+          - LR
+          - LS
+          - LT
+          - LU
+          - LV
+          - LY
+          - MA
+          - MC
+          - MD
+          - ME
+          - MF
+          - MG
+          - MH
+          - MK
+          - ML
+          - MM
+          - MN
+          - MO
+          - MP
+          - MQ
+          - MR
+          - MS
+          - MT
+          - MU
+          - MV
+          - MW
+          - MX
+          - MY
+          - MZ
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NU
+          - NZ
+          - OM
+          - PA
+          - PE
+          - PF
+          - PG
+          - PH
+          - PK
+          - PL
+          - PM
+          - PN
+          - PR
+          - PS
+          - PT
+          - PW
+          - PY
+          - QA
+          - RE
+          - RO
+          - RS
+          - RW
+          - SA
+          - SB
+          - SC
+          - SD
+          - SE
+          - SG
+          - SH
+          - SI
+          - SJ
+          - SK
+          - SL
+          - SM
+          - SN
+          - SO
+          - SR
+          - SS
+          - ST
+          - SV
+          - SX
+          - SY
+          - SZ
+          - TC
+          - TD
+          - TF
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TL
+          - TM
+          - TN
+          - TO
+          - TR
+          - TT
+          - TV
+          - TW
+          - TZ
+          - UA
+          - UG
+          - UM
+          - US
+          - UY
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - YT
+          - ZA
+          - ZM
+          - ZW
+        non_us_other_type:
+          type: string
+          description: This is required if you select `non_us_other` for the `id_number_type` - a freeform string to describe the ID type
+          example: null
+        id_issuing_authority:
+          type: string
+          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
+          example: null
+      required:
+      - first_name
+      - last_name
+      - address_one
+      - jurisdiction_code
+      - city
+      - date_of_birth
+    PatchParticipantLimitsBody:
+      type: object
+      required:
+      - limits
+      properties:
+        limits:
+          type: array
+          description: Array of limit configurations to apply to the participant. Use empty array to clear all limits.
+          items:
+            type: object
+            required:
+            - type
+            - period
+            - configured_limit
+            - asset
+            properties:
+              type:
+                type: array
+                description: Transaction types to which this limit applies
+                minItems: 1
+                items:
+                  type: string
+                  enum:
+                  - trades
+                  - transfers
+                  - withdrawals
+                  - deposits
+                example:
+                - trades
+              period:
+                type: number
+                description: Time period in hours for the limit. Use 0 for lifetime limits.
+                minimum: 0
+                example: 24
+              configured_limit:
+                type: string
+                description: The limit amount as a decimal string
+                pattern: ^(?:\d+|\d*\.\d+)$
+                example: '25000'
+              asset:
+                type: string
+                description: The asset/currency for the limit
+                example: USD
     PostCustomersBody:
       oneOf:
       - title: EU Customer
@@ -5284,6 +6503,257 @@ components:
         - payee_exemption
         - fatca_reporting_exemption
         - is_not_subject_backup_withholding
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    PostDocumentsBody:
+      oneOf:
+      - title: Document - All accepted fields
+        type: object
+        description: All accepted fields for a document
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+            example: CUST01
+          document_type:
+            type: string
+            description: 'A valid ID type.
+
+
+              **Additional shopper document types:** `source_of_funds_for_purchase`, `proof_of_employment_status`, and `proof_of_industry` are accepted for natural persons onboarded with `onboarding_profile: shopper`, in addition to the other document types listed here. They have no effect for participants on any other onboarding profile.'
+            example: us_drivers_license
+            enum:
+            - us_drivers_license
+            - us_passport
+            - us_passport_card
+            - us_permanent_resident_card
+            - us_border_crossing_card
+            - us_alien_card
+            - us_id_card
+            - non_us_passport
+            - non_us_other
+            - proof_of_income
+            - eu_passport
+            - eu_id_card
+            - eu_drivers_license
+            - eu_address_verification
+            - form_w9
+            - form_w8_ben
+            - form_w8_ben_e
+            - form_w8_imy
+            - form_w8_eci
+            - form_w8_exp
+            - form_w8_ce
+            - source_of_funds_for_purchase
+            - proof_of_employment_status
+            - proof_of_industry
+            - miscellaneous
+          id_front:
+            type: boolean
+            description: 'Optional field to indicate if the document is the front or back of an ID.
+
+              The field is **mandatory** only for the following document types:: `us_drivers_license`, `us_permanent_resident_card`,
+
+              `us_border_crossing_card`, `us_alien_card`, `us_id_card`, `us_passport_card`,
+
+              `eu_id_card`, `eu_drivers_license`.'
+            example: true
+      - title: US - Single sided documents
+        type: object
+        description: US single-sided document submission (no id_front field)
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+            example: CUST01
+          document_type:
+            type: string
+            description: 'A valid US single-sided document type.
+
+
+              **Additional shopper document types:** `source_of_funds_for_purchase`, `proof_of_employment_status`, and `proof_of_industry` are accepted for natural persons onboarded with `onboarding_profile: shopper`, in addition to the other document types listed here. They have no effect for participants on any other onboarding profile.'
+            example: us_passport
+            enum:
+            - us_passport
+            - non_us_passport
+            - non_us_other
+            - proof_of_income
+            - form_w9
+            - form_w8_ben
+            - form_w8_ben_e
+            - form_w8_imy
+            - form_w8_eci
+            - form_w8_exp
+            - form_w8_ce
+            - source_of_funds_for_purchase
+            - proof_of_employment_status
+            - proof_of_industry
+        required:
+        - document
+        - mime
+        - file_name
+        - participant_code
+        - document_type
+      - title: US - Two sided documents (Front + Back)
+        type: object
+        description: US two-sided document submission (id_front optional)
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+            example: CUST01
+          document_type:
+            type: string
+            description: A valid US two-sided document type
+            example: us_drivers_license
+            enum:
+            - us_drivers_license
+            - us_permanent_resident_card
+            - us_border_crossing_card
+            - us_alien_card
+            - us_id_card
+            - us_passport_card
+          id_front:
+            type: boolean
+            description: 'Optional field to indicate if the document is the front or back of an ID.
+
+              The field is **mandatory** only for the folliwng US two-sided documents: `us_drivers_license`, `us_permanent_resident_card`,
+
+              `us_border_crossing_card`, `us_alien_card`, `us_id_card`, `us_passport_card`.'
+            example: true
+        required:
+        - document
+        - mime
+        - file_name
+        - participant_code
+        - document_type
+        - id_front
+      - title: EU - Single sided documents
+        type: object
+        description: EU single-sided document submission (no id_front field)
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+            example: CUST01
+          document_type:
+            type: string
+            description: A valid EU single-sided document type
+            example: eu_passport
+            enum:
+            - eu_passport
+            - eu_address_verification
+            - us_passport
+            - non_us_passport
+            - non_us_other
+        required:
+        - document
+        - mime
+        - file_name
+        - participant_code
+        - document_type
+      - title: EU - Two sided documents (Front + Back)
+        type: object
+        description: EU two-sided document submission (id_front optional)
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+            example: CUST01
+          document_type:
+            type: string
+            description: A valid EU two-sided document type
+            example: eu_id_card
+            enum:
+            - eu_id_card
+            - eu_drivers_license
+            - us_id_card
+            - us_drivers_license
+            - us_passport_card
+          id_front:
+            type: boolean
+            description: 'Optional field to indicate if the document is the front or back of an ID.
+
+              The field is **mandatory** only for the following EU two-sided documents: `eu_id_card`, `eu_drivers_license`, `us_id_card`, `us_drivers_license`, `us_passport_card`.'
+            example: true
+        required:
+        - document
+        - mime
+        - file_name
+        - participant_code
+        - document_type
+        - id_front
     PatchBeneficiariesResponse:
       type: object
       properties:
@@ -5699,1148 +7169,421 @@ components:
             participant_code:
               type: string
               example: XXXXXX
-    PatchCustomersBody:
-      oneOf:
-      - title: Standard User Details Patch
-        type: object
-        description: Patch for standard user details such as address, phone, name, etc.
-        properties:
-          first_name:
-            type: string
-            description: The first name of the customer being onboarded.
-            example: John
-          middle_name:
-            type: string
-            description: The middle name of the customer being onboarded.
-            example: Middle
-          last_name:
-            type: string
-            description: The last name of the customer being onboarded.
-            example: Smith
-          former_name:
-            type: string
-            description: The former name of the customer being onboarded.
-            example: Whale
-          gender:
-            type: string
-            enum:
-            - male
-            - female
-            - other
-            example: male
-            description: Customer gender.
-          address_one:
-            type: string
-            description: 'First line for the customer''s address.
+    PostBeneficiariesResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            first_name:
+              type: string
+              description: The first name of the customer being onboarded.
+              example: John
+            last_name:
+              type: string
+              description: The last name of the customer being onboarded.
+              example: Smith
+            email:
+              type: string
+              description: 'Customer email address, required.
+
+                Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
+              example: test@example.com
+            address_one:
+              type: string
+              description: 'First line for the customer''s address.
 
 
-              Notes:
+                Notes:
 
-              - The regular maximum length is 80 characters.
+                - The regular maximum length is 80 characters.
 
-              - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
+                - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
 
-              - PO Box addresses are not accepted.'
-            example: 123 Main St.
-          address_two:
-            type: string
-            description: 'Extra information, like an apartment or suite number.
-
-
-              Notes:
-
-              - The maximum length is `50` characters for platform using KYCaaS through zerohash.
-
-              - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
-
-              - PO Box addresses are not accepted.'
-            example: Suite 1000
-          country:
-            type: string
-            example: USA
-            description: 'The ISO-3166-1 alpha3 country, e.g.`USA`, `IRL`. '
-            enum:
-            - AND
-            - ARE
-            - AFG
-            - ATG
-            - AIA
-            - ALB
-            - ARM
-            - AGO
-            - ATA
-            - ARG
-            - ASM
-            - AUT
-            - AUS
-            - ABW
-            - ALA
-            - AZE
-            - BIH
-            - BRB
-            - BGD
-            - BEL
-            - BFA
-            - BGR
-            - BHR
-            - BDI
-            - BEN
-            - BLM
-            - BMU
-            - BRN
-            - BOL
-            - BES
-            - BRA
-            - BHS
-            - BTN
-            - BVT
-            - BWA
-            - BLR
-            - BLZ
-            - CAN
-            - CCK
-            - COD
-            - CAF
-            - COG
-            - CHE
-            - CIV
-            - COK
-            - CHL
-            - CMR
-            - CHN
-            - COL
-            - CRI
-            - CUB
-            - CPV
-            - CUW
-            - CXR
-            - CYP
-            - CZE
-            - DEU
-            - DJI
-            - DNK
-            - DMA
-            - DOM
-            - DZA
-            - ECU
-            - EST
-            - EGY
-            - ESH
-            - ERI
-            - ESP
-            - ETH
-            - FIN
-            - FJI
-            - FLK
-            - FSM
-            - FRO
-            - FRA
-            - GAB
-            - GBR
-            - GRD
-            - GEO
-            - GUF
-            - GGY
-            - GHA
-            - GIB
-            - GRL
-            - GMB
-            - GIN
-            - GLP
-            - GNQ
-            - GRC
-            - SGS
-            - GTM
-            - GUM
-            - GNB
-            - GUY
-            - HKG
-            - HMD
-            - HND
-            - HRV
-            - HTI
-            - HUN
-            - IDN
-            - IRL
-            - ISR
-            - IMN
-            - IND
-            - IOT
-            - IRQ
-            - IRN
-            - ISL
-            - ITA
-            - JEY
-            - JAM
-            - JOR
-            - JPN
-            - KEN
-            - KGZ
-            - KHM
-            - KIR
-            - COM
-            - KNA
-            - PRK
-            - KOR
-            - KWT
-            - CYM
-            - KAZ
-            - LAO
-            - LBN
-            - LCA
-            - LIE
-            - LKA
-            - LBR
-            - LSO
-            - LTU
-            - LUX
-            - LVA
-            - LBY
-            - MAR
-            - MCO
-            - MDA
-            - MNE
-            - MAF
-            - MDG
-            - MHL
-            - MKD
-            - MLI
-            - MMR
-            - MNG
-            - MAC
-            - MNP
-            - MTQ
-            - MRT
-            - MSR
-            - MLT
-            - MUS
-            - MDV
-            - MWI
-            - MEX
-            - MYS
-            - MOZ
-            - NAM
-            - NCL
-            - NER
-            - NFK
-            - NGA
-            - NIC
-            - NLD
-            - NOR
-            - NPL
-            - NRU
-            - NIU
-            - NZL
-            - OMN
-            - PAN
-            - PER
-            - PYF
-            - PNG
-            - PHL
-            - PAK
-            - POL
-            - SPM
-            - PCN
-            - PRI
-            - PSE
-            - PRT
-            - PLW
-            - PRY
-            - QAT
-            - REU
-            - ROU
-            - SRB
-            - RUS
-            - RWA
-            - SAU
-            - SLB
-            - SYC
-            - SDN
-            - SWE
-            - SGP
-            - SHN
-            - SVN
-            - SJM
-            - SVK
-            - SLE
-            - SMR
-            - SEN
-            - SOM
-            - SUR
-            - SSD
-            - STP
-            - SLV
-            - SXM
-            - SYR
-            - SWZ
-            - TCA
-            - TCD
-            - ATF
-            - TGO
-            - THA
-            - TJK
-            - TKL
-            - TLS
-            - TKM
-            - TUN
-            - TON
-            - TUR
-            - TTO
-            - TUV
-            - TWN
-            - TZA
-            - UKR
-            - UGA
-            - UMI
-            - USA
-            - URY
-            - UZB
-            - VAT
-            - VCT
-            - VEN
-            - VGB
-            - VIR
-            - VNM
-            - VUT
-            - WLF
-            - WSM
-            - YEM
-            - MYT
-            - ZAF
-            - ZMB
-            - ZWE
-          jurisdiction_code:
-            type: string
-            description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
-            example: US-IL
-            enum:
-            - US-AL
-            - US-AK
-            - US-AZ
-            - US-AR
-            - US-CA
-            - US-CO
-            - US-CT
-            - US-DE
-            - US-FL
-            - US-GA
-            - US-HI
-            - US-ID
-            - US-IL
-            - US-IN
-            - US-IA
-            - US-KS
-            - US-KY
-            - US-LA
-            - US-ME
-            - US-MD
-            - US-MA
-            - US-MI
-            - US-MN
-            - US-MS
-            - US-MO
-            - US-MT
-            - US-NE
-            - US-NV
-            - US-NH
-            - US-NJ
-            - US-NM
-            - US-NY
-            - US-NC
-            - US-ND
-            - US-OH
-            - US-OK
-            - US-OR
-            - US-PA
-            - US-RI
-            - US-SC
-            - US-SD
-            - US-TN
-            - US-TX
-            - US-UT
-            - US-VT
-            - US-VA
-            - US-WA
-            - US-WV
-            - US-WI
-            - US-WY
-            - US-DC
-            - US-AS
-            - US-GU
-            - US-MP
-            - US-PR
-            - US-UM
-            - US-VI
-          city:
-            type: string
-            description: The city customer resides in.
-            example: Chicago
-          zip:
-            type: string
-            description: Zip code of the customer, required if `country` is `USA`, min 5 characters or `<5digits>-<4digits>`, no leading or trailing spaces", e.g. 77777 or 77777-7777.
-            example: '12345'
-          postal_code:
-            type: string
-            description: Same as `zip`. Postal code of the customer, in the format "min 4 characters, no leading or trailing spaces".
-            example: '12345'
-            minLength: 4
-          email:
-            type: string
-            description: 'Customer email address, required.
-
-              Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
-            example: test@example.com
-          date_of_birth:
-            type: string
-            description: Date of birth of the customer in the format `YYYY-MM-DD`
-            example: '1985-09-02'
-          phone_number:
-            type: string
-            description: The phone number of the participant
-            example: '15557778888'
-          platform_updated_at:
-            type: number
-            minLength: 13
-            maxLength: 13
-            example: 1667504636159
-            description: Platform updated timestamp
-        required:
-        - platform_updated_at
-        example:
-          first_name: John
-          last_name: Doe
-          address_one: 123 Main St.
-          city: Chicago
-          postal_code: '60601'
-          platform_updated_at: 1680643465352
-      - title: W-9 Form Update
-        type: object
-        description: Patch for W-9 form certification, signature, and exemption fields.
-        properties:
-          is_w_form_certified:
-            type: boolean
-            description: "Indicates whether the participant is W-Form certified, required for customers onboarded to a US platform.\n\n - When `true`, user can be onboarded without restriction, so long as other mandatory fields are provided at time of onboarding.\n - When `false`, user is restricted and ineligible to transact on the platform."
-            example: true
-          w_form_certification:
-            type: number
-            description: 'Must be provided with `is_w_form_certified` boolean field to indicate the time at which the user certified their W-form.
+                - PO Box addresses are not accepted.'
+              example: 123 Main St.
+            address_two:
+              type: string
+              description: 'Extra information, like an apartment or suite number.
 
 
-              In the event the user transitions from an uncertified to a certified, the platform must provide a new `w_form_certification` and update `is_w_form_certified` from `false` to `true`.'
-            example: 1667504636159
-          signature:
-            type: string
-            description: This field is used to capture the customer's first and last name as used on the W-form.
-            example: signature_data
-          signature_timestamp:
-            type: number
-            description: This field captures the timestamp at which the user signed their W-form, used in conjunction with the `signature` field.
-            example: 1667504636159
-          payee_exemption:
-            type: string
-            enum:
-            - '1'
-            - '2'
-            - '3'
-            - '4'
-            - '5'
-            - '6'
-            - '7'
-            - '8'
-            - '9'
-            - '10'
-            - '11'
-            - '12'
-            - '13'
-            - NONE
-            description: Payee exemption field that captures enum values for any applicable payee exemption codes 1 - 13, or NONE if no exemption applies. Required for customers onboarded to a US platform.
-            example: NONE
-          fatca_reporting_exemption:
-            type: string
-            enum:
-            - '1'
-            - '2'
-            - '3'
-            - '4'
-            - '5'
-            - '6'
-            - '7'
-            - '8'
-            - '9'
-            - '10'
-            - '11'
-            - '12'
-            - '13'
-            - NONE
-            description: FATCA reporting exemption code (1-13 or NONE)
-            example: NONE
-          is_not_subject_backup_withholding:
-            type: boolean
-            description: "Backup withholding attestation flag. Required for customers onboarded to a US platform.\n - If the participant confirms they are **not** subject to backup withholding, this field should be set to `true`.\n - If the participant **is** subject to backup withholding, this field should be set to `false`.\nThis acts as a positive attestation that the participant confirms they are not subject to backup withholding."
-            example: false
-          platform_updated_at:
-            type: number
-            minLength: 13
-            maxLength: 13
-            example: 1667504636159
-            description: Platform updated timestamp
-        required:
-        - is_w_form_certified
-        - w_form_certification
-        - signature
-        - signature_timestamp
-        - payee_exemption
-        - fatca_reporting_exemption
-        - is_not_subject_backup_withholding
-        - platform_updated_at
-        example:
-          is_w_form_certified: true
-          w_form_certification: 1680643465352
-          signature: John Doe
-          signature_timestamp: 1680643465352
-          payee_exemption: NONE
-          fatca_reporting_exemption: NONE
-          is_not_subject_backup_withholding: false
-          platform_updated_at: 1680643465352
-          signed_agreements:
-          - type: user_agreement
-            region: us
-            signed_timestamp: 1680643465352
-      - title: W-9 Exemption Update
-        type: object
-        description: Patch for updating only W-9 exemption fields.
-        properties:
-          payee_exemption:
-            type: string
-            enum:
-            - '1'
-            - '2'
-            - '3'
-            - '4'
-            - '5'
-            - '6'
-            - '7'
-            - '8'
-            - '9'
-            - '10'
-            - '11'
-            - '12'
-            - '13'
-            - NONE
-            description: Payee exemption field that captures enum values for any applicable payee exemption codes 1 - 13, or NONE if no exemption applies. Required for customers onboarded to a US platform.
-            example: NONE
-          fatca_reporting_exemption:
-            type: string
-            enum:
-            - '1'
-            - '2'
-            - '3'
-            - '4'
-            - '5'
-            - '6'
-            - '7'
-            - '8'
-            - '9'
-            - '10'
-            - '11'
-            - '12'
-            - '13'
-            - NONE
-            description: FATCA reporting exemption code (1-13 or NONE)
-            example: NONE
-          is_not_subject_backup_withholding:
-            type: boolean
-            description: "Backup withholding attestation flag. Required for customers onboarded to a US platform.\n - If the participant confirms they are **not** subject to backup withholding, this field should be set to `true`.\n - If the participant **is** subject to backup withholding, this field should be set to `false`.\nThis acts as a positive attestation that the participant confirms they are not subject to backup withholding."
-            example: false
-          platform_updated_at:
-            type: number
-            minLength: 13
-            maxLength: 13
-            example: 1667504636159
-            description: Platform updated timestamp
-        required:
-        - payee_exemption
-        - fatca_reporting_exemption
-        - is_not_subject_backup_withholding
-        - platform_updated_at
-        example:
-          payee_exemption: '2'
-          fatca_reporting_exemption: NONE
-          is_not_subject_backup_withholding: false
-          platform_updated_at: 1680643465352
-      - title: Tax Withholding Update
-        type: object
-        description: Patch for updating tax withholding related fields.
-        properties:
-          tax_id:
-            type: string
-            description: "The national ID of the participant, e.g. a social security number.\n - Required when `citizenship_code` is `US`.\n - Optional when `citizenship_code` is not `US`, but if provided, must be accompanied by a valid `id_number` and `id_number_type`.\n - If the tax ID provided is a US ITIN (a 9-digit US ID that begins with the number `9`), then `id_number_type` will be required."
-            example: 000-00-0000
-          b_notice_receipt:
-            type: boolean
-            description: Indicates whether a user has been flagged in an IRS B-Notice as not having up-to-date tax information on file. Required for customers onboarded to a US platform.
-            example: true
-          tin_jurisdiction_reason:
-            type: string
-            enum:
-            - working_abroad
-            - studying_abroad
-            - dual_residency
-            - business_abroad
-            - real_estate_abroad
-            - other
-            description: Optional. Reason for the tax residence jurisdiction differing from the legal jurisdiction. Defaults to "unknown" if not provided.
-            example: working_abroad
-          tin_jurisdiction_other:
-            type: string
-            description: Optional. Free text explanation when tin_jurisdiction_reason is "other"
-          additional_tax_residences:
-            type: array
-            maxItems: 25
-            items:
-              $ref: '#/components/schemas/AdditionalTaxResidence'
-            description: Optional. Additional tax residences when the participant has tax obligations in multiple jurisdictions. Maximum 25 items.
-          platform_updated_at:
-            type: number
-            minLength: 13
-            maxLength: 13
-            example: 1667504636159
-            description: Platform updated timestamp
-        required:
-        - platform_updated_at
-        example:
-          tax_id: 000-00-0000
-          b_notice_receipt: true
-          tin_jurisdiction_reason: working_abroad
-          platform_updated_at: 1680643465352
-      - title: Change of Address
-        type: object
-        description: Patch for updating address fields only.
-        properties:
-          address_one:
-            type: string
-            description: 'First line for the customer''s address.
+                Notes:
 
+                - The maximum length is `50` characters for platform using KYCaaS through zerohash.
 
-              Notes:
+                - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
 
-              - The regular maximum length is 80 characters.
-
-              - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
-
-              - PO Box addresses are not accepted.'
-            example: 123 Main St.
-          address_two:
-            type: string
-            description: 'Extra information, like an apartment or suite number.
-
-
-              Notes:
-
-              - The maximum length is `50` characters for platform using KYCaaS through zerohash.
-
-              - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
-
-              - PO Box addresses are not accepted.'
-            example: Suite 1000
-          city:
-            type: string
-            description: The city customer resides in.
-            example: Chicago
-          postal_code:
-            type: string
-            description: Same as `zip`. Postal code of the customer, in the format "min 4 characters, no leading or trailing spaces".
-            example: '12345'
-            minLength: 4
-          jurisdiction_code:
-            type: string
-            description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
-            example: US-IL
-            enum:
-            - US-AL
-            - US-AK
-            - US-AZ
-            - US-AR
-            - US-CA
-            - US-CO
-            - US-CT
-            - US-DE
-            - US-FL
-            - US-GA
-            - US-HI
-            - US-ID
-            - US-IL
-            - US-IN
-            - US-IA
-            - US-KS
-            - US-KY
-            - US-LA
-            - US-ME
-            - US-MD
-            - US-MA
-            - US-MI
-            - US-MN
-            - US-MS
-            - US-MO
-            - US-MT
-            - US-NE
-            - US-NV
-            - US-NH
-            - US-NJ
-            - US-NM
-            - US-NY
-            - US-NC
-            - US-ND
-            - US-OH
-            - US-OK
-            - US-OR
-            - US-PA
-            - US-RI
-            - US-SC
-            - US-SD
-            - US-TN
-            - US-TX
-            - US-UT
-            - US-VT
-            - US-VA
-            - US-WA
-            - US-WV
-            - US-WI
-            - US-WY
-            - US-DC
-            - US-AS
-            - US-GU
-            - US-MP
-            - US-PR
-            - US-UM
-            - US-VI
-          platform_updated_at:
-            type: number
-            minLength: 13
-            maxLength: 13
-            example: 1667504636159
-            description: Platform updated timestamp
-        required:
-        - address_one
-        - city
-        - postal_code
-        - jurisdiction_code
-        - platform_updated_at
-        example:
-          address_one: 456 New Ave.
-          city: New York
-          postal_code: '10001'
-          jurisdiction_code: US-NY
-          platform_updated_at: 1680643465352
-      - title: Change of Name
-        type: object
-        description: 'Patch for updating customer name fields.
-
-          Providing supporting documentation proving the name change (e.g., marriage certificate, court order, identity documents) are required for this update.'
-        properties:
-          first_name:
-            type: string
-            description: The first name of the customer being onboarded.
-            example: John
-          middle_name:
-            type: string
-            description: The middle name of the customer being onboarded.
-            example: Middle
-          last_name:
-            type: string
-            description: The last name of the customer being onboarded.
-            example: Smith
-          former_name:
-            type: string
-            description: The former name of the customer being onboarded.
-            example: Whale
-          platform_updated_at:
-            type: number
-            minLength: 13
-            maxLength: 13
-            example: 1667504636159
-            description: Platform updated timestamp
-        required:
-        - first_name
-        - last_name
-        - former_name
-        - platform_updated_at
-        example:
-          first_name: John
-          last_name: Doe-Smith
-          former_name: John Doe
-          platform_updated_at: 1680643465352
-      - title: Update Requiring Supporting Documentation
-        type: object
-        description: Patch for updates that require supporting documentation. The  update to the participant should be accompanied by supporting documentation using the [`POST /participants/documents` endpoint](https://docs.zerohash.com/reference/post_participants-documents) with the supported `document_type`'s.
-        properties:
-          first_name:
-            type: string
-            description: The first name of the customer being onboarded.
-            example: John
-          middle_name:
-            type: string
-            description: The middle name of the customer being onboarded.
-            example: Middle
-          last_name:
-            type: string
-            description: The last name of the customer being onboarded.
-            example: Smith
-          former_name:
-            type: string
-            description: The former name of the customer being onboarded.
-            example: Whale
-          date_of_birth:
-            type: string
-            description: Date of birth of the customer in the format `YYYY-MM-DD`
-            example: '1985-09-02'
-          tax_id:
-            type: string
-            description: "The national ID of the participant, e.g. a social security number.\n - Required when `citizenship_code` is `US`.\n - Optional when `citizenship_code` is not `US`, but if provided, must be accompanied by a valid `id_number` and `id_number_type`.\n - If the tax ID provided is a US ITIN (a 9-digit US ID that begins with the number `9`), then `id_number_type` will be required."
-            example: 000-00-0000
-          citizenship_code:
-            type: string
-            example: US
-            description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
-            enum:
-            - AD
-            - AE
-            - AF
-            - AG
-            - AI
-            - AL
-            - AM
-            - AO
-            - AQ
-            - AR
-            - AS
-            - AT
-            - AU
-            - AW
-            - AX
-            - AZ
-            - BA
-            - BB
-            - BD
-            - BE
-            - BF
-            - BG
-            - BH
-            - BI
-            - BJ
-            - BL
-            - BM
-            - BN
-            - BO
-            - BQ
-            - BR
-            - BS
-            - BT
-            - BV
-            - BW
-            - BY
-            - BZ
-            - CA
-            - CC
-            - CD
-            - CF
-            - CG
-            - CH
-            - CI
-            - CK
-            - CL
-            - CM
-            - CN
-            - CO
-            - CR
-            - CU
-            - CV
-            - CW
-            - CX
-            - CY
-            - CZ
-            - DE
-            - DJ
-            - DK
-            - DM
-            - DO
-            - DZ
-            - EC
-            - EE
-            - EG
-            - EH
-            - ER
-            - ES
-            - ET
-            - FI
-            - FJ
-            - FK
-            - FM
-            - FO
-            - FR
-            - GA
-            - GB
-            - GD
-            - GE
-            - GF
-            - GG
-            - GH
-            - GI
-            - GL
-            - GM
-            - GN
-            - GP
-            - GQ
-            - GR
-            - GS
-            - GT
-            - GU
-            - GW
-            - GY
-            - HK
-            - HM
-            - HN
-            - HR
-            - HT
-            - HU
-            - ID
-            - IE
-            - IL
-            - IM
-            - IN
-            - IO
-            - IQ
-            - IR
-            - IS
-            - IT
-            - JE
-            - JM
-            - JO
-            - JP
-            - KE
-            - KG
-            - KH
-            - KI
-            - KM
-            - KN
-            - KP
-            - KR
-            - KW
-            - KY
-            - KZ
-            - LA
-            - LB
-            - LC
-            - LI
-            - LK
-            - LR
-            - LS
-            - LT
-            - LU
-            - LV
-            - LY
-            - MA
-            - MC
-            - MD
-            - ME
-            - MF
-            - MG
-            - MH
-            - MK
-            - ML
-            - MM
-            - MN
-            - MO
-            - MP
-            - MQ
-            - MR
-            - MS
-            - MT
-            - MU
-            - MV
-            - MW
-            - MX
-            - MY
-            - MZ
-            - NA
-            - NC
-            - NE
-            - NF
-            - NG
-            - NI
-            - NL
-            - 'NO'
-            - NP
-            - NR
-            - NU
-            - NZ
-            - OM
-            - PA
-            - PE
-            - PF
-            - PG
-            - PH
-            - PK
-            - PL
-            - PM
-            - PN
-            - PR
-            - PS
-            - PT
-            - PW
-            - PY
-            - QA
-            - RE
-            - RO
-            - RS
-            - RW
-            - SA
-            - SB
-            - SC
-            - SD
-            - SE
-            - SG
-            - SH
-            - SI
-            - SJ
-            - SK
-            - SL
-            - SM
-            - SN
-            - SO
-            - SR
-            - SS
-            - ST
-            - SV
-            - SX
-            - SY
-            - SZ
-            - TC
-            - TD
-            - TF
-            - TG
-            - TH
-            - TJ
-            - TK
-            - TL
-            - TM
-            - TN
-            - TO
-            - TR
-            - TT
-            - TV
-            - TW
-            - TZ
-            - UA
-            - UG
-            - UM
-            - US
-            - UY
-            - UZ
-            - VA
-            - VC
-            - VE
-            - VG
-            - VI
-            - VN
-            - VU
-            - WF
-            - WS
-            - YE
-            - YT
-            - ZA
-            - ZM
-            - ZW
-          id_number_type:
-            type: string
-            enum:
-            - us_drivers_license
-            - us_passport
-            - us_passport_card
-            - us_permanent_resident_card
-            - us_border_crossing_card
-            - us_alien_card
-            - us_id_card
-            - non_us_passport
-            - non_us_other
-            - passport
-            - eu_drivers_license
-            - national_id
-            description: "\n### Region-specific guidelines\n\n### Platforms integrated to zerohash USA;\n - Required when `citizenship_code` is not `US`.\n - Required when `citizenship_code=US` but `tax_id` is an ITIN (a 9-digit US ID that begins with the number `9`).\n---\n### Platforms integrated to zerohash EU;\nThe following enums are EU-specific types:\n- `passport`\n- `eu_drivers_license`\n- `national_id`\n\nEU platforms can also accept:\n- `us_passport`\n- `non_us_passport` \n- `non_us_other`\n- `us_drivers_license`\n- `us_id_card`\n- `us_passport_card`"
-            example: us_passport
-          tax_residence:
-            type: object
-            description: Tax residence address for the customer
-            required:
-            - jurisdiction_code
-            properties:
-              address_one:
-                type: string
-                description: First line of tax residence address
-              address_two:
-                type: string
-                description: Second line of tax residence address (optional)
-              city:
-                type: string
-                description: City of tax residence
-              jurisdiction_code:
-                type: string
-                description: Jurisdiction code in ISO-3166-2 format
-                example: PT-11
-              postal_code:
-                type: string
-                description: Postal code of tax residence
-          address_one:
-            type: string
-            description: 'First line for the customer''s address.
-
-
-              Notes:
-
-              - The regular maximum length is 80 characters.
-
-              - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
-
-              - PO Box addresses are not accepted.'
-            example: 123 Main St.
-          city:
-            type: string
-            description: The city customer resides in.
-            example: Chicago
-          postal_code:
-            type: string
-            description: Same as `zip`. Postal code of the customer, in the format "min 4 characters, no leading or trailing spaces".
-            example: '12345'
-            minLength: 4
-          gross_annual_income_amount:
-            type: string
-            enum:
-            - up_to_5k
-            - 5k_to_25k
-            - 25k_to_100k
-            - 100k_and_up
-            example: 25k_to_100k
-            description: The individual's total pre-tax income from all sources annually, in a currency (e.g., USD, EUR depends on region).
-          gross_annual_salary_amount:
-            type: string
-            description: The individual's gross annual salary amount, in a currency (e.g., USD, EUR depends on region).
-            example: '10000'
-          platform_updated_at:
-            type: number
-            minLength: 13
-            maxLength: 13
-            example: 1667504636159
-            description: Platform updated timestamp
-        required:
-        - platform_updated_at
-        example:
-          first_name: John
-          last_name: Doe-Smith
-          address_one: 456 New Ave.
-          city: New York
-          postal_code: '10001'
-          tax_id: 000-00-0000
-          platform_updated_at: 1680643465352
+                - PO Box addresses are not accepted.'
+              example: Suite 1000
+            jurisdiction_code:
+              type: string
+              description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
+              example: US-IL
+              enum:
+              - US-AL
+              - US-AK
+              - US-AZ
+              - US-AR
+              - US-CA
+              - US-CO
+              - US-CT
+              - US-DE
+              - US-FL
+              - US-GA
+              - US-HI
+              - US-ID
+              - US-IL
+              - US-IN
+              - US-IA
+              - US-KS
+              - US-KY
+              - US-LA
+              - US-ME
+              - US-MD
+              - US-MA
+              - US-MI
+              - US-MN
+              - US-MS
+              - US-MO
+              - US-MT
+              - US-NE
+              - US-NV
+              - US-NH
+              - US-NJ
+              - US-NM
+              - US-NY
+              - US-NC
+              - US-ND
+              - US-OH
+              - US-OK
+              - US-OR
+              - US-PA
+              - US-RI
+              - US-SC
+              - US-SD
+              - US-TN
+              - US-TX
+              - US-UT
+              - US-VT
+              - US-VA
+              - US-WA
+              - US-WV
+              - US-WI
+              - US-WY
+              - US-DC
+              - US-AS
+              - US-GU
+              - US-MP
+              - US-PR
+              - US-UM
+              - US-VI
+            city:
+              type: string
+              description: The city customer resides in.
+              example: Chicago
+            zip:
+              type: string
+              description: Zip code of the customer, required if `country` is `USA`, min 5 characters or `<5digits>-<4digits>`, no leading or trailing spaces", e.g. 77777 or 77777-7777.
+              example: '12345'
+            date_of_birth:
+              type: string
+              description: Date of birth of the customer in the format `YYYY-MM-DD`
+              example: '1985-09-02'
+            id_number_type:
+              type: string
+              enum:
+              - us_drivers_license
+              - us_passport
+              - us_passport_card
+              - us_permanent_resident_card
+              - us_border_crossing_card
+              - us_alien_card
+              - us_id_card
+              - non_us_passport
+              - non_us_other
+              - passport
+              - eu_drivers_license
+              - national_id
+              - legal_entity_identifier
+              - chamber_of_commerce_number
+              - value_added_tax_number
+              description: "The id number type field is required when; \n - `citizenship` is not `US`\n - `citizenship=US` and `tax_id` starts with `9` (is an ITIN, a 9-digit US ID that begins with the number 9).\nPassport, EU Drivers License, National ID are EU-specific types. EU platforms also accept us_passport, non_us_passport, non_us_other, us_drivers_license, us_id_card, us_passport_card"
+              example: us_passport
+            id_number:
+              type: string
+              description: "The ID number for the customer. \n - Required when `citizenship_code` is not `US`\n - Required when `citizenship_code : US` but `tax_id` is an ITIN (a 9-digit US ID that begins with the number `9`)."
+              example: '123456789'
+            citizenship_code:
+              type: string
+              example: US
+              description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
+              enum:
+              - AD
+              - AE
+              - AF
+              - AG
+              - AI
+              - AL
+              - AM
+              - AO
+              - AQ
+              - AR
+              - AS
+              - AT
+              - AU
+              - AW
+              - AX
+              - AZ
+              - BA
+              - BB
+              - BD
+              - BE
+              - BF
+              - BG
+              - BH
+              - BI
+              - BJ
+              - BL
+              - BM
+              - BN
+              - BO
+              - BQ
+              - BR
+              - BS
+              - BT
+              - BV
+              - BW
+              - BY
+              - BZ
+              - CA
+              - CC
+              - CD
+              - CF
+              - CG
+              - CH
+              - CI
+              - CK
+              - CL
+              - CM
+              - CN
+              - CO
+              - CR
+              - CU
+              - CV
+              - CW
+              - CX
+              - CY
+              - CZ
+              - DE
+              - DJ
+              - DK
+              - DM
+              - DO
+              - DZ
+              - EC
+              - EE
+              - EG
+              - EH
+              - ER
+              - ES
+              - ET
+              - FI
+              - FJ
+              - FK
+              - FM
+              - FO
+              - FR
+              - GA
+              - GB
+              - GD
+              - GE
+              - GF
+              - GG
+              - GH
+              - GI
+              - GL
+              - GM
+              - GN
+              - GP
+              - GQ
+              - GR
+              - GS
+              - GT
+              - GU
+              - GW
+              - GY
+              - HK
+              - HM
+              - HN
+              - HR
+              - HT
+              - HU
+              - ID
+              - IE
+              - IL
+              - IM
+              - IN
+              - IO
+              - IQ
+              - IR
+              - IS
+              - IT
+              - JE
+              - JM
+              - JO
+              - JP
+              - KE
+              - KG
+              - KH
+              - KI
+              - KM
+              - KN
+              - KP
+              - KR
+              - KW
+              - KY
+              - KZ
+              - LA
+              - LB
+              - LC
+              - LI
+              - LK
+              - LR
+              - LS
+              - LT
+              - LU
+              - LV
+              - LY
+              - MA
+              - MC
+              - MD
+              - ME
+              - MF
+              - MG
+              - MH
+              - MK
+              - ML
+              - MM
+              - MN
+              - MO
+              - MP
+              - MQ
+              - MR
+              - MS
+              - MT
+              - MU
+              - MV
+              - MW
+              - MX
+              - MY
+              - MZ
+              - NA
+              - NC
+              - NE
+              - NF
+              - NG
+              - NI
+              - NL
+              - 'NO'
+              - NP
+              - NR
+              - NU
+              - NZ
+              - OM
+              - PA
+              - PE
+              - PF
+              - PG
+              - PH
+              - PK
+              - PL
+              - PM
+              - PN
+              - PR
+              - PS
+              - PT
+              - PW
+              - PY
+              - QA
+              - RE
+              - RO
+              - RS
+              - RW
+              - SA
+              - SB
+              - SC
+              - SD
+              - SE
+              - SG
+              - SH
+              - SI
+              - SJ
+              - SK
+              - SL
+              - SM
+              - SN
+              - SO
+              - SR
+              - SS
+              - ST
+              - SV
+              - SX
+              - SY
+              - SZ
+              - TC
+              - TD
+              - TF
+              - TG
+              - TH
+              - TJ
+              - TK
+              - TL
+              - TM
+              - TN
+              - TO
+              - TR
+              - TT
+              - TV
+              - TW
+              - TZ
+              - UA
+              - UG
+              - UM
+              - US
+              - UY
+              - UZ
+              - VA
+              - VC
+              - VE
+              - VG
+              - VI
+              - VN
+              - VU
+              - WF
+              - WS
+              - YE
+              - YT
+              - ZA
+              - ZM
+              - ZW
+            non_us_other_type:
+              type: string
+              description: This is required if you select `non_us_other` for the `id_number_type` - a freeform string to describe the ID type
+              example: null
+            id_issuing_authority:
+              type: string
+              description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
+              example: null
+            phone_number:
+              type: string
+              description: The phone number of the participant
+              example: '15557778888'
+            platform_code:
+              type: string
+              example: XXXXXX
+            participant_code:
+              type: string
+              example: XXXXXX
     PatchBeneficiariesBody:
       type: object
       properties:
@@ -7257,744 +8000,24 @@ components:
       - jurisdiction_code
       - city
       - zip
-    PostBeneficiariesBody:
+    Code503:
       type: object
-      properties:
-        first_name:
-          type: string
-          description: The first name of the customer being onboarded.
-          example: John
-        last_name:
-          type: string
-          description: The last name of the customer being onboarded.
-          example: Smith
-        email:
-          type: string
-          description: 'Customer email address, required.
-
-            Note: zerohash will validate that the email is a correctly formatted `email`, and that the value is unique per-platform'
-          example: test@example.com
-        phone_number:
-          type: string
-          description: The phone number of the participant
-          example: '15557778888'
-        address_one:
-          type: string
-          description: 'First line for the customer''s address.
-
-
-            Notes:
-
-            - The regular maximum length is 80 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to `200` characters.
-
-            - PO Box addresses are not accepted.'
-          example: 123 Main St.
-        address_two:
-          type: string
-          description: 'Extra information, like an apartment or suite number.
-
-
-            Notes:
-
-            - The maximum length is `50` characters for platform using KYCaaS through zerohash.
-
-            - If the platform is on the shared vendor reliance track, the maximum length increases to `200` characters.
-
-            - PO Box addresses are not accepted.'
-          example: Suite 1000
-        city:
-          type: string
-          description: The city customer resides in.
-          example: Chicago
-        zip:
-          type: string
-          description: Zip code of the customer, required if `country` is `USA`, min 5 characters or `<5digits>-<4digits>`, no leading or trailing spaces", e.g. 77777 or 77777-7777.
-          example: '12345'
-        jurisdiction_code:
-          type: string
-          description: The ISO 3166-2 subdivision code that the customer resides in. A full list of valid jurisdiction codes can be retrieved from the [`GET /jurisdictions/subdivisions` endpoint](https://docs.zerohash.com/reference/get_jurisdiction-subdivisions) passing a `country` parameter.
-          example: US-IL
-          enum:
-          - US-AL
-          - US-AK
-          - US-AZ
-          - US-AR
-          - US-CA
-          - US-CO
-          - US-CT
-          - US-DE
-          - US-FL
-          - US-GA
-          - US-HI
-          - US-ID
-          - US-IL
-          - US-IN
-          - US-IA
-          - US-KS
-          - US-KY
-          - US-LA
-          - US-ME
-          - US-MD
-          - US-MA
-          - US-MI
-          - US-MN
-          - US-MS
-          - US-MO
-          - US-MT
-          - US-NE
-          - US-NV
-          - US-NH
-          - US-NJ
-          - US-NM
-          - US-NY
-          - US-NC
-          - US-ND
-          - US-OH
-          - US-OK
-          - US-OR
-          - US-PA
-          - US-RI
-          - US-SC
-          - US-SD
-          - US-TN
-          - US-TX
-          - US-UT
-          - US-VT
-          - US-VA
-          - US-WA
-          - US-WV
-          - US-WI
-          - US-WY
-          - US-DC
-          - US-AS
-          - US-GU
-          - US-MP
-          - US-PR
-          - US-UM
-          - US-VI
-        date_of_birth:
-          type: string
-          description: Date of birth of the customer in the format `YYYY-MM-DD`
-          example: '1985-09-02'
-        tax_id:
-          type: string
-          description: "The national ID of the participant, e.g. a social security number.\n - Required when `citizenship_code` is `US`.\n - Optional when `citizenship_code` is not `US`, but if provided, must be accompanied by a valid `id_number` and `id_number_type`.\n - If the tax ID provided is a US ITIN (a 9-digit US ID that begins with the number `9`), then `id_number_type` will be required."
-          example: 000-00-0000
-        id_number_type:
-          type: string
-          enum:
-          - us_drivers_license
-          - us_passport
-          - us_passport_card
-          - us_permanent_resident_card
-          - us_border_crossing_card
-          - us_alien_card
-          - us_id_card
-          - non_us_passport
-          - non_us_other
-          - passport
-          - eu_drivers_license
-          - national_id
-          - legal_entity_identifier
-          - chamber_of_commerce_number
-          - value_added_tax_number
-          description: "The id number type field is required when; \n - `citizenship` is not `US`\n - `citizenship=US` and `tax_id` starts with `9` (is an ITIN, a 9-digit US ID that begins with the number 9).\nPassport, EU Drivers License, National ID are EU-specific types. EU platforms also accept us_passport, non_us_passport, non_us_other, us_drivers_license, us_id_card, us_passport_card"
-          example: us_passport
-        id_number:
-          type: string
-          description: "The ID number for the customer. \n - Required when `citizenship_code` is not `US`\n - Required when `citizenship_code : US` but `tax_id` is an ITIN (a 9-digit US ID that begins with the number `9`)."
-          example: '123456789'
-        citizenship_code:
-          type: string
-          example: US
-          description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
-          enum:
-          - AD
-          - AE
-          - AF
-          - AG
-          - AI
-          - AL
-          - AM
-          - AO
-          - AQ
-          - AR
-          - AS
-          - AT
-          - AU
-          - AW
-          - AX
-          - AZ
-          - BA
-          - BB
-          - BD
-          - BE
-          - BF
-          - BG
-          - BH
-          - BI
-          - BJ
-          - BL
-          - BM
-          - BN
-          - BO
-          - BQ
-          - BR
-          - BS
-          - BT
-          - BV
-          - BW
-          - BY
-          - BZ
-          - CA
-          - CC
-          - CD
-          - CF
-          - CG
-          - CH
-          - CI
-          - CK
-          - CL
-          - CM
-          - CN
-          - CO
-          - CR
-          - CU
-          - CV
-          - CW
-          - CX
-          - CY
-          - CZ
-          - DE
-          - DJ
-          - DK
-          - DM
-          - DO
-          - DZ
-          - EC
-          - EE
-          - EG
-          - EH
-          - ER
-          - ES
-          - ET
-          - FI
-          - FJ
-          - FK
-          - FM
-          - FO
-          - FR
-          - GA
-          - GB
-          - GD
-          - GE
-          - GF
-          - GG
-          - GH
-          - GI
-          - GL
-          - GM
-          - GN
-          - GP
-          - GQ
-          - GR
-          - GS
-          - GT
-          - GU
-          - GW
-          - GY
-          - HK
-          - HM
-          - HN
-          - HR
-          - HT
-          - HU
-          - ID
-          - IE
-          - IL
-          - IM
-          - IN
-          - IO
-          - IQ
-          - IR
-          - IS
-          - IT
-          - JE
-          - JM
-          - JO
-          - JP
-          - KE
-          - KG
-          - KH
-          - KI
-          - KM
-          - KN
-          - KP
-          - KR
-          - KW
-          - KY
-          - KZ
-          - LA
-          - LB
-          - LC
-          - LI
-          - LK
-          - LR
-          - LS
-          - LT
-          - LU
-          - LV
-          - LY
-          - MA
-          - MC
-          - MD
-          - ME
-          - MF
-          - MG
-          - MH
-          - MK
-          - ML
-          - MM
-          - MN
-          - MO
-          - MP
-          - MQ
-          - MR
-          - MS
-          - MT
-          - MU
-          - MV
-          - MW
-          - MX
-          - MY
-          - MZ
-          - NA
-          - NC
-          - NE
-          - NF
-          - NG
-          - NI
-          - NL
-          - 'NO'
-          - NP
-          - NR
-          - NU
-          - NZ
-          - OM
-          - PA
-          - PE
-          - PF
-          - PG
-          - PH
-          - PK
-          - PL
-          - PM
-          - PN
-          - PR
-          - PS
-          - PT
-          - PW
-          - PY
-          - QA
-          - RE
-          - RO
-          - RS
-          - RW
-          - SA
-          - SB
-          - SC
-          - SD
-          - SE
-          - SG
-          - SH
-          - SI
-          - SJ
-          - SK
-          - SL
-          - SM
-          - SN
-          - SO
-          - SR
-          - SS
-          - ST
-          - SV
-          - SX
-          - SY
-          - SZ
-          - TC
-          - TD
-          - TF
-          - TG
-          - TH
-          - TJ
-          - TK
-          - TL
-          - TM
-          - TN
-          - TO
-          - TR
-          - TT
-          - TV
-          - TW
-          - TZ
-          - UA
-          - UG
-          - UM
-          - US
-          - UY
-          - UZ
-          - VA
-          - VC
-          - VE
-          - VG
-          - VI
-          - VN
-          - VU
-          - WF
-          - WS
-          - YE
-          - YT
-          - ZA
-          - ZM
-          - ZW
-        non_us_other_type:
-          type: string
-          description: This is required if you select `non_us_other` for the `id_number_type` - a freeform string to describe the ID type
-          example: null
-        id_issuing_authority:
-          type: string
-          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
-          example: null
-      required:
-      - first_name
-      - last_name
-      - address_one
-      - jurisdiction_code
-      - city
-      - date_of_birth
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    PatchParticipantLimitsBody:
-      type: object
-      required:
-      - limits
-      properties:
-        limits:
-          type: array
-          description: Array of limit configurations to apply to the participant. Use empty array to clear all limits.
-          items:
-            type: object
-            required:
-            - type
-            - period
-            - configured_limit
-            - asset
-            properties:
-              type:
-                type: array
-                description: Transaction types to which this limit applies
-                minItems: 1
-                items:
-                  type: string
-                  enum:
-                  - trades
-                  - transfers
-                  - withdrawals
-                  - deposits
-                example:
-                - trades
-              period:
-                type: number
-                description: Time period in hours for the limit. Use 0 for lifetime limits.
-                minimum: 0
-                example: 24
-              configured_limit:
-                type: string
-                description: The limit amount as a decimal string
-                pattern: ^(?:\d+|\d*\.\d+)$
-                example: '25000'
-              asset:
-                type: string
-                description: The asset/currency for the limit
-                example: USD
-    PostDocumentsBody:
-      oneOf:
-      - title: Document - All accepted fields
-        type: object
-        description: All accepted fields for a document
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-            example: CUST01
-          document_type:
-            type: string
-            description: 'A valid ID type.
-
-
-              **Additional shopper document types:** `source_of_funds_for_purchase`, `proof_of_employment_status`, and `proof_of_industry` are accepted for natural persons onboarded with `onboarding_profile: shopper`, in addition to the other document types listed here. They have no effect for participants on any other onboarding profile.'
-            example: us_drivers_license
-            enum:
-            - us_drivers_license
-            - us_passport
-            - us_passport_card
-            - us_permanent_resident_card
-            - us_border_crossing_card
-            - us_alien_card
-            - us_id_card
-            - non_us_passport
-            - non_us_other
-            - proof_of_income
-            - eu_passport
-            - eu_id_card
-            - eu_drivers_license
-            - eu_address_verification
-            - form_w9
-            - form_w8_ben
-            - form_w8_ben_e
-            - form_w8_imy
-            - form_w8_eci
-            - form_w8_exp
-            - form_w8_ce
-            - source_of_funds_for_purchase
-            - proof_of_employment_status
-            - proof_of_industry
-            - miscellaneous
-          id_front:
-            type: boolean
-            description: 'Optional field to indicate if the document is the front or back of an ID.
-
-              The field is **mandatory** only for the following document types:: `us_drivers_license`, `us_permanent_resident_card`,
-
-              `us_border_crossing_card`, `us_alien_card`, `us_id_card`, `us_passport_card`,
-
-              `eu_id_card`, `eu_drivers_license`.'
-            example: true
-      - title: US - Single sided documents
-        type: object
-        description: US single-sided document submission (no id_front field)
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-            example: CUST01
-          document_type:
-            type: string
-            description: 'A valid US single-sided document type.
-
-
-              **Additional shopper document types:** `source_of_funds_for_purchase`, `proof_of_employment_status`, and `proof_of_industry` are accepted for natural persons onboarded with `onboarding_profile: shopper`, in addition to the other document types listed here. They have no effect for participants on any other onboarding profile.'
-            example: us_passport
-            enum:
-            - us_passport
-            - non_us_passport
-            - non_us_other
-            - proof_of_income
-            - form_w9
-            - form_w8_ben
-            - form_w8_ben_e
-            - form_w8_imy
-            - form_w8_eci
-            - form_w8_exp
-            - form_w8_ce
-            - source_of_funds_for_purchase
-            - proof_of_employment_status
-            - proof_of_industry
-        required:
-        - document
-        - mime
-        - file_name
-        - participant_code
-        - document_type
-      - title: US - Two sided documents (Front + Back)
-        type: object
-        description: US two-sided document submission (id_front optional)
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-            example: CUST01
-          document_type:
-            type: string
-            description: A valid US two-sided document type
-            example: us_drivers_license
-            enum:
-            - us_drivers_license
-            - us_permanent_resident_card
-            - us_border_crossing_card
-            - us_alien_card
-            - us_id_card
-            - us_passport_card
-          id_front:
-            type: boolean
-            description: 'Optional field to indicate if the document is the front or back of an ID.
-
-              The field is **mandatory** only for the folliwng US two-sided documents: `us_drivers_license`, `us_permanent_resident_card`,
-
-              `us_border_crossing_card`, `us_alien_card`, `us_id_card`, `us_passport_card`.'
-            example: true
-        required:
-        - document
-        - mime
-        - file_name
-        - participant_code
-        - document_type
-        - id_front
-      - title: EU - Single sided documents
-        type: object
-        description: EU single-sided document submission (no id_front field)
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-            example: CUST01
-          document_type:
-            type: string
-            description: A valid EU single-sided document type
-            example: eu_passport
-            enum:
-            - eu_passport
-            - eu_address_verification
-            - us_passport
-            - non_us_passport
-            - non_us_other
-        required:
-        - document
-        - mime
-        - file_name
-        - participant_code
-        - document_type
-      - title: EU - Two sided documents (Front + Back)
-        type: object
-        description: EU two-sided document submission (id_front optional)
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-            example: CUST01
-          document_type:
-            type: string
-            description: A valid EU two-sided document type
-            example: eu_id_card
-            enum:
-            - eu_id_card
-            - eu_drivers_license
-            - us_id_card
-            - us_drivers_license
-            - us_passport_card
-          id_front:
-            type: boolean
-            description: 'Optional field to indicate if the document is the front or back of an ID.
-
-              The field is **mandatory** only for the following EU two-sided documents: `eu_id_card`, `eu_drivers_license`, `us_id_card`, `us_drivers_license`, `us_passport_card`.'
-            example: true
-        required:
-        - document
-        - mime
-        - file_name
-        - participant_code
-        - document_type
-        - id_front
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
       required:
       - error
       properties:
         error:
           type: string
-          example: Internal Server Error
-    LockCustomersBody:
+          example: Service Unavailable
+    Code404:
       type: object
+      description: The requested resource does not exist or is not visible to the caller.
       required:
-      - reason_code
-      - notes
-      additionalProperties: false
+      - error
       properties:
-        reason_code:
+        error:
           type: string
-          enum:
-          - user_request
-          - compliance_issue
-          description: Reason the customer is being locked.
-          example: compliance_issue
-        notes:
-          type: string
-          description: Additional detail on the lock. Including useful context here can meaningfully speed up investigations on the zerohash side.
-          example: confirmed fraud
+          example: Not Found
     PostCustomersResponse:
       type: object
       properties:
@@ -10905,19 +10928,6 @@ components:
                 type: string
                 description: The current status of the participant
                 example: approved
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
   parameters:
     ParticipantCodePath:
       name: participant_code
@@ -10935,14 +10945,6 @@ components:
       required: true
       schema:
         type: string
-    RequestId:
-      name: X-Request-Id
-      in: header
-      description: Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.
-      required: false
-      schema:
-        type: string
-        format: uuid
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -10951,6 +10953,14 @@ components:
       schema:
         type: string
         example: '1678901234'
+    RequestId:
+      name: X-Request-Id
+      in: header
+      description: Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.
+      required: false
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     apiKey:
       type: apiKey

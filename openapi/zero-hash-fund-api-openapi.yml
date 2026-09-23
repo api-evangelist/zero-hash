@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Fund API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -74,6 +70,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postFundRfq
+      x-operation-id-source: derived
   /fund/transactions:
     get:
       tags:
@@ -198,6 +196,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: getFundTransactions
+      x-operation-id-source: derived
   /fund/deposit:
     post:
       tags:
@@ -249,8 +249,193 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postFundDeposit
+      x-operation-id-source: derived
 components:
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   schemas:
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    PostFundDepositRequest:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          description: The participant code tied to the deposit
+          example: ABCDEF
+        external_account_id:
+          type: string
+          description: The external account id tied to the deposit
+          example: 0f34533e-2114-469d-b505-c850d776e061
+        asset:
+          type: string
+          description: The asset code for the deposit, e.g. USD
+          example: USD
+          enum:
+          - USD
+        amount:
+          type: string
+          description: The amount of the deposit
+          example: '100'
+        description:
+          type: string
+          description: Description of the deposit
+          example: Deposit for trading account
+        network:
+          type: string
+          description: The network for the deposit, e.g. `ach`.
+          example: ach
+          enum:
+          - ach
+        instant:
+          type: boolean
+          description: Whether the deposit should be processed instantly
+          example: true
+      required:
+      - participant_code
+      - external_account_id
+      - asset
+      - amount
+      - description
+      - network
+      - instant
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostFundDepositResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: The request id associated with this deposit submission. Echoes the X-Request-Id header when supplied by the client.
+          example: d39b1957-d0cc-40d7-9daf-9a31e9584c5f
+        transaction_id:
+          type: string
+          format: uuid
+          description: zerohash-generated unique identifier for the deposit.
+          example: bfa45e86-d414-4dda-863a-42bbdd7f389e
+        external_account_id:
+          type: string
+          description: The external (bank) account identifier debited for this deposit.
+          example: 487e49ac-c797-4136-8675-9464fc5e8a12
+        trade_id:
+          type: string
+          description: Associated trade identifier. Empty string when no conversion trade was created (e.g. USD deposits).
+          example: ''
+        description:
+          type: string
+          description: Description of the deposit as supplied on the request.
+          example: Deposit for trading account
+        amount:
+          type: string
+          description: The amount of the deposit.
+          example: '5000'
+        status:
+          type: string
+          description: Current status of the deposit.
+          example: submitted
+          enum:
+          - posted
+          - cancelled
+          - failed
+          - returned
+          - submitted
+          - pending
+          - settled
+          - rejected
+          - returned_settled
+          - retried
+          - unspecified
+        transfer_type:
+          type: string
+          description: Fiat transfer direction for this transaction.
+          enum:
+          - debit
+          - credit
+          example: debit
+        network:
+          type: string
+          description: The network used to process the deposit.
+          example: ach
+          enum:
+          - ach
+        participant_code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          description: The participant code credited by this deposit.
+          example: ABCDEF
+        account_label:
+          type: string
+          description: The account label credited by this deposit. Always 'general' for fund deposits.
+          example: general
+        currency:
+          type: string
+          description: The fiat currency of the deposit.
+          example: USD
+          enum:
+          - USD
+        created_at:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp indicating when the deposit was created.
+          example: '2026-05-04T11:58:45.221Z'
+        ach_agreement_acceptance:
+          type: object
+          description: Recorded ACH agreement acceptance for this deposit. Present only when an ACH agreement acceptance was recorded with the submission.
+          properties:
+            timestamp:
+              type: number
+              description: Unix timestamp in milliseconds indicating when the ACH agreement was accepted.
+              example: 1708631671631
+            version:
+              type: string
+              description: Version of the ACH agreement that was accepted.
+              example: 1.0.0
     PostFundRfqResponse:
       type: object
       properties:
@@ -345,60 +530,6 @@ components:
                     type: string
                     description: The fee rate in basis points for this tier
                     example: '40'
-    PostFundDepositRequest:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          minLength: 6
-          maxLength: 6
-          description: The participant code tied to the deposit
-          example: ABCDEF
-        external_account_id:
-          type: string
-          description: The external account id tied to the deposit
-          example: 0f34533e-2114-469d-b505-c850d776e061
-        asset:
-          type: string
-          description: The asset code for the deposit, e.g. USD
-          example: USD
-          enum:
-          - USD
-        amount:
-          type: string
-          description: The amount of the deposit
-          example: '100'
-        description:
-          type: string
-          description: Description of the deposit
-          example: Deposit for trading account
-        network:
-          type: string
-          description: The network for the deposit, e.g. `ach`.
-          example: ach
-          enum:
-          - ach
-        instant:
-          type: boolean
-          description: Whether the deposit should be processed instantly
-          example: true
-      required:
-      - participant_code
-      - external_account_id
-      - asset
-      - amount
-      - description
-      - network
-      - instant
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -412,131 +543,6 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    GetFundTransactionsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetFundTransactionsEntity'
-        page:
-          type: number
-          example: 1
-        page_size:
-          type: number
-          example: 50
-        total_pages:
-          type: number
-          example: 1
-    PostFundDepositResponse:
-      type: object
-      properties:
-        request_id:
-          type: string
-          format: uuid
-          description: The request id associated with this deposit submission. Echoes the X-Request-Id header when supplied by the client.
-          example: d39b1957-d0cc-40d7-9daf-9a31e9584c5f
-        transaction_id:
-          type: string
-          format: uuid
-          description: zerohash-generated unique identifier for the deposit.
-          example: bfa45e86-d414-4dda-863a-42bbdd7f389e
-        external_account_id:
-          type: string
-          description: The external (bank) account identifier debited for this deposit.
-          example: 487e49ac-c797-4136-8675-9464fc5e8a12
-        trade_id:
-          type: string
-          description: Associated trade identifier. Empty string when no conversion trade was created (e.g. USD deposits).
-          example: ''
-        description:
-          type: string
-          description: Description of the deposit as supplied on the request.
-          example: Deposit for trading account
-        amount:
-          type: string
-          description: The amount of the deposit.
-          example: '5000'
-        status:
-          type: string
-          description: Current status of the deposit.
-          example: submitted
-          enum:
-          - posted
-          - cancelled
-          - failed
-          - returned
-          - submitted
-          - pending
-          - settled
-          - rejected
-          - returned_settled
-          - retried
-          - unspecified
-        transfer_type:
-          type: string
-          description: Fiat transfer direction for this transaction.
-          enum:
-          - debit
-          - credit
-          example: debit
-        network:
-          type: string
-          description: The network used to process the deposit.
-          example: ach
-          enum:
-          - ach
-        participant_code:
-          type: string
-          minLength: 6
-          maxLength: 6
-          description: The participant code credited by this deposit.
-          example: ABCDEF
-        account_label:
-          type: string
-          description: The account label credited by this deposit. Always 'general' for fund deposits.
-          example: general
-        currency:
-          type: string
-          description: The fiat currency of the deposit.
-          example: USD
-          enum:
-          - USD
-        created_at:
-          type: string
-          format: date-time
-          description: ISO-8601 timestamp indicating when the deposit was created.
-          example: '2026-05-04T11:58:45.221Z'
-        ach_agreement_acceptance:
-          type: object
-          description: Recorded ACH agreement acceptance for this deposit. Present only when an ACH agreement acceptance was recorded with the submission.
-          properties:
-            timestamp:
-              type: number
-              description: Unix timestamp in milliseconds indicating when the ACH agreement was accepted.
-              example: 1708631671631
-            version:
-              type: string
-              description: Version of the ACH agreement that was accepted.
-              example: 1.0.0
     GetFundTransactionsEntity:
       type: object
       properties:
@@ -679,19 +685,15 @@ components:
                 type: string
                 description: The fee amount calculated for this tier
                 example: '2.00'
-    Code403:
+    Code404:
       type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      description: The requested resource does not exist or is not visible to the caller.
       required:
       - error
-      - message
       properties:
         error:
-          type: boolean
-          example: true
-        message:
           type: string
-          example: This api key does not have write permission to this endpoint
+          example: Not Found
     PostFundRfqBody:
       type: object
       required:
@@ -716,22 +718,22 @@ components:
           maxLength: 50
           description: A custom identifier for the fund event. Platforms can use this field for tracking purposes, such as identifying fund events that are part of a specific promotion or campaign.
           example: f2f14251-e296-42ac-9bc7-01c9186b921c
-  parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
+    GetFundTransactionsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetFundTransactionsEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 50
+        total_pages:
+          type: number
+          example: 1
   securitySchemes:
     apiKey:
       type: apiKey

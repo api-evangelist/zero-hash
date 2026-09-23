@@ -1,17 +1,13 @@
 openapi: 3.2.0
 info:
   title: zerohash Rewards API
-  description: '
-
-    ### Authentication
+  description: '### Authentication
 
 
-    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link [https://docs.zerohash.com/reference/api-authentication](https://docs.zerohash.com/reference/api-authentication)
+    zerohash Uses HMAC SHA-256 verification to ensure the authenticity of API requests, follow instructions by link https://docs.zerohash.com/reference/api-authentication
 
 
-    <a href="/zh-swagger.json">Download zerohash OpenAPI Schema as JSON</a>
-
-    '
+    Download zerohash OpenAPI Schema as JSON'
   version: 1.7.0
 servers:
 - url: https://api.cert.zerohash.com
@@ -76,58 +72,288 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Code503'
+      operationId: postRewards
+      x-operation-id-source: derived
 components:
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    RequestId:
+      name: X-Request-Id
+      in: header
+      description: Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.
+      required: false
+      schema:
+        type: string
+        format: uuid
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   schemas:
-    UnderlyingCurrency:
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    OBOParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
+          type: string
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    LiquidityEnabledUnderlyingCurrency:
       type: string
-      description: the underlying asset
+      description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
       example: BTC
       enum:
-      - AAVE.ETH
-      - ADA
-      - ALGO
-      - AVAX
-      - BAT.ETH
-      - BCH
-      - BTC
-      - BUSD.ETH
-      - COMP.ETH
-      - DAI.ETH
-      - DOGE
+      - USDC.OPTIMISM
+      - USDC.SUI
       - DOT
-      - EGLD
-      - EOS
-      - ETC
-      - ETH
-      - ETH.ARBITRUM
-      - GRT.ETH
-      - GYEN.ETH
-      - HBAR
-      - LINK.ETH
-      - LTC
-      - LUNA
-      - MATIC.ETH
-      - MATIC.POLYGON
-      - MKR.ETH
-      - MOB
-      - SAND.ETH
-      - SOL
-      - UNI.ETH
-      - USDC.ETH
-      - USDC.ALGO
-      - USDC.POLYGON
+      - FIL
+      - PYUSD.ETH
+      - TRX
+      - ZRX
+      - DAI.ETH
+      - USDC.WORLDCHAIN
+      - USDP
+      - USDT.BSC
+      - USDT.CELO
+      - PEPE.ETH
+      - SAND
+      - USDC.DOTHUB
+      - USDC.SEI
       - USDC.SOL
-      - USDC.HBAR
-      - USDC.XLM
-      - USDC.AVAX
-      - USDT.ETH
-      - UST
-      - WBTC.ETH
-      - XEM
+      - USDC.ZKSYNC
+      - ENA.ETH
+      - MANA.ETH
+      - PYTH.SOL
+      - SOL
+      - USDC.BASE
+      - USDC.CELO
+      - USDT
+      - ADA
+      - INJ.ETH
+      - MATIC.POLYGON
+      - PAXG
+      - USD
+      - AAVE.ETH
+      - ALGO
+      - EURC.XLM
+      - KNC.ETH
+      - PNUT.SOL
+      - SHIB
+      - BCH
+      - DOGE
+      - EGLD
+      - JTO.SOL
+      - UNI.ETH
+      - USDC
+      - USDC.ARBITRUM
+      - ONDO.ETH
+      - PENGU.SOL
+      - USD
+      - WLFI.ETH
       - XLM
+      - APT
+      - CC
+      - ETH.OPTIMISM
+      - ETH.WORLDCHAIN
+      - LDO.ETH
+      - MORPHO.ETH
+      - SEI
+      - ETH.ZKSYNC
+      - USDC.AVAX
+      - USDC.XLM
+      - USDT.DOTHUB
+      - USDT.SOL
+      - MANA
+      - USDC.ALGO
+      - MATIC.ETH
+      - NEAR
+      - UNI
+      - USDT.ARBITRUM
+      - USDT.AVAX
+      - OMG
+      - ARB.ARBITRUM
+      - COMP.ETH
+      - GRT.ETH
+      - USDC.POLYGON
+      - AVAX
+      - AAVE
+      - CELO
+      - PYUSD.SOL
+      - PAXG.ETH
+      - USDC.MONAD
+      - BAT
+      - COMP
+      - ETH.ARBITRUM
+      - ETH.BASE
+      - OP.OPTIMISM
+      - TRUMP.SOL
+      - ENJ.ETH
+      - SUI
+      - USDT.ETH
+      - USDT.OPTIMISM
+      - USDT.TRX
+      - USDT.XPL
+      - OMG.ETH
       - XRP
+      - HBAR
+      - USDC.APT
+      - USDC.ETH
+      - BNB
+      - ATOM
+      - BAT.ETH
+      - GRT
+      - LINK.ETH
+      - USDP.SOL
+      - ZK.ZKSYNC
+      - BONK.SOL
+      - KNC
+      - TIA
+      - ZRO.ETH
+      - ZRX.ETH
+      - PUMP.SOL
+      - USD
       - XTZ
-      - ZUSD.ETH
+      - CRV.ETH
+      - GALA.ETH
+      - TON
+      - USDT.POLYGON
+      - WBTC.ETH
+      - XPL
+      - BTC
+      - MON
+      - SHIB.ETH
+      - USDC.BSC
+      - WLD.WORLDCHAIN
+      - W.SOL
+      - LTC
+      - RLUSD.ETH
+      - WBTC
+      - LINK
+      - USDCX.CANTON
+      - ETH
+      - WIF.SOL
+      - APE.ETH
+      - EURC
+      - MKR.ETH
+      - RLUSD.XRP
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    LiquidityEnabledQuotedCurrency:
+      type: string
+      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      example: USD
+      enum:
+      - USD
+      - EUR
+    PostRewardsBody:
+      type: object
+      properties:
+        underlying:
+          $ref: '#/components/schemas/UnderlyingCurrency'
+        quoted_currency:
+          $ref: '#/components/schemas/QuotedCurrency'
+        quantity:
+          type: string
+          description: the desired amount of the `underlying` for the quote (either `quantity` or `total` must be provided)
+          example: '1'
+        total:
+          type: string
+          description: the desired amount of the `quoted_currency` for the quote (either `quantity` or `total` must be provided)
+          example: '11430.90'
+        participant_code:
+          type: string
+          description: the participant that is receiving the reward. This is the platform's customer.
+          example: CUST01
+        account_label:
+          type: string
+          description: the account label associated with the account
+          example: sub_account_test
+      required:
+      - underlying
+      - quoted_currency
+      - participant_code
+    DynamicFee:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
     PostRewardsResponse:
       type: object
       properties:
@@ -638,62 +864,56 @@ components:
               type: string
               description: Notional cost of the underlying delivered to the participant, expressed in the `quoted_currency` (i.e. `price * quantity`).
               example: '3.00'
-    DynamicFee:
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
-          type: string
-          example: sample
-        amount:
-          type: string
-          example: '1.95'
-    LiquidityEnabledQuotedCurrency:
+    UnderlyingCurrency:
       type: string
-      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
-      example: USD
+      description: the underlying asset
+      example: BTC
       enum:
-      - USD
-      - EUR
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    OBOParticipantEntity:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: The identifier of the participant making the request
-          example: 20XRLH
-        account_group:
-          type: string
-          description: The identifier of the the account group
-          example: WRD1K0
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.
@@ -703,228 +923,6 @@ components:
         error:
           type: string
           example: Not Found
-    LiquidityEnabledUnderlyingCurrency:
-      type: string
-      description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
-      example: BTC
-      enum:
-      - USDC.OPTIMISM
-      - USDC.SUI
-      - DOT
-      - FIL
-      - PYUSD.ETH
-      - TRX
-      - ZRX
-      - DAI.ETH
-      - USDC.WORLDCHAIN
-      - USDP
-      - USDT.BSC
-      - USDT.CELO
-      - PEPE.ETH
-      - SAND
-      - USDC.DOTHUB
-      - USDC.SEI
-      - USDC.SOL
-      - USDC.ZKSYNC
-      - ENA.ETH
-      - MANA.ETH
-      - PYTH.SOL
-      - SOL
-      - USDC.BASE
-      - USDC.CELO
-      - USDT
-      - ADA
-      - INJ.ETH
-      - MATIC.POLYGON
-      - PAXG
-      - USD
-      - AAVE.ETH
-      - ALGO
-      - EURC.XLM
-      - KNC.ETH
-      - PNUT.SOL
-      - SHIB
-      - BCH
-      - DOGE
-      - EGLD
-      - JTO.SOL
-      - UNI.ETH
-      - USDC
-      - USDC.ARBITRUM
-      - ONDO.ETH
-      - PENGU.SOL
-      - USD
-      - WLFI.ETH
-      - XLM
-      - APT
-      - CC
-      - ETH.OPTIMISM
-      - ETH.WORLDCHAIN
-      - LDO.ETH
-      - MORPHO.ETH
-      - SEI
-      - ETH.ZKSYNC
-      - USDC.AVAX
-      - USDC.XLM
-      - USDT.DOTHUB
-      - USDT.SOL
-      - MANA
-      - USDC.ALGO
-      - MATIC.ETH
-      - NEAR
-      - UNI
-      - USDT.ARBITRUM
-      - USDT.AVAX
-      - OMG
-      - ARB.ARBITRUM
-      - COMP.ETH
-      - GRT.ETH
-      - USDC.POLYGON
-      - AVAX
-      - AAVE
-      - CELO
-      - PYUSD.SOL
-      - PAXG.ETH
-      - USDC.MONAD
-      - BAT
-      - COMP
-      - ETH.ARBITRUM
-      - ETH.BASE
-      - OP.OPTIMISM
-      - TRUMP.SOL
-      - ENJ.ETH
-      - SUI
-      - USDT.ETH
-      - USDT.OPTIMISM
-      - USDT.TRX
-      - USDT.XPL
-      - OMG.ETH
-      - XRP
-      - HBAR
-      - USDC.APT
-      - USDC.ETH
-      - BNB
-      - ATOM
-      - BAT.ETH
-      - GRT
-      - LINK.ETH
-      - USDP.SOL
-      - ZK.ZKSYNC
-      - BONK.SOL
-      - KNC
-      - TIA
-      - ZRO.ETH
-      - ZRX.ETH
-      - PUMP.SOL
-      - USD
-      - XTZ
-      - CRV.ETH
-      - GALA.ETH
-      - TON
-      - USDT.POLYGON
-      - WBTC.ETH
-      - XPL
-      - BTC
-      - MON
-      - SHIB.ETH
-      - USDC.BSC
-      - WLD.WORLDCHAIN
-      - W.SOL
-      - LTC
-      - RLUSD.ETH
-      - WBTC
-      - LINK
-      - USDCX.CANTON
-      - ETH
-      - WIF.SOL
-      - APE.ETH
-      - EURC
-      - MKR.ETH
-      - RLUSD.XRP
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    PostRewardsBody:
-      type: object
-      properties:
-        underlying:
-          $ref: '#/components/schemas/UnderlyingCurrency'
-        quoted_currency:
-          $ref: '#/components/schemas/QuotedCurrency'
-        quantity:
-          type: string
-          description: the desired amount of the `underlying` for the quote (either `quantity` or `total` must be provided)
-          example: '1'
-        total:
-          type: string
-          description: the desired amount of the `quoted_currency` for the quote (either `quantity` or `total` must be provided)
-          example: '11430.90'
-        participant_code:
-          type: string
-          description: the participant that is receiving the reward. This is the platform's customer.
-          example: CUST01
-        account_label:
-          type: string
-          description: the account label associated with the account
-          example: sub_account_test
-      required:
-      - underlying
-      - quoted_currency
-      - participant_code
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-  parameters:
-    RequestId:
-      name: X-Request-Id
-      in: header
-      description: Optional client-supplied request ID used for tracing and idempotency. Must be a [UUID v4](https://www.uuidtools.com/uuid-versions-explained#version-4). When omitted, zerohash generates one and returns it in the response `X-Request-Id` header.
-      required: false
-      schema:
-        type: string
-        format: uuid
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey
