@@ -293,6 +293,13 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -301,138 +308,8 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   schemas:
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    TransferEntity:
-      type: object
-      properties:
-        id:
-          type: number
-          description: The transfer request ID.
-          example: 1152665
-        created_at:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the transfer request was created.
-          example: '2026-05-04T11:58:50.115Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the transfer request was last updated.
-          example: '2026-05-04T11:58:50.115Z'
-        status:
-          type: string
-          description: "The current status of the transfer request:\n - `pending`: platform submitted and awaiting approval via the customer portal.\n - `approved`: platform submitted and approved. Transfers created via this API are auto-set to `approved`.\n - `rejected`: transfer was declined by an administrator.\n - `settled`: transfer has been successfully completed.\n - `outstanding`: transfer has no funds available.\n - `canceled`: transfer was canceled.\n - `error_canceled`: transfer failed.\n\nNote: pre-funded transfers can only be `approved`, `settled`, or `rejected`."
-          example: approved
-          enum:
-          - pending
-          - approved
-          - canceled
-          - rejected
-          - settled
-          - outstanding
-          - error_canceled
-        from_participant_code:
-          type: string
-          description: The source participant for the transfer, e.g. `ABCDEF`.
-          example: ABCDEF
-        from_account_group:
-          type: string
-          nullable: true
-          description: The source account group for the transfer, e.g. `ABCDEF`. Null when the requesting participant is not authorized to see the source account group.
-          example: ABCDEF
-        from_account_label:
-          type: string
-          nullable: true
-          description: The source account label for the transfer, e.g. `general`. Null when the requesting participant is not authorized to see the source account label.
-          example: general
-        to_participant_code:
-          type: string
-          description: The destination participant for the transfer, e.g. `ABCDEF`.
-          example: DEMO01
-        to_account_group:
-          type: string
-          nullable: true
-          description: The destination account group for the transfer, e.g. `ABCDEF`. Null when the requesting participant is not authorized to see the destination account group.
-          example: ABCDEF
-        to_account_label:
-          type: string
-          nullable: true
-          description: The destination account label for the transfer, e.g. `general`. Null when the requesting participant is not authorized to see the destination account label.
-          example: general
-        asset:
-          type: string
-          description: The asset code for the transfer, e.g. `USD`.
-          example: USD
-        amount:
-          type: string
-          description: The amount or quantity transferred, e.g. `100`.
-          example: '100.00'
-        movement_id:
-          type: string
-          nullable: true
-          description: A unique ID for the ledger movement associated with the transfer. Null until the transfer reaches `settled`.
-          example: null
-        client_transfer_id:
-          type: string
-          description: A unique identifier for the transfer. Must be unique per platform, per 72 hour period.
-          example: e6afed46-301e-46ee-a339-e897e9855c3a
-        admin_transfer:
-          type: boolean
-          description: Indicates whether the transfer was created by an administrator. Transfers created via this API are always `false`.
-          example: false
-        parent_link_id:
-          type: string
-          nullable: true
-          description: Identifier linking this transfer to a parent operation (e.g. a prefunded transfer chain). Null when the transfer is not linked.
-          example: null
-        parent_link_id_source:
-          type: string
-          nullable: true
-          description: Source of the `parent_link_id`. Null when the transfer is not linked.
-          example: LINK_SOURCE_PREFUNDED_TRANSFER
-        prefunded:
-          type: boolean
-          description: Indicates whether this transfer was created as a pre-funded transfer that is included in net settlement calculations.
-          example: false
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    PostTransferResponse:
+    GetTransferById:
       type: object
       properties:
         message:
@@ -575,6 +452,116 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    TransferEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          description: The transfer request ID.
+          example: 1152665
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the transfer request was created.
+          example: '2026-05-04T11:58:50.115Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the transfer request was last updated.
+          example: '2026-05-04T11:58:50.115Z'
+        status:
+          type: string
+          description: "The current status of the transfer request:\n - `pending`: platform submitted and awaiting approval via the customer portal.\n - `approved`: platform submitted and approved. Transfers created via this API are auto-set to `approved`.\n - `rejected`: transfer was declined by an administrator.\n - `settled`: transfer has been successfully completed.\n - `outstanding`: transfer has no funds available.\n - `canceled`: transfer was canceled.\n - `error_canceled`: transfer failed.\n\nNote: pre-funded transfers can only be `approved`, `settled`, or `rejected`."
+          example: approved
+          enum:
+          - pending
+          - approved
+          - canceled
+          - rejected
+          - settled
+          - outstanding
+          - error_canceled
+        from_participant_code:
+          type: string
+          description: The source participant for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        from_account_group:
+          type: string
+          nullable: true
+          description: The source account group for the transfer, e.g. `ABCDEF`. Null when the requesting participant is not authorized to see the source account group.
+          example: ABCDEF
+        from_account_label:
+          type: string
+          nullable: true
+          description: The source account label for the transfer, e.g. `general`. Null when the requesting participant is not authorized to see the source account label.
+          example: general
+        to_participant_code:
+          type: string
+          description: The destination participant for the transfer, e.g. `ABCDEF`.
+          example: DEMO01
+        to_account_group:
+          type: string
+          nullable: true
+          description: The destination account group for the transfer, e.g. `ABCDEF`. Null when the requesting participant is not authorized to see the destination account group.
+          example: ABCDEF
+        to_account_label:
+          type: string
+          nullable: true
+          description: The destination account label for the transfer, e.g. `general`. Null when the requesting participant is not authorized to see the destination account label.
+          example: general
+        asset:
+          type: string
+          description: The asset code for the transfer, e.g. `USD`.
+          example: USD
+        amount:
+          type: string
+          description: The amount or quantity transferred, e.g. `100`.
+          example: '100.00'
+        movement_id:
+          type: string
+          nullable: true
+          description: A unique ID for the ledger movement associated with the transfer. Null until the transfer reaches `settled`.
+          example: null
+        client_transfer_id:
+          type: string
+          description: A unique identifier for the transfer. Must be unique per platform, per 72 hour period.
+          example: e6afed46-301e-46ee-a339-e897e9855c3a
+        admin_transfer:
+          type: boolean
+          description: Indicates whether the transfer was created by an administrator. Transfers created via this API are always `false`.
+          example: false
+        parent_link_id:
+          type: string
+          nullable: true
+          description: Identifier linking this transfer to a parent operation (e.g. a prefunded transfer chain). Null when the transfer is not linked.
+          example: null
+        parent_link_id_source:
+          type: string
+          nullable: true
+          description: Source of the `parent_link_id`. Null when the transfer is not linked.
+          example: LINK_SOURCE_PREFUNDED_TRANSFER
+        prefunded:
+          type: boolean
+          description: Indicates whether this transfer was created as a pre-funded transfer that is included in net settlement calculations.
+          example: false
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -588,6 +575,52 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
+    PostTransferResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TransferEntity'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetTransfersResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 15
+        total_pages:
+          type: number
+          example: 1
+        count:
+          type: number
+          example: 1
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
     PostTransferBody:
       type: object
       additionalProperties: false
@@ -641,39 +674,6 @@ components:
           type: boolean
           description: Set to `true` if the transfer amount should be included in the net settlement calculation. Requires `pt_1.is_prefunded_transfer_enabled` to be enabled for the calling participant.
           example: false
-    GetTransfersResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransferEntity'
-        page:
-          type: number
-          example: 1
-        page_size:
-          type: number
-          example: 15
-        total_pages:
-          type: number
-          example: 1
-        count:
-          type: number
-          example: 1
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    GetTransferById:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/TransferEntity'
   securitySchemes:
     apiKey:
       type: apiKey

@@ -79,6 +79,13 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -87,45 +94,7 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   schemas:
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -264,36 +233,6 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
-    GetIndexResponse:
-      type: object
-      properties:
-        timestamp:
-          type: number
-          description: Unix timestamp in milliseconds indicating when the index was calculated.
-          example: 1564686909724
-        index:
-          type: string
-          description: The specific index, which is the unique combination of `underlying` and `quoted_currency`
-          example: BTC/USD
-        underlying:
-          $ref: '#/components/schemas/UnderlyingCurrency'
-        quoted_currency:
-          $ref: '#/components/schemas/QuotedCurrency'
-        value:
-          type: number
-          description: The index price for the underlying asset, as quoted in the quoted_currency
-          example: 1234.5678901234
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
     UnderlyingCurrency:
       type: string
       description: the underlying asset
@@ -344,6 +283,67 @@ components:
       - XRP
       - XTZ
       - ZUSD.ETH
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    GetIndexResponse:
+      type: object
+      properties:
+        timestamp:
+          type: number
+          description: Unix timestamp in milliseconds indicating when the index was calculated.
+          example: 1564686909724
+        index:
+          type: string
+          description: The specific index, which is the unique combination of `underlying` and `quoted_currency`
+          example: BTC/USD
+        underlying:
+          $ref: '#/components/schemas/UnderlyingCurrency'
+        quoted_currency:
+          $ref: '#/components/schemas/QuotedCurrency'
+        value:
+          type: number
+          description: The index price for the underlying asset, as quoted in the quoted_currency
+          example: 1234.5678901234
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.

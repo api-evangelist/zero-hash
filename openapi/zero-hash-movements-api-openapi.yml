@@ -130,14 +130,13 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
+    Signature:
+      name: X-SCX-SIGNED
       in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
       required: true
       schema:
         type: string
-        example: '1678901234'
     PageSizeQuery:
       name: page_size
       in: query
@@ -148,6 +147,14 @@ components:
         minimum: 1
         maximum: 100
         example: 15
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
     PageQuery:
       name: page
       in: query
@@ -157,14 +164,20 @@ components:
         type: number
         minimum: 1
         example: 1
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   schemas:
+    GetMovementsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovementsEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -174,41 +187,6 @@ components:
         error:
           type: string
           example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
     MovementsEntity:
       type: object
       properties:
@@ -342,6 +320,41 @@ components:
           - null
           description: Method through which the movement was initiated (`rest_api`, `sdk`, or `secondary`). `null` when the movement was not initiated by a client request (e.g. on-chain deposit credit).
           example: rest_api
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.
@@ -351,19 +364,6 @@ components:
         error:
           type: string
           example: Not Found
-    GetMovementsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/MovementsEntity'
-        page:
-          type: number
-          example: 1
-        total_pages:
-          type: number
-          example: 1
   securitySchemes:
     apiKey:
       type: apiKey

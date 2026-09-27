@@ -139,6 +139,22 @@ paths:
       operationId: postRevokeAuthToken
       x-operation-id-source: derived
 components:
+  parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
   schemas:
     ClientAuthTokenResponse:
       oneOf:
@@ -188,28 +204,6 @@ components:
                 example: pay_00001
             required:
             - token
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
     ClientAuthTokenRequestBody:
       oneOf:
       - $ref: '#/components/schemas/ClientAuthTokenFull'
@@ -649,6 +643,15 @@ components:
         required:
         - participant_code
         - permissions
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
     PayinsTransactionNotAuthorizedError:
       type: object
       required:
@@ -658,15 +661,15 @@ components:
           type: string
           example: Transaction not authorized
           description: Generic authorization denial with no remediation. Returned with HTTP 403 — `{"error":"Transaction not authorized"}` when the authorizer rejection has no specific mapping or reports no missing fields, or `{"error":"Transaction not permitted"}` when the participant is not permitted to transact (e.g. geographic restriction) — and with HTTP 422 (`{"error":"Participant is not authorized to transact"}`) when the participant/merchant context precludes authorization.
-    Code500:
+    PayinsAuthorizationLimitError:
       type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
       required:
       - error
       properties:
         error:
           type: string
-          example: Internal Server Error
+          example: Shopper's Daily Spend Limit for this type of transaction have been hit.
+          description: Returned with a 403 status when the shopper has exceeded their daily or lifetime spend aggregate at the current authorization level. Lifting the limit requires manual review.
     RevokeClientAuthTokenRequestBody:
       type: object
       description: Schema for revoking a client access token.
@@ -677,6 +680,74 @@ components:
           type: string
           description: The client access token to revoke.
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PayinsAuthorizationManualApprovalError:
+      type: object
+      required:
+      - error
+      - transaction_id
+      properties:
+        error:
+          type: string
+          example: Manual approval required for this transaction
+          description: 'Human-readable error message. Possible values: "Manual approval required for this transaction" (no approval on file yet), "Approval pending, shopper must wait" (an approval request is already in review), "Manual approval for this transaction was rejected" (the approval was rejected by compliance or the platform), or "Manual approval for this transaction has already been finalized" (the approval was already consumed).'
+        transaction_id:
+          type: string
+          example: txn_01HZF7QWXJ8XK3VYNS6TKDM4G2
+          description: Identifier of the manual approval review. Persist this and re-use it when checking approval status or cancelling the request.
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    PayinsAuthorizationKycError:
+      type: object
+      required:
+      - error
+      - missing_requirements
+      properties:
+        error:
+          type: string
+          example: Shopper KYC requirements for this transaction are not met
+          description: Human-readable error message indicating the shopper is missing required KYC data for the requested transaction.
+        missing_requirements:
+          type: array
+          items:
+            type: string
+          example:
+          - first_name
+          - last_name
+          - date_of_birth
+          description: List of participant fields that must be collected or updated for the shopper to pass authorization at the requested amount and merchant MCC tier.
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
     ClientAuthTokenFull:
       type: object
       title: Full Client Auth Token accepted fields
@@ -885,61 +956,6 @@ components:
           account_label: funding_01
           deposit_amount: '250.00'
           denominated_currency: USD
-    PayinsAuthorizationManualApprovalError:
-      type: object
-      required:
-      - error
-      - transaction_id
-      properties:
-        error:
-          type: string
-          example: Manual approval required for this transaction
-          description: 'Human-readable error message. Possible values: "Manual approval required for this transaction" (no approval on file yet), "Approval pending, shopper must wait" (an approval request is already in review), "Manual approval for this transaction was rejected" (the approval was rejected by compliance or the platform), or "Manual approval for this transaction has already been finalized" (the approval was already consumed).'
-        transaction_id:
-          type: string
-          example: txn_01HZF7QWXJ8XK3VYNS6TKDM4G2
-          description: Identifier of the manual approval review. Persist this and re-use it when checking approval status or cancelling the request.
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    PayinsAuthorizationKycError:
-      type: object
-      required:
-      - error
-      - missing_requirements
-      properties:
-        error:
-          type: string
-          example: Shopper KYC requirements for this transaction are not met
-          description: Human-readable error message indicating the shopper is missing required KYC data for the requested transaction.
-        missing_requirements:
-          type: array
-          items:
-            type: string
-          example:
-          - first_name
-          - last_name
-          - date_of_birth
-          description: List of participant fields that must be collected or updated for the shopper to pass authorization at the requested amount and merchant MCC tier.
-    PayinsAuthorizationLimitError:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Shopper's Daily Spend Limit for this type of transaction have been hit.
-          description: Returned with a 403 status when the shopper has exceeded their daily or lifetime spend aggregate at the current authorization level. Lifting the limit requires manual review.
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.
@@ -949,22 +965,6 @@ components:
         error:
           type: string
           example: Not Found
-  parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey

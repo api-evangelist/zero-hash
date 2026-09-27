@@ -171,6 +171,13 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -179,127 +186,7 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   schemas:
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    StakeableAssetInfoEntity:
-      type: object
-      properties:
-        symbol:
-          type: string
-          description: Asset symbol
-          example: ETH
-        apy_net:
-          type: string
-          description: Annual percentage yield net of fees
-          example: '3.47'
-        activation_period_days:
-          type: integer
-          description: Number of days until stake becomes active
-          example: 2
-        payout_frequency:
-          type: string
-          description: Frequency of reward payouts
-          example: daily
-        unstaking_period_days:
-          type: integer
-          description: Number of days for unstaking cooldown period
-          example: 8
-    GetAssetsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetsResponseEntity'
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    GetAssetStakingInfoResponse:
-      type: object
-      properties:
-        request_id:
-          type: string
-          description: Request identifier
-          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
-        message:
-          type: object
-          properties:
-            stakeable_assets:
-              type: array
-              items:
-                $ref: '#/components/schemas/StakeableAssetInfoEntity'
-              description: List of stakeable assets with their information
-            last_updated:
-              type: string
-              format: date-time
-              description: Timestamp when staking info was last updated
-              example: '2025-08-24T15:30:00Z'
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    Network:
-      type: object
-      properties:
-        id:
-          type: number
-          description: Network id
-          example: 1
-        label:
-          type: string
-          description: Network label
-          example: Solana
-        chain_code:
-          type: string
-          description: Network chain code
-          example: solana
-        short_code:
-          type: string
-          description: Network short code
-          example: SOL
     AssetsResponseEntity:
       type: object
       properties:
@@ -396,6 +283,119 @@ components:
           type: boolean
           description: Shows if the asset is allowed to be used in the Staking API
           example: false
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    GetAssetsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetsResponseEntity'
+    StakeableAssetInfoEntity:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: Asset symbol
+          example: ETH
+        apy_net:
+          type: string
+          description: Annual percentage yield net of fees
+          example: '3.47'
+        activation_period_days:
+          type: integer
+          description: Number of days until stake becomes active
+          example: 2
+        payout_frequency:
+          type: string
+          description: Frequency of reward payouts
+          example: daily
+        unstaking_period_days:
+          type: integer
+          description: Number of days for unstaking cooldown period
+          example: 8
+    Network:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Network id
+          example: 1
+        label:
+          type: string
+          description: Network label
+          example: Solana
+        chain_code:
+          type: string
+          description: Network chain code
+          example: solana
+        short_code:
+          type: string
+          description: Network short code
+          example: SOL
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    GetAssetStakingInfoResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Request identifier
+          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
+        message:
+          type: object
+          properties:
+            stakeable_assets:
+              type: array
+              items:
+                $ref: '#/components/schemas/StakeableAssetInfoEntity'
+              description: List of stakeable assets with their information
+            last_updated:
+              type: string
+              format: date-time
+              description: Timestamp when staking info was last updated
+              example: '2025-08-24T15:30:00Z'
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.

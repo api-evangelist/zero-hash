@@ -276,225 +276,23 @@ paths:
       operationId: postConvertWithdrawExecute
       x-operation-id-source: derived
 components:
+  parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
   schemas:
-    PostCWExecuteQuoteResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            request_id:
-              type: string
-              description: The identifier of the RFQ
-              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
-            quote:
-              $ref: '#/components/schemas/CWQuoteEntityExecute'
-            trade_id:
-              type: string
-              description: 'The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades` request. Note: the `quote_id` will be saved as the `client_trade_id`.'
-              example: ba97133e-ab15-4c86-86c1-86671b8420bc
-            trade_ids_list:
-              type: array
-              description: All `trade_id`s booked as part of this execution. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
-              items:
-                type: string
-                format: uuid
-              example:
-              - ba97133e-ab15-4c86-86c1-86671b8420bc
-              - ce819fe8-b1d7-43bb-961c-e09ede0988d3
-            status:
-              type: string
-              description: The status of the trade.
-              example: Completed
-              enum:
-              - Completed
-              - Rejected
-            withdrawal_request_id:
-              type: string
-              description: Identifier of the withdrawal that was automatically initiated as part of this execution. Use with `GET /withdrawals/requests/{id}` to poll the withdrawal status.
-              example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
-            ach_details:
-              type: object
-              nullable: true
-              description: Echoed ACH execution details. Only present when the execution used `funding_details` (ACH).
-              properties:
-                inbound_reference_id:
-                  type: string
-                external_account_id:
-                  type: string
-                bank_fee:
-                  type: string
-                payment_amount:
-                  type: string
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    CWQuoteEntityExecute:
-      type: object
-      properties:
-        request_id:
-          type: string
-          description: The identifier of the RFQ
-          example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-        participant_code:
-          type: string
-          description: The identifier of the participant making the quote request
-          example: CUST01
-        quoted_currency:
-          $ref: '#/components/schemas/QuotedCurrency'
-        side:
-          type: string
-          description: The participant side of the quote
-          example: buy
-          enum:
-          - buy
-          - sell
-        quantity:
-          type: string
-          description: The amount of the underlying currency
-          example: '1'
-        price:
-          type: string
-          description: The cost per unit of underlying currency
-          example: '11430.90'
-        quote_id:
-          type: string
-          description: 'The identifier for the quote
-
-            Note: this is required to execute the quote'
-          example: 5cd07738b861c31e3bd61467BTC1Buy1568311644602
-        expire_ts:
-          type: number
-          description: Timestamp when the quote will expire
-          example: 1568311649602
-        account_group:
-          type: string
-          description: The group that the account is a part of
-          example: GRP001
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
-        obo_participant:
-          $ref: '#/components/schemas/OBOParticipantEntity'
-        network_fee_notional:
-          type: string
-          description: fee notional in the currency quoted on the RFQ
-          example: '1'
-        network_fee_quantity:
-          type: string
-          description: fee quantity in the underlying asset
-          example: '1'
-        withdrawal_fee_type:
-          type: integer
-          description: Indicates the withdrawal fee schedule applied to this quote (0 = flat/default, non-zero values indicate a tiered schedule).
-          example: 0
-        withdrawal_fee_tiers_list:
-          type: array
-          description: Withdrawal fee tier schedule applied to this quote. Empty when `withdrawal_fee_type` is 0 (no tiered schedule).
-          items:
-            type: object
-          example: []
-        total_notional:
-          type: string
-          description: Total notional is the full cost inclusive of fees or the total proceeds after fees
-          example: '2.00'
-        underlying:
-          $ref: '#/components/schemas/UnderlyingCurrency'
-        asset_cost_notional:
-          type: string
-          description: asset_cost_notional is a field that shows the notional cost of the asset
-          maxLength: 50
-          example: '2.00'
-        withdrawal_address:
-          type: string
-          description: The whitelisted withdrawal address to withdraw funds to
-          example: 2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG
-        payment_processor:
-          type: object
-          properties:
-            name:
-              type: string
-              description: The name of the payment processor
-              example: checkout.com
-            id:
-              type: string
-              description: The unique identifier of the payment according to the PSP
-              example: 593dd810-f051-40a9-9f26-d45280efe8f3
-        spread_notional:
-          type: string
-          description: The notional spread applied to the quote
-          example: '0.12'
-        spread_bps:
-          type: string
-          description: The basis points spread to apply to the quote
-          example: '50'
-        commission_notional:
-          type: string
-          description: The notional commission applied to the quote
-          maxLength: 50
-          example: '5.00'
-        commission_bps:
-          type: string
-          description: The commission in basis points applied to the quote
-          maxLength: 50
-          example: '25'
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    OBOParticipantEntity:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: The identifier of the participant making the request
-          example: 20XRLH
-        account_group:
-          type: string
-          description: The identifier of the the account group
-          example: WRD1K0
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
     PostCWRequestForQuoteBody:
       oneOf:
       - title: Convert & Withdraw - Quantity
@@ -707,36 +505,48 @@ components:
         not:
           required:
           - quantity
-    DynamicFeeRequest:
+    PostCWExecuteQuoteBody:
       type: object
-      required:
-      - name
-      - amount
       properties:
-        name:
+        quote_id:
           type: string
-          example: sample
-        amount:
+          description: the identifier of the quote to execute, which is provided in response to a `POST /convert_withdraw/rfq` or `GET /convert_withdraw/rfq` request
+          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+        withdrawal_request_id:
           type: string
-          example: '1.95'
-        type:
-          type: string
-          enum:
-          - notional
-          - bps
-          description: Fee amount type. Default is notional
-          example: notional
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
+          description: Optional withdrawal request ID to associate with the execution. Used by flows that pre-create a withdrawal record and then execute a quote against it.
+          example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
+        funding_details:
+          type: object
+          description: ACH funding details, required only for ACH-funded executions. Supply either an `inbound_reference_id` (to settle against an already-received inbound) or the `external_account_id`/`description`/`bank_fee` trio (to initiate a new ACH pull).
+          oneOf:
+          - type: object
+            additionalProperties: false
+            required:
+            - inbound_reference_id
+            properties:
+              inbound_reference_id:
+                type: string
+                description: Reference ID of an already-received inbound ACH payment to settle this trade against.
+          - type: object
+            additionalProperties: false
+            required:
+            - external_account_id
+            - description
+            - bank_fee
+            properties:
+              external_account_id:
+                type: string
+                description: Registered external bank account to pull funds from.
+              description:
+                type: string
+                maxLength: 10
+                description: Short free-form description written to the ACH statement (max 10 characters).
+              bank_fee:
+                type: string
+                description: Bank fee notional (decimal string) applied to this ACH pull.
+      required:
+      - quote_id
     UnderlyingCurrency:
       type: string
       description: the underlying asset
@@ -787,54 +597,260 @@ components:
       - XRP
       - XTZ
       - ZUSD.ETH
-    PostCWExecuteQuoteBody:
+    PostCWExecuteQuoteResponse:
       type: object
       properties:
-        quote_id:
-          type: string
-          description: the identifier of the quote to execute, which is provided in response to a `POST /convert_withdraw/rfq` or `GET /convert_withdraw/rfq` request
-          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-        withdrawal_request_id:
-          type: string
-          description: Optional withdrawal request ID to associate with the execution. Used by flows that pre-create a withdrawal record and then execute a quote against it.
-          example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
-        funding_details:
+        message:
           type: object
-          description: ACH funding details, required only for ACH-funded executions. Supply either an `inbound_reference_id` (to settle against an already-received inbound) or the `external_account_id`/`description`/`bank_fee` trio (to initiate a new ACH pull).
-          oneOf:
-          - type: object
-            additionalProperties: false
-            required:
-            - inbound_reference_id
-            properties:
-              inbound_reference_id:
+          properties:
+            request_id:
+              type: string
+              description: The identifier of the RFQ
+              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+            quote:
+              $ref: '#/components/schemas/CWQuoteEntityExecute'
+            trade_id:
+              type: string
+              description: 'The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades` request. Note: the `quote_id` will be saved as the `client_trade_id`.'
+              example: ba97133e-ab15-4c86-86c1-86671b8420bc
+            trade_ids_list:
+              type: array
+              description: All `trade_id`s booked as part of this execution. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
+              items:
                 type: string
-                description: Reference ID of an already-received inbound ACH payment to settle this trade against.
-          - type: object
-            additionalProperties: false
-            required:
-            - external_account_id
-            - description
-            - bank_fee
-            properties:
-              external_account_id:
-                type: string
-                description: Registered external bank account to pull funds from.
-              description:
-                type: string
-                maxLength: 10
-                description: Short free-form description written to the ACH statement (max 10 characters).
-              bank_fee:
-                type: string
-                description: Bank fee notional (decimal string) applied to this ACH pull.
+                format: uuid
+              example:
+              - ba97133e-ab15-4c86-86c1-86671b8420bc
+              - ce819fe8-b1d7-43bb-961c-e09ede0988d3
+            status:
+              type: string
+              description: The status of the trade.
+              example: Completed
+              enum:
+              - Completed
+              - Rejected
+            withdrawal_request_id:
+              type: string
+              description: Identifier of the withdrawal that was automatically initiated as part of this execution. Use with `GET /withdrawals/requests/{id}` to poll the withdrawal status.
+              example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
+            ach_details:
+              type: object
+              nullable: true
+              description: Echoed ACH execution details. Only present when the execution used `funding_details` (ACH).
+              properties:
+                inbound_reference_id:
+                  type: string
+                external_account_id:
+                  type: string
+                bank_fee:
+                  type: string
+                payment_amount:
+                  type: string
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
       required:
-      - quote_id
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    OBOParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
+          type: string
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
     GetRequestForCWQuoteResponse:
       type: object
       properties:
         message:
           $ref: '#/components/schemas/CWQuoteEntity'
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     CWQuoteEntity:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: The identifier of the RFQ
+          example: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+        participant_code:
+          type: string
+          description: The identifier of the participant making the quote request
+          example: CUST01
+        quoted_currency:
+          $ref: '#/components/schemas/QuotedCurrency'
+        side:
+          type: string
+          description: The participant side of the quote
+          example: buy
+          enum:
+          - buy
+          - sell
+        quantity:
+          type: string
+          description: The amount of the underlying currency
+          example: '1'
+        price:
+          type: string
+          description: The cost per unit of underlying currency
+          example: '11430.90'
+        quote_id:
+          type: string
+          description: 'The identifier for the quote
+
+            Note: this is required to execute the quote'
+          example: 5cd07738b861c31e3bd61467BTC1Buy1568311644602
+        expire_ts:
+          type: number
+          description: Timestamp when the quote will expire
+          example: 1568311649602
+        account_group:
+          type: string
+          description: The group that the account is a part of
+          example: GRP001
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+        obo_participant:
+          $ref: '#/components/schemas/OBOParticipantEntity'
+        network_fee_notional:
+          type: string
+          description: fee notional in the currency quoted on the RFQ
+          example: '1'
+        network_fee_quantity:
+          type: string
+          description: fee quantity in the underlying asset
+          example: '1'
+        withdrawal_fee_type:
+          type: integer
+          description: Indicates the withdrawal fee schedule applied to this quote (0 = flat/default, non-zero values indicate a tiered schedule).
+          example: 0
+        withdrawal_fee_tiers_list:
+          type: array
+          description: Withdrawal fee tier schedule applied to this quote. Empty when `withdrawal_fee_type` is 0 (no tiered schedule).
+          items:
+            type: object
+          example: []
+        total_notional:
+          type: string
+          description: Total notional is the full cost inclusive of fees or the total proceeds after fees
+          example: '2.00'
+        underlying:
+          $ref: '#/components/schemas/UnderlyingCurrency'
+        asset_cost_notional:
+          type: string
+          description: asset_cost_notional is a field that shows the notional cost of the asset
+          maxLength: 50
+          example: '2.00'
+        withdrawal_address:
+          type: string
+          description: The whitelisted withdrawal address to withdraw funds to
+          example: 2NCgV7BXXafJZ86utcYFs5m3tCpkcpLafeG
+        payment_processor:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the payment processor
+              example: checkout.com
+            id:
+              type: string
+              description: The unique identifier of the payment according to the PSP
+              example: 593dd810-f051-40a9-9f26-d45280efe8f3
+        spread_notional:
+          type: string
+          description: The notional spread applied to the quote
+          example: '0.12'
+        spread_bps:
+          type: string
+          description: The basis points spread to apply to the quote
+          example: '50'
+        commission_notional:
+          type: string
+          description: The notional commission applied to the quote
+          maxLength: 50
+          example: '5.00'
+        commission_bps:
+          type: string
+          description: The commission in basis points applied to the quote
+          maxLength: 50
+          example: '25'
+    DynamicFeeRequest:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+        type:
+          type: string
+          enum:
+          - notional
+          - bps
+          description: Fee amount type. Default is notional
+          example: notional
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    CWQuoteEntityExecute:
       type: object
       properties:
         request_id:
@@ -953,22 +969,6 @@ components:
         error:
           type: string
           example: Not Found
-  parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey

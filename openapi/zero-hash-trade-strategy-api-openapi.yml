@@ -995,66 +995,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    UpdateTradeStrategyBody:
-      type: object
-      properties:
-        metadata:
-          type: object
-          additionalProperties: true
-          description: New value for the Strategy metadata. Replaces the previous value verbatim (no merge). Pass `{}` to clear.
-      required:
-      - metadata
-    TradeStrategyResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-              description: Unique identifier (UUID v4) for the Strategy.
-            request_id:
-              type: string
-              format: uuid
-              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-              description: Platform's idempotency key for the Strategy (the `X-REQUEST-ID` sent at creation).
-            quoted_currency:
-              type: string
-              example: USD
-              description: Currency the Strategy denominates participant amounts in (e.g., "USD").
-            metadata:
-              type: object
-              additionalProperties: true
-              nullable: true
-              example:
-                owner_email: ops@example.com
-                internal_id: STR-2026-Q2-001
-              description: Arbitrary JSON object the platform attached at creation; persisted verbatim and echoed back on reads. zerohash does not interpret the contents.
-            created_at:
-              type: string
-              format: date-time
-              description: When the Strategy was created.
-              example: '2026-04-17T10:00:00Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: When the Strategy was last updated.
-              example: '2026-04-17T10:00:00Z'
     ListTradeStrategyExecutionsResponse:
       type: object
       properties:
@@ -1175,334 +1115,6 @@ components:
                     example: '2026-04-17T10:00:00Z'
             next_page_token:
               type: string
-    UpdateTradeStrategyTraderBody:
-      type: object
-      properties:
-        auto_rebalance:
-          type: boolean
-          description: New value for the Trader's `auto_rebalance` flag.
-      required:
-      - auto_rebalance
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    TradeStrategyOperationResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-              description: Unique identifier (UUID v4) for the Operation.
-            strategy_id:
-              type: string
-              format: uuid
-              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-              description: Strategy the Operation runs under.
-            request_id:
-              type: string
-              format: uuid
-              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-              description: Platform's idempotency key for this Operation (the `X-REQUEST-ID` sent at submission).
-            type:
-              type: string
-              enum:
-              - enrollment
-              - top_up
-              - partial_sell
-              - rebalance
-              - liquidation
-              example: enrollment
-              description: Operation kind.
-            status:
-              type: string
-              enum:
-              - validating
-              - pricing
-              - settling
-              - settled
-              - skipped
-              - failed
-              example: validating
-              description: Lifecycle status. `validating` / `pricing` / `settling` are non-terminal; `settled` / `skipped` / `failed` are terminal.
-            status_reason:
-              type: string
-              example: ''
-              description: 'Set on terminal statuses to explain the outcome. Possible values: `no_executions`, `all_skipped`, `all_rejected`, `partial_success`. Empty on non-terminal and on clean `settled`.'
-            allocations:
-              type: array
-              items:
-                type: object
-                properties:
-                  underlying_currency:
-                    type: string
-                    example: BTC
-                    description: Underlying asset code (e.g., BTC, ETH).
-                  weight:
-                    type: string
-                    description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
-                    example: '0.50'
-                required:
-                - underlying_currency
-                - weight
-              description: Target weights for this Operation. Present for enrollment / top_up / partial_sell / rebalance; empty for liquidation.
-            created_at:
-              type: string
-              format: date-time
-              description: When the Operation was created.
-              example: '2026-04-17T10:00:00Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: When the Operation was last updated.
-              example: '2026-04-17T10:00:00Z'
-    CreateTradeStrategyRebalanceBody:
-      type: object
-      properties:
-        allocations:
-          type: array
-          items:
-            type: object
-            properties:
-              underlying_currency:
-                type: string
-                example: BTC
-                description: Underlying asset code (e.g., BTC, ETH).
-              weight:
-                type: string
-                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
-                example: '0.50'
-            required:
-            - underlying_currency
-            - weight
-          description: New target weights. A weight of `"0"` means "fully exit this asset"; assets the Trader currently holds that are missing from this list are also fully exited.
-        participants:
-          type: array
-          items:
-            type: object
-            properties:
-              participant_code:
-                type: string
-                example: CUST01
-            required:
-            - participant_code
-          description: 'Optional. If present, the Rebalance targets exactly these Traders (ignoring `auto_rebalance`). If omitted, the Rebalance targets every Trader with `auto_rebalance: true`.'
-      required:
-      - allocations
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    CreateTradeStrategyPartialSellBody:
-      type: object
-      properties:
-        allocations:
-          type: array
-          items:
-            type: object
-            properties:
-              underlying_currency:
-                type: string
-                example: BTC
-                description: Underlying asset code (e.g., BTC, ETH).
-              weight:
-                type: string
-                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
-                example: '0.50'
-            required:
-            - underlying_currency
-            - weight
-          description: Target weights for the Operation. Weights must sum to exactly 1.0; underlying_currency must be unique within the list.
-        participants:
-          type: array
-          items:
-            type: object
-            properties:
-              participant_code:
-                type: string
-                example: CUST01
-              amount:
-                type: string
-                description: Decimal value serialized as a string to preserve precision.
-                example: '3000.00'
-            required:
-            - participant_code
-            - amount
-      required:
-      - allocations
-      - participants
-    CreateTradeStrategyEnrollmentBody:
-      type: object
-      properties:
-        allocations:
-          type: array
-          items:
-            type: object
-            properties:
-              underlying_currency:
-                type: string
-                example: BTC
-                description: Underlying asset code (e.g., BTC, ETH).
-              weight:
-                type: string
-                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
-                example: '0.50'
-            required:
-            - underlying_currency
-            - weight
-          description: Target weights for the Operation. Weights must sum to exactly 1.0; underlying_currency must be unique within the list.
-        participants:
-          type: array
-          items:
-            type: object
-            properties:
-              participant_code:
-                type: string
-                example: CUST01
-              amount:
-                type: string
-                description: Decimal value serialized as a string to preserve precision.
-                example: '10000.00'
-              auto_rebalance:
-                type: boolean
-            required:
-            - participant_code
-            - amount
-            - auto_rebalance
-      required:
-      - allocations
-      - participants
-    CreateTradeStrategyBody:
-      type: object
-      properties:
-        quoted_currency:
-          type: string
-          example: USD
-          description: Currency the Strategy denominates amounts in.
-        metadata:
-          type: object
-          additionalProperties: true
-          description: Arbitrary JSON object for the platform to attach. Echoed back on reads; zerohash does not interpret the contents.
-      required:
-      - quoted_currency
-    ListTradeStrategiesResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            strategies:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-                    description: Unique identifier (UUID v4) for the Strategy.
-                  request_id:
-                    type: string
-                    format: uuid
-                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-                    description: Platform's idempotency key for the Strategy (the `X-REQUEST-ID` sent at creation).
-                  quoted_currency:
-                    type: string
-                    example: USD
-                    description: Currency the Strategy denominates participant amounts in (e.g., "USD").
-                  metadata:
-                    type: object
-                    additionalProperties: true
-                    nullable: true
-                    example:
-                      owner_email: ops@example.com
-                      internal_id: STR-2026-Q2-001
-                    description: Arbitrary JSON object the platform attached at creation; persisted verbatim and echoed back on reads. zerohash does not interpret the contents.
-                  created_at:
-                    type: string
-                    format: date-time
-                    description: When the Strategy was created.
-                    example: '2026-04-17T10:00:00Z'
-                  updated_at:
-                    type: string
-                    format: date-time
-                    description: When the Strategy was last updated.
-                    example: '2026-04-17T10:00:00Z'
-            next_page_token:
-              type: string
-              description: Opaque cursor for the next page. Empty when iteration is exhausted.
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    TradeStrategyTraderResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-              description: Unique identifier (UUID v4) for the Trader.
-            strategy_id:
-              type: string
-              format: uuid
-              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-              description: Strategy the Trader belongs to.
-            participant_code:
-              type: string
-              example: CUST01
-              description: Platform's identifier for the end customer (≤ 6 chars).
-            account_label:
-              type: string
-              description: Sub-account label used when querying balances upstream.
-            auto_rebalance:
-              type: boolean
-              description: If true, the Trader is included in default Rebalance targeting (when CreateRebalance is called without an explicit participants list).
-            created_at:
-              type: string
-              format: date-time
-              description: When the Trader was created.
-              example: '2026-04-17T10:00:00Z'
-            updated_at:
-              type: string
-              format: date-time
-              description: When the Trader was last updated.
-              example: '2026-04-17T10:00:00Z'
     CreateTradeStrategyTopUpBody:
       type: object
       properties:
@@ -1541,102 +1153,6 @@ components:
       required:
       - allocations
       - participants
-    CreateTradeStrategyLiquidationBody:
-      type: object
-      properties:
-        participants:
-          type: array
-          items:
-            type: object
-            properties:
-              participant_code:
-                type: string
-                example: CUST01
-            required:
-            - participant_code
-          description: Participants to fully exit. No amount — zerohash reads each participant's current balance and sells whatever they hold.
-      required:
-      - participants
-    ListTradeStrategyOperationsResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            operations:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-                    description: Unique identifier (UUID v4) for the Operation.
-                  strategy_id:
-                    type: string
-                    format: uuid
-                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-                    description: Strategy the Operation runs under.
-                  request_id:
-                    type: string
-                    format: uuid
-                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
-                    description: Platform's idempotency key for this Operation (the `X-REQUEST-ID` sent at submission).
-                  type:
-                    type: string
-                    enum:
-                    - enrollment
-                    - top_up
-                    - partial_sell
-                    - rebalance
-                    - liquidation
-                    example: enrollment
-                    description: Operation kind.
-                  status:
-                    type: string
-                    enum:
-                    - validating
-                    - pricing
-                    - settling
-                    - settled
-                    - skipped
-                    - failed
-                    example: validating
-                    description: Lifecycle status. `validating` / `pricing` / `settling` are non-terminal; `settled` / `skipped` / `failed` are terminal.
-                  status_reason:
-                    type: string
-                    example: ''
-                    description: 'Set on terminal statuses to explain the outcome. Possible values: `no_executions`, `all_skipped`, `all_rejected`, `partial_success`. Empty on non-terminal and on clean `settled`.'
-                  allocations:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        underlying_currency:
-                          type: string
-                          example: BTC
-                          description: Underlying asset code (e.g., BTC, ETH).
-                        weight:
-                          type: string
-                          description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
-                          example: '0.50'
-                      required:
-                      - underlying_currency
-                      - weight
-                    description: Target weights for this Operation. Present for enrollment / top_up / partial_sell / rebalance; empty for liquidation.
-                  created_at:
-                    type: string
-                    format: date-time
-                    description: When the Operation was created.
-                    example: '2026-04-17T10:00:00Z'
-                  updated_at:
-                    type: string
-                    format: date-time
-                    description: When the Operation was last updated.
-                    example: '2026-04-17T10:00:00Z'
-            next_page_token:
-              type: string
     ListTradeStrategyTradersResponse:
       type: object
       properties:
@@ -1680,6 +1196,122 @@ components:
                     example: '2026-04-17T10:00:00Z'
             next_page_token:
               type: string
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    TradeStrategyTraderResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Unique identifier (UUID v4) for the Trader.
+            strategy_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Strategy the Trader belongs to.
+            participant_code:
+              type: string
+              example: CUST01
+              description: Platform's identifier for the end customer (≤ 6 chars).
+            account_label:
+              type: string
+              description: Sub-account label used when querying balances upstream.
+            auto_rebalance:
+              type: boolean
+              description: If true, the Trader is included in default Rebalance targeting (when CreateRebalance is called without an explicit participants list).
+            created_at:
+              type: string
+              format: date-time
+              description: When the Trader was created.
+              example: '2026-04-17T10:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: When the Trader was last updated.
+              example: '2026-04-17T10:00:00Z'
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    UpdateTradeStrategyTraderBody:
+      type: object
+      properties:
+        auto_rebalance:
+          type: boolean
+          description: New value for the Trader's `auto_rebalance` flag.
+      required:
+      - auto_rebalance
+    CreateTradeStrategyLiquidationBody:
+      type: object
+      properties:
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+            required:
+            - participant_code
+          description: Participants to fully exit. No amount — zerohash reads each participant's current balance and sells whatever they hold.
+      required:
+      - participants
+    TradeStrategyResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Unique identifier (UUID v4) for the Strategy.
+            request_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Platform's idempotency key for the Strategy (the `X-REQUEST-ID` sent at creation).
+            quoted_currency:
+              type: string
+              example: USD
+              description: Currency the Strategy denominates participant amounts in (e.g., "USD").
+            metadata:
+              type: object
+              additionalProperties: true
+              nullable: true
+              example:
+                owner_email: ops@example.com
+                internal_id: STR-2026-Q2-001
+              description: Arbitrary JSON object the platform attached at creation; persisted verbatim and echoed back on reads. zerohash does not interpret the contents.
+            created_at:
+              type: string
+              format: date-time
+              description: When the Strategy was created.
+              example: '2026-04-17T10:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: When the Strategy was last updated.
+              example: '2026-04-17T10:00:00Z'
     TradeStrategyExecutionResponse:
       type: object
       properties:
@@ -1793,14 +1425,375 @@ components:
               format: date-time
               description: ISO 8601 timestamp in UTC (RFC 3339).
               example: '2026-04-17T10:00:00Z'
+    CreateTradeStrategyRebalanceBody:
+      type: object
+      properties:
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              underlying_currency:
+                type: string
+                example: BTC
+                description: Underlying asset code (e.g., BTC, ETH).
+              weight:
+                type: string
+                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                example: '0.50'
+            required:
+            - underlying_currency
+            - weight
+          description: New target weights. A weight of `"0"` means "fully exit this asset"; assets the Trader currently holds that are missing from this list are also fully exited.
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+            required:
+            - participant_code
+          description: 'Optional. If present, the Rebalance targets exactly these Traders (ignoring `auto_rebalance`). If omitted, the Rebalance targets every Trader with `auto_rebalance: true`.'
+      required:
+      - allocations
+    UpdateTradeStrategyBody:
+      type: object
+      properties:
+        metadata:
+          type: object
+          additionalProperties: true
+          description: New value for the Strategy metadata. Replaces the previous value verbatim (no merge). Pass `{}` to clear.
+      required:
+      - metadata
+    ListTradeStrategiesResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            strategies:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Unique identifier (UUID v4) for the Strategy.
+                  request_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Platform's idempotency key for the Strategy (the `X-REQUEST-ID` sent at creation).
+                  quoted_currency:
+                    type: string
+                    example: USD
+                    description: Currency the Strategy denominates participant amounts in (e.g., "USD").
+                  metadata:
+                    type: object
+                    additionalProperties: true
+                    nullable: true
+                    example:
+                      owner_email: ops@example.com
+                      internal_id: STR-2026-Q2-001
+                    description: Arbitrary JSON object the platform attached at creation; persisted verbatim and echoed back on reads. zerohash does not interpret the contents.
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: When the Strategy was created.
+                    example: '2026-04-17T10:00:00Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: When the Strategy was last updated.
+                    example: '2026-04-17T10:00:00Z'
+            next_page_token:
+              type: string
+              description: Opaque cursor for the next page. Empty when iteration is exhausted.
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    ListTradeStrategyOperationsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            operations:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Unique identifier (UUID v4) for the Operation.
+                  strategy_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Strategy the Operation runs under.
+                  request_id:
+                    type: string
+                    format: uuid
+                    example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+                    description: Platform's idempotency key for this Operation (the `X-REQUEST-ID` sent at submission).
+                  type:
+                    type: string
+                    enum:
+                    - enrollment
+                    - top_up
+                    - partial_sell
+                    - rebalance
+                    - liquidation
+                    example: enrollment
+                    description: Operation kind.
+                  status:
+                    type: string
+                    enum:
+                    - validating
+                    - pricing
+                    - settling
+                    - settled
+                    - skipped
+                    - failed
+                    example: validating
+                    description: Lifecycle status. `validating` / `pricing` / `settling` are non-terminal; `settled` / `skipped` / `failed` are terminal.
+                  status_reason:
+                    type: string
+                    example: ''
+                    description: 'Set on terminal statuses to explain the outcome. Possible values: `no_executions`, `all_skipped`, `all_rejected`, `partial_success`. Empty on non-terminal and on clean `settled`.'
+                  allocations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        underlying_currency:
+                          type: string
+                          example: BTC
+                          description: Underlying asset code (e.g., BTC, ETH).
+                        weight:
+                          type: string
+                          description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                          example: '0.50'
+                      required:
+                      - underlying_currency
+                      - weight
+                    description: Target weights for this Operation. Present for enrollment / top_up / partial_sell / rebalance; empty for liquidation.
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: When the Operation was created.
+                    example: '2026-04-17T10:00:00Z'
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: When the Operation was last updated.
+                    example: '2026-04-17T10:00:00Z'
+            next_page_token:
+              type: string
+    TradeStrategyOperationResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Unique identifier (UUID v4) for the Operation.
+            strategy_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Strategy the Operation runs under.
+            request_id:
+              type: string
+              format: uuid
+              example: b1c2d3e4-f5a6-4789-bcde-f01234567890
+              description: Platform's idempotency key for this Operation (the `X-REQUEST-ID` sent at submission).
+            type:
+              type: string
+              enum:
+              - enrollment
+              - top_up
+              - partial_sell
+              - rebalance
+              - liquidation
+              example: enrollment
+              description: Operation kind.
+            status:
+              type: string
+              enum:
+              - validating
+              - pricing
+              - settling
+              - settled
+              - skipped
+              - failed
+              example: validating
+              description: Lifecycle status. `validating` / `pricing` / `settling` are non-terminal; `settled` / `skipped` / `failed` are terminal.
+            status_reason:
+              type: string
+              example: ''
+              description: 'Set on terminal statuses to explain the outcome. Possible values: `no_executions`, `all_skipped`, `all_rejected`, `partial_success`. Empty on non-terminal and on clean `settled`.'
+            allocations:
+              type: array
+              items:
+                type: object
+                properties:
+                  underlying_currency:
+                    type: string
+                    example: BTC
+                    description: Underlying asset code (e.g., BTC, ETH).
+                  weight:
+                    type: string
+                    description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                    example: '0.50'
+                required:
+                - underlying_currency
+                - weight
+              description: Target weights for this Operation. Present for enrollment / top_up / partial_sell / rebalance; empty for liquidation.
+            created_at:
+              type: string
+              format: date-time
+              description: When the Operation was created.
+              example: '2026-04-17T10:00:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              description: When the Operation was last updated.
+              example: '2026-04-17T10:00:00Z'
+    CreateTradeStrategyEnrollmentBody:
+      type: object
+      properties:
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              underlying_currency:
+                type: string
+                example: BTC
+                description: Underlying asset code (e.g., BTC, ETH).
+              weight:
+                type: string
+                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                example: '0.50'
+            required:
+            - underlying_currency
+            - weight
+          description: Target weights for the Operation. Weights must sum to exactly 1.0; underlying_currency must be unique within the list.
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+              amount:
+                type: string
+                description: Decimal value serialized as a string to preserve precision.
+                example: '10000.00'
+              auto_rebalance:
+                type: boolean
+            required:
+            - participant_code
+            - amount
+            - auto_rebalance
+      required:
+      - allocations
+      - participants
+    CreateTradeStrategyBody:
+      type: object
+      properties:
+        quoted_currency:
+          type: string
+          example: USD
+          description: Currency the Strategy denominates amounts in.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary JSON object for the platform to attach. Echoed back on reads; zerohash does not interpret the contents.
+      required:
+      - quoted_currency
+    CreateTradeStrategyPartialSellBody:
+      type: object
+      properties:
+        allocations:
+          type: array
+          items:
+            type: object
+            properties:
+              underlying_currency:
+                type: string
+                example: BTC
+                description: Underlying asset code (e.g., BTC, ETH).
+              weight:
+                type: string
+                description: Target weight in the allocation. Decimal string in [0, 1]. Weights across an allocation set must sum to exactly 1.0; a "0" weight in Rebalance means "fully exit this asset".
+                example: '0.50'
+            required:
+            - underlying_currency
+            - weight
+          description: Target weights for the Operation. Weights must sum to exactly 1.0; underlying_currency must be unique within the list.
+        participants:
+          type: array
+          items:
+            type: object
+            properties:
+              participant_code:
+                type: string
+                example: CUST01
+              amount:
+                type: string
+                description: Decimal value serialized as a string to preserve precision.
+                example: '3000.00'
+            required:
+            - participant_code
+            - amount
+      required:
+      - allocations
+      - participants
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
   parameters:
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -1809,6 +1802,13 @@ components:
       schema:
         type: string
         example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

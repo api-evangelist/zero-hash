@@ -63,37 +63,6 @@ paths:
                 error_description: Client authentication failed
 components:
   schemas:
-    TokenRequest:
-      type: object
-      required:
-      - client_id
-      - client_secret
-      - audience
-      - grant_type
-      - organization_id
-      properties:
-        client_id:
-          type: string
-          description: OAuth2 client ID
-          example: clt_4a7b2f8e9d1c5x6y3z8w2v5u7t9r1q4e
-        client_secret:
-          type: string
-          description: OAuth2 client secret
-          example: cs_9x8w7v6u5t4r3q2p1o9n8m7l6k5j4i3h2g1f0e9d8c7b6a5z4y3x2w1v0u9
-        audience:
-          type: string
-          description: API audience identifier
-          example: https://api.cert.connect.xyz
-        grant_type:
-          type: string
-          description: OAuth2 grant type
-          enum:
-          - client_credentials
-          example: client_credentials
-        organization_id:
-          type: string
-          description: Organization identifier
-          example: f446f14c-4035-4105-892b-1649bff16424
     AuthError:
       type: object
       required:
@@ -126,6 +95,37 @@ components:
           type: string
           description: Token type
           example: Bearer
+    TokenRequest:
+      type: object
+      required:
+      - client_id
+      - client_secret
+      - audience
+      - grant_type
+      - organization_id
+      properties:
+        client_id:
+          type: string
+          description: OAuth2 client ID
+          example: clt_4a7b2f8e9d1c5x6y3z8w2v5u7t9r1q4e
+        client_secret:
+          type: string
+          description: OAuth2 client secret
+          example: cs_9x8w7v6u5t4r3q2p1o9n8m7l6k5j4i3h2g1f0e9d8c7b6a5z4y3x2w1v0u9
+        audience:
+          type: string
+          description: API audience identifier
+          example: https://api.cert.connect.xyz
+        grant_type:
+          type: string
+          description: OAuth2 grant type
+          enum:
+          - client_credentials
+          example: client_credentials
+        organization_id:
+          type: string
+          description: Organization identifier
+          example: f446f14c-4035-4105-892b-1649bff16424
   securitySchemes:
     BearerAuth:
       type: http

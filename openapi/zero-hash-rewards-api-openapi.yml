@@ -76,14 +76,13 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
+    Signature:
+      name: X-SCX-SIGNED
       in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
       required: true
       schema:
         type: string
-        example: '1678901234'
     RequestId:
       name: X-Request-Id
       in: header
@@ -92,60 +91,15 @@ components:
       schema:
         type: string
         format: uuid
-    Signature:
-      name: X-SCX-SIGNED
+    Timestamp:
+      name: X-SCX-TIMESTAMP
       in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
       required: true
       schema:
         type: string
+        example: '1678901234'
   schemas:
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    OBOParticipantEntity:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: The identifier of the participant making the request
-          example: 20XRLH
-        account_group:
-          type: string
-          description: The identifier of the the account group
-          example: WRD1K0
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -284,6 +238,112 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
+    DynamicFee:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    OBOParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
+          type: string
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -297,17 +357,19 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
     LiquidityEnabledQuotedCurrency:
       type: string
       description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
@@ -315,45 +377,6 @@ components:
       enum:
       - USD
       - EUR
-    PostRewardsBody:
-      type: object
-      properties:
-        underlying:
-          $ref: '#/components/schemas/UnderlyingCurrency'
-        quoted_currency:
-          $ref: '#/components/schemas/QuotedCurrency'
-        quantity:
-          type: string
-          description: the desired amount of the `underlying` for the quote (either `quantity` or `total` must be provided)
-          example: '1'
-        total:
-          type: string
-          description: the desired amount of the `quoted_currency` for the quote (either `quantity` or `total` must be provided)
-          example: '11430.90'
-        participant_code:
-          type: string
-          description: the participant that is receiving the reward. This is the platform's customer.
-          example: CUST01
-        account_label:
-          type: string
-          description: the account label associated with the account
-          example: sub_account_test
-      required:
-      - underlying
-      - quoted_currency
-      - participant_code
-    DynamicFee:
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
-          type: string
-          example: sample
-        amount:
-          type: string
-          example: '1.95'
     PostRewardsResponse:
       type: object
       properties:
@@ -864,56 +887,6 @@ components:
               type: string
               description: Notional cost of the underlying delivered to the participant, expressed in the `quoted_currency` (i.e. `price * quantity`).
               example: '3.00'
-    UnderlyingCurrency:
-      type: string
-      description: the underlying asset
-      example: BTC
-      enum:
-      - AAVE.ETH
-      - ADA
-      - ALGO
-      - AVAX
-      - BAT.ETH
-      - BCH
-      - BTC
-      - BUSD.ETH
-      - COMP.ETH
-      - DAI.ETH
-      - DOGE
-      - DOT
-      - EGLD
-      - EOS
-      - ETC
-      - ETH
-      - ETH.ARBITRUM
-      - GRT.ETH
-      - GYEN.ETH
-      - HBAR
-      - LINK.ETH
-      - LTC
-      - LUNA
-      - MATIC.ETH
-      - MATIC.POLYGON
-      - MKR.ETH
-      - MOB
-      - SAND.ETH
-      - SOL
-      - UNI.ETH
-      - USDC.ETH
-      - USDC.ALGO
-      - USDC.POLYGON
-      - USDC.SOL
-      - USDC.HBAR
-      - USDC.XLM
-      - USDC.AVAX
-      - USDT.ETH
-      - UST
-      - WBTC.ETH
-      - XEM
-      - XLM
-      - XRP
-      - XTZ
-      - ZUSD.ETH
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.
@@ -923,6 +896,33 @@ components:
         error:
           type: string
           example: Not Found
+    PostRewardsBody:
+      type: object
+      properties:
+        underlying:
+          $ref: '#/components/schemas/UnderlyingCurrency'
+        quoted_currency:
+          $ref: '#/components/schemas/QuotedCurrency'
+        quantity:
+          type: string
+          description: the desired amount of the `underlying` for the quote (either `quantity` or `total` must be provided)
+          example: '1'
+        total:
+          type: string
+          description: the desired amount of the `quoted_currency` for the quote (either `quantity` or `total` must be provided)
+          example: '11430.90'
+        participant_code:
+          type: string
+          description: the participant that is receiving the reward. This is the platform's customer.
+          example: CUST01
+        account_label:
+          type: string
+          description: the account label associated with the account
+          example: sub_account_test
+      required:
+      - underlying
+      - quoted_currency
+      - participant_code
   securitySchemes:
     apiKey:
       type: apiKey

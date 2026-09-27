@@ -209,14 +209,13 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
+    Signature:
+      name: X-SCX-SIGNED
       in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
       required: true
       schema:
         type: string
-        example: '1678901234'
     AccountLabelQuery:
       name: account_label
       in: query
@@ -225,13 +224,14 @@ components:
       schema:
         type: string
         example: general
-    Signature:
-      name: X-SCX-SIGNED
+    Timestamp:
+      name: X-SCX-TIMESTAMP
       in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
       required: true
       schema:
         type: string
+        example: '1678901234'
   schemas:
     Code503:
       type: object
@@ -242,26 +242,6 @@ components:
         error:
           type: string
           example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    GetPlatformPositionsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/PositionsResponseEntity'
     Code500:
       type: object
       description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
@@ -330,6 +310,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PositionsResponseEntity'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.
@@ -339,6 +332,13 @@ components:
         error:
           type: string
           example: Not Found
+    GetPlatformPositionsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionsResponseEntity'
   securitySchemes:
     apiKey:
       type: apiKey

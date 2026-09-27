@@ -761,2046 +761,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    BeneficialOwnerResponseEntity:
-      type: object
-      properties:
-        user_code:
-          type: string
-          description: zerohash identifier for the Beneficial Owner(s) (One code returned per person)
-          example: U-XXXXXX
-        name:
-          type: string
-          description: Full name of the beneficial owner
-          example: John Smith
-        email:
-          type: string
-          description: Email address of beneficial owner
-          example: test@example.com
-        address_one:
-          type: string
-          description: 'First line for the beneficial owner''s address.
-
-
-            Notes:
-
-            - The regular maximum length is 80 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: 123 Main St.
-        address_two:
-          type: string
-          description: 'Extra information, like an apartment or suite number.
-
-
-            Notes:
-
-            - The regular maximum length is 50 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: Suite 1000
-        city:
-          type: string
-          description: City of the beneficial owner
-          example: Chicago
-        postal_code:
-          type: string
-          description: Postal, or zip code, of the beneficial owner, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
-          example: '12345'
-        jurisdiction_code:
-          type: string
-          example: US-IL
-          description: The ISO 3166-2 subdivision code that the beneficial owner resides in
-        date_of_birth:
-          type: string
-          description: Birth date of the beneficial owner
-          example: '1985-09-02'
-        phone_number:
-          type: string
-          description: The phone number of the beneficial owner
-          example: '15557778888'
-        citizenship_code:
-          type: string
-          example: US
-          description: The ISO-3166-1 alpha2 citizenship of the beneficial owner, e.g. `US`.
-          enum:
-          - AD
-          - AE
-          - AF
-          - AG
-          - AI
-          - AL
-          - AM
-          - AO
-          - AQ
-          - AR
-          - AS
-          - AT
-          - AU
-          - AW
-          - AX
-          - AZ
-          - BA
-          - BB
-          - BD
-          - BE
-          - BF
-          - BG
-          - BH
-          - BI
-          - BJ
-          - BL
-          - BM
-          - BN
-          - BO
-          - BQ
-          - BR
-          - BS
-          - BT
-          - BV
-          - BW
-          - BY
-          - BZ
-          - CA
-          - CC
-          - CD
-          - CF
-          - CG
-          - CH
-          - CI
-          - CK
-          - CL
-          - CM
-          - CN
-          - CO
-          - CR
-          - CU
-          - CV
-          - CW
-          - CX
-          - CY
-          - CZ
-          - DE
-          - DJ
-          - DK
-          - DM
-          - DO
-          - DZ
-          - EC
-          - EE
-          - EG
-          - EH
-          - ER
-          - ES
-          - ET
-          - FI
-          - FJ
-          - FK
-          - FM
-          - FO
-          - FR
-          - GA
-          - GB
-          - GD
-          - GE
-          - GF
-          - GG
-          - GH
-          - GI
-          - GL
-          - GM
-          - GN
-          - GP
-          - GQ
-          - GR
-          - GS
-          - GT
-          - GU
-          - GW
-          - GY
-          - HK
-          - HM
-          - HN
-          - HR
-          - HT
-          - HU
-          - ID
-          - IE
-          - IL
-          - IM
-          - IN
-          - IO
-          - IQ
-          - IR
-          - IS
-          - IT
-          - JE
-          - JM
-          - JO
-          - JP
-          - KE
-          - KG
-          - KH
-          - KI
-          - KM
-          - KN
-          - KP
-          - KR
-          - KW
-          - KY
-          - KZ
-          - LA
-          - LB
-          - LC
-          - LI
-          - LK
-          - LR
-          - LS
-          - LT
-          - LU
-          - LV
-          - LY
-          - MA
-          - MC
-          - MD
-          - ME
-          - MF
-          - MG
-          - MH
-          - MK
-          - ML
-          - MM
-          - MN
-          - MO
-          - MP
-          - MQ
-          - MR
-          - MS
-          - MT
-          - MU
-          - MV
-          - MW
-          - MX
-          - MY
-          - MZ
-          - NA
-          - NC
-          - NE
-          - NF
-          - NG
-          - NI
-          - NL
-          - 'NO'
-          - NP
-          - NR
-          - NU
-          - NZ
-          - OM
-          - PA
-          - PE
-          - PF
-          - PG
-          - PH
-          - PK
-          - PL
-          - PM
-          - PN
-          - PR
-          - PS
-          - PT
-          - PW
-          - PY
-          - QA
-          - RE
-          - RO
-          - RS
-          - RW
-          - SA
-          - SB
-          - SC
-          - SD
-          - SE
-          - SG
-          - SH
-          - SI
-          - SJ
-          - SK
-          - SL
-          - SM
-          - SN
-          - SO
-          - SR
-          - SS
-          - ST
-          - SV
-          - SX
-          - SY
-          - SZ
-          - TC
-          - TD
-          - TF
-          - TG
-          - TH
-          - TJ
-          - TK
-          - TL
-          - TM
-          - TN
-          - TO
-          - TR
-          - TT
-          - TV
-          - TW
-          - TZ
-          - UA
-          - UG
-          - UM
-          - US
-          - UY
-          - UZ
-          - VA
-          - VC
-          - VE
-          - VG
-          - VI
-          - VN
-          - VU
-          - WF
-          - WS
-          - YE
-          - YT
-          - ZA
-          - ZM
-          - ZW
-        tax_id:
-          type: string
-          description: "The national ID of the beneficial owner, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
-          example: 000-00-0000
-        id_number_type:
-          type: string
-          enum:
-          - us_drivers_license
-          - us_passport
-          - us_passport_card
-          - us_permanent_resident_card
-          - us_border_crossing_card
-          - us_alien_card
-          - us_id_card
-          - non_us_passport
-          - non_us_other
-          - passport
-          - eu_drivers_license
-          - national_id
-          - legal_entity_identifier
-          - chamber_of_commerce_number
-          - value_added_tax_number
-          description: 'The type of identification number provided.
-
-
-            **Allowed values:**
-
-            - `us_drivers_license` - US Driver''s License
-
-            - `us_passport` - US Passport
-
-            - `us_passport_card` - US Passport Card
-
-            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
-
-            - `us_border_crossing_card` - US Border Crossing Card
-
-            - `us_alien_card` - US Alien Registration Card
-
-            - `us_id_card` - US State-issued ID Card
-
-            - `non_us_passport` - Non-US Passport
-
-            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
-
-            - `passport` - Generic passport
-
-            - `eu_drivers_license` - European Union Driver''s License
-
-            - `national_id` - National identity card
-
-            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
-
-            - `chamber_of_commerce_number` - Chamber of Commerce registration number
-
-            - `value_added_tax_number` - VAT identification number
-
-
-            **Conditional requirements:**
-
-            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
-
-            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
-          example: us_passport
-        id_number:
-          type: string
-          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
-          example: '123456789'
-        id_issuing_authority:
-          type: string
-          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
-          example: null
-        sanction_screening:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Result of the beneficial owner''s sanctions screening.
-
-
-            **Allowed values:**
-
-            - `pass` - Beneficial owner passed sanctions screening
-
-            - `fail` - Beneficial owner failed sanctions screening'
-          example: pass
-        sanction_screening_timestamp:
-          type: number
-          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the beneficial owner.
-          example: 1603378501286
-        kyc:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Whether the beneficial owner passed or failed KYC verification by vendor.
-
-
-            **Allowed values:**
-
-            - `pass` - KYC verification passed
-
-            - `fail` - KYC verification failed'
-          example: pass
-        kyc_timestamp:
-          type: number
-          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
-          example: 1603378501286
-        beneficial_owner:
-          type: number
-          enum:
-          - 0
-          - 1
-          - 2
-          description: 'Designation of what percent of the business the beneficial owner owns.
-
-
-            **Allowed values:**
-
-            - `0` - Unknown
-
-            - `1` - Greater than or equal to 10% but less than 25%
-
-            - `2` - Greater than or equal to 25%'
-          example: 1
-        role:
-          type: string
-          description: The role of the beneficial owner
-          example: ''
-    AdditionalTaxResidence:
-      type: object
-      required:
-      - tax_id
-      - jurisdiction_code
-      properties:
-        tax_id:
-          type: string
-          description: Tax identification number for the additional tax residence
-        jurisdiction_code:
-          type: string
-          description: The ISO 3166-2 subdivision code that the participant resides in
-          example: US-IL
-    ControlPersonEntity:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Full name of the control person
-          example: John Smith
-        email:
-          type: string
-          description: Email address of control person
-          example: test@example.com
-        address_one:
-          type: string
-          description: 'First line for the control person''s address.
-
-
-            Notes:
-
-            - The regular maximum length is 80 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: 123 Main St.
-        address_two:
-          type: string
-          description: 'Extra information, like an apartment or suite number.
-
-
-            Notes:
-
-            - The regular maximum length is 50 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: Suite 1000
-        city:
-          type: string
-          description: City of the control person
-          example: Chicago
-        postal_code:
-          type: string
-          description: Postal, or zip code, of the control person, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
-          example: '12345'
-        jurisdiction_code:
-          type: string
-          example: US-IL
-          description: The ISO 3166-2 subdivision code that the control person resides in
-        date_of_birth:
-          type: string
-          description: Birth date of the control person
-          example: '1985-09-02'
-        phone_number:
-          type: string
-          description: The phone number of the control person
-          example: '15557778888'
-        citizenship_code:
-          type: string
-          example: US
-          description: The ISO-3166-1 alpha2 citizenship of the control person, e.g. `US`.
-          enum:
-          - AD
-          - AE
-          - AF
-          - AG
-          - AI
-          - AL
-          - AM
-          - AO
-          - AQ
-          - AR
-          - AS
-          - AT
-          - AU
-          - AW
-          - AX
-          - AZ
-          - BA
-          - BB
-          - BD
-          - BE
-          - BF
-          - BG
-          - BH
-          - BI
-          - BJ
-          - BL
-          - BM
-          - BN
-          - BO
-          - BQ
-          - BR
-          - BS
-          - BT
-          - BV
-          - BW
-          - BY
-          - BZ
-          - CA
-          - CC
-          - CD
-          - CF
-          - CG
-          - CH
-          - CI
-          - CK
-          - CL
-          - CM
-          - CN
-          - CO
-          - CR
-          - CU
-          - CV
-          - CW
-          - CX
-          - CY
-          - CZ
-          - DE
-          - DJ
-          - DK
-          - DM
-          - DO
-          - DZ
-          - EC
-          - EE
-          - EG
-          - EH
-          - ER
-          - ES
-          - ET
-          - FI
-          - FJ
-          - FK
-          - FM
-          - FO
-          - FR
-          - GA
-          - GB
-          - GD
-          - GE
-          - GF
-          - GG
-          - GH
-          - GI
-          - GL
-          - GM
-          - GN
-          - GP
-          - GQ
-          - GR
-          - GS
-          - GT
-          - GU
-          - GW
-          - GY
-          - HK
-          - HM
-          - HN
-          - HR
-          - HT
-          - HU
-          - ID
-          - IE
-          - IL
-          - IM
-          - IN
-          - IO
-          - IQ
-          - IR
-          - IS
-          - IT
-          - JE
-          - JM
-          - JO
-          - JP
-          - KE
-          - KG
-          - KH
-          - KI
-          - KM
-          - KN
-          - KP
-          - KR
-          - KW
-          - KY
-          - KZ
-          - LA
-          - LB
-          - LC
-          - LI
-          - LK
-          - LR
-          - LS
-          - LT
-          - LU
-          - LV
-          - LY
-          - MA
-          - MC
-          - MD
-          - ME
-          - MF
-          - MG
-          - MH
-          - MK
-          - ML
-          - MM
-          - MN
-          - MO
-          - MP
-          - MQ
-          - MR
-          - MS
-          - MT
-          - MU
-          - MV
-          - MW
-          - MX
-          - MY
-          - MZ
-          - NA
-          - NC
-          - NE
-          - NF
-          - NG
-          - NI
-          - NL
-          - 'NO'
-          - NP
-          - NR
-          - NU
-          - NZ
-          - OM
-          - PA
-          - PE
-          - PF
-          - PG
-          - PH
-          - PK
-          - PL
-          - PM
-          - PN
-          - PR
-          - PS
-          - PT
-          - PW
-          - PY
-          - QA
-          - RE
-          - RO
-          - RS
-          - RW
-          - SA
-          - SB
-          - SC
-          - SD
-          - SE
-          - SG
-          - SH
-          - SI
-          - SJ
-          - SK
-          - SL
-          - SM
-          - SN
-          - SO
-          - SR
-          - SS
-          - ST
-          - SV
-          - SX
-          - SY
-          - SZ
-          - TC
-          - TD
-          - TF
-          - TG
-          - TH
-          - TJ
-          - TK
-          - TL
-          - TM
-          - TN
-          - TO
-          - TR
-          - TT
-          - TV
-          - TW
-          - TZ
-          - UA
-          - UG
-          - UM
-          - US
-          - UY
-          - UZ
-          - VA
-          - VC
-          - VE
-          - VG
-          - VI
-          - VN
-          - VU
-          - WF
-          - WS
-          - YE
-          - YT
-          - ZA
-          - ZM
-          - ZW
-        tax_id:
-          type: string
-          description: "The national ID of the control person, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
-          example: 000-00-0000
-        id_number_type:
-          type: string
-          enum:
-          - us_drivers_license
-          - us_passport
-          - us_passport_card
-          - us_permanent_resident_card
-          - us_border_crossing_card
-          - us_alien_card
-          - us_id_card
-          - non_us_passport
-          - non_us_other
-          - passport
-          - eu_drivers_license
-          - national_id
-          - legal_entity_identifier
-          - chamber_of_commerce_number
-          - value_added_tax_number
-          description: 'The type of identification number provided.
-
-
-            **Allowed values:**
-
-            - `us_drivers_license` - US Driver''s License
-
-            - `us_passport` - US Passport
-
-            - `us_passport_card` - US Passport Card
-
-            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
-
-            - `us_border_crossing_card` - US Border Crossing Card
-
-            - `us_alien_card` - US Alien Registration Card
-
-            - `us_id_card` - US State-issued ID Card
-
-            - `non_us_passport` - Non-US Passport
-
-            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
-
-            - `passport` - Generic passport
-
-            - `eu_drivers_license` - European Union Driver''s License
-
-            - `national_id` - National identity card
-
-            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
-
-            - `chamber_of_commerce_number` - Chamber of Commerce registration number
-
-            - `value_added_tax_number` - VAT identification number
-
-
-            **Conditional requirements:**
-
-            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
-
-            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
-          example: us_passport
-        id_number:
-          type: string
-          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
-          example: '123456789'
-        id_issuing_authority:
-          type: string
-          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
-          example: US
-          enum:
-          - AD
-          - AE
-          - AF
-          - AG
-          - AI
-          - AL
-          - AM
-          - AO
-          - AQ
-          - AR
-          - AS
-          - AT
-          - AU
-          - AW
-          - AX
-          - AZ
-          - BA
-          - BB
-          - BD
-          - BE
-          - BF
-          - BG
-          - BH
-          - BI
-          - BJ
-          - BL
-          - BM
-          - BN
-          - BO
-          - BQ
-          - BR
-          - BS
-          - BT
-          - BV
-          - BW
-          - BY
-          - BZ
-          - CA
-          - CC
-          - CD
-          - CF
-          - CG
-          - CH
-          - CI
-          - CK
-          - CL
-          - CM
-          - CN
-          - CO
-          - CR
-          - CU
-          - CV
-          - CW
-          - CX
-          - CY
-          - CZ
-          - DE
-          - DJ
-          - DK
-          - DM
-          - DO
-          - DZ
-          - EC
-          - EE
-          - EG
-          - EH
-          - ER
-          - ES
-          - ET
-          - FI
-          - FJ
-          - FK
-          - FM
-          - FO
-          - FR
-          - GA
-          - GB
-          - GD
-          - GE
-          - GF
-          - GG
-          - GH
-          - GI
-          - GL
-          - GM
-          - GN
-          - GP
-          - GQ
-          - GR
-          - GS
-          - GT
-          - GU
-          - GW
-          - GY
-          - HK
-          - HM
-          - HN
-          - HR
-          - HT
-          - HU
-          - ID
-          - IE
-          - IL
-          - IM
-          - IN
-          - IO
-          - IQ
-          - IR
-          - IS
-          - IT
-          - JE
-          - JM
-          - JO
-          - JP
-          - KE
-          - KG
-          - KH
-          - KI
-          - KM
-          - KN
-          - KP
-          - KR
-          - KW
-          - KY
-          - KZ
-          - LA
-          - LB
-          - LC
-          - LI
-          - LK
-          - LR
-          - LS
-          - LT
-          - LU
-          - LV
-          - LY
-          - MA
-          - MC
-          - MD
-          - ME
-          - MF
-          - MG
-          - MH
-          - MK
-          - ML
-          - MM
-          - MN
-          - MO
-          - MP
-          - MQ
-          - MR
-          - MS
-          - MT
-          - MU
-          - MV
-          - MW
-          - MX
-          - MY
-          - MZ
-          - NA
-          - NC
-          - NE
-          - NF
-          - NG
-          - NI
-          - NL
-          - 'NO'
-          - NP
-          - NR
-          - NU
-          - NZ
-          - OM
-          - PA
-          - PE
-          - PF
-          - PG
-          - PH
-          - PK
-          - PL
-          - PM
-          - PN
-          - PR
-          - PS
-          - PT
-          - PW
-          - PY
-          - QA
-          - RE
-          - RO
-          - RS
-          - RW
-          - SA
-          - SB
-          - SC
-          - SD
-          - SE
-          - SG
-          - SH
-          - SI
-          - SJ
-          - SK
-          - SL
-          - SM
-          - SN
-          - SO
-          - SR
-          - SS
-          - ST
-          - SV
-          - SX
-          - SY
-          - SZ
-          - TC
-          - TD
-          - TF
-          - TG
-          - TH
-          - TJ
-          - TK
-          - TL
-          - TM
-          - TN
-          - TO
-          - TR
-          - TT
-          - TV
-          - TW
-          - TZ
-          - UA
-          - UG
-          - UM
-          - US
-          - UY
-          - UZ
-          - VA
-          - VC
-          - VE
-          - VG
-          - VI
-          - VN
-          - VU
-          - WF
-          - WS
-          - YE
-          - YT
-          - ZA
-          - ZM
-          - ZW
-        sanction_screening:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Result of the control person''s sanctions screening.
-
-
-            **Allowed values:**
-
-            - `pass` - Control person passed sanctions screening
-
-            - `fail` - Control person failed sanctions screening'
-          example: pass
-        sanction_screening_timestamp:
-          type: number
-          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the control person.
-          example: 1603378501286
-        kyc:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Whether the control person passed or failed KYC verification by vendor.
-
-
-            **Allowed values:**
-
-            - `pass` - KYC verification passed
-
-            - `fail` - KYC verification failed'
-          example: pass
-        kyc_timestamp:
-          type: number
-          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
-          example: 1603378501286
-        control_person:
-          type: number
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          description: 'Designation of what percent of the business the control person controls.
-
-
-            **Allowed values:**
-
-            - `0` - Unknown
-
-            - `1` - Less than 10%
-
-            - `2` - Greater than or equal to 10% but less than 25%
-
-            - `3` - Greater than or equal to 25%'
-          example: 1
-    PatchUserBody:
-      type: object
-      properties:
-        first_name:
-          type: string
-          example: John
-          description: The first name of the user
-        middle_name:
-          type: string
-          description: The middle name of the user
-        last_name:
-          type: string
-          example: Smith
-          description: The last name of the user
-        email:
-          type: string
-          description: Email address of the user
-          example: test@example.com
-        contact_number:
-          type: string
-          description: The phone number of the user. Must be in E.164 format
-          example: '+15557778888'
-        address_one:
-          type: string
-          description: 'First line for the user''s address.
-
-
-            Notes:
-
-            - The regular maximum length is 80 characters.
-
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: 123 Main St.
-        address_two:
-          type: string
-          description: 'Extra information, like an apartment or suite number.
-
-
-            Notes:
-
-            - The regular maximum length is 50 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: Suite 1000
-        city:
-          type: string
-          description: City of the user
-          example: Chicago
-        postal_code:
-          type: string
-          description: Postal, or zip code, of the user, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
-          example: '12345'
-        jurisdiction_code:
-          type: string
-          example: US-IL
-          description: The ISO 3166-2 subdivision code that the user resides in
-        date_of_birth:
-          type: string
-          description: Birth date of the user
-          example: '1985-09-02'
-        place_of_birth:
-          type: object
-          required:
-          - country_code
-          properties:
-            country_code:
-              type: string
-              description: ISO 3166-1 alpha-2 Country Code
-              example: NL
-            place_name:
-              type: string
-              description: Name of the place of birth
-              example: Amsterdam
-          description: The place of birth of the user, as is defined on their ID (Passport, etc.)
-          example:
-            country_code: NL
-            place_name: Amsterdam
-        citizenship_code:
-          type: string
-          example: US
-          description: The ISO-3166-1 alpha2 citizenship of the user, e.g. `US`.
-          enum:
-          - AD
-          - AE
-          - AF
-          - AG
-          - AI
-          - AL
-          - AM
-          - AO
-          - AQ
-          - AR
-          - AS
-          - AT
-          - AU
-          - AW
-          - AX
-          - AZ
-          - BA
-          - BB
-          - BD
-          - BE
-          - BF
-          - BG
-          - BH
-          - BI
-          - BJ
-          - BL
-          - BM
-          - BN
-          - BO
-          - BQ
-          - BR
-          - BS
-          - BT
-          - BV
-          - BW
-          - BY
-          - BZ
-          - CA
-          - CC
-          - CD
-          - CF
-          - CG
-          - CH
-          - CI
-          - CK
-          - CL
-          - CM
-          - CN
-          - CO
-          - CR
-          - CU
-          - CV
-          - CW
-          - CX
-          - CY
-          - CZ
-          - DE
-          - DJ
-          - DK
-          - DM
-          - DO
-          - DZ
-          - EC
-          - EE
-          - EG
-          - EH
-          - ER
-          - ES
-          - ET
-          - FI
-          - FJ
-          - FK
-          - FM
-          - FO
-          - FR
-          - GA
-          - GB
-          - GD
-          - GE
-          - GF
-          - GG
-          - GH
-          - GI
-          - GL
-          - GM
-          - GN
-          - GP
-          - GQ
-          - GR
-          - GS
-          - GT
-          - GU
-          - GW
-          - GY
-          - HK
-          - HM
-          - HN
-          - HR
-          - HT
-          - HU
-          - ID
-          - IE
-          - IL
-          - IM
-          - IN
-          - IO
-          - IQ
-          - IR
-          - IS
-          - IT
-          - JE
-          - JM
-          - JO
-          - JP
-          - KE
-          - KG
-          - KH
-          - KI
-          - KM
-          - KN
-          - KP
-          - KR
-          - KW
-          - KY
-          - KZ
-          - LA
-          - LB
-          - LC
-          - LI
-          - LK
-          - LR
-          - LS
-          - LT
-          - LU
-          - LV
-          - LY
-          - MA
-          - MC
-          - MD
-          - ME
-          - MF
-          - MG
-          - MH
-          - MK
-          - ML
-          - MM
-          - MN
-          - MO
-          - MP
-          - MQ
-          - MR
-          - MS
-          - MT
-          - MU
-          - MV
-          - MW
-          - MX
-          - MY
-          - MZ
-          - NA
-          - NC
-          - NE
-          - NF
-          - NG
-          - NI
-          - NL
-          - 'NO'
-          - NP
-          - NR
-          - NU
-          - NZ
-          - OM
-          - PA
-          - PE
-          - PF
-          - PG
-          - PH
-          - PK
-          - PL
-          - PM
-          - PN
-          - PR
-          - PS
-          - PT
-          - PW
-          - PY
-          - QA
-          - RE
-          - RO
-          - RS
-          - RW
-          - SA
-          - SB
-          - SC
-          - SD
-          - SE
-          - SG
-          - SH
-          - SI
-          - SJ
-          - SK
-          - SL
-          - SM
-          - SN
-          - SO
-          - SR
-          - SS
-          - ST
-          - SV
-          - SX
-          - SY
-          - SZ
-          - TC
-          - TD
-          - TF
-          - TG
-          - TH
-          - TJ
-          - TK
-          - TL
-          - TM
-          - TN
-          - TO
-          - TR
-          - TT
-          - TV
-          - TW
-          - TZ
-          - UA
-          - UG
-          - UM
-          - US
-          - UY
-          - UZ
-          - VA
-          - VC
-          - VE
-          - VG
-          - VI
-          - VN
-          - VU
-          - WF
-          - WS
-          - YE
-          - YT
-          - ZA
-          - ZM
-          - ZW
-        tax_id:
-          type: string
-          description: "The national ID of the user, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
-          example: 000-00-0000
-        id_number_type:
-          type: string
-          enum:
-          - us_drivers_license
-          - us_passport
-          - us_passport_card
-          - us_permanent_resident_card
-          - us_border_crossing_card
-          - us_alien_card
-          - us_id_card
-          - non_us_passport
-          - non_us_other
-          - passport
-          - eu_drivers_license
-          - national_id
-          - legal_entity_identifier
-          - chamber_of_commerce_number
-          - value_added_tax_number
-          description: 'The type of identification number provided.
-
-
-            **Allowed values:**
-
-            - `us_drivers_license` - US Driver''s License
-
-            - `us_passport` - US Passport
-
-            - `us_passport_card` - US Passport Card
-
-            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
-
-            - `us_border_crossing_card` - US Border Crossing Card
-
-            - `us_alien_card` - US Alien Registration Card
-
-            - `us_id_card` - US State-issued ID Card
-
-            - `non_us_passport` - Non-US Passport
-
-            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
-
-            - `passport` - Generic passport
-
-            - `eu_drivers_license` - European Union Driver''s License
-
-            - `national_id` - National identity card
-
-            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
-
-            - `chamber_of_commerce_number` - Chamber of Commerce registration number
-
-            - `value_added_tax_number` - VAT identification number
-
-
-            **Conditional requirements:**
-
-            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
-
-            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
-          example: us_passport
-        id_number:
-          type: string
-          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
-          example: '123456789'
-        id_issuing_authority:
-          type: string
-          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
-          example: US
-          enum:
-          - AD
-          - AE
-          - AF
-          - AG
-          - AI
-          - AL
-          - AM
-          - AO
-          - AQ
-          - AR
-          - AS
-          - AT
-          - AU
-          - AW
-          - AX
-          - AZ
-          - BA
-          - BB
-          - BD
-          - BE
-          - BF
-          - BG
-          - BH
-          - BI
-          - BJ
-          - BL
-          - BM
-          - BN
-          - BO
-          - BQ
-          - BR
-          - BS
-          - BT
-          - BV
-          - BW
-          - BY
-          - BZ
-          - CA
-          - CC
-          - CD
-          - CF
-          - CG
-          - CH
-          - CI
-          - CK
-          - CL
-          - CM
-          - CN
-          - CO
-          - CR
-          - CU
-          - CV
-          - CW
-          - CX
-          - CY
-          - CZ
-          - DE
-          - DJ
-          - DK
-          - DM
-          - DO
-          - DZ
-          - EC
-          - EE
-          - EG
-          - EH
-          - ER
-          - ES
-          - ET
-          - FI
-          - FJ
-          - FK
-          - FM
-          - FO
-          - FR
-          - GA
-          - GB
-          - GD
-          - GE
-          - GF
-          - GG
-          - GH
-          - GI
-          - GL
-          - GM
-          - GN
-          - GP
-          - GQ
-          - GR
-          - GS
-          - GT
-          - GU
-          - GW
-          - GY
-          - HK
-          - HM
-          - HN
-          - HR
-          - HT
-          - HU
-          - ID
-          - IE
-          - IL
-          - IM
-          - IN
-          - IO
-          - IQ
-          - IR
-          - IS
-          - IT
-          - JE
-          - JM
-          - JO
-          - JP
-          - KE
-          - KG
-          - KH
-          - KI
-          - KM
-          - KN
-          - KP
-          - KR
-          - KW
-          - KY
-          - KZ
-          - LA
-          - LB
-          - LC
-          - LI
-          - LK
-          - LR
-          - LS
-          - LT
-          - LU
-          - LV
-          - LY
-          - MA
-          - MC
-          - MD
-          - ME
-          - MF
-          - MG
-          - MH
-          - MK
-          - ML
-          - MM
-          - MN
-          - MO
-          - MP
-          - MQ
-          - MR
-          - MS
-          - MT
-          - MU
-          - MV
-          - MW
-          - MX
-          - MY
-          - MZ
-          - NA
-          - NC
-          - NE
-          - NF
-          - NG
-          - NI
-          - NL
-          - 'NO'
-          - NP
-          - NR
-          - NU
-          - NZ
-          - OM
-          - PA
-          - PE
-          - PF
-          - PG
-          - PH
-          - PK
-          - PL
-          - PM
-          - PN
-          - PR
-          - PS
-          - PT
-          - PW
-          - PY
-          - QA
-          - RE
-          - RO
-          - RS
-          - RW
-          - SA
-          - SB
-          - SC
-          - SD
-          - SE
-          - SG
-          - SH
-          - SI
-          - SJ
-          - SK
-          - SL
-          - SM
-          - SN
-          - SO
-          - SR
-          - SS
-          - ST
-          - SV
-          - SX
-          - SY
-          - SZ
-          - TC
-          - TD
-          - TF
-          - TG
-          - TH
-          - TJ
-          - TK
-          - TL
-          - TM
-          - TN
-          - TO
-          - TR
-          - TT
-          - TV
-          - TW
-          - TZ
-          - UA
-          - UG
-          - UM
-          - US
-          - UY
-          - UZ
-          - VA
-          - VC
-          - VE
-          - VG
-          - VI
-          - VN
-          - VU
-          - WF
-          - WS
-          - YE
-          - YT
-          - ZA
-          - ZM
-          - ZW
-        non_us_other_type:
-          type: string
-          description: This is required if you select `non_us_other` for the `id_number_type` - a freeform string to describe the ID type
-          example: null
-        sanction_screening:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Result of the user''s sanctions screening.
-
-
-            **Allowed values:**
-
-            - `pass` - User passed sanctions screening
-
-            - `fail` - User failed sanctions screening'
-          example: pass
-        sanction_screening_timestamp:
-          type: number
-          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the user.
-          example: 1603378501286
-        kyc:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Whether the user passed or failed KYC verification by vendor.
-
-
-            **Allowed values:**
-
-            - `pass` - KYC verification passed
-
-            - `fail` - KYC verification failed'
-          example: pass
-        kyc_timestamp:
-          type: number
-          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
-          example: 1603378501286
-        role:
-          type: string
-          description: The role of the user
-          example: ''
-    PostEntityDocumentsResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            state:
-              type: string
-              description: Upload state.
-              example: Success
-            file_name:
-              type: string
-              description: Name of the uploaded file, echoed back from the request.
-              example: supporting_document.pdf
-            created_at:
-              type: number
-              format: int64
-              description: Unix timestamp in milliseconds indicating when the document upload was recorded.
-              example: 1572899177383
-    GetParticipantCPBOBasicInfoResponse:
-      type: object
-      properties:
-        users:
-          type: object
-          description: PII info of the Control Persons and Beneficial Owners, keyed by user_code
-          additionalProperties:
-            type: object
-            properties:
-              user_code:
-                type: string
-                description: The user code of the Control Person or Beneficial Owner
-              is_beneficial_owner:
-                type: boolean
-                description: Indicates if the user is a beneficial owner
-              kyc_timestamp:
-                type: number
-                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
-                example: 1603378501286
-              sanction_screening_timestamp:
-                type: number
-                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
-                example: 1603378501286
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    BoardMemberEntity:
-      type: object
-      properties:
-        first_name:
-          type: string
-          description: First name of the board member
-          example: John
-        middle_name:
-          type: string
-          description: Middle name of the board member
-          example: A
-        last_name:
-          type: string
-          description: Last name of the board member
-          example: Smith
-        name:
-          type: string
-          description: Full name of the board member
-          example: John Smith
-        email:
-          type: string
-          description: Email address of the board member
-          example: test@example.com
-        address_one:
-          type: string
-          description: 'First line for the board member''s address.
-
-
-            Notes:
-
-            - The regular maximum length is 80 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: 123 Main St.
-        address_two:
-          type: string
-          description: 'Extra information, like an apartment or suite number.
-
-
-            Notes:
-
-            - The regular maximum length is 50 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: Suite 1000
-        city:
-          type: string
-          description: City of the board member
-          example: Chicago
-        postal_code:
-          type: string
-          description: Postal, or zip code, of the board member, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
-          example: '12345'
-        jurisdiction_code:
-          type: string
-          example: US-IL
-          description: The ISO 3166-2 subdivision code that the board member resides in
-        date_of_birth:
-          type: string
-          description: Birth date of the board member
-          example: '1985-09-02'
-        place_of_birth_name:
-          type: string
-          description: Name of the city where the board member was born
-          example: Chicago
-        place_of_birth_country_code:
-          type: string
-          description: ISO-3166-1 alpha-2 country code where the board member was born
-          example: US
-        citizenship_code:
-          type: string
-          example: US
-          description: The ISO-3166-1 alpha2 citizenship of the board member, e.g. `US`.
-        tax_id:
-          type: string
-          description: The national ID of the board member, e.g. a social security number.
-          example: 000-00-0000
-        id_number_type:
-          type: string
-          enum:
-          - us_drivers_license
-          - us_passport
-          - us_passport_card
-          - us_permanent_resident_card
-          - us_border_crossing_card
-          - us_alien_card
-          - us_id_card
-          - non_us_passport
-          - non_us_other
-          - passport
-          - eu_drivers_license
-          - national_id
-          - legal_entity_identifier
-          - chamber_of_commerce_number
-          - value_added_tax_number
-          description: The type of identification number provided.
-          example: us_passport
-        id_number:
-          type: string
-          description: ID number of the ID document provided.
-          example: '123456789'
-        id_issuing_authority:
-          type: string
-          description: ISO-3166-1_A2 country code that issued the ID.
-          example: US
-        sanction_screening:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: Result of the board member's sanctions screening.
-          example: pass
-        sanction_screening_timestamp:
-          type: number
-          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the board member.
-          example: 1603378501286
     PatchEntityBody:
       type: object
       properties:
@@ -3768,6 +1728,1281 @@ components:
           description: The ISO 3166-2 subdivision code that the entity resides in
       required:
       - submitter_email
+    PostEntityDocumentsBody:
+      oneOf:
+      - title: All accepted fields
+        type: object
+        description: All accepted fields for Entity document submission.
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: 'Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+
+              `participant_code` or `user_code` must be provided, but not both'
+            example: CUST01
+          user_code:
+            type: string
+            description: 'The user code of the Control Person or Beneficial Owner
+
+              `participant_code` or `user_code` must be provided, but not both'
+            example: XYZ789
+          document_type:
+            type: string
+            description: 'The type of document being uploaded.
+
+
+              **EU NNP required documents** (entity onboarded through an EU-region platform): `lei_certificate`, `excerpt_of_the_chamber_of_commerce`, `annual_accounts`, and `power_of_authorization` (accepts either a power of attorney or a board resolution authorising the submitter to act for the entity).
+
+
+              When the entity is submitted with `is_complex_structure: true`, `legal_opinion` is additionally required before the entity can be approved.
+
+
+              Use `supporting_document` together with `document_description` for any document that does not have a dedicated type.'
+            example: us_passport
+            enum:
+            - business_license
+            - business_name_filing_document
+            - proof_of_address
+            - certificate_of_good_standing
+            - operating_agreement
+            - partnership_agreement
+            - articles_of_incorporation
+            - articles_of_organization
+            - certificate_of_incorporation
+            - certificate_of_organization
+            - by_laws
+            - proof_of_non_profit_status
+            - excerpt_of_the_chamber_of_commerce
+            - articles_of_associations
+            - source_of_funds
+            - certificate_of_good_conduct_of_nnp
+            - certified_valid_id_of_control_person_and_beneficial_owner
+            - power_of_authorization
+            - id_of_submitter
+            - group_of_companies_chart_including_affiliated_foundation
+            - us_drivers_license
+            - us_passport
+            - us_passport_card
+            - us_permanent_resident_card
+            - us_border_crossing_card
+            - us_alien_card
+            - us_id_card
+            - us_temporary_resident_card
+            - us_visa
+            - non_us_passport
+            - non_us_other
+            - eu_passport
+            - eu_id_card
+            - eu_drivers_license
+            - eu_address_verification
+            - form_w9
+            - form_w8_ben
+            - form_w8_ben_e
+            - form_w8_imy
+            - form_w8_eci
+            - form_w8_exp
+            - form_w8_ce
+            - miscellaneous
+            - lei_certificate
+            - annual_accounts
+            - legal_opinion
+            - supporting_document
+          id_front:
+            type: boolean
+            description: (optional) determines if the document is the front or back of an ID
+            example: true
+          document_description:
+            type: string
+            maxLength: 200
+            description: 'Optional free-text description of the document. Mainly used with `supporting_document`, but accepted for any document type.
+
+
+              Recommended values include: `Legal opinion - complex ownership structure`, `UBO certified ID`, `Trust agreement`, `Group structure chart`.'
+            example: Legal opinion - complex ownership structure
+      - title: Entity Supporting Documents
+        type: object
+        description: 'All accepted fields for entity supporting documents submission. Required `document_type` depends on the `entity_type` submitted with the entity participant.
+
+
+          **EU NNP required set:** `lei_certificate`, `excerpt_of_the_chamber_of_commerce`, `annual_accounts`, and `power_of_authorization` (a power of attorney or a board resolution). `legal_opinion` is additionally required when the entity is submitted with `is_complex_structure: true`.'
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+            example: CUST01
+          document_type:
+            type: string
+            description: A valid document type
+            example: business_license
+            enum:
+            - business_license
+            - business_name_filing_document
+            - proof_of_address
+            - certificate_of_good_standing
+            - operating_agreement
+            - partnership_agreement
+            - articles_of_incorporation
+            - articles_of_organization
+            - certificate_of_incorporation
+            - certificate_of_organization
+            - by_laws
+            - proof_of_non_profit_status
+            - excerpt_of_the_chamber_of_commerce
+            - articles_of_associations
+            - source_of_funds
+            - certificate_of_good_conduct_of_nnp
+            - certified_valid_id_of_control_person_and_beneficial_owner
+            - power_of_authorization
+            - id_of_submitter
+            - group_of_companies_chart_including_affiliated_foundation
+            - lei_certificate
+            - annual_accounts
+            - legal_opinion
+            - supporting_document
+          document_description:
+            type: string
+            maxLength: 200
+            description: 'Optional free-text description of the document. Mainly used with `supporting_document`, but accepted for any document type.
+
+
+              Recommended values include: `Legal opinion - complex ownership structure`, `UBO certified ID`, `Trust agreement`, `Group structure chart`.'
+            example: Legal opinion - complex ownership structure
+      - title: Identity Verification Document (Front + Back)
+        type: object
+        description: Beneficial Owner or Control Person document fields for identity verification documents (front and back).
+        properties:
+          document:
+            type: string
+            description: base 64 encoded file that you wish to upload (10mb limit)
+            example: aGVsbG8gd29ybGQ=
+          mime:
+            type: string
+            description: The MIME type of the file you are uploading
+            example: pdf
+          file_name:
+            type: string
+            description: The name of the document that you are uploading
+            example: supporting_document.pdf
+          participant_code:
+            type: string
+            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
+            example: CUST01
+          document_type:
+            type: string
+            description: A valid document type
+            example: us_drivers_license
+            enum:
+            - eu_drivers_license
+            - eu_id_card
+            - us_id_card
+            - us_drivers_license
+            - us_alien_card
+            - us_permanent_resident_card
+            - us_border_crossing_card
+            - us_passport_card
+          id_front:
+            type: boolean
+            description: 'Determines if the document is the front or back of an ID.
+
+              The field is **mandatory** only for the following document types: `eu_id_card`, `eu_drivers_license`, `us_id_card`, `us_drivers_license`, `us_passport_card`.'
+            example: true
+    PostEntityDocumentsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            state:
+              type: string
+              description: Upload state.
+              example: Success
+            file_name:
+              type: string
+              description: Name of the uploaded file, echoed back from the request.
+              example: supporting_document.pdf
+            created_at:
+              type: number
+              format: int64
+              description: Unix timestamp in milliseconds indicating when the document upload was recorded.
+              example: 1572899177383
+    AdditionalTaxResidence:
+      type: object
+      required:
+      - tax_id
+      - jurisdiction_code
+      properties:
+        tax_id:
+          type: string
+          description: Tax identification number for the additional tax residence
+        jurisdiction_code:
+          type: string
+          description: The ISO 3166-2 subdivision code that the participant resides in
+          example: US-IL
+    GetParticipantCPBOFullInfoResponse:
+      type: object
+      properties:
+        users:
+          type: object
+          description: Full info of the Control Persons and Beneficial Owners, keyed by user_code
+          additionalProperties:
+            type: object
+            properties:
+              user_code:
+                type: string
+                description: The user code of the Control Person or Beneficial Owner
+              name:
+                type: string
+                description: Full name of the participant
+              is_beneficial_owner:
+                type: boolean
+                description: Indicates if the user is a beneficial owner
+              email:
+                type: string
+                description: Email of the participant
+                example: mail@mail.com
+              address_one:
+                type: string
+                description: 'First line for the customer''s address.
+
+
+                  Notes:
+
+                  - The regular maximum length is 80 characters.
+
+                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                  - PO Box addresses are not accepted.'
+                example: 123 Main St.
+              address_two:
+                type: string
+                description: 'Extra information, like an apartment or suite number.
+
+
+                  Notes:
+
+                  - The regular maximum length is 50 characters.
+
+                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                  - PO Box addresses are not accepted.'
+                example: Suite 1000
+              city:
+                type: string
+                description: The city minor resides in
+                example: Chicago
+              postal_code:
+                type: string
+                description: Postal, or zip code, of the business, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+                example: '12345'
+              jurisdiction_code:
+                type: string
+                example: US-IL
+                description: The ISO 3166-2 subdivision code that the customer resides in
+              date_of_birth:
+                type: string
+                description: Date of birth of the participant user
+                example: '1985-09-02'
+              citizenship_code:
+                type: string
+                example: US
+                description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
+                enum:
+                - AD
+                - AE
+                - AF
+                - AG
+                - AI
+                - AL
+                - AM
+                - AO
+                - AQ
+                - AR
+                - AS
+                - AT
+                - AU
+                - AW
+                - AX
+                - AZ
+                - BA
+                - BB
+                - BD
+                - BE
+                - BF
+                - BG
+                - BH
+                - BI
+                - BJ
+                - BL
+                - BM
+                - BN
+                - BO
+                - BQ
+                - BR
+                - BS
+                - BT
+                - BV
+                - BW
+                - BY
+                - BZ
+                - CA
+                - CC
+                - CD
+                - CF
+                - CG
+                - CH
+                - CI
+                - CK
+                - CL
+                - CM
+                - CN
+                - CO
+                - CR
+                - CU
+                - CV
+                - CW
+                - CX
+                - CY
+                - CZ
+                - DE
+                - DJ
+                - DK
+                - DM
+                - DO
+                - DZ
+                - EC
+                - EE
+                - EG
+                - EH
+                - ER
+                - ES
+                - ET
+                - FI
+                - FJ
+                - FK
+                - FM
+                - FO
+                - FR
+                - GA
+                - GB
+                - GD
+                - GE
+                - GF
+                - GG
+                - GH
+                - GI
+                - GL
+                - GM
+                - GN
+                - GP
+                - GQ
+                - GR
+                - GS
+                - GT
+                - GU
+                - GW
+                - GY
+                - HK
+                - HM
+                - HN
+                - HR
+                - HT
+                - HU
+                - ID
+                - IE
+                - IL
+                - IM
+                - IN
+                - IO
+                - IQ
+                - IR
+                - IS
+                - IT
+                - JE
+                - JM
+                - JO
+                - JP
+                - KE
+                - KG
+                - KH
+                - KI
+                - KM
+                - KN
+                - KP
+                - KR
+                - KW
+                - KY
+                - KZ
+                - LA
+                - LB
+                - LC
+                - LI
+                - LK
+                - LR
+                - LS
+                - LT
+                - LU
+                - LV
+                - LY
+                - MA
+                - MC
+                - MD
+                - ME
+                - MF
+                - MG
+                - MH
+                - MK
+                - ML
+                - MM
+                - MN
+                - MO
+                - MP
+                - MQ
+                - MR
+                - MS
+                - MT
+                - MU
+                - MV
+                - MW
+                - MX
+                - MY
+                - MZ
+                - NA
+                - NC
+                - NE
+                - NF
+                - NG
+                - NI
+                - NL
+                - 'NO'
+                - NP
+                - NR
+                - NU
+                - NZ
+                - OM
+                - PA
+                - PE
+                - PF
+                - PG
+                - PH
+                - PK
+                - PL
+                - PM
+                - PN
+                - PR
+                - PS
+                - PT
+                - PW
+                - PY
+                - QA
+                - RE
+                - RO
+                - RS
+                - RW
+                - SA
+                - SB
+                - SC
+                - SD
+                - SE
+                - SG
+                - SH
+                - SI
+                - SJ
+                - SK
+                - SL
+                - SM
+                - SN
+                - SO
+                - SR
+                - SS
+                - ST
+                - SV
+                - SX
+                - SY
+                - SZ
+                - TC
+                - TD
+                - TF
+                - TG
+                - TH
+                - TJ
+                - TK
+                - TL
+                - TM
+                - TN
+                - TO
+                - TR
+                - TT
+                - TV
+                - TW
+                - TZ
+                - UA
+                - UG
+                - UM
+                - US
+                - UY
+                - UZ
+                - VA
+                - VC
+                - VE
+                - VG
+                - VI
+                - VN
+                - VU
+                - WF
+                - WS
+                - YE
+                - YT
+                - ZA
+                - ZM
+                - ZW
+              tax_id:
+                type: string
+                description: The national ID of the participant, e.g. a social security number.
+                example: 000-00-0000
+              id_number_type:
+                type: string
+                enum:
+                - ssn
+                - ein
+                - us_drivers_license
+                - us_passport
+                - us_passport_card
+                - us_permanent_resident_card
+                - us_border_crossing_card
+                - us_alien_card
+                - us_id_card
+                - non_us_passport
+                - non_us_other
+                - passport
+                - eu_drivers_license
+                - legal_entity_identifier
+                - chamber_of_commerce_number
+                - value_added_tax_number
+                - national_id
+                description: The type of ID number
+                example: us_border_crossing_card
+              id_number:
+                type: string
+                description: The ID number for the customer
+                example: '123456789'
+              kyc:
+                type: string
+                enum:
+                - pass
+                - fail
+                description: Whether the participant passed or failed KYC by vendor
+                example: pass
+              kyc_timestamp:
+                type: number
+                description: The UNIX timestamp (in milliseconds) when KYC was performed on the participant. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
+                example: 1603378501286
+              sanction_screening:
+                type: string
+                enum:
+                - pass
+                - fail
+                description: Whether the participant passed sanctions checks
+                example: pass
+              sanction_screening_timestamp:
+                type: number
+                description: The UNIX timestamp (in milliseconds) when sanctions screening was performed on the participant. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
+                example: 1603378501286
+              place_of_birth_country_code:
+                type: string
+                description: The ISO 3166-1 alpha-2 country code of the person's place of birth. Present only for EU NNP persons.
+                example: DE
+              first_name:
+                type: string
+                description: The person's given name.
+                example: Jane
+              middle_name:
+                type: string
+                description: The person's middle name.
+                example: Q
+              last_name:
+                type: string
+                description: The person's family name.
+                example: Doe
+              is_control_person:
+                type: boolean
+                description: Indicates if the user is a control person of the entity.
+              is_board_member:
+                type: boolean
+                description: Indicates if the user is a board member of the entity.
+    BeneficialOwnerEntity:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the beneficial owner
+          example: John Smith
+        email:
+          type: string
+          description: Email address of the beneficial owner
+          example: test@example.com
+        address_one:
+          type: string
+          description: 'First line for the beneficial owner''s address.
+
+
+            Notes:
+
+            - The regular maximum length is 80 characters.
+
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: 123 Main St.
+        address_two:
+          type: string
+          description: 'Extra information, like an apartment or suite number.
+
+
+            Notes:
+
+            - The regular maximum length is 50 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: Suite 1000
+        city:
+          type: string
+          description: City of the beneficial owner
+          example: Chicago
+        postal_code:
+          type: string
+          description: Postal, or zip code, of the beneficial owner, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+          example: '12345'
+        jurisdiction_code:
+          type: string
+          example: US-IL
+          description: The ISO 3166-2 subdivision code that the beneficial owner resides in
+        date_of_birth:
+          type: string
+          description: Birth date of the beneficial owner
+          example: '1985-09-02'
+        phone_number:
+          type: string
+          description: The phone number of the beneficial owner
+          example: '15557778888'
+        citizenship_code:
+          type: string
+          example: US
+          description: The ISO-3166-1 alpha2 citizenship of the beneficial owner, e.g. `US`.
+          enum:
+          - AD
+          - AE
+          - AF
+          - AG
+          - AI
+          - AL
+          - AM
+          - AO
+          - AQ
+          - AR
+          - AS
+          - AT
+          - AU
+          - AW
+          - AX
+          - AZ
+          - BA
+          - BB
+          - BD
+          - BE
+          - BF
+          - BG
+          - BH
+          - BI
+          - BJ
+          - BL
+          - BM
+          - BN
+          - BO
+          - BQ
+          - BR
+          - BS
+          - BT
+          - BV
+          - BW
+          - BY
+          - BZ
+          - CA
+          - CC
+          - CD
+          - CF
+          - CG
+          - CH
+          - CI
+          - CK
+          - CL
+          - CM
+          - CN
+          - CO
+          - CR
+          - CU
+          - CV
+          - CW
+          - CX
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DK
+          - DM
+          - DO
+          - DZ
+          - EC
+          - EE
+          - EG
+          - EH
+          - ER
+          - ES
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FM
+          - FO
+          - FR
+          - GA
+          - GB
+          - GD
+          - GE
+          - GF
+          - GG
+          - GH
+          - GI
+          - GL
+          - GM
+          - GN
+          - GP
+          - GQ
+          - GR
+          - GS
+          - GT
+          - GU
+          - GW
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IE
+          - IL
+          - IM
+          - IN
+          - IO
+          - IQ
+          - IR
+          - IS
+          - IT
+          - JE
+          - JM
+          - JO
+          - JP
+          - KE
+          - KG
+          - KH
+          - KI
+          - KM
+          - KN
+          - KP
+          - KR
+          - KW
+          - KY
+          - KZ
+          - LA
+          - LB
+          - LC
+          - LI
+          - LK
+          - LR
+          - LS
+          - LT
+          - LU
+          - LV
+          - LY
+          - MA
+          - MC
+          - MD
+          - ME
+          - MF
+          - MG
+          - MH
+          - MK
+          - ML
+          - MM
+          - MN
+          - MO
+          - MP
+          - MQ
+          - MR
+          - MS
+          - MT
+          - MU
+          - MV
+          - MW
+          - MX
+          - MY
+          - MZ
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NU
+          - NZ
+          - OM
+          - PA
+          - PE
+          - PF
+          - PG
+          - PH
+          - PK
+          - PL
+          - PM
+          - PN
+          - PR
+          - PS
+          - PT
+          - PW
+          - PY
+          - QA
+          - RE
+          - RO
+          - RS
+          - RW
+          - SA
+          - SB
+          - SC
+          - SD
+          - SE
+          - SG
+          - SH
+          - SI
+          - SJ
+          - SK
+          - SL
+          - SM
+          - SN
+          - SO
+          - SR
+          - SS
+          - ST
+          - SV
+          - SX
+          - SY
+          - SZ
+          - TC
+          - TD
+          - TF
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TL
+          - TM
+          - TN
+          - TO
+          - TR
+          - TT
+          - TV
+          - TW
+          - TZ
+          - UA
+          - UG
+          - UM
+          - US
+          - UY
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - YT
+          - ZA
+          - ZM
+          - ZW
+        tax_id:
+          type: string
+          description: "The national ID of the beneficial owner, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
+          example: 000-00-0000
+        id_number_type:
+          type: string
+          enum:
+          - us_drivers_license
+          - us_passport
+          - us_passport_card
+          - us_permanent_resident_card
+          - us_border_crossing_card
+          - us_alien_card
+          - us_id_card
+          - non_us_passport
+          - non_us_other
+          - passport
+          - eu_drivers_license
+          - national_id
+          - legal_entity_identifier
+          - chamber_of_commerce_number
+          - value_added_tax_number
+          description: 'The type of identification number provided.
+
+
+            **Allowed values:**
+
+            - `us_drivers_license` - US Driver''s License
+
+            - `us_passport` - US Passport
+
+            - `us_passport_card` - US Passport Card
+
+            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
+
+            - `us_border_crossing_card` - US Border Crossing Card
+
+            - `us_alien_card` - US Alien Registration Card
+
+            - `us_id_card` - US State-issued ID Card
+
+            - `non_us_passport` - Non-US Passport
+
+            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
+
+            - `passport` - Generic passport
+
+            - `eu_drivers_license` - European Union Driver''s License
+
+            - `national_id` - National identity card
+
+            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
+
+            - `chamber_of_commerce_number` - Chamber of Commerce registration number
+
+            - `value_added_tax_number` - VAT identification number
+
+
+            **Conditional requirements:**
+
+            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
+
+            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
+          example: us_passport
+        id_number:
+          type: string
+          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
+          example: '123456789'
+        id_issuing_authority:
+          type: string
+          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
+          example: null
+        sanction_screening:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Result of the beneficial owner''s sanctions screening.
+
+
+            **Allowed values:**
+
+            - `pass` - Beneficial owner passed sanctions screening
+
+            - `fail` - Beneficial owner failed sanctions screening'
+          example: pass
+        sanction_screening_timestamp:
+          type: number
+          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the beneficial owner.
+          example: 1603378501286
+        kyc:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Whether the beneficial owner passed or failed KYC verification by vendor.
+
+
+            **Allowed values:**
+
+            - `pass` - KYC verification passed
+
+            - `fail` - KYC verification failed'
+          example: pass
+        kyc_timestamp:
+          type: number
+          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
+          example: 1603378501286
+        beneficial_owner:
+          type: number
+          enum:
+          - 0
+          - 1
+          - 2
+          description: 'Designation of what percent of the business the beneficial owner owns.
+
+
+            **Allowed values:**
+
+            - `0` - Unknown
+
+            - `1` - Greater than or equal to 10% but less than 25%
+
+            - `2` - Greater than or equal to 25%'
+          example: 1
+        role:
+          type: string
+          description: The role of the beneficial owner
+          example: ''
+    BoardMemberEntity:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: First name of the board member
+          example: John
+        middle_name:
+          type: string
+          description: Middle name of the board member
+          example: A
+        last_name:
+          type: string
+          description: Last name of the board member
+          example: Smith
+        name:
+          type: string
+          description: Full name of the board member
+          example: John Smith
+        email:
+          type: string
+          description: Email address of the board member
+          example: test@example.com
+        address_one:
+          type: string
+          description: 'First line for the board member''s address.
+
+
+            Notes:
+
+            - The regular maximum length is 80 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: 123 Main St.
+        address_two:
+          type: string
+          description: 'Extra information, like an apartment or suite number.
+
+
+            Notes:
+
+            - The regular maximum length is 50 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: Suite 1000
+        city:
+          type: string
+          description: City of the board member
+          example: Chicago
+        postal_code:
+          type: string
+          description: Postal, or zip code, of the board member, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+          example: '12345'
+        jurisdiction_code:
+          type: string
+          example: US-IL
+          description: The ISO 3166-2 subdivision code that the board member resides in
+        date_of_birth:
+          type: string
+          description: Birth date of the board member
+          example: '1985-09-02'
+        place_of_birth_name:
+          type: string
+          description: Name of the city where the board member was born
+          example: Chicago
+        place_of_birth_country_code:
+          type: string
+          description: ISO-3166-1 alpha-2 country code where the board member was born
+          example: US
+        citizenship_code:
+          type: string
+          example: US
+          description: The ISO-3166-1 alpha2 citizenship of the board member, e.g. `US`.
+        tax_id:
+          type: string
+          description: The national ID of the board member, e.g. a social security number.
+          example: 000-00-0000
+        id_number_type:
+          type: string
+          enum:
+          - us_drivers_license
+          - us_passport
+          - us_passport_card
+          - us_permanent_resident_card
+          - us_border_crossing_card
+          - us_alien_card
+          - us_id_card
+          - non_us_passport
+          - non_us_other
+          - passport
+          - eu_drivers_license
+          - national_id
+          - legal_entity_identifier
+          - chamber_of_commerce_number
+          - value_added_tax_number
+          description: The type of identification number provided.
+          example: us_passport
+        id_number:
+          type: string
+          description: ID number of the ID document provided.
+          example: '123456789'
+        id_issuing_authority:
+          type: string
+          description: ISO-3166-1_A2 country code that issued the ID.
+          example: US
+        sanction_screening:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: Result of the board member's sanctions screening.
+          example: pass
+        sanction_screening_timestamp:
+          type: number
+          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the board member.
+          example: 1603378501286
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    GetParticipantCPBOSanctionScreeningInfoResponse:
+      type: object
+      properties:
+        users:
+          type: object
+          description: Sanction Screening info of the Control Persons and Beneficial Owners, keyed by user_code
+          additionalProperties:
+            type: object
+            properties:
+              user_code:
+                type: string
+                description: The user code of the Control Person or Beneficial Owner
+              name:
+                type: string
+                description: Full name of the participant
+              is_beneficial_owner:
+                type: boolean
+                description: Indicates if the user is a beneficial owner
+              email:
+                type: string
+                description: Email of the participant
+                example: mail@mail.com
+              address_one:
+                type: string
+                description: 'First line for the customer''s address.
+
+
+                  Notes:
+
+                  - The regular maximum length is 80 characters.
+
+                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                  - PO Box addresses are not accepted.'
+                example: 123 Main St.
+              address_two:
+                type: string
+                description: 'Extra information, like an apartment or suite number.
+
+
+                  Notes:
+
+                  - The regular maximum length is 50 characters.
+
+                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+                  - PO Box addresses are not accepted.'
+                example: Suite 1000
+              city:
+                type: string
+                description: The city minor resides in
+                example: Chicago
+              postal_code:
+                type: string
+                description: Postal, or zip code, of the business, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+                example: '12345'
+              jurisdiction_code:
+                type: string
+                example: US-IL
+                description: The ISO 3166-2 subdivision code that the customer resides in
+              date_of_birth:
+                type: string
+                description: Date of birth of the participant user
+                example: '1985-09-02'
+              kyc_timestamp:
+                type: number
+                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
+                example: 1603378501286
+              sanction_screening_timestamp:
+                type: number
+                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
+                example: 1603378501286
     ControlPersonResponseEntity:
       type: object
       properties:
@@ -4210,87 +3445,6 @@ components:
 
             - `3` - Greater than or equal to 25%'
           example: 1
-    GetParticipantCPBOSanctionScreeningInfoResponse:
-      type: object
-      properties:
-        users:
-          type: object
-          description: Sanction Screening info of the Control Persons and Beneficial Owners, keyed by user_code
-          additionalProperties:
-            type: object
-            properties:
-              user_code:
-                type: string
-                description: The user code of the Control Person or Beneficial Owner
-              name:
-                type: string
-                description: Full name of the participant
-              is_beneficial_owner:
-                type: boolean
-                description: Indicates if the user is a beneficial owner
-              email:
-                type: string
-                description: Email of the participant
-                example: mail@mail.com
-              address_one:
-                type: string
-                description: 'First line for the customer''s address.
-
-
-                  Notes:
-
-                  - The regular maximum length is 80 characters.
-
-                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-                  - PO Box addresses are not accepted.'
-                example: 123 Main St.
-              address_two:
-                type: string
-                description: 'Extra information, like an apartment or suite number.
-
-
-                  Notes:
-
-                  - The regular maximum length is 50 characters.
-
-                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-                  - PO Box addresses are not accepted.'
-                example: Suite 1000
-              city:
-                type: string
-                description: The city minor resides in
-                example: Chicago
-              postal_code:
-                type: string
-                description: Postal, or zip code, of the business, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
-                example: '12345'
-              jurisdiction_code:
-                type: string
-                example: US-IL
-                description: The ISO 3166-2 subdivision code that the customer resides in
-              date_of_birth:
-                type: string
-                description: Date of birth of the participant user
-                example: '1985-09-02'
-              kyc_timestamp:
-                type: number
-                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
-                example: 1603378501286
-              sanction_screening_timestamp:
-                type: number
-                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
-                example: 1603378501286
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
     PostEntityResponse:
       type: object
       properties:
@@ -5273,217 +4427,6 @@ components:
             status:
               type: string
               example: approved
-    PostEntityDocumentsBody:
-      oneOf:
-      - title: All accepted fields
-        type: object
-        description: All accepted fields for Entity document submission.
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: 'Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-
-              `participant_code` or `user_code` must be provided, but not both'
-            example: CUST01
-          user_code:
-            type: string
-            description: 'The user code of the Control Person or Beneficial Owner
-
-              `participant_code` or `user_code` must be provided, but not both'
-            example: XYZ789
-          document_type:
-            type: string
-            description: 'The type of document being uploaded.
-
-
-              **EU NNP required documents** (entity onboarded through an EU-region platform): `lei_certificate`, `excerpt_of_the_chamber_of_commerce`, `annual_accounts`, and `power_of_authorization` (accepts either a power of attorney or a board resolution authorising the submitter to act for the entity).
-
-
-              When the entity is submitted with `is_complex_structure: true`, `legal_opinion` is additionally required before the entity can be approved.
-
-
-              Use `supporting_document` together with `document_description` for any document that does not have a dedicated type.'
-            example: us_passport
-            enum:
-            - business_license
-            - business_name_filing_document
-            - proof_of_address
-            - certificate_of_good_standing
-            - operating_agreement
-            - partnership_agreement
-            - articles_of_incorporation
-            - articles_of_organization
-            - certificate_of_incorporation
-            - certificate_of_organization
-            - by_laws
-            - proof_of_non_profit_status
-            - excerpt_of_the_chamber_of_commerce
-            - articles_of_associations
-            - source_of_funds
-            - certificate_of_good_conduct_of_nnp
-            - certified_valid_id_of_control_person_and_beneficial_owner
-            - power_of_authorization
-            - id_of_submitter
-            - group_of_companies_chart_including_affiliated_foundation
-            - us_drivers_license
-            - us_passport
-            - us_passport_card
-            - us_permanent_resident_card
-            - us_border_crossing_card
-            - us_alien_card
-            - us_id_card
-            - us_temporary_resident_card
-            - us_visa
-            - non_us_passport
-            - non_us_other
-            - eu_passport
-            - eu_id_card
-            - eu_drivers_license
-            - eu_address_verification
-            - form_w9
-            - form_w8_ben
-            - form_w8_ben_e
-            - form_w8_imy
-            - form_w8_eci
-            - form_w8_exp
-            - form_w8_ce
-            - miscellaneous
-            - lei_certificate
-            - annual_accounts
-            - legal_opinion
-            - supporting_document
-          id_front:
-            type: boolean
-            description: (optional) determines if the document is the front or back of an ID
-            example: true
-          document_description:
-            type: string
-            maxLength: 200
-            description: 'Optional free-text description of the document. Mainly used with `supporting_document`, but accepted for any document type.
-
-
-              Recommended values include: `Legal opinion - complex ownership structure`, `UBO certified ID`, `Trust agreement`, `Group structure chart`.'
-            example: Legal opinion - complex ownership structure
-      - title: Entity Supporting Documents
-        type: object
-        description: 'All accepted fields for entity supporting documents submission. Required `document_type` depends on the `entity_type` submitted with the entity participant.
-
-
-          **EU NNP required set:** `lei_certificate`, `excerpt_of_the_chamber_of_commerce`, `annual_accounts`, and `power_of_authorization` (a power of attorney or a board resolution). `legal_opinion` is additionally required when the entity is submitted with `is_complex_structure: true`.'
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-            example: CUST01
-          document_type:
-            type: string
-            description: A valid document type
-            example: business_license
-            enum:
-            - business_license
-            - business_name_filing_document
-            - proof_of_address
-            - certificate_of_good_standing
-            - operating_agreement
-            - partnership_agreement
-            - articles_of_incorporation
-            - articles_of_organization
-            - certificate_of_incorporation
-            - certificate_of_organization
-            - by_laws
-            - proof_of_non_profit_status
-            - excerpt_of_the_chamber_of_commerce
-            - articles_of_associations
-            - source_of_funds
-            - certificate_of_good_conduct_of_nnp
-            - certified_valid_id_of_control_person_and_beneficial_owner
-            - power_of_authorization
-            - id_of_submitter
-            - group_of_companies_chart_including_affiliated_foundation
-            - lei_certificate
-            - annual_accounts
-            - legal_opinion
-            - supporting_document
-          document_description:
-            type: string
-            maxLength: 200
-            description: 'Optional free-text description of the document. Mainly used with `supporting_document`, but accepted for any document type.
-
-
-              Recommended values include: `Legal opinion - complex ownership structure`, `UBO certified ID`, `Trust agreement`, `Group structure chart`.'
-            example: Legal opinion - complex ownership structure
-      - title: Identity Verification Document (Front + Back)
-        type: object
-        description: Beneficial Owner or Control Person document fields for identity verification documents (front and back).
-        properties:
-          document:
-            type: string
-            description: base 64 encoded file that you wish to upload (10mb limit)
-            example: aGVsbG8gd29ybGQ=
-          mime:
-            type: string
-            description: The MIME type of the file you are uploading
-            example: pdf
-          file_name:
-            type: string
-            description: The name of the document that you are uploading
-            example: supporting_document.pdf
-          participant_code:
-            type: string
-            description: Your participant code, or the participant_code of the customer on behalf of whom you are uploading the document
-            example: CUST01
-          document_type:
-            type: string
-            description: A valid document type
-            example: us_drivers_license
-            enum:
-            - eu_drivers_license
-            - eu_id_card
-            - us_id_card
-            - us_drivers_license
-            - us_alien_card
-            - us_permanent_resident_card
-            - us_border_crossing_card
-            - us_passport_card
-          id_front:
-            type: boolean
-            description: 'Determines if the document is the front or back of an ID.
-
-              The field is **mandatory** only for the following document types: `eu_id_card`, `eu_drivers_license`, `us_id_card`, `us_drivers_license`, `us_passport_card`.'
-            example: true
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
     PostEntityBody:
       oneOf:
       - title: US Entity
@@ -7631,6 +6574,19 @@ components:
         - activity_locations
         - expected_annual_volume
         - entity_source_of_funds
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     PatchEntityResponse:
       type: object
       properties:
@@ -8592,837 +7548,42 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/BeneficialOwnerResponseEntity'
-    BeneficialOwnerEntity:
+    Code403:
       type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
       properties:
-        name:
+        error:
+          type: boolean
+          example: true
+        message:
           type: string
-          description: Full name of the beneficial owner
-          example: John Smith
-        email:
-          type: string
-          description: Email address of the beneficial owner
-          example: test@example.com
-        address_one:
-          type: string
-          description: 'First line for the beneficial owner''s address.
-
-
-            Notes:
-
-            - The regular maximum length is 80 characters.
-
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: 123 Main St.
-        address_two:
-          type: string
-          description: 'Extra information, like an apartment or suite number.
-
-
-            Notes:
-
-            - The regular maximum length is 50 characters.
-
-            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-            - PO Box addresses are not accepted.'
-          example: Suite 1000
-        city:
-          type: string
-          description: City of the beneficial owner
-          example: Chicago
-        postal_code:
-          type: string
-          description: Postal, or zip code, of the beneficial owner, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
-          example: '12345'
-        jurisdiction_code:
-          type: string
-          example: US-IL
-          description: The ISO 3166-2 subdivision code that the beneficial owner resides in
-        date_of_birth:
-          type: string
-          description: Birth date of the beneficial owner
-          example: '1985-09-02'
-        phone_number:
-          type: string
-          description: The phone number of the beneficial owner
-          example: '15557778888'
-        citizenship_code:
-          type: string
-          example: US
-          description: The ISO-3166-1 alpha2 citizenship of the beneficial owner, e.g. `US`.
-          enum:
-          - AD
-          - AE
-          - AF
-          - AG
-          - AI
-          - AL
-          - AM
-          - AO
-          - AQ
-          - AR
-          - AS
-          - AT
-          - AU
-          - AW
-          - AX
-          - AZ
-          - BA
-          - BB
-          - BD
-          - BE
-          - BF
-          - BG
-          - BH
-          - BI
-          - BJ
-          - BL
-          - BM
-          - BN
-          - BO
-          - BQ
-          - BR
-          - BS
-          - BT
-          - BV
-          - BW
-          - BY
-          - BZ
-          - CA
-          - CC
-          - CD
-          - CF
-          - CG
-          - CH
-          - CI
-          - CK
-          - CL
-          - CM
-          - CN
-          - CO
-          - CR
-          - CU
-          - CV
-          - CW
-          - CX
-          - CY
-          - CZ
-          - DE
-          - DJ
-          - DK
-          - DM
-          - DO
-          - DZ
-          - EC
-          - EE
-          - EG
-          - EH
-          - ER
-          - ES
-          - ET
-          - FI
-          - FJ
-          - FK
-          - FM
-          - FO
-          - FR
-          - GA
-          - GB
-          - GD
-          - GE
-          - GF
-          - GG
-          - GH
-          - GI
-          - GL
-          - GM
-          - GN
-          - GP
-          - GQ
-          - GR
-          - GS
-          - GT
-          - GU
-          - GW
-          - GY
-          - HK
-          - HM
-          - HN
-          - HR
-          - HT
-          - HU
-          - ID
-          - IE
-          - IL
-          - IM
-          - IN
-          - IO
-          - IQ
-          - IR
-          - IS
-          - IT
-          - JE
-          - JM
-          - JO
-          - JP
-          - KE
-          - KG
-          - KH
-          - KI
-          - KM
-          - KN
-          - KP
-          - KR
-          - KW
-          - KY
-          - KZ
-          - LA
-          - LB
-          - LC
-          - LI
-          - LK
-          - LR
-          - LS
-          - LT
-          - LU
-          - LV
-          - LY
-          - MA
-          - MC
-          - MD
-          - ME
-          - MF
-          - MG
-          - MH
-          - MK
-          - ML
-          - MM
-          - MN
-          - MO
-          - MP
-          - MQ
-          - MR
-          - MS
-          - MT
-          - MU
-          - MV
-          - MW
-          - MX
-          - MY
-          - MZ
-          - NA
-          - NC
-          - NE
-          - NF
-          - NG
-          - NI
-          - NL
-          - 'NO'
-          - NP
-          - NR
-          - NU
-          - NZ
-          - OM
-          - PA
-          - PE
-          - PF
-          - PG
-          - PH
-          - PK
-          - PL
-          - PM
-          - PN
-          - PR
-          - PS
-          - PT
-          - PW
-          - PY
-          - QA
-          - RE
-          - RO
-          - RS
-          - RW
-          - SA
-          - SB
-          - SC
-          - SD
-          - SE
-          - SG
-          - SH
-          - SI
-          - SJ
-          - SK
-          - SL
-          - SM
-          - SN
-          - SO
-          - SR
-          - SS
-          - ST
-          - SV
-          - SX
-          - SY
-          - SZ
-          - TC
-          - TD
-          - TF
-          - TG
-          - TH
-          - TJ
-          - TK
-          - TL
-          - TM
-          - TN
-          - TO
-          - TR
-          - TT
-          - TV
-          - TW
-          - TZ
-          - UA
-          - UG
-          - UM
-          - US
-          - UY
-          - UZ
-          - VA
-          - VC
-          - VE
-          - VG
-          - VI
-          - VN
-          - VU
-          - WF
-          - WS
-          - YE
-          - YT
-          - ZA
-          - ZM
-          - ZW
-        tax_id:
-          type: string
-          description: "The national ID of the beneficial owner, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
-          example: 000-00-0000
-        id_number_type:
-          type: string
-          enum:
-          - us_drivers_license
-          - us_passport
-          - us_passport_card
-          - us_permanent_resident_card
-          - us_border_crossing_card
-          - us_alien_card
-          - us_id_card
-          - non_us_passport
-          - non_us_other
-          - passport
-          - eu_drivers_license
-          - national_id
-          - legal_entity_identifier
-          - chamber_of_commerce_number
-          - value_added_tax_number
-          description: 'The type of identification number provided.
-
-
-            **Allowed values:**
-
-            - `us_drivers_license` - US Driver''s License
-
-            - `us_passport` - US Passport
-
-            - `us_passport_card` - US Passport Card
-
-            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
-
-            - `us_border_crossing_card` - US Border Crossing Card
-
-            - `us_alien_card` - US Alien Registration Card
-
-            - `us_id_card` - US State-issued ID Card
-
-            - `non_us_passport` - Non-US Passport
-
-            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
-
-            - `passport` - Generic passport
-
-            - `eu_drivers_license` - European Union Driver''s License
-
-            - `national_id` - National identity card
-
-            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
-
-            - `chamber_of_commerce_number` - Chamber of Commerce registration number
-
-            - `value_added_tax_number` - VAT identification number
-
-
-            **Conditional requirements:**
-
-            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
-
-            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
-          example: us_passport
-        id_number:
-          type: string
-          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
-          example: '123456789'
-        id_issuing_authority:
-          type: string
-          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
-          example: null
-        sanction_screening:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Result of the beneficial owner''s sanctions screening.
-
-
-            **Allowed values:**
-
-            - `pass` - Beneficial owner passed sanctions screening
-
-            - `fail` - Beneficial owner failed sanctions screening'
-          example: pass
-        sanction_screening_timestamp:
-          type: number
-          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the beneficial owner.
-          example: 1603378501286
-        kyc:
-          type: string
-          enum:
-          - pass
-          - fail
-          description: 'Whether the beneficial owner passed or failed KYC verification by vendor.
-
-
-            **Allowed values:**
-
-            - `pass` - KYC verification passed
-
-            - `fail` - KYC verification failed'
-          example: pass
-        kyc_timestamp:
-          type: number
-          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
-          example: 1603378501286
-        beneficial_owner:
-          type: number
-          enum:
-          - 0
-          - 1
-          - 2
-          description: 'Designation of what percent of the business the beneficial owner owns.
-
-
-            **Allowed values:**
-
-            - `0` - Unknown
-
-            - `1` - Greater than or equal to 10% but less than 25%
-
-            - `2` - Greater than or equal to 25%'
-          example: 1
-        role:
-          type: string
-          description: The role of the beneficial owner
-          example: ''
-    GetParticipantCPBOFullInfoResponse:
+          example: This api key does not have write permission to this endpoint
+    GetParticipantCPBOBasicInfoResponse:
       type: object
       properties:
         users:
           type: object
-          description: Full info of the Control Persons and Beneficial Owners, keyed by user_code
+          description: PII info of the Control Persons and Beneficial Owners, keyed by user_code
           additionalProperties:
             type: object
             properties:
               user_code:
                 type: string
                 description: The user code of the Control Person or Beneficial Owner
-              name:
-                type: string
-                description: Full name of the participant
               is_beneficial_owner:
                 type: boolean
                 description: Indicates if the user is a beneficial owner
-              email:
-                type: string
-                description: Email of the participant
-                example: mail@mail.com
-              address_one:
-                type: string
-                description: 'First line for the customer''s address.
-
-
-                  Notes:
-
-                  - The regular maximum length is 80 characters.
-
-                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-                  - PO Box addresses are not accepted.'
-                example: 123 Main St.
-              address_two:
-                type: string
-                description: 'Extra information, like an apartment or suite number.
-
-
-                  Notes:
-
-                  - The regular maximum length is 50 characters.
-
-                  - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
-
-                  - PO Box addresses are not accepted.'
-                example: Suite 1000
-              city:
-                type: string
-                description: The city minor resides in
-                example: Chicago
-              postal_code:
-                type: string
-                description: Postal, or zip code, of the business, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
-                example: '12345'
-              jurisdiction_code:
-                type: string
-                example: US-IL
-                description: The ISO 3166-2 subdivision code that the customer resides in
-              date_of_birth:
-                type: string
-                description: Date of birth of the participant user
-                example: '1985-09-02'
-              citizenship_code:
-                type: string
-                example: US
-                description: The ISO-3166-1 alpha2 citizenship of the participant, e.g. `US`.
-                enum:
-                - AD
-                - AE
-                - AF
-                - AG
-                - AI
-                - AL
-                - AM
-                - AO
-                - AQ
-                - AR
-                - AS
-                - AT
-                - AU
-                - AW
-                - AX
-                - AZ
-                - BA
-                - BB
-                - BD
-                - BE
-                - BF
-                - BG
-                - BH
-                - BI
-                - BJ
-                - BL
-                - BM
-                - BN
-                - BO
-                - BQ
-                - BR
-                - BS
-                - BT
-                - BV
-                - BW
-                - BY
-                - BZ
-                - CA
-                - CC
-                - CD
-                - CF
-                - CG
-                - CH
-                - CI
-                - CK
-                - CL
-                - CM
-                - CN
-                - CO
-                - CR
-                - CU
-                - CV
-                - CW
-                - CX
-                - CY
-                - CZ
-                - DE
-                - DJ
-                - DK
-                - DM
-                - DO
-                - DZ
-                - EC
-                - EE
-                - EG
-                - EH
-                - ER
-                - ES
-                - ET
-                - FI
-                - FJ
-                - FK
-                - FM
-                - FO
-                - FR
-                - GA
-                - GB
-                - GD
-                - GE
-                - GF
-                - GG
-                - GH
-                - GI
-                - GL
-                - GM
-                - GN
-                - GP
-                - GQ
-                - GR
-                - GS
-                - GT
-                - GU
-                - GW
-                - GY
-                - HK
-                - HM
-                - HN
-                - HR
-                - HT
-                - HU
-                - ID
-                - IE
-                - IL
-                - IM
-                - IN
-                - IO
-                - IQ
-                - IR
-                - IS
-                - IT
-                - JE
-                - JM
-                - JO
-                - JP
-                - KE
-                - KG
-                - KH
-                - KI
-                - KM
-                - KN
-                - KP
-                - KR
-                - KW
-                - KY
-                - KZ
-                - LA
-                - LB
-                - LC
-                - LI
-                - LK
-                - LR
-                - LS
-                - LT
-                - LU
-                - LV
-                - LY
-                - MA
-                - MC
-                - MD
-                - ME
-                - MF
-                - MG
-                - MH
-                - MK
-                - ML
-                - MM
-                - MN
-                - MO
-                - MP
-                - MQ
-                - MR
-                - MS
-                - MT
-                - MU
-                - MV
-                - MW
-                - MX
-                - MY
-                - MZ
-                - NA
-                - NC
-                - NE
-                - NF
-                - NG
-                - NI
-                - NL
-                - 'NO'
-                - NP
-                - NR
-                - NU
-                - NZ
-                - OM
-                - PA
-                - PE
-                - PF
-                - PG
-                - PH
-                - PK
-                - PL
-                - PM
-                - PN
-                - PR
-                - PS
-                - PT
-                - PW
-                - PY
-                - QA
-                - RE
-                - RO
-                - RS
-                - RW
-                - SA
-                - SB
-                - SC
-                - SD
-                - SE
-                - SG
-                - SH
-                - SI
-                - SJ
-                - SK
-                - SL
-                - SM
-                - SN
-                - SO
-                - SR
-                - SS
-                - ST
-                - SV
-                - SX
-                - SY
-                - SZ
-                - TC
-                - TD
-                - TF
-                - TG
-                - TH
-                - TJ
-                - TK
-                - TL
-                - TM
-                - TN
-                - TO
-                - TR
-                - TT
-                - TV
-                - TW
-                - TZ
-                - UA
-                - UG
-                - UM
-                - US
-                - UY
-                - UZ
-                - VA
-                - VC
-                - VE
-                - VG
-                - VI
-                - VN
-                - VU
-                - WF
-                - WS
-                - YE
-                - YT
-                - ZA
-                - ZM
-                - ZW
-              tax_id:
-                type: string
-                description: The national ID of the participant, e.g. a social security number.
-                example: 000-00-0000
-              id_number_type:
-                type: string
-                enum:
-                - ssn
-                - ein
-                - us_drivers_license
-                - us_passport
-                - us_passport_card
-                - us_permanent_resident_card
-                - us_border_crossing_card
-                - us_alien_card
-                - us_id_card
-                - non_us_passport
-                - non_us_other
-                - passport
-                - eu_drivers_license
-                - legal_entity_identifier
-                - chamber_of_commerce_number
-                - value_added_tax_number
-                - national_id
-                description: The type of ID number
-                example: us_border_crossing_card
-              id_number:
-                type: string
-                description: The ID number for the customer
-                example: '123456789'
-              kyc:
-                type: string
-                enum:
-                - pass
-                - fail
-                description: Whether the participant passed or failed KYC by vendor
-                example: pass
               kyc_timestamp:
                 type: number
-                description: The UNIX timestamp (in milliseconds) when KYC was performed on the participant. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
+                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
                 example: 1603378501286
-              sanction_screening:
-                type: string
-                enum:
-                - pass
-                - fail
-                description: Whether the participant passed sanctions checks
-                example: pass
               sanction_screening_timestamp:
                 type: number
-                description: The UNIX timestamp (in milliseconds) when sanctions screening was performed on the participant. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
+                description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp must be no greater than one (1) year in the past and one (1) day in the future
                 example: 1603378501286
-              place_of_birth_country_code:
-                type: string
-                description: The ISO 3166-1 alpha-2 country code of the person's place of birth. Present only for EU NNP persons.
-                example: DE
-              first_name:
-                type: string
-                description: The person's given name.
-                example: Jane
-              middle_name:
-                type: string
-                description: The person's middle name.
-                example: Q
-              last_name:
-                type: string
-                description: The person's family name.
-                example: Doe
-              is_control_person:
-                type: boolean
-                description: Indicates if the user is a control person of the entity.
-              is_board_member:
-                type: boolean
-                description: Indicates if the user is a board member of the entity.
     PatchUserResponse:
       type: object
       properties:
@@ -9889,6 +8050,1845 @@ components:
           type: number
           description: UNIX timestamp (in milliseconds) when the platform last updated the user's information.
           example: 1603378501286
+    BeneficialOwnerResponseEntity:
+      type: object
+      properties:
+        user_code:
+          type: string
+          description: zerohash identifier for the Beneficial Owner(s) (One code returned per person)
+          example: U-XXXXXX
+        name:
+          type: string
+          description: Full name of the beneficial owner
+          example: John Smith
+        email:
+          type: string
+          description: Email address of beneficial owner
+          example: test@example.com
+        address_one:
+          type: string
+          description: 'First line for the beneficial owner''s address.
+
+
+            Notes:
+
+            - The regular maximum length is 80 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: 123 Main St.
+        address_two:
+          type: string
+          description: 'Extra information, like an apartment or suite number.
+
+
+            Notes:
+
+            - The regular maximum length is 50 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: Suite 1000
+        city:
+          type: string
+          description: City of the beneficial owner
+          example: Chicago
+        postal_code:
+          type: string
+          description: Postal, or zip code, of the beneficial owner, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+          example: '12345'
+        jurisdiction_code:
+          type: string
+          example: US-IL
+          description: The ISO 3166-2 subdivision code that the beneficial owner resides in
+        date_of_birth:
+          type: string
+          description: Birth date of the beneficial owner
+          example: '1985-09-02'
+        phone_number:
+          type: string
+          description: The phone number of the beneficial owner
+          example: '15557778888'
+        citizenship_code:
+          type: string
+          example: US
+          description: The ISO-3166-1 alpha2 citizenship of the beneficial owner, e.g. `US`.
+          enum:
+          - AD
+          - AE
+          - AF
+          - AG
+          - AI
+          - AL
+          - AM
+          - AO
+          - AQ
+          - AR
+          - AS
+          - AT
+          - AU
+          - AW
+          - AX
+          - AZ
+          - BA
+          - BB
+          - BD
+          - BE
+          - BF
+          - BG
+          - BH
+          - BI
+          - BJ
+          - BL
+          - BM
+          - BN
+          - BO
+          - BQ
+          - BR
+          - BS
+          - BT
+          - BV
+          - BW
+          - BY
+          - BZ
+          - CA
+          - CC
+          - CD
+          - CF
+          - CG
+          - CH
+          - CI
+          - CK
+          - CL
+          - CM
+          - CN
+          - CO
+          - CR
+          - CU
+          - CV
+          - CW
+          - CX
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DK
+          - DM
+          - DO
+          - DZ
+          - EC
+          - EE
+          - EG
+          - EH
+          - ER
+          - ES
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FM
+          - FO
+          - FR
+          - GA
+          - GB
+          - GD
+          - GE
+          - GF
+          - GG
+          - GH
+          - GI
+          - GL
+          - GM
+          - GN
+          - GP
+          - GQ
+          - GR
+          - GS
+          - GT
+          - GU
+          - GW
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IE
+          - IL
+          - IM
+          - IN
+          - IO
+          - IQ
+          - IR
+          - IS
+          - IT
+          - JE
+          - JM
+          - JO
+          - JP
+          - KE
+          - KG
+          - KH
+          - KI
+          - KM
+          - KN
+          - KP
+          - KR
+          - KW
+          - KY
+          - KZ
+          - LA
+          - LB
+          - LC
+          - LI
+          - LK
+          - LR
+          - LS
+          - LT
+          - LU
+          - LV
+          - LY
+          - MA
+          - MC
+          - MD
+          - ME
+          - MF
+          - MG
+          - MH
+          - MK
+          - ML
+          - MM
+          - MN
+          - MO
+          - MP
+          - MQ
+          - MR
+          - MS
+          - MT
+          - MU
+          - MV
+          - MW
+          - MX
+          - MY
+          - MZ
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NU
+          - NZ
+          - OM
+          - PA
+          - PE
+          - PF
+          - PG
+          - PH
+          - PK
+          - PL
+          - PM
+          - PN
+          - PR
+          - PS
+          - PT
+          - PW
+          - PY
+          - QA
+          - RE
+          - RO
+          - RS
+          - RW
+          - SA
+          - SB
+          - SC
+          - SD
+          - SE
+          - SG
+          - SH
+          - SI
+          - SJ
+          - SK
+          - SL
+          - SM
+          - SN
+          - SO
+          - SR
+          - SS
+          - ST
+          - SV
+          - SX
+          - SY
+          - SZ
+          - TC
+          - TD
+          - TF
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TL
+          - TM
+          - TN
+          - TO
+          - TR
+          - TT
+          - TV
+          - TW
+          - TZ
+          - UA
+          - UG
+          - UM
+          - US
+          - UY
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - YT
+          - ZA
+          - ZM
+          - ZW
+        tax_id:
+          type: string
+          description: "The national ID of the beneficial owner, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
+          example: 000-00-0000
+        id_number_type:
+          type: string
+          enum:
+          - us_drivers_license
+          - us_passport
+          - us_passport_card
+          - us_permanent_resident_card
+          - us_border_crossing_card
+          - us_alien_card
+          - us_id_card
+          - non_us_passport
+          - non_us_other
+          - passport
+          - eu_drivers_license
+          - national_id
+          - legal_entity_identifier
+          - chamber_of_commerce_number
+          - value_added_tax_number
+          description: 'The type of identification number provided.
+
+
+            **Allowed values:**
+
+            - `us_drivers_license` - US Driver''s License
+
+            - `us_passport` - US Passport
+
+            - `us_passport_card` - US Passport Card
+
+            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
+
+            - `us_border_crossing_card` - US Border Crossing Card
+
+            - `us_alien_card` - US Alien Registration Card
+
+            - `us_id_card` - US State-issued ID Card
+
+            - `non_us_passport` - Non-US Passport
+
+            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
+
+            - `passport` - Generic passport
+
+            - `eu_drivers_license` - European Union Driver''s License
+
+            - `national_id` - National identity card
+
+            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
+
+            - `chamber_of_commerce_number` - Chamber of Commerce registration number
+
+            - `value_added_tax_number` - VAT identification number
+
+
+            **Conditional requirements:**
+
+            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
+
+            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
+          example: us_passport
+        id_number:
+          type: string
+          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
+          example: '123456789'
+        id_issuing_authority:
+          type: string
+          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
+          example: null
+        sanction_screening:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Result of the beneficial owner''s sanctions screening.
+
+
+            **Allowed values:**
+
+            - `pass` - Beneficial owner passed sanctions screening
+
+            - `fail` - Beneficial owner failed sanctions screening'
+          example: pass
+        sanction_screening_timestamp:
+          type: number
+          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the beneficial owner.
+          example: 1603378501286
+        kyc:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Whether the beneficial owner passed or failed KYC verification by vendor.
+
+
+            **Allowed values:**
+
+            - `pass` - KYC verification passed
+
+            - `fail` - KYC verification failed'
+          example: pass
+        kyc_timestamp:
+          type: number
+          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
+          example: 1603378501286
+        beneficial_owner:
+          type: number
+          enum:
+          - 0
+          - 1
+          - 2
+          description: 'Designation of what percent of the business the beneficial owner owns.
+
+
+            **Allowed values:**
+
+            - `0` - Unknown
+
+            - `1` - Greater than or equal to 10% but less than 25%
+
+            - `2` - Greater than or equal to 25%'
+          example: 1
+        role:
+          type: string
+          description: The role of the beneficial owner
+          example: ''
+    PatchUserBody:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: John
+          description: The first name of the user
+        middle_name:
+          type: string
+          description: The middle name of the user
+        last_name:
+          type: string
+          example: Smith
+          description: The last name of the user
+        email:
+          type: string
+          description: Email address of the user
+          example: test@example.com
+        contact_number:
+          type: string
+          description: The phone number of the user. Must be in E.164 format
+          example: '+15557778888'
+        address_one:
+          type: string
+          description: 'First line for the user''s address.
+
+
+            Notes:
+
+            - The regular maximum length is 80 characters.
+
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: 123 Main St.
+        address_two:
+          type: string
+          description: 'Extra information, like an apartment or suite number.
+
+
+            Notes:
+
+            - The regular maximum length is 50 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: Suite 1000
+        city:
+          type: string
+          description: City of the user
+          example: Chicago
+        postal_code:
+          type: string
+          description: Postal, or zip code, of the user, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+          example: '12345'
+        jurisdiction_code:
+          type: string
+          example: US-IL
+          description: The ISO 3166-2 subdivision code that the user resides in
+        date_of_birth:
+          type: string
+          description: Birth date of the user
+          example: '1985-09-02'
+        place_of_birth:
+          type: object
+          required:
+          - country_code
+          properties:
+            country_code:
+              type: string
+              description: ISO 3166-1 alpha-2 Country Code
+              example: NL
+            place_name:
+              type: string
+              description: Name of the place of birth
+              example: Amsterdam
+          description: The place of birth of the user, as is defined on their ID (Passport, etc.)
+          example:
+            country_code: NL
+            place_name: Amsterdam
+        citizenship_code:
+          type: string
+          example: US
+          description: The ISO-3166-1 alpha2 citizenship of the user, e.g. `US`.
+          enum:
+          - AD
+          - AE
+          - AF
+          - AG
+          - AI
+          - AL
+          - AM
+          - AO
+          - AQ
+          - AR
+          - AS
+          - AT
+          - AU
+          - AW
+          - AX
+          - AZ
+          - BA
+          - BB
+          - BD
+          - BE
+          - BF
+          - BG
+          - BH
+          - BI
+          - BJ
+          - BL
+          - BM
+          - BN
+          - BO
+          - BQ
+          - BR
+          - BS
+          - BT
+          - BV
+          - BW
+          - BY
+          - BZ
+          - CA
+          - CC
+          - CD
+          - CF
+          - CG
+          - CH
+          - CI
+          - CK
+          - CL
+          - CM
+          - CN
+          - CO
+          - CR
+          - CU
+          - CV
+          - CW
+          - CX
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DK
+          - DM
+          - DO
+          - DZ
+          - EC
+          - EE
+          - EG
+          - EH
+          - ER
+          - ES
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FM
+          - FO
+          - FR
+          - GA
+          - GB
+          - GD
+          - GE
+          - GF
+          - GG
+          - GH
+          - GI
+          - GL
+          - GM
+          - GN
+          - GP
+          - GQ
+          - GR
+          - GS
+          - GT
+          - GU
+          - GW
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IE
+          - IL
+          - IM
+          - IN
+          - IO
+          - IQ
+          - IR
+          - IS
+          - IT
+          - JE
+          - JM
+          - JO
+          - JP
+          - KE
+          - KG
+          - KH
+          - KI
+          - KM
+          - KN
+          - KP
+          - KR
+          - KW
+          - KY
+          - KZ
+          - LA
+          - LB
+          - LC
+          - LI
+          - LK
+          - LR
+          - LS
+          - LT
+          - LU
+          - LV
+          - LY
+          - MA
+          - MC
+          - MD
+          - ME
+          - MF
+          - MG
+          - MH
+          - MK
+          - ML
+          - MM
+          - MN
+          - MO
+          - MP
+          - MQ
+          - MR
+          - MS
+          - MT
+          - MU
+          - MV
+          - MW
+          - MX
+          - MY
+          - MZ
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NU
+          - NZ
+          - OM
+          - PA
+          - PE
+          - PF
+          - PG
+          - PH
+          - PK
+          - PL
+          - PM
+          - PN
+          - PR
+          - PS
+          - PT
+          - PW
+          - PY
+          - QA
+          - RE
+          - RO
+          - RS
+          - RW
+          - SA
+          - SB
+          - SC
+          - SD
+          - SE
+          - SG
+          - SH
+          - SI
+          - SJ
+          - SK
+          - SL
+          - SM
+          - SN
+          - SO
+          - SR
+          - SS
+          - ST
+          - SV
+          - SX
+          - SY
+          - SZ
+          - TC
+          - TD
+          - TF
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TL
+          - TM
+          - TN
+          - TO
+          - TR
+          - TT
+          - TV
+          - TW
+          - TZ
+          - UA
+          - UG
+          - UM
+          - US
+          - UY
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - YT
+          - ZA
+          - ZM
+          - ZW
+        tax_id:
+          type: string
+          description: "The national ID of the user, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
+          example: 000-00-0000
+        id_number_type:
+          type: string
+          enum:
+          - us_drivers_license
+          - us_passport
+          - us_passport_card
+          - us_permanent_resident_card
+          - us_border_crossing_card
+          - us_alien_card
+          - us_id_card
+          - non_us_passport
+          - non_us_other
+          - passport
+          - eu_drivers_license
+          - national_id
+          - legal_entity_identifier
+          - chamber_of_commerce_number
+          - value_added_tax_number
+          description: 'The type of identification number provided.
+
+
+            **Allowed values:**
+
+            - `us_drivers_license` - US Driver''s License
+
+            - `us_passport` - US Passport
+
+            - `us_passport_card` - US Passport Card
+
+            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
+
+            - `us_border_crossing_card` - US Border Crossing Card
+
+            - `us_alien_card` - US Alien Registration Card
+
+            - `us_id_card` - US State-issued ID Card
+
+            - `non_us_passport` - Non-US Passport
+
+            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
+
+            - `passport` - Generic passport
+
+            - `eu_drivers_license` - European Union Driver''s License
+
+            - `national_id` - National identity card
+
+            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
+
+            - `chamber_of_commerce_number` - Chamber of Commerce registration number
+
+            - `value_added_tax_number` - VAT identification number
+
+
+            **Conditional requirements:**
+
+            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
+
+            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
+          example: us_passport
+        id_number:
+          type: string
+          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
+          example: '123456789'
+        id_issuing_authority:
+          type: string
+          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
+          example: US
+          enum:
+          - AD
+          - AE
+          - AF
+          - AG
+          - AI
+          - AL
+          - AM
+          - AO
+          - AQ
+          - AR
+          - AS
+          - AT
+          - AU
+          - AW
+          - AX
+          - AZ
+          - BA
+          - BB
+          - BD
+          - BE
+          - BF
+          - BG
+          - BH
+          - BI
+          - BJ
+          - BL
+          - BM
+          - BN
+          - BO
+          - BQ
+          - BR
+          - BS
+          - BT
+          - BV
+          - BW
+          - BY
+          - BZ
+          - CA
+          - CC
+          - CD
+          - CF
+          - CG
+          - CH
+          - CI
+          - CK
+          - CL
+          - CM
+          - CN
+          - CO
+          - CR
+          - CU
+          - CV
+          - CW
+          - CX
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DK
+          - DM
+          - DO
+          - DZ
+          - EC
+          - EE
+          - EG
+          - EH
+          - ER
+          - ES
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FM
+          - FO
+          - FR
+          - GA
+          - GB
+          - GD
+          - GE
+          - GF
+          - GG
+          - GH
+          - GI
+          - GL
+          - GM
+          - GN
+          - GP
+          - GQ
+          - GR
+          - GS
+          - GT
+          - GU
+          - GW
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IE
+          - IL
+          - IM
+          - IN
+          - IO
+          - IQ
+          - IR
+          - IS
+          - IT
+          - JE
+          - JM
+          - JO
+          - JP
+          - KE
+          - KG
+          - KH
+          - KI
+          - KM
+          - KN
+          - KP
+          - KR
+          - KW
+          - KY
+          - KZ
+          - LA
+          - LB
+          - LC
+          - LI
+          - LK
+          - LR
+          - LS
+          - LT
+          - LU
+          - LV
+          - LY
+          - MA
+          - MC
+          - MD
+          - ME
+          - MF
+          - MG
+          - MH
+          - MK
+          - ML
+          - MM
+          - MN
+          - MO
+          - MP
+          - MQ
+          - MR
+          - MS
+          - MT
+          - MU
+          - MV
+          - MW
+          - MX
+          - MY
+          - MZ
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NU
+          - NZ
+          - OM
+          - PA
+          - PE
+          - PF
+          - PG
+          - PH
+          - PK
+          - PL
+          - PM
+          - PN
+          - PR
+          - PS
+          - PT
+          - PW
+          - PY
+          - QA
+          - RE
+          - RO
+          - RS
+          - RW
+          - SA
+          - SB
+          - SC
+          - SD
+          - SE
+          - SG
+          - SH
+          - SI
+          - SJ
+          - SK
+          - SL
+          - SM
+          - SN
+          - SO
+          - SR
+          - SS
+          - ST
+          - SV
+          - SX
+          - SY
+          - SZ
+          - TC
+          - TD
+          - TF
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TL
+          - TM
+          - TN
+          - TO
+          - TR
+          - TT
+          - TV
+          - TW
+          - TZ
+          - UA
+          - UG
+          - UM
+          - US
+          - UY
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - YT
+          - ZA
+          - ZM
+          - ZW
+        non_us_other_type:
+          type: string
+          description: This is required if you select `non_us_other` for the `id_number_type` - a freeform string to describe the ID type
+          example: null
+        sanction_screening:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Result of the user''s sanctions screening.
+
+
+            **Allowed values:**
+
+            - `pass` - User passed sanctions screening
+
+            - `fail` - User failed sanctions screening'
+          example: pass
+        sanction_screening_timestamp:
+          type: number
+          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the user.
+          example: 1603378501286
+        kyc:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Whether the user passed or failed KYC verification by vendor.
+
+
+            **Allowed values:**
+
+            - `pass` - KYC verification passed
+
+            - `fail` - KYC verification failed'
+          example: pass
+        kyc_timestamp:
+          type: number
+          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
+          example: 1603378501286
+        role:
+          type: string
+          description: The role of the user
+          example: ''
+    ControlPersonEntity:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the control person
+          example: John Smith
+        email:
+          type: string
+          description: Email address of control person
+          example: test@example.com
+        address_one:
+          type: string
+          description: 'First line for the control person''s address.
+
+
+            Notes:
+
+            - The regular maximum length is 80 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: 123 Main St.
+        address_two:
+          type: string
+          description: 'Extra information, like an apartment or suite number.
+
+
+            Notes:
+
+            - The regular maximum length is 50 characters.
+
+            - If the platform is on the vendor reliance track, the maximum length increases to 200 characters.
+
+            - PO Box addresses are not accepted.'
+          example: Suite 1000
+        city:
+          type: string
+          description: City of the control person
+          example: Chicago
+        postal_code:
+          type: string
+          description: Postal, or zip code, of the control person, in the format "min 4 characters, no leading or trailing spaces" for non-US postal code or <5digits>-<4digits> for US zip code, e.g. 77777 or 77777-7777
+          example: '12345'
+        jurisdiction_code:
+          type: string
+          example: US-IL
+          description: The ISO 3166-2 subdivision code that the control person resides in
+        date_of_birth:
+          type: string
+          description: Birth date of the control person
+          example: '1985-09-02'
+        phone_number:
+          type: string
+          description: The phone number of the control person
+          example: '15557778888'
+        citizenship_code:
+          type: string
+          example: US
+          description: The ISO-3166-1 alpha2 citizenship of the control person, e.g. `US`.
+          enum:
+          - AD
+          - AE
+          - AF
+          - AG
+          - AI
+          - AL
+          - AM
+          - AO
+          - AQ
+          - AR
+          - AS
+          - AT
+          - AU
+          - AW
+          - AX
+          - AZ
+          - BA
+          - BB
+          - BD
+          - BE
+          - BF
+          - BG
+          - BH
+          - BI
+          - BJ
+          - BL
+          - BM
+          - BN
+          - BO
+          - BQ
+          - BR
+          - BS
+          - BT
+          - BV
+          - BW
+          - BY
+          - BZ
+          - CA
+          - CC
+          - CD
+          - CF
+          - CG
+          - CH
+          - CI
+          - CK
+          - CL
+          - CM
+          - CN
+          - CO
+          - CR
+          - CU
+          - CV
+          - CW
+          - CX
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DK
+          - DM
+          - DO
+          - DZ
+          - EC
+          - EE
+          - EG
+          - EH
+          - ER
+          - ES
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FM
+          - FO
+          - FR
+          - GA
+          - GB
+          - GD
+          - GE
+          - GF
+          - GG
+          - GH
+          - GI
+          - GL
+          - GM
+          - GN
+          - GP
+          - GQ
+          - GR
+          - GS
+          - GT
+          - GU
+          - GW
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IE
+          - IL
+          - IM
+          - IN
+          - IO
+          - IQ
+          - IR
+          - IS
+          - IT
+          - JE
+          - JM
+          - JO
+          - JP
+          - KE
+          - KG
+          - KH
+          - KI
+          - KM
+          - KN
+          - KP
+          - KR
+          - KW
+          - KY
+          - KZ
+          - LA
+          - LB
+          - LC
+          - LI
+          - LK
+          - LR
+          - LS
+          - LT
+          - LU
+          - LV
+          - LY
+          - MA
+          - MC
+          - MD
+          - ME
+          - MF
+          - MG
+          - MH
+          - MK
+          - ML
+          - MM
+          - MN
+          - MO
+          - MP
+          - MQ
+          - MR
+          - MS
+          - MT
+          - MU
+          - MV
+          - MW
+          - MX
+          - MY
+          - MZ
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NU
+          - NZ
+          - OM
+          - PA
+          - PE
+          - PF
+          - PG
+          - PH
+          - PK
+          - PL
+          - PM
+          - PN
+          - PR
+          - PS
+          - PT
+          - PW
+          - PY
+          - QA
+          - RE
+          - RO
+          - RS
+          - RW
+          - SA
+          - SB
+          - SC
+          - SD
+          - SE
+          - SG
+          - SH
+          - SI
+          - SJ
+          - SK
+          - SL
+          - SM
+          - SN
+          - SO
+          - SR
+          - SS
+          - ST
+          - SV
+          - SX
+          - SY
+          - SZ
+          - TC
+          - TD
+          - TF
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TL
+          - TM
+          - TN
+          - TO
+          - TR
+          - TT
+          - TV
+          - TW
+          - TZ
+          - UA
+          - UG
+          - UM
+          - US
+          - UY
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - YT
+          - ZA
+          - ZM
+          - ZW
+        tax_id:
+          type: string
+          description: "The national ID of the control person, e.g. a social security number. Required if `citizenship=United States` or `citizenship_code=US`. \nNote: if `citizenship=United States`, and `tax_id` begins with `9`, then `id_number_type` and `id_number` are also required."
+          example: 000-00-0000
+        id_number_type:
+          type: string
+          enum:
+          - us_drivers_license
+          - us_passport
+          - us_passport_card
+          - us_permanent_resident_card
+          - us_border_crossing_card
+          - us_alien_card
+          - us_id_card
+          - non_us_passport
+          - non_us_other
+          - passport
+          - eu_drivers_license
+          - national_id
+          - legal_entity_identifier
+          - chamber_of_commerce_number
+          - value_added_tax_number
+          description: 'The type of identification number provided.
+
+
+            **Allowed values:**
+
+            - `us_drivers_license` - US Driver''s License
+
+            - `us_passport` - US Passport
+
+            - `us_passport_card` - US Passport Card
+
+            - `us_permanent_resident_card` - US Permanent Resident Card (Green Card)
+
+            - `us_border_crossing_card` - US Border Crossing Card
+
+            - `us_alien_card` - US Alien Registration Card
+
+            - `us_id_card` - US State-issued ID Card
+
+            - `non_us_passport` - Non-US Passport
+
+            - `non_us_other` - Other Non-US identification (requires `non_us_other_type` field)
+
+            - `passport` - Generic passport
+
+            - `eu_drivers_license` - European Union Driver''s License
+
+            - `national_id` - National identity card
+
+            - `legal_entity_identifier` - Legal Entity Identifier (LEI) for organizations
+
+            - `chamber_of_commerce_number` - Chamber of Commerce registration number
+
+            - `value_added_tax_number` - VAT identification number
+
+
+            **Conditional requirements:**
+
+            - When `id_number_type` is `non_us_other`, the `non_us_other_type` field is required.
+
+            **Note:** Required when citizenship is not `United States` or `tax_id` is not an SSN.'
+          example: us_passport
+        id_number:
+          type: string
+          description: "ID number of the ID document provided. \nRequired when citizenship is not `United States` or `tax_id` is not an SSN\t"
+          example: '123456789'
+        id_issuing_authority:
+          type: string
+          description: ISO-3166-1_A2 country code that issued the ID. Required if `id_number` is provided.
+          example: US
+          enum:
+          - AD
+          - AE
+          - AF
+          - AG
+          - AI
+          - AL
+          - AM
+          - AO
+          - AQ
+          - AR
+          - AS
+          - AT
+          - AU
+          - AW
+          - AX
+          - AZ
+          - BA
+          - BB
+          - BD
+          - BE
+          - BF
+          - BG
+          - BH
+          - BI
+          - BJ
+          - BL
+          - BM
+          - BN
+          - BO
+          - BQ
+          - BR
+          - BS
+          - BT
+          - BV
+          - BW
+          - BY
+          - BZ
+          - CA
+          - CC
+          - CD
+          - CF
+          - CG
+          - CH
+          - CI
+          - CK
+          - CL
+          - CM
+          - CN
+          - CO
+          - CR
+          - CU
+          - CV
+          - CW
+          - CX
+          - CY
+          - CZ
+          - DE
+          - DJ
+          - DK
+          - DM
+          - DO
+          - DZ
+          - EC
+          - EE
+          - EG
+          - EH
+          - ER
+          - ES
+          - ET
+          - FI
+          - FJ
+          - FK
+          - FM
+          - FO
+          - FR
+          - GA
+          - GB
+          - GD
+          - GE
+          - GF
+          - GG
+          - GH
+          - GI
+          - GL
+          - GM
+          - GN
+          - GP
+          - GQ
+          - GR
+          - GS
+          - GT
+          - GU
+          - GW
+          - GY
+          - HK
+          - HM
+          - HN
+          - HR
+          - HT
+          - HU
+          - ID
+          - IE
+          - IL
+          - IM
+          - IN
+          - IO
+          - IQ
+          - IR
+          - IS
+          - IT
+          - JE
+          - JM
+          - JO
+          - JP
+          - KE
+          - KG
+          - KH
+          - KI
+          - KM
+          - KN
+          - KP
+          - KR
+          - KW
+          - KY
+          - KZ
+          - LA
+          - LB
+          - LC
+          - LI
+          - LK
+          - LR
+          - LS
+          - LT
+          - LU
+          - LV
+          - LY
+          - MA
+          - MC
+          - MD
+          - ME
+          - MF
+          - MG
+          - MH
+          - MK
+          - ML
+          - MM
+          - MN
+          - MO
+          - MP
+          - MQ
+          - MR
+          - MS
+          - MT
+          - MU
+          - MV
+          - MW
+          - MX
+          - MY
+          - MZ
+          - NA
+          - NC
+          - NE
+          - NF
+          - NG
+          - NI
+          - NL
+          - 'NO'
+          - NP
+          - NR
+          - NU
+          - NZ
+          - OM
+          - PA
+          - PE
+          - PF
+          - PG
+          - PH
+          - PK
+          - PL
+          - PM
+          - PN
+          - PR
+          - PS
+          - PT
+          - PW
+          - PY
+          - QA
+          - RE
+          - RO
+          - RS
+          - RW
+          - SA
+          - SB
+          - SC
+          - SD
+          - SE
+          - SG
+          - SH
+          - SI
+          - SJ
+          - SK
+          - SL
+          - SM
+          - SN
+          - SO
+          - SR
+          - SS
+          - ST
+          - SV
+          - SX
+          - SY
+          - SZ
+          - TC
+          - TD
+          - TF
+          - TG
+          - TH
+          - TJ
+          - TK
+          - TL
+          - TM
+          - TN
+          - TO
+          - TR
+          - TT
+          - TV
+          - TW
+          - TZ
+          - UA
+          - UG
+          - UM
+          - US
+          - UY
+          - UZ
+          - VA
+          - VC
+          - VE
+          - VG
+          - VI
+          - VN
+          - VU
+          - WF
+          - WS
+          - YE
+          - YT
+          - ZA
+          - ZM
+          - ZW
+        sanction_screening:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Result of the control person''s sanctions screening.
+
+
+            **Allowed values:**
+
+            - `pass` - Control person passed sanctions screening
+
+            - `fail` - Control person failed sanctions screening'
+          example: pass
+        sanction_screening_timestamp:
+          type: number
+          description: UNIX timestamp (in milliseconds) when the sanctions screening was performed on the control person.
+          example: 1603378501286
+        kyc:
+          type: string
+          enum:
+          - pass
+          - fail
+          description: 'Whether the control person passed or failed KYC verification by vendor.
+
+
+            **Allowed values:**
+
+            - `pass` - KYC verification passed
+
+            - `fail` - KYC verification failed'
+          example: pass
+        kyc_timestamp:
+          type: number
+          description: The UNIX timestamp (in milliseconds) when KYC was passed. This timestamp value must be from no longer than one (1) year in the past or one (1) day in the future.
+          example: 1603378501286
+        control_person:
+          type: number
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          description: 'Designation of what percent of the business the control person controls.
+
+
+            **Allowed values:**
+
+            - `0` - Unknown
+
+            - `1` - Less than 10%
+
+            - `2` - Greater than or equal to 10% but less than 25%
+
+            - `3` - Greater than or equal to 25%'
+          example: 1
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
   parameters:
     ParticipantCodePath:
       name: participant_code
@@ -9899,13 +9899,6 @@ components:
         type: string
         pattern: ^[A-Z0-9]{6}$
         example: ABCDEF
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -9914,6 +9907,13 @@ components:
       schema:
         type: string
         example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

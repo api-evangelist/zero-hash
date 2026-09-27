@@ -252,23 +252,117 @@ paths:
       operationId: postFundDeposit
       x-operation-id-source: derived
 components:
-  parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   schemas:
+    GetFundTransactionsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetFundTransactionsEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 50
+        total_pages:
+          type: number
+          example: 1
+    PostFundRfqResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              description: The unique identifier associated for the request
+              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+            participant_code:
+              type: string
+              description: The participant code tied to the deposit
+              example: ABCDEF
+            fund_asset:
+              type: string
+              description: The asset that can be deposited to the wallet
+              example: USDC.ETH
+            rate:
+              type: string
+              description: The current market rate for the conversion
+              example: '1'
+            quoted_currency:
+              type: string
+              description: The currency in which the instrument's price is quoted
+              example: '1'
+            expiry_timestamp:
+              type: number
+              minimum: 1254408627334
+              maximum: 2554408627334
+              multipleOf: 1
+              description: The expiry of the rate provided to the customer. null for stable coins
+              example: 2554408627334
+            deposit_address:
+              type: string
+              description: The wallet address used for the deposit
+              example: '0x5f59B625036ccB4f7aD27Ca4Cb896e4452AfFDAF'
+            account_label:
+              type: string
+              description: The account label associated with the account that will receive the deposit. Only present when an account_label was supplied on the request.
+              example: general
+            deposit_fee_bps:
+              type: number
+              description: The deposit fee rate in basis points that will be applied when `deposit_fee_type` is `flat`.
+              example: 0
+            first_deposit_fee_floor:
+              type: string
+              description: Minimum fee (in the quoted currency) charged on a participant's first deposit when the percentage-based fee would otherwise fall below this floor.
+              example: '1'
+            subsequent_deposit_fee_floor:
+              type: string
+              description: Minimum fee (in the quoted currency) charged on subsequent deposits when the percentage-based fee would otherwise fall below this floor.
+              example: '0'
+            minimum_deposit:
+              type: string
+              description: The minimum deposit amount allowed
+              example: '1'
+            maximum_deposit:
+              type: string
+              description: The maximum deposit amount allowed
+              example: '250000'
+            reference_id:
+              type: string
+              description: The identifier assigned to the fund event. This is the same as the `client_fund_id` provided in the request
+              example: f2f14251-e296-42ac-9bc7-01c9186b921c
+            deposit_fee_type:
+              type: string
+              description: The fee model applied to the deposit
+              enum:
+              - flat
+              - tiered
+              example: tiered
+            deposit_fee_tiers:
+              type: array
+              description: The tier configuration for tiered fee deposits
+              items:
+                type: object
+                properties:
+                  tier:
+                    type: number
+                    description: The tier number (1-based)
+                    example: 1
+                  min_amount:
+                    type: string
+                    description: The minimum deposit amount for this tier
+                    example: '0'
+                  max_amount:
+                    type: string
+                    description: The maximum deposit amount for this tier. Absent for the final tier (unlimited)
+                    example: '5000'
+                  fee_bps:
+                    type: string
+                    description: The fee rate in basis points for this tier
+                    example: '40'
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -278,64 +372,6 @@ components:
         error:
           type: string
           example: Service Unavailable
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    PostFundDepositRequest:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          minLength: 6
-          maxLength: 6
-          description: The participant code tied to the deposit
-          example: ABCDEF
-        external_account_id:
-          type: string
-          description: The external account id tied to the deposit
-          example: 0f34533e-2114-469d-b505-c850d776e061
-        asset:
-          type: string
-          description: The asset code for the deposit, e.g. USD
-          example: USD
-          enum:
-          - USD
-        amount:
-          type: string
-          description: The amount of the deposit
-          example: '100'
-        description:
-          type: string
-          description: Description of the deposit
-          example: Deposit for trading account
-        network:
-          type: string
-          description: The network for the deposit, e.g. `ach`.
-          example: ach
-          enum:
-          - ach
-        instant:
-          type: boolean
-          description: Whether the deposit should be processed instantly
-          example: true
-      required:
-      - participant_code
-      - external_account_id
-      - asset
-      - amount
-      - description
-      - network
-      - instant
     Code500:
       type: object
       description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
@@ -436,100 +472,6 @@ components:
               type: string
               description: Version of the ACH agreement that was accepted.
               example: 1.0.0
-    PostFundRfqResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            request_id:
-              type: string
-              description: The unique identifier associated for the request
-              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
-            participant_code:
-              type: string
-              description: The participant code tied to the deposit
-              example: ABCDEF
-            fund_asset:
-              type: string
-              description: The asset that can be deposited to the wallet
-              example: USDC.ETH
-            rate:
-              type: string
-              description: The current market rate for the conversion
-              example: '1'
-            quoted_currency:
-              type: string
-              description: The currency in which the instrument's price is quoted
-              example: '1'
-            expiry_timestamp:
-              type: number
-              minimum: 1254408627334
-              maximum: 2554408627334
-              multipleOf: 1
-              description: The expiry of the rate provided to the customer. null for stable coins
-              example: 2554408627334
-            deposit_address:
-              type: string
-              description: The wallet address used for the deposit
-              example: '0x5f59B625036ccB4f7aD27Ca4Cb896e4452AfFDAF'
-            account_label:
-              type: string
-              description: The account label associated with the account that will receive the deposit. Only present when an account_label was supplied on the request.
-              example: general
-            deposit_fee_bps:
-              type: number
-              description: The deposit fee rate in basis points that will be applied when `deposit_fee_type` is `flat`.
-              example: 0
-            first_deposit_fee_floor:
-              type: string
-              description: Minimum fee (in the quoted currency) charged on a participant's first deposit when the percentage-based fee would otherwise fall below this floor.
-              example: '1'
-            subsequent_deposit_fee_floor:
-              type: string
-              description: Minimum fee (in the quoted currency) charged on subsequent deposits when the percentage-based fee would otherwise fall below this floor.
-              example: '0'
-            minimum_deposit:
-              type: string
-              description: The minimum deposit amount allowed
-              example: '1'
-            maximum_deposit:
-              type: string
-              description: The maximum deposit amount allowed
-              example: '250000'
-            reference_id:
-              type: string
-              description: The identifier assigned to the fund event. This is the same as the `client_fund_id` provided in the request
-              example: f2f14251-e296-42ac-9bc7-01c9186b921c
-            deposit_fee_type:
-              type: string
-              description: The fee model applied to the deposit
-              enum:
-              - flat
-              - tiered
-              example: tiered
-            deposit_fee_tiers:
-              type: array
-              description: The tier configuration for tiered fee deposits
-              items:
-                type: object
-                properties:
-                  tier:
-                    type: number
-                    description: The tier number (1-based)
-                    example: 1
-                  min_amount:
-                    type: string
-                    description: The minimum deposit amount for this tier
-                    example: '0'
-                  max_amount:
-                    type: string
-                    description: The maximum deposit amount for this tier. Absent for the final tier (unlimited)
-                    example: '5000'
-                  fee_bps:
-                    type: string
-                    description: The fee rate in basis points for this tier
-                    example: '40'
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -543,6 +485,97 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
+    PostFundRfqBody:
+      type: object
+      required:
+      - participant_code
+      - fund_asset
+      properties:
+        participant_code:
+          type: string
+          description: The participant code tied to the deposit
+          example: ABCDEF
+        fund_asset:
+          type: string
+          description: The asset that can be deposited to the wallet
+          example: USDC
+        account_label:
+          type: string
+          maxLength: 40
+          description: The account label to allocate
+          example: test_label
+        client_fund_id:
+          type: string
+          maxLength: 50
+          description: A custom identifier for the fund event. Platforms can use this field for tracking purposes, such as identifying fund events that are part of a specific promotion or campaign.
+          example: f2f14251-e296-42ac-9bc7-01c9186b921c
+    PostFundDepositRequest:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          description: The participant code tied to the deposit
+          example: ABCDEF
+        external_account_id:
+          type: string
+          description: The external account id tied to the deposit
+          example: 0f34533e-2114-469d-b505-c850d776e061
+        asset:
+          type: string
+          description: The asset code for the deposit, e.g. USD
+          example: USD
+          enum:
+          - USD
+        amount:
+          type: string
+          description: The amount of the deposit
+          example: '100'
+        description:
+          type: string
+          description: Description of the deposit
+          example: Deposit for trading account
+        network:
+          type: string
+          description: The network for the deposit, e.g. `ach`.
+          example: ach
+          enum:
+          - ach
+        instant:
+          type: boolean
+          description: Whether the deposit should be processed instantly
+          example: true
+      required:
+      - participant_code
+      - external_account_id
+      - asset
+      - amount
+      - description
+      - network
+      - instant
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
     GetFundTransactionsEntity:
       type: object
       properties:
@@ -685,55 +718,22 @@ components:
                 type: string
                 description: The fee amount calculated for this tier
                 example: '2.00'
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    PostFundRfqBody:
-      type: object
-      required:
-      - participant_code
-      - fund_asset
-      properties:
-        participant_code:
-          type: string
-          description: The participant code tied to the deposit
-          example: ABCDEF
-        fund_asset:
-          type: string
-          description: The asset that can be deposited to the wallet
-          example: USDC
-        account_label:
-          type: string
-          maxLength: 40
-          description: The account label to allocate
-          example: test_label
-        client_fund_id:
-          type: string
-          maxLength: 50
-          description: A custom identifier for the fund event. Platforms can use this field for tracking purposes, such as identifying fund events that are part of a specific promotion or campaign.
-          example: f2f14251-e296-42ac-9bc7-01c9186b921c
-    GetFundTransactionsResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetFundTransactionsEntity'
-        page:
-          type: number
-          example: 1
-        page_size:
-          type: number
-          example: 50
-        total_pages:
-          type: number
-          example: 1
+  parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
   securitySchemes:
     apiKey:
       type: apiKey
