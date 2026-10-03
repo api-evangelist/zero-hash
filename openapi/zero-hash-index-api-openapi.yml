@@ -78,23 +78,107 @@ paths:
       operationId: getIndex
       x-operation-id-source: derived
 components:
-  parameters:
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
   schemas:
+    GetIndexResponse:
+      type: object
+      properties:
+        timestamp:
+          type: number
+          description: Unix timestamp in milliseconds indicating when the index was calculated.
+          example: 1564686909724
+        index:
+          type: string
+          description: The specific index, which is the unique combination of `underlying` and `quoted_currency`
+          example: BTC/USD
+        underlying:
+          $ref: '#/components/schemas/UnderlyingCurrency'
+        quoted_currency:
+          $ref: '#/components/schemas/QuotedCurrency'
+        value:
+          type: number
+          description: The index price for the underlying asset, as quoted in the quoted_currency
+          example: 1234.5678901234
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -233,56 +317,6 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
-    UnderlyingCurrency:
-      type: string
-      description: the underlying asset
-      example: BTC
-      enum:
-      - AAVE.ETH
-      - ADA
-      - ALGO
-      - AVAX
-      - BAT.ETH
-      - BCH
-      - BTC
-      - BUSD.ETH
-      - COMP.ETH
-      - DAI.ETH
-      - DOGE
-      - DOT
-      - EGLD
-      - EOS
-      - ETC
-      - ETH
-      - ETH.ARBITRUM
-      - GRT.ETH
-      - GYEN.ETH
-      - HBAR
-      - LINK.ETH
-      - LTC
-      - LUNA
-      - MATIC.ETH
-      - MATIC.POLYGON
-      - MKR.ETH
-      - MOB
-      - SAND.ETH
-      - SOL
-      - UNI.ETH
-      - USDC.ETH
-      - USDC.ALGO
-      - USDC.POLYGON
-      - USDC.SOL
-      - USDC.HBAR
-      - USDC.XLM
-      - USDC.AVAX
-      - USDT.ETH
-      - UST
-      - WBTC.ETH
-      - XEM
-      - XLM
-      - XRP
-      - XTZ
-      - ZUSD.ETH
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -292,34 +326,6 @@ components:
         error:
           type: string
           example: Service Unavailable
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    GetIndexResponse:
-      type: object
-      properties:
-        timestamp:
-          type: number
-          description: Unix timestamp in milliseconds indicating when the index was calculated.
-          example: 1564686909724
-        index:
-          type: string
-          description: The specific index, which is the unique combination of `underlying` and `quoted_currency`
-          example: BTC/USD
-        underlying:
-          $ref: '#/components/schemas/UnderlyingCurrency'
-        quoted_currency:
-          $ref: '#/components/schemas/QuotedCurrency'
-        value:
-          type: number
-          description: The index price for the underlying asset, as quoted in the quoted_currency
-          example: 1234.5678901234
     QuotedCurrency:
       type: string
       description: the quoted asset
@@ -331,28 +337,22 @@ components:
       - JPY
       - MXN
       - USD
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

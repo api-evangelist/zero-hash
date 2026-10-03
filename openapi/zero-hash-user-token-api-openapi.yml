@@ -103,22 +103,45 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
+    Session:
+      type: object
+      properties:
+        metadata:
+          type: object
+          description: Additional session metadata as key-value pairs
+          additionalProperties: true
+          example:
+            organization_metadata: test-01-10-001
+            user_agent: Mozilla/5.0...
+            ip_address: 192.168.1.1
+        withdrawal_details:
+          $ref: '#/components/schemas/WithdrawalDetails'
+        deposit_details:
+          $ref: '#/components/schemas/DepositDetails'
+    StartSessionResponse:
       type: object
       required:
-      - error
-      - code
-      - message
+      - jwt
+      - expires_in
       properties:
-        error:
+        jwt:
           type: string
-          description: Error type
-        code:
+          description: JWT token for the created session
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        expires_in:
           type: integer
-          description: gRPC error code
-        message:
+          format: int64
+          description: Token expiration time in seconds
+          example: 3600
+    Account:
+      type: object
+      required:
+      - reference_id
+      properties:
+        reference_id:
           type: string
-          description: Human-readable error message
+          description: External reference ID for the account
+          example: 07NVS8
     StartSessionRequest:
       type: object
       required:
@@ -145,53 +168,6 @@ components:
           - user:deposit:send
           - user:recovery:send
           - user:withdrawal:request
-    DepositDetails:
-      type: object
-      properties:
-        account_label:
-          type: string
-          description: Optional label to identify the account
-          example: Main Account
-      description: Optional when scope includes 'user:deposit:send'
-    StartSessionResponse:
-      type: object
-      required:
-      - jwt
-      - expires_in
-      properties:
-        jwt:
-          type: string
-          description: JWT token for the created session
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        expires_in:
-          type: integer
-          format: int64
-          description: Token expiration time in seconds
-          example: 3600
-    Account:
-      type: object
-      required:
-      - reference_id
-      properties:
-        reference_id:
-          type: string
-          description: External reference ID for the account
-          example: 07NVS8
-    Session:
-      type: object
-      properties:
-        metadata:
-          type: object
-          description: Additional session metadata as key-value pairs
-          additionalProperties: true
-          example:
-            organization_metadata: test-01-10-001
-            user_agent: Mozilla/5.0...
-            ip_address: 192.168.1.1
-        withdrawal_details:
-          $ref: '#/components/schemas/WithdrawalDetails'
-        deposit_details:
-          $ref: '#/components/schemas/DepositDetails'
     WithdrawalDetails:
       type: object
       required:
@@ -216,6 +192,30 @@ components:
           description: Optional label to identify the account
           example: Main Account
       description: Required when scope includes 'user:withdrawal:request'
+    DepositDetails:
+      type: object
+      properties:
+        account_label:
+          type: string
+          description: Optional label to identify the account
+          example: Main Account
+      description: Optional when scope includes 'user:deposit:send'
+    Error:
+      type: object
+      required:
+      - error
+      - code
+      - message
+      properties:
+        error:
+          type: string
+          description: Error type
+        code:
+          type: integer
+          description: gRPC error code
+        message:
+          type: string
+          description: Human-readable error message
   securitySchemes:
     BearerAuth:
       type: http

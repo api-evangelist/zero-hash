@@ -430,48 +430,7 @@ paths:
       operationId: postJurisdictionEvaluateOnboarding
       x-operation-id-source: derived
 components:
-  parameters:
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
   schemas:
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    PostEvaluateOnboardingResponse:
-      type: object
-      properties:
-        allowed:
-          type: boolean
-          description: whether participant onboarding is allowed or not for the given jurisdiction
-          example: true
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
     Code500:
       type: object
       description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
@@ -481,30 +440,6 @@ components:
         error:
           type: string
           example: Internal Server Error
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    GetSubdivisionsResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          code:
-            type: string
-            example: US-NY
-          name:
-            type: string
-            example: New York
     Code403:
       type: object
       description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
@@ -529,6 +464,71 @@ components:
           name:
             type: string
             example: United States
+    GetSubdivisionsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          code:
+            type: string
+            example: US-NY
+          name:
+            type: string
+            example: New York
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    PostEvaluateOnboardingResponse:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          description: whether participant onboarding is allowed or not for the given jurisdiction
+          example: true
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

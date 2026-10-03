@@ -292,28 +292,114 @@ paths:
       operationId: getTransfersById
       x-operation-id-source: derived
 components:
-  parameters:
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
   schemas:
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostTransferResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TransferEntity'
     GetTransferById:
       type: object
       properties:
         message:
           $ref: '#/components/schemas/TransferEntity'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    PostTransferBody:
+      type: object
+      additionalProperties: false
+      required:
+      - from_participant_code
+      - from_account_group
+      - to_participant_code
+      - to_account_group
+      - asset
+      - amount
+      properties:
+        from_participant_code:
+          type: string
+          description: The source participant for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        from_account_group:
+          type: string
+          description: The source account group for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        from_account_label:
+          type: string
+          pattern: ^[A-Za-z0-9:_-]+$
+          description: The source account label for the transfer, e.g. `general`.
+          example: general
+        to_participant_code:
+          type: string
+          description: The destination participant for the transfer, e.g. `ABCDEF`.
+          example: DEMO01
+        to_account_group:
+          type: string
+          description: The destination account group for the transfer, e.g. `ABCDEF`.
+          example: ABCDEF
+        to_account_label:
+          type: string
+          pattern: ^[A-Za-z0-9:_-]+$
+          description: The destination account label for the transfer, e.g. `general`.
+          example: general
+        asset:
+          type: string
+          description: The asset code for the transfer, e.g. `USD`.
+          example: USD
+        amount:
+          type: string
+          description: The amount or quantity to transfer, e.g. `100`.
+          example: '20.1'
+        client_transfer_id:
+          type: string
+          description: A unique identifier for the transfer. Must be unique per platform, per 72 hour period.
+          example: e6afed46-301e-46ee-a339-e897e9855c3a
+        prefunded:
+          type: boolean
+          description: Set to `true` if the transfer amount should be included in the net settlement calculation. Requires `pt_1.is_prefunded_transfer_enabled` to be enabled for the calling participant.
+          example: false
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -461,6 +547,25 @@ components:
         error:
           type: string
           example: Service Unavailable
+    GetTransfersResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 15
+        total_pages:
+          type: number
+          example: 1
+        count:
+          type: number
+          example: 1
     TransferEntity:
       type: object
       properties:
@@ -553,127 +658,22 @@ components:
           type: boolean
           description: Indicates whether this transfer was created as a pre-funded transfer that is included in net settlement calculations.
           example: false
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    PostTransferResponse:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/TransferEntity'
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    GetTransfersResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransferEntity'
-        page:
-          type: number
-          example: 1
-        page_size:
-          type: number
-          example: 15
-        total_pages:
-          type: number
-          example: 1
-        count:
-          type: number
-          example: 1
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    PostTransferBody:
-      type: object
-      additionalProperties: false
-      required:
-      - from_participant_code
-      - from_account_group
-      - to_participant_code
-      - to_account_group
-      - asset
-      - amount
-      properties:
-        from_participant_code:
-          type: string
-          description: The source participant for the transfer, e.g. `ABCDEF`.
-          example: ABCDEF
-        from_account_group:
-          type: string
-          description: The source account group for the transfer, e.g. `ABCDEF`.
-          example: ABCDEF
-        from_account_label:
-          type: string
-          pattern: ^[A-Za-z0-9:_-]+$
-          description: The source account label for the transfer, e.g. `general`.
-          example: general
-        to_participant_code:
-          type: string
-          description: The destination participant for the transfer, e.g. `ABCDEF`.
-          example: DEMO01
-        to_account_group:
-          type: string
-          description: The destination account group for the transfer, e.g. `ABCDEF`.
-          example: ABCDEF
-        to_account_label:
-          type: string
-          pattern: ^[A-Za-z0-9:_-]+$
-          description: The destination account label for the transfer, e.g. `general`.
-          example: general
-        asset:
-          type: string
-          description: The asset code for the transfer, e.g. `USD`.
-          example: USD
-        amount:
-          type: string
-          description: The amount or quantity to transfer, e.g. `100`.
-          example: '20.1'
-        client_transfer_id:
-          type: string
-          description: A unique identifier for the transfer. Must be unique per platform, per 72 hour period.
-          example: e6afed46-301e-46ee-a339-e897e9855c3a
-        prefunded:
-          type: boolean
-          description: Set to `true` if the transfer amount should be included in the net settlement calculation. Requires `pt_1.is_prefunded_transfer_enabled` to be enabled for the calling participant.
-          example: false
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

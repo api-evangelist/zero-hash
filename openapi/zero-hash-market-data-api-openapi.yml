@@ -628,6 +628,25 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    GetNewsCategory:
+      properties:
+        categoryName:
+          description: Name of news category
+          type: string
+          example: DOGE
+        wordsAssociatedWithCategoryList:
+          description: Additional words associated with each category
+          type: array
+          example:
+          - DOGE
+          - DOGECOIN
+    LiquidityEnabledQuotedCurrency:
+      type: string
+      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      example: USD
+      enum:
+      - USD
+      - EUR
     GetSymbolDataResponse:
       type: array
       description: 'Array of tuples keyed by underlying symbol. Each tuple is `[underlyingSymbol, { marketDataMap: [[quotedSymbol, GetSymbolData], ...] }]`.'
@@ -726,30 +745,6 @@ components:
               h24QuotedTotalVolume:
                 value: '20742397942.829296'
               imageUrl: //media/37746251/btc.png
-    GetNewsFeedsResponse:
-      type: array
-      description: List of available news feeds.
-      items:
-        $ref: '#/components/schemas/GetNewsFeed'
-    GetNewsCategoriesResponse:
-      type: array
-      description: List of available news categories.
-      items:
-        $ref: '#/components/schemas/GetNewsCategory'
-    GetOHLCVResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/OHLCVResponseEntity'
-    LiquidityEnabledQuotedCurrency:
-      type: string
-      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
-      example: USD
-      enum:
-      - USD
-      - EUR
     OHLCVResponseEntity:
       type: object
       properties:
@@ -785,125 +780,13 @@ components:
           type: number
           description: Average transaction price (in units of the quoted currency)
           example: 28029.6220768072
-    Code503:
+    GetOHLCVResponse:
       type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
       properties:
-        error:
-          type: string
-          example: Service Unavailable
-    GetNewsCategory:
-      properties:
-        categoryName:
-          description: Name of news category
-          type: string
-          example: DOGE
-        wordsAssociatedWithCategoryList:
-          description: Additional words associated with each category
+        message:
           type: array
-          example:
-          - DOGE
-          - DOGECOIN
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    GetNewsFeed:
-      properties:
-        key:
-          description: Name of news feed
-          type: string
-          example: examplekey
-        newsSource:
-          example: exampleSource
-          description: Source of news feed
-          type: string
-        img:
-          example: /images/news/default/example.png
-          description: The image URL for the market data
-          type: string
-        language:
-          example: EN
-          description: Language of the article, English (EN) or Portuguese (PT)
-          type: string
-    DecimalValue:
-      type: object
-      description: Decimal value represented as a stringified number.
-      properties:
-        value:
-          type: string
-          example: '24774.07'
-    GetLatestNewsArticle:
-      properties:
-        published_on:
-          description: Timestamp when the article was published
-          type: object
-          properties:
-            seconds:
-              type: number
-              example: 1684928
-            nanos:
-              type: number
-              example: 819000000
-          example:
-            seconds: 1684928
-            nanos: 819000000
-        image_url:
-          example: /resources/news/21/example.jpeg
-          description: The image URL for the market data
-          type: string
-        title:
-          example: Example Title
-          description: ' Article title'
-          type: string
-        url:
-          example: https://www.externalsource.com/all/article_url/
-          description: Link to news article
-          type: string
-        body:
-          example: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur
-          description: Text of the article
-          type: string
-        tagsList:
-          description: Associated tags
-          type: array
-          example:
-          - All
-        language:
-          example: EN
-          description: English (EN) or Portuguese (PT)
-          type: string
-        up_votes:
-          example: 2
-          description: 'Number of upvotes for article '
-          type: number
-        down_votes:
-          example: 5
-          description: 'Number of downvotes for article     '
-          type: number
-        categoriesList:
-          description: Associated categories with the article
-          type: array
-          example:
-          - MARKET|BTC
-        sourceInfo:
-          description: Information about the source of the article
-          type: object
-          example:
-            name: ExampleSource
-            img: /images/news/default/example.png
-            language: EN
-        source:
-          example: exampleSource
-          description: Source of the article
-          type: string
+          items:
+            $ref: '#/components/schemas/OHLCVResponseEntity'
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -1042,19 +925,6 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
     GetSymbolData:
       type: object
       properties:
@@ -1208,6 +1078,109 @@ components:
           type: string
           example: //media/37746251/btc.png
           description: Image URL for the underlying asset.
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    GetLatestNewsArticle:
+      properties:
+        published_on:
+          description: Timestamp when the article was published
+          type: object
+          properties:
+            seconds:
+              type: number
+              example: 1684928
+            nanos:
+              type: number
+              example: 819000000
+          example:
+            seconds: 1684928
+            nanos: 819000000
+        image_url:
+          example: /resources/news/21/example.jpeg
+          description: The image URL for the market data
+          type: string
+        title:
+          example: Example Title
+          description: ' Article title'
+          type: string
+        url:
+          example: https://www.externalsource.com/all/article_url/
+          description: Link to news article
+          type: string
+        body:
+          example: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur
+          description: Text of the article
+          type: string
+        tagsList:
+          description: Associated tags
+          type: array
+          example:
+          - All
+        language:
+          example: EN
+          description: English (EN) or Portuguese (PT)
+          type: string
+        up_votes:
+          example: 2
+          description: 'Number of upvotes for article '
+          type: number
+        down_votes:
+          example: 5
+          description: 'Number of downvotes for article     '
+          type: number
+        categoriesList:
+          description: Associated categories with the article
+          type: array
+          example:
+          - MARKET|BTC
+        sourceInfo:
+          description: Information about the source of the article
+          type: object
+          example:
+            name: ExampleSource
+            img: /images/news/default/example.png
+            language: EN
+        source:
+          example: exampleSource
+          description: Source of the article
+          type: string
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    GetNewsCategoriesResponse:
+      type: array
+      description: List of available news categories.
+      items:
+        $ref: '#/components/schemas/GetNewsCategory'
+    DecimalValue:
+      type: object
+      description: Decimal value represented as a stringified number.
+      properties:
+        value:
+          type: string
+          example: '24774.07'
     Code403:
       type: object
       description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
@@ -1221,21 +1194,55 @@ components:
         message:
           type: string
           example: This api key does not have write permission to this endpoint
-    Code404:
+    Code400:
       type: object
-      description: The requested resource does not exist or is not visible to the caller.
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
       required:
-      - error
+      - errors
       properties:
-        error:
-          type: string
-          example: Not Found
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     GetLatestNewsResponse:
       type: array
       description: List of market news articles.
       items:
         $ref: '#/components/schemas/GetLatestNewsArticle'
+    GetNewsFeed:
+      properties:
+        key:
+          description: Name of news feed
+          type: string
+          example: examplekey
+        newsSource:
+          example: exampleSource
+          description: Source of news feed
+          type: string
+        img:
+          example: /images/news/default/example.png
+          description: The image URL for the market data
+          type: string
+        language:
+          example: EN
+          description: Language of the article, English (EN) or Portuguese (PT)
+          type: string
+    GetNewsFeedsResponse:
+      type: array
+      description: List of available news feeds.
+      items:
+        $ref: '#/components/schemas/GetNewsFeed'
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -1244,13 +1251,6 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey

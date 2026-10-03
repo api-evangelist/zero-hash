@@ -128,23 +128,135 @@ paths:
       operationId: postAwardsDistribute
       x-operation-id-source: derived
 components:
-  parameters:
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
   schemas:
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostAwardsDistributeResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              description: The identifier of the request
+              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+            confirms:
+              type: array
+              items:
+                type: object
+                properties:
+                  participant_code:
+                    type: string
+                    description: Participant code
+                    example: CUST01
+                  trade_id:
+                    type: string
+                    description: The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades`
+                    example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              description: A list of participant_code plus trade identifiers for the executed trades confirm
+              example:
+              - participant_code: CUST01
+                trade_id: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              - participant_code: CUST02
+                trade_id: ba97133e-ab15-4c86-86c1-86671b8420bc
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    OBOParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
+          type: string
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    DynamicFee:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -283,68 +395,30 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
-    DynamicFee:
+    PostAwardsDistributeBody:
       type: object
-      required:
-      - name
-      - amount
       properties:
-        name:
+        asset:
+          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+        quantity:
           type: string
-          example: sample
-        amount:
-          type: string
-          example: '1.95'
-    UnderlyingCurrency:
-      type: string
-      description: the underlying asset
-      example: BTC
-      enum:
-      - AAVE.ETH
-      - ADA
-      - ALGO
-      - AVAX
-      - BAT.ETH
-      - BCH
-      - BTC
-      - BUSD.ETH
-      - COMP.ETH
-      - DAI.ETH
-      - DOGE
-      - DOT
-      - EGLD
-      - EOS
-      - ETC
-      - ETH
-      - ETH.ARBITRUM
-      - GRT.ETH
-      - GYEN.ETH
-      - HBAR
-      - LINK.ETH
-      - LTC
-      - LUNA
-      - MATIC.ETH
-      - MATIC.POLYGON
-      - MKR.ETH
-      - MOB
-      - SAND.ETH
-      - SOL
-      - UNI.ETH
-      - USDC.ETH
-      - USDC.ALGO
-      - USDC.POLYGON
-      - USDC.SOL
-      - USDC.HBAR
-      - USDC.XLM
-      - USDC.AVAX
-      - USDT.ETH
-      - UST
-      - WBTC.ETH
-      - XEM
-      - XLM
-      - XRP
-      - XTZ
-      - ZUSD.ETH
+          description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+          example: '1.00'
+        participant_codes:
+          type: array
+          items:
+            type: string
+          description: The list of customers to receive `quantity` amount of reward
+          example:
+          - CUST01
+          - CUST02
+        quoted_currency:
+          $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+      required:
+      - asset
+      - quantity
+      - participant_codes
+      - quoted_currency
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -354,21 +428,35 @@ components:
         error:
           type: string
           example: Service Unavailable
-    OBOParticipantEntity:
+    Code404:
       type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
       properties:
-        participant_code:
+        error:
           type: string
-          description: The identifier of the participant making the request
-          example: 20XRLH
-        account_group:
-          type: string
-          description: The identifier of the the account group
-          example: WRD1K0
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
+          example: Not Found
+    LiquidityEnabledQuotedCurrency:
+      type: string
+      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      example: USD
+      enum:
+      - USD
+      - EUR
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     PostAwardsBody:
       oneOf:
       - title: RFQ Standard - Quantity
@@ -403,63 +491,6 @@ components:
         - underlying
         - quoted_currency
         - total
-    PostAwardsDistributeBody:
-      type: object
-      properties:
-        asset:
-          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-        quantity:
-          type: string
-          description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-          example: '1.00'
-        participant_codes:
-          type: array
-          items:
-            type: string
-          description: The list of customers to receive `quantity` amount of reward
-          example:
-          - CUST01
-          - CUST02
-        quoted_currency:
-          $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-      required:
-      - asset
-      - quantity
-      - participant_codes
-      - quoted_currency
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
     PostAwardsResponse:
       type: object
       properties:
@@ -1074,64 +1105,33 @@ components:
                 enum:
                 - Completed
                 - Rejected
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    LiquidityEnabledQuotedCurrency:
+    QuotedCurrency:
       type: string
-      description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
+      description: the quoted asset
       example: USD
       enum:
-      - USD
+      - CAD
       - EUR
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    PostAwardsDistributeResponse:
-      type: object
-      properties:
-        message:
-          type: object
-          properties:
-            request_id:
-              type: string
-              description: The identifier of the request
-              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
-            confirms:
-              type: array
-              items:
-                type: object
-                properties:
-                  participant_code:
-                    type: string
-                    description: Participant code
-                    example: CUST01
-                  trade_id:
-                    type: string
-                    description: The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades`
-                    example: ba97133e-ab15-4c86-86c1-86671b8420bc
-              description: A list of participant_code plus trade identifiers for the executed trades confirm
-              example:
-              - participant_code: CUST01
-                trade_id: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-              - participant_code: CUST02
-                trade_id: ba97133e-ab15-4c86-86c1-86671b8420bc
+      - GBP
+      - JPY
+      - MXN
+      - USD
+  parameters:
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

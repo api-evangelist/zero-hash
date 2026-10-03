@@ -63,19 +63,6 @@ paths:
                 error_description: Client authentication failed
 components:
   schemas:
-    AuthError:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: OAuth2 error code
-          example: invalid_client
-        error_description:
-          type: string
-          description: Human-readable error description
-          example: Invalid client credentials
     TokenResponse:
       type: object
       required:
@@ -95,6 +82,19 @@ components:
           type: string
           description: Token type
           example: Bearer
+    AuthError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: OAuth2 error code
+          example: invalid_client
+        error_description:
+          type: string
+          description: Human-readable error description
+          example: Invalid client credentials
     TokenRequest:
       type: object
       required:
