@@ -253,51 +253,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PostFundDepositRequest:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          minLength: 6
-          maxLength: 6
-          description: The participant code tied to the deposit
-          example: ABCDEF
-        external_account_id:
-          type: string
-          description: The external account id tied to the deposit
-          example: 0f34533e-2114-469d-b505-c850d776e061
-        asset:
-          type: string
-          description: The asset code for the deposit, e.g. USD
-          example: USD
-          enum:
-          - USD
-        amount:
-          type: string
-          description: The amount of the deposit
-          example: '100'
-        description:
-          type: string
-          description: Description of the deposit
-          example: Deposit for trading account
-        network:
-          type: string
-          description: The network for the deposit, e.g. `ach`.
-          example: ach
-          enum:
-          - ach
-        instant:
-          type: boolean
-          description: Whether the deposit should be processed instantly
-          example: true
-      required:
-      - participant_code
-      - external_account_id
-      - asset
-      - amount
-      - description
-      - network
-      - instant
     Code500:
       type: object
       description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
@@ -449,6 +404,76 @@ components:
                 type: string
                 description: The fee amount calculated for this tier
                 example: '2.00'
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    PostFundDepositRequest:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          minLength: 6
+          maxLength: 6
+          description: The participant code tied to the deposit
+          example: ABCDEF
+        external_account_id:
+          type: string
+          description: The external account id tied to the deposit
+          example: 0f34533e-2114-469d-b505-c850d776e061
+        asset:
+          type: string
+          description: The asset code for the deposit, e.g. USD
+          example: USD
+          enum:
+          - USD
+        amount:
+          type: string
+          description: The amount of the deposit
+          example: '100'
+        description:
+          type: string
+          description: Description of the deposit
+          example: Deposit for trading account
+        network:
+          type: string
+          description: The network for the deposit, e.g. `ach`.
+          example: ach
+          enum:
+          - ach
+        instant:
+          type: boolean
+          description: Whether the deposit should be processed instantly
+          example: true
+      required:
+      - participant_code
+      - external_account_id
+      - asset
+      - amount
+      - description
+      - network
+      - instant
+    GetFundTransactionsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetFundTransactionsEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 50
+        total_pages:
+          type: number
+          example: 1
     PostFundDepositResponse:
       type: object
       properties:
@@ -540,57 +565,30 @@ components:
               type: string
               description: Version of the ACH agreement that was accepted.
               example: 1.0.0
-    GetFundTransactionsResponse:
+    PostFundRfqBody:
       type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetFundTransactionsEntity'
-        page:
-          type: number
-          example: 1
-        page_size:
-          type: number
-          example: 50
-        total_pages:
-          type: number
-          example: 1
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
       required:
-      - error
-      - message
+      - participant_code
+      - fund_asset
       properties:
-        error:
-          type: boolean
-          example: true
-        message:
+        participant_code:
           type: string
-          example: This api key does not have write permission to this endpoint
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
+          description: The participant code tied to the deposit
+          example: ABCDEF
+        fund_asset:
           type: string
-          example: Not Found
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
+          description: The asset that can be deposited to the wallet
+          example: USDC
+        account_label:
+          type: string
+          maxLength: 40
+          description: The account label to allocate
+          example: test_label
+        client_fund_id:
+          type: string
+          maxLength: 50
+          description: A custom identifier for the fund event. Platforms can use this field for tracking purposes, such as identifying fund events that are part of a specific promotion or campaign.
+          example: f2f14251-e296-42ac-9bc7-01c9186b921c
     PostFundRfqResponse:
       type: object
       properties:
@@ -694,31 +692,40 @@ components:
         error:
           type: string
           example: Service Unavailable
-    PostFundRfqBody:
+    Code400:
       type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
       required:
-      - participant_code
-      - fund_asset
+      - errors
       properties:
-        participant_code:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
           type: string
-          description: The participant code tied to the deposit
-          example: ABCDEF
-        fund_asset:
-          type: string
-          description: The asset that can be deposited to the wallet
-          example: USDC
-        account_label:
-          type: string
-          maxLength: 40
-          description: The account label to allocate
-          example: test_label
-        client_fund_id:
-          type: string
-          maxLength: 50
-          description: A custom identifier for the fund event. Platforms can use this field for tracking purposes, such as identifying fund events that are part of a specific promotion or campaign.
-          example: f2f14251-e296-42ac-9bc7-01c9186b921c
+          example: This api key does not have write permission to this endpoint
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -727,13 +734,6 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey

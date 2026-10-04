@@ -277,83 +277,21 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PostCWExecuteQuoteResponse:
+    OBOParticipantEntity:
       type: object
       properties:
-        message:
-          type: object
-          properties:
-            request_id:
-              type: string
-              description: The identifier of the RFQ
-              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
-            quote:
-              $ref: '#/components/schemas/CWQuoteEntityExecute'
-            trade_id:
-              type: string
-              description: 'The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades` request. Note: the `quote_id` will be saved as the `client_trade_id`.'
-              example: ba97133e-ab15-4c86-86c1-86671b8420bc
-            trade_ids_list:
-              type: array
-              description: All `trade_id`s booked as part of this execution. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
-              items:
-                type: string
-                format: uuid
-              example:
-              - ba97133e-ab15-4c86-86c1-86671b8420bc
-              - ce819fe8-b1d7-43bb-961c-e09ede0988d3
-            status:
-              type: string
-              description: The status of the trade.
-              example: Completed
-              enum:
-              - Completed
-              - Rejected
-            withdrawal_request_id:
-              type: string
-              description: Identifier of the withdrawal that was automatically initiated as part of this execution. Use with `GET /withdrawals/requests/{id}` to poll the withdrawal status.
-              example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
-            ach_details:
-              type: object
-              nullable: true
-              description: Echoed ACH execution details. Only present when the execution used `funding_details` (ACH).
-              properties:
-                inbound_reference_id:
-                  type: string
-                external_account_id:
-                  type: string
-                bank_fee:
-                  type: string
-                payment_amount:
-                  type: string
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
+        participant_code:
           type: string
-          example: Internal Server Error
-    DynamicFeeRequest:
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
           type: string
-          example: sample
-        amount:
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
           type: string
-          example: '1.95'
-        type:
-          type: string
-          enum:
-          - notional
-          - bps
-          description: Fee amount type. Default is notional
-          example: notional
+          description: The account label associated with the account
+          example: general
     PostCWRequestForQuoteBody:
       oneOf:
       - title: Convert & Withdraw - Quantity
@@ -566,116 +504,64 @@ components:
         not:
           required:
           - quantity
-    UnderlyingCurrency:
-      type: string
-      description: the underlying asset
-      example: BTC
-      enum:
-      - AAVE.ETH
-      - ADA
-      - ALGO
-      - AVAX
-      - BAT.ETH
-      - BCH
-      - BTC
-      - BUSD.ETH
-      - COMP.ETH
-      - DAI.ETH
-      - DOGE
-      - DOT
-      - EGLD
-      - EOS
-      - ETC
-      - ETH
-      - ETH.ARBITRUM
-      - GRT.ETH
-      - GYEN.ETH
-      - HBAR
-      - LINK.ETH
-      - LTC
-      - LUNA
-      - MATIC.ETH
-      - MATIC.POLYGON
-      - MKR.ETH
-      - MOB
-      - SAND.ETH
-      - SOL
-      - UNI.ETH
-      - USDC.ETH
-      - USDC.ALGO
-      - USDC.POLYGON
-      - USDC.SOL
-      - USDC.HBAR
-      - USDC.XLM
-      - USDC.AVAX
-      - USDT.ETH
-      - UST
-      - WBTC.ETH
-      - XEM
-      - XLM
-      - XRP
-      - XTZ
-      - ZUSD.ETH
-    Code403:
+    PostCWExecuteQuoteResponse:
       type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      properties:
+        message:
+          type: object
+          properties:
+            request_id:
+              type: string
+              description: The identifier of the RFQ
+              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+            quote:
+              $ref: '#/components/schemas/CWQuoteEntityExecute'
+            trade_id:
+              type: string
+              description: 'The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades` request. Note: the `quote_id` will be saved as the `client_trade_id`.'
+              example: ba97133e-ab15-4c86-86c1-86671b8420bc
+            trade_ids_list:
+              type: array
+              description: All `trade_id`s booked as part of this execution. The first element matches `trade_id`; additional entries represent any settlement / bookkeeping legs.
+              items:
+                type: string
+                format: uuid
+              example:
+              - ba97133e-ab15-4c86-86c1-86671b8420bc
+              - ce819fe8-b1d7-43bb-961c-e09ede0988d3
+            status:
+              type: string
+              description: The status of the trade.
+              example: Completed
+              enum:
+              - Completed
+              - Rejected
+            withdrawal_request_id:
+              type: string
+              description: Identifier of the withdrawal that was automatically initiated as part of this execution. Use with `GET /withdrawals/requests/{id}` to poll the withdrawal status.
+              example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
+            ach_details:
+              type: object
+              nullable: true
+              description: Echoed ACH execution details. Only present when the execution used `funding_details` (ACH).
+              properties:
+                inbound_reference_id:
+                  type: string
+                external_account_id:
+                  type: string
+                bank_fee:
+                  type: string
+                payment_amount:
+                  type: string
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
       required:
       - error
-      - message
       properties:
         error:
-          type: boolean
-          example: true
-        message:
           type: string
-          example: This api key does not have write permission to this endpoint
-    GetRequestForCWQuoteResponse:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/CWQuoteEntity'
-    PostCWExecuteQuoteBody:
-      type: object
-      properties:
-        quote_id:
-          type: string
-          description: the identifier of the quote to execute, which is provided in response to a `POST /convert_withdraw/rfq` or `GET /convert_withdraw/rfq` request
-          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
-        withdrawal_request_id:
-          type: string
-          description: Optional withdrawal request ID to associate with the execution. Used by flows that pre-create a withdrawal record and then execute a quote against it.
-          example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
-        funding_details:
-          type: object
-          description: ACH funding details, required only for ACH-funded executions. Supply either an `inbound_reference_id` (to settle against an already-received inbound) or the `external_account_id`/`description`/`bank_fee` trio (to initiate a new ACH pull).
-          oneOf:
-          - type: object
-            additionalProperties: false
-            required:
-            - inbound_reference_id
-            properties:
-              inbound_reference_id:
-                type: string
-                description: Reference ID of an already-received inbound ACH payment to settle this trade against.
-          - type: object
-            additionalProperties: false
-            required:
-            - external_account_id
-            - description
-            - bank_fee
-            properties:
-              external_account_id:
-                type: string
-                description: Registered external bank account to pull funds from.
-              description:
-                type: string
-                maxLength: 10
-                description: Short free-form description written to the ACH statement (max 10 characters).
-              bank_fee:
-                type: string
-                description: Bank fee notional (decimal string) applied to this ACH pull.
-      required:
-      - quote_id
+          example: Internal Server Error
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.
@@ -698,30 +584,17 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    OBOParticipantEntity:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: The identifier of the participant making the request
-          example: 20XRLH
-        account_group:
-          type: string
-          description: The identifier of the the account group
-          example: WRD1K0
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
     CWQuoteEntityExecute:
       type: object
       properties:
@@ -832,6 +705,84 @@ components:
           description: The commission in basis points applied to the quote
           maxLength: 50
           example: '25'
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    DynamicFeeRequest:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+        type:
+          type: string
+          enum:
+          - notional
+          - bps
+          description: Fee amount type. Default is notional
+          example: notional
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
     CWQuoteEntity:
       type: object
       properties:
@@ -942,18 +893,74 @@ components:
           description: The commission in basis points applied to the quote
           maxLength: 50
           example: '25'
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
+    GetRequestForCWQuoteResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/CWQuoteEntity'
+    PostCWExecuteQuoteBody:
+      type: object
+      properties:
+        quote_id:
+          type: string
+          description: the identifier of the quote to execute, which is provided in response to a `POST /convert_withdraw/rfq` or `GET /convert_withdraw/rfq` request
+          example: 32ad471b-824e-4f04-94ff-45c4439b4fe9
+        withdrawal_request_id:
+          type: string
+          description: Optional withdrawal request ID to associate with the execution. Used by flows that pre-create a withdrawal record and then execute a quote against it.
+          example: 640ee134-1e55-411d-ad2d-c924c5ccf9aa
+        funding_details:
+          type: object
+          description: ACH funding details, required only for ACH-funded executions. Supply either an `inbound_reference_id` (to settle against an already-received inbound) or the `external_account_id`/`description`/`bank_fee` trio (to initiate a new ACH pull).
+          oneOf:
+          - type: object
+            additionalProperties: false
+            required:
+            - inbound_reference_id
+            properties:
+              inbound_reference_id:
+                type: string
+                description: Reference ID of an already-received inbound ACH payment to settle this trade against.
+          - type: object
+            additionalProperties: false
+            required:
+            - external_account_id
+            - description
+            - bank_fee
+            properties:
+              external_account_id:
+                type: string
+                description: Registered external bank account to pull funds from.
+              description:
+                type: string
+                maxLength: 10
+                description: Short free-form description written to the ACH statement (max 10 characters).
+              bank_fee:
+                type: string
+                description: Bank fee notional (decimal string) applied to this ACH pull.
+      required:
+      - quote_id
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -962,13 +969,6 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey

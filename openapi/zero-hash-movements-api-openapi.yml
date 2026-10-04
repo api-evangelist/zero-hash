@@ -139,6 +139,19 @@ components:
         error:
           type: string
           example: Internal Server Error
+    GetMovementsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovementsEntity'
+        page:
+          type: number
+          example: 1
+        total_pages:
+          type: number
+          example: 1
     MovementsEntity:
       type: object
       properties:
@@ -272,19 +285,6 @@ components:
           - null
           description: Method through which the movement was initiated (`rest_api`, `sdk`, or `secondary`). `null` when the movement was not initiated by a client request (e.g. on-chain deposit credit).
           example: rest_api
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
     Code404:
       type: object
       description: The requested resource does not exist or is not visible to the caller.
@@ -294,6 +294,15 @@ components:
         error:
           type: string
           example: Not Found
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -307,37 +316,29 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
-    Code503:
+    Code403:
       type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
       required:
       - error
+      - message
       properties:
         error:
-          type: string
-          example: Service Unavailable
-    GetMovementsResponse:
-      type: object
-      properties:
+          type: boolean
+          example: true
         message:
-          type: array
-          items:
-            $ref: '#/components/schemas/MovementsEntity'
-        page:
-          type: number
-          example: 1
-        total_pages:
-          type: number
-          example: 1
+          type: string
+          example: This api key does not have write permission to this endpoint
   parameters:
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
+    PageQuery:
+      name: page
+      in: query
+      description: Page number for pagination (starts at 1).
+      required: false
       schema:
-        type: string
-        example: '1678901234'
+        type: number
+        minimum: 1
+        example: 1
     Signature:
       name: X-SCX-SIGNED
       in: header
@@ -355,15 +356,14 @@ components:
         minimum: 1
         maximum: 100
         example: 15
-    PageQuery:
-      name: page
-      in: query
-      description: Page number for pagination (starts at 1).
-      required: false
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
       schema:
-        type: number
-        minimum: 1
-        example: 1
+        type: string
+        example: '1678901234'
   securitySchemes:
     apiKey:
       type: apiKey

@@ -440,19 +440,22 @@ components:
         error:
           type: string
           example: Internal Server Error
-    Code403:
+    Code404:
       type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      description: The requested resource does not exist or is not visible to the caller.
       required:
       - error
-      - message
       properties:
         error:
-          type: boolean
-          example: true
-        message:
           type: string
-          example: This api key does not have write permission to this endpoint
+          example: Not Found
+    PostEvaluateOnboardingResponse:
+      type: object
+      properties:
+        allowed:
+          type: boolean
+          description: whether participant onboarding is allowed or not for the given jurisdiction
+          example: true
     GetCountriesResponse:
       type: array
       items:
@@ -475,15 +478,15 @@ components:
           name:
             type: string
             example: New York
-    Code404:
+    Code503:
       type: object
-      description: The requested resource does not exist or is not visible to the caller.
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
       required:
       - error
       properties:
         error:
           type: string
-          example: Not Found
+          example: Service Unavailable
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -497,23 +500,27 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
-    PostEvaluateOnboardingResponse:
+    Code403:
       type: object
-      properties:
-        allowed:
-          type: boolean
-          description: whether participant onboarding is allowed or not for the given jurisdiction
-          example: true
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
       required:
       - error
+      - message
       properties:
         error:
+          type: boolean
+          example: true
+        message:
           type: string
-          example: Service Unavailable
+          example: This api key does not have write permission to this endpoint
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -522,13 +529,6 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey

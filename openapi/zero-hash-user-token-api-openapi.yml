@@ -103,21 +103,55 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Session:
+    Account:
       type: object
+      required:
+      - reference_id
       properties:
-        metadata:
-          type: object
-          description: Additional session metadata as key-value pairs
-          additionalProperties: true
-          example:
-            organization_metadata: test-01-10-001
-            user_agent: Mozilla/5.0...
-            ip_address: 192.168.1.1
-        withdrawal_details:
-          $ref: '#/components/schemas/WithdrawalDetails'
-        deposit_details:
-          $ref: '#/components/schemas/DepositDetails'
+        reference_id:
+          type: string
+          description: External reference ID for the account
+          example: 07NVS8
+    Error:
+      type: object
+      required:
+      - error
+      - code
+      - message
+      properties:
+        error:
+          type: string
+          description: Error type
+        code:
+          type: integer
+          description: gRPC error code
+        message:
+          type: string
+          description: Human-readable error message
+    WithdrawalDetails:
+      type: object
+      required:
+      - asset
+      - network
+      - amount
+      properties:
+        asset:
+          type: string
+          description: The asset to withdraw
+          example: BTC
+        network:
+          type: string
+          description: The blockchain network for the withdrawal
+          example: bitcoin
+        amount:
+          type: string
+          description: The amount to withdraw
+          example: '0.001'
+        account_label:
+          type: string
+          description: Optional label to identify the account
+          example: Main Account
+      description: Required when scope includes 'user:withdrawal:request'
     StartSessionResponse:
       type: object
       required:
@@ -133,15 +167,14 @@ components:
           format: int64
           description: Token expiration time in seconds
           example: 3600
-    Account:
+    DepositDetails:
       type: object
-      required:
-      - reference_id
       properties:
-        reference_id:
+        account_label:
           type: string
-          description: External reference ID for the account
-          example: 07NVS8
+          description: Optional label to identify the account
+          example: Main Account
+      description: Optional when scope includes 'user:deposit:send'
     StartSessionRequest:
       type: object
       required:
@@ -168,54 +201,21 @@ components:
           - user:deposit:send
           - user:recovery:send
           - user:withdrawal:request
-    WithdrawalDetails:
-      type: object
-      required:
-      - asset
-      - network
-      - amount
-      properties:
-        asset:
-          type: string
-          description: The asset to withdraw
-          example: BTC
-        network:
-          type: string
-          description: The blockchain network for the withdrawal
-          example: bitcoin
-        amount:
-          type: string
-          description: The amount to withdraw
-          example: '0.001'
-        account_label:
-          type: string
-          description: Optional label to identify the account
-          example: Main Account
-      description: Required when scope includes 'user:withdrawal:request'
-    DepositDetails:
+    Session:
       type: object
       properties:
-        account_label:
-          type: string
-          description: Optional label to identify the account
-          example: Main Account
-      description: Optional when scope includes 'user:deposit:send'
-    Error:
-      type: object
-      required:
-      - error
-      - code
-      - message
-      properties:
-        error:
-          type: string
-          description: Error type
-        code:
-          type: integer
-          description: gRPC error code
-        message:
-          type: string
-          description: Human-readable error message
+        metadata:
+          type: object
+          description: Additional session metadata as key-value pairs
+          additionalProperties: true
+          example:
+            organization_metadata: test-01-10-001
+            user_agent: Mozilla/5.0...
+            ip_address: 192.168.1.1
+        withdrawal_details:
+          $ref: '#/components/schemas/WithdrawalDetails'
+        deposit_details:
+          $ref: '#/components/schemas/DepositDetails'
   securitySchemes:
     BearerAuth:
       type: http

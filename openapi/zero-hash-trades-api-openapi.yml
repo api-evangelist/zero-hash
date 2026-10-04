@@ -343,96 +343,32 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    UnderlyingCurrency:
-      type: string
-      description: the underlying asset
-      example: BTC
-      enum:
-      - AAVE.ETH
-      - ADA
-      - ALGO
-      - AVAX
-      - BAT.ETH
-      - BCH
-      - BTC
-      - BUSD.ETH
-      - COMP.ETH
-      - DAI.ETH
-      - DOGE
-      - DOT
-      - EGLD
-      - EOS
-      - ETC
-      - ETH
-      - ETH.ARBITRUM
-      - GRT.ETH
-      - GYEN.ETH
-      - HBAR
-      - LINK.ETH
-      - LTC
-      - LUNA
-      - MATIC.ETH
-      - MATIC.POLYGON
-      - MKR.ETH
-      - MOB
-      - SAND.ETH
-      - SOL
-      - UNI.ETH
-      - USDC.ETH
-      - USDC.ALGO
-      - USDC.POLYGON
-      - USDC.SOL
-      - USDC.HBAR
-      - USDC.XLM
-      - USDC.AVAX
-      - USDT.ETH
-      - UST
-      - WBTC.ETH
-      - XEM
-      - XLM
-      - XRP
-      - XTZ
-      - ZUSD.ETH
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
     PostTradesBatchBody:
       type: array
       items:
         $ref: '#/components/schemas/PostTradesBody'
-    GetTradesResponse:
+    Code403:
       type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
       properties:
+        error:
+          type: boolean
+          example: true
         message:
-          type: array
-          items:
-            $ref: '#/components/schemas/TradeResponseEntity'
-        page:
-          type: number
-          example: 1
-        page_size:
-          type: number
-          example: 15
-        total_pages:
-          type: number
-          example: 1
-        count:
-          type: number
-          example: 1
-    PostTradesResponse:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/TradeResponseEntity'
-    PostTradesBatchResponse:
-      type: object
-      properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/TradeResponseEntity'
-    GetTradeResponse:
-      type: object
-      properties:
-        message:
-          $ref: '#/components/schemas/TradeResponseEntity'
+          type: string
+          example: This api key does not have write permission to this endpoint
     Code500:
       type: object
       description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
@@ -442,6 +378,11 @@ components:
         error:
           type: string
           example: Internal Server Error
+    PostTradesResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TradeResponseEntity'
     PostTradesBody:
       type: object
       properties:
@@ -830,36 +771,6 @@ components:
       - transaction_timestamp
       - parties_anonymous
       - parties
-    DynamicFee:
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
-          type: string
-          example: sample
-        amount:
-          type: string
-          example: '1.95'
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
     TradeResponseEntity:
       oneOf:
       - type: object
@@ -2197,19 +2108,6 @@ components:
             description: The `asset_cost_notional` is a field that shows the notional cost of the asset being traded, denominated in the `quoted_currency`.
             maxLength: 50
             example: '2.00'
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
     Code400:
       type: object
       description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
@@ -2223,6 +2121,101 @@ components:
           example:
           - body/amount must be >= 0
           - body/asset is required
+    DynamicFee:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+    GetTradeResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TradeResponseEntity'
+    UnderlyingCurrency:
+      type: string
+      description: the underlying asset
+      example: BTC
+      enum:
+      - AAVE.ETH
+      - ADA
+      - ALGO
+      - AVAX
+      - BAT.ETH
+      - BCH
+      - BTC
+      - BUSD.ETH
+      - COMP.ETH
+      - DAI.ETH
+      - DOGE
+      - DOT
+      - EGLD
+      - EOS
+      - ETC
+      - ETH
+      - ETH.ARBITRUM
+      - GRT.ETH
+      - GYEN.ETH
+      - HBAR
+      - LINK.ETH
+      - LTC
+      - LUNA
+      - MATIC.ETH
+      - MATIC.POLYGON
+      - MKR.ETH
+      - MOB
+      - SAND.ETH
+      - SOL
+      - UNI.ETH
+      - USDC.ETH
+      - USDC.ALGO
+      - USDC.POLYGON
+      - USDC.SOL
+      - USDC.HBAR
+      - USDC.XLM
+      - USDC.AVAX
+      - USDT.ETH
+      - UST
+      - WBTC.ETH
+      - XEM
+      - XLM
+      - XRP
+      - XTZ
+      - ZUSD.ETH
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    GetTradesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TradeResponseEntity'
+        page:
+          type: number
+          example: 1
+        page_size:
+          type: number
+          example: 15
+        total_pages:
+          type: number
+          example: 1
+        count:
+          type: number
+          example: 1
     QuotedCurrency:
       type: string
       description: the quoted asset
@@ -2234,22 +2227,14 @@ components:
       - JPY
       - MXN
       - USD
+    PostTradesBatchResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TradeResponseEntity'
   parameters:
-    AccountLabelQuery:
-      name: account_label
-      in: query
-      description: Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history.
-      required: false
-      schema:
-        type: string
-        example: general
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
     PageQuery:
       name: page
       in: query
@@ -2259,6 +2244,13 @@ components:
         type: number
         minimum: 1
         example: 1
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -2267,6 +2259,14 @@ components:
       schema:
         type: string
         example: '1678901234'
+    AccountLabelQuery:
+      name: account_label
+      in: query
+      description: Filter by account label (e.g., `general`, `sub_account_test`). Account labels are used to categorize accounts under a participant. Each participant `account_label` maintains a separate balance and transaction history.
+      required: false
+      schema:
+        type: string
+        example: general
   securitySchemes:
     apiKey:
       type: apiKey

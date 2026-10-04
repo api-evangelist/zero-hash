@@ -138,35 +138,62 @@ components:
         error:
           type: string
           example: Internal Server Error
-    PostAwardsDistributeResponse:
+    Code404:
+      type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Not Found
+    DynamicFee:
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: sample
+        amount:
+          type: string
+          example: '1.95'
+    QuotedCurrency:
+      type: string
+      description: the quoted asset
+      example: USD
+      enum:
+      - CAD
+      - EUR
+      - GBP
+      - JPY
+      - MXN
+      - USD
+    PostAwardsDistributeBody:
       type: object
       properties:
-        message:
-          type: object
-          properties:
-            request_id:
-              type: string
-              description: The identifier of the request
-              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
-            confirms:
-              type: array
-              items:
-                type: object
-                properties:
-                  participant_code:
-                    type: string
-                    description: Participant code
-                    example: CUST01
-                  trade_id:
-                    type: string
-                    description: The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades`
-                    example: ba97133e-ab15-4c86-86c1-86671b8420bc
-              description: A list of participant_code plus trade identifiers for the executed trades confirm
-              example:
-              - participant_code: CUST01
-                trade_id: ce819fe8-b1d7-43bb-961c-e09ede0988d3
-              - participant_code: CUST02
-                trade_id: ba97133e-ab15-4c86-86c1-86671b8420bc
+        asset:
+          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
+        quantity:
+          type: string
+          description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+          example: '1.00'
+        participant_codes:
+          type: array
+          items:
+            type: string
+          description: The list of customers to receive `quantity` amount of reward
+          example:
+          - CUST01
+          - CUST02
+        quoted_currency:
+          $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
+      required:
+      - asset
+      - quantity
+      - participant_codes
+      - quoted_currency
     UnderlyingCurrency:
       type: string
       description: the underlying asset
@@ -217,46 +244,35 @@ components:
       - XRP
       - XTZ
       - ZUSD.ETH
-    Code403:
+    PostAwardsDistributeResponse:
       type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
       properties:
-        error:
-          type: boolean
-          example: true
         message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    OBOParticipantEntity:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: The identifier of the participant making the request
-          example: 20XRLH
-        account_group:
-          type: string
-          description: The identifier of the the account group
-          example: WRD1K0
-        account_label:
-          type: string
-          description: The account label associated with the account
-          example: general
-    DynamicFee:
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
-          type: string
-          example: sample
-        amount:
-          type: string
-          example: '1.95'
+          type: object
+          properties:
+            request_id:
+              type: string
+              description: The identifier of the request
+              example: 14f8ebb8-7530-4aa4-bef9-9d73d56313f3
+            confirms:
+              type: array
+              items:
+                type: object
+                properties:
+                  participant_code:
+                    type: string
+                    description: Participant code
+                    example: CUST01
+                  trade_id:
+                    type: string
+                    description: The unique identifier assigned to the trade, which is the same `trade_id` as found in a `GET /trades`
+                    example: ba97133e-ab15-4c86-86c1-86671b8420bc
+              description: A list of participant_code plus trade identifiers for the executed trades confirm
+              example:
+              - participant_code: CUST01
+                trade_id: ce819fe8-b1d7-43bb-961c-e09ede0988d3
+              - participant_code: CUST02
+                trade_id: ba97133e-ab15-4c86-86c1-86671b8420bc
     LiquidityEnabledUnderlyingCurrency:
       type: string
       description: The underlying asset in the trading pair. E.g. `BTC` in the pair `BTC/USD`.
@@ -395,48 +411,6 @@ components:
       - EURC
       - MKR.ETH
       - RLUSD.XRP
-    PostAwardsDistributeBody:
-      type: object
-      properties:
-        asset:
-          $ref: '#/components/schemas/LiquidityEnabledUnderlyingCurrency'
-        quantity:
-          type: string
-          description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-          example: '1.00'
-        participant_codes:
-          type: array
-          items:
-            type: string
-          description: The list of customers to receive `quantity` amount of reward
-          example:
-          - CUST01
-          - CUST02
-        quoted_currency:
-          $ref: '#/components/schemas/LiquidityEnabledQuotedCurrency'
-      required:
-      - asset
-      - quantity
-      - participant_codes
-      - quoted_currency
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
     LiquidityEnabledQuotedCurrency:
       type: string
       description: The quoted currency in the trading pair. E.g. `USD` in the pair `BTC/USD`.
@@ -444,53 +418,6 @@ components:
       enum:
       - USD
       - EUR
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    PostAwardsBody:
-      oneOf:
-      - title: RFQ Standard - Quantity
-        description: Request for quote with `quantity` specified
-        type: object
-        properties:
-          underlying:
-            $ref: '#/components/schemas/UnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/QuotedCurrency'
-          quantity:
-            type: string
-            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '1.00'
-        required:
-        - underlying
-        - quoted_currency
-        - quantity
-      - title: RFQ Standard - Total
-        description: Request for quote with `total` specified
-        type: object
-        properties:
-          underlying:
-            $ref: '#/components/schemas/UnderlyingCurrency'
-          quoted_currency:
-            $ref: '#/components/schemas/QuotedCurrency'
-          total:
-            type: string
-            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
-            example: '3600.00'
-        required:
-        - underlying
-        - quoted_currency
-        - total
     PostAwardsResponse:
       type: object
       properties:
@@ -1105,18 +1032,98 @@ components:
                 enum:
                 - Completed
                 - Rejected
-    QuotedCurrency:
-      type: string
-      description: the quoted asset
-      example: USD
-      enum:
-      - CAD
-      - EUR
-      - GBP
-      - JPY
-      - MXN
-      - USD
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    OBOParticipantEntity:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: The identifier of the participant making the request
+          example: 20XRLH
+        account_group:
+          type: string
+          description: The identifier of the the account group
+          example: WRD1K0
+        account_label:
+          type: string
+          description: The account label associated with the account
+          example: general
+    PostAwardsBody:
+      oneOf:
+      - title: RFQ Standard - Quantity
+        description: Request for quote with `quantity` specified
+        type: object
+        properties:
+          underlying:
+            $ref: '#/components/schemas/UnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/QuotedCurrency'
+          quantity:
+            type: string
+            description: The `quantity` of the `underlying` asset requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '1.00'
+        required:
+        - underlying
+        - quoted_currency
+        - quantity
+      - title: RFQ Standard - Total
+        description: Request for quote with `total` specified
+        type: object
+        properties:
+          underlying:
+            $ref: '#/components/schemas/UnderlyingCurrency'
+          quoted_currency:
+            $ref: '#/components/schemas/QuotedCurrency'
+          total:
+            type: string
+            description: The total amount of the `quoted_currency` requested in the quote. Exactly one of `quantity` or `total` must be supplied.
+            example: '3600.00'
+        required:
+        - underlying
+        - quoted_currency
+        - total
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
   parameters:
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -1125,13 +1132,6 @@ components:
       schema:
         type: string
         example: '1678901234'
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
   securitySchemes:
     apiKey:
       type: apiKey
