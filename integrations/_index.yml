@@ -28,7 +28,7 @@
     - j. providing transfer services for crypto-assets on behalf of clients
     matched_domain: zerohash.com
     detected_by: sweep-crypto.py
-    detected: '2026-10-13'
+    detected: '2026-10-14'
   status: not-a-workflow
   arazzo: null
 - slug: zero-hash-nydfs-new-york
@@ -49,7 +49,7 @@
     evidence: https://zerohash.com/disclosures
     matched_by: verified-legal-name
     detected_by: sweep-crypto.py
-    detected: '2026-10-13'
+    detected: '2026-10-14'
     other_registrations:
     - registered_name: zerohash liquidity services llc(FKA Seed Digital Commodity Market, LLC)
       role: bitlicense
