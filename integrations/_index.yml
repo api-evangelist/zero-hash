@@ -57,3 +57,51 @@
       evidence: https://zerohash.com/disclosures
   status: not-a-workflow
   arazzo: null
+- slug: zero-hash-iso-10383-mic
+  label: ISO 10383 (MIC)
+  partner_name: ISO 10383 (MIC)
+  category: registered trading venues and market segments
+  type: register
+  channel: standard-directory
+  evidence: https://www.iso20022.org/sites/default/files/ISO10383_MIC/ISO10383_MIC.csv
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: ISO 10383 Market Identifier Codes (ISO 20022 registration authority)
+    spec_file: null
+    standard: ISO 10383
+    role: venue operator
+    matched_domain: zerohash.com
+    matched_by: domain:zerohash.com
+    categories:
+    - MLTF
+    - NSPD
+    operating_mics:
+    - SCXO
+    - ZHEU
+    mics:
+    - mic: ZERO
+      operating_mic: SCXO
+      segment: SGMT
+      market: ZERO HASH
+      category: NSPD
+      legal_name: ZERO HASH LLC
+      country: US
+    - mic: SCXO
+      operating_mic: SCXO
+      segment: OPRT
+      market: ZERO HASH LLC
+      category: NSPD
+      legal_name: ZERO HASH HOLDINGS LTD.
+      country: US
+    - mic: ZHEU
+      operating_mic: ZHEU
+      segment: OPRT
+      market: ZERO HASH EUROPE
+      category: MLTF
+      legal_name: ZERO HASH EUROPE B.V.
+      country: NL
+    detected_by: sweep-capital-markets.py
+    detected: '2026-10-15'
+  status: not-a-workflow
+  arazzo: null
