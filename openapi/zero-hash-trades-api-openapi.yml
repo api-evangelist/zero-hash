@@ -343,42 +343,19 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Code404:
+    DynamicFee:
       type: object
-      description: The requested resource does not exist or is not visible to the caller.
       required:
-      - error
+      - name
+      - amount
       properties:
-        error:
+        name:
           type: string
-          example: Not Found
-    PostTradesBatchBody:
-      type: array
-      items:
-        $ref: '#/components/schemas/PostTradesBody'
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
+          example: sample
+        amount:
           type: string
-          example: This api key does not have write permission to this endpoint
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    PostTradesResponse:
+          example: '1.95'
+    GetTradeResponse:
       type: object
       properties:
         message:
@@ -2108,36 +2085,19 @@ components:
             description: The `asset_cost_notional` is a field that shows the notional cost of the asset being traded, denominated in the `quoted_currency`.
             maxLength: 50
             example: '2.00'
-    Code400:
+    Code403:
       type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
       required:
-      - errors
+      - error
+      - message
       properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    DynamicFee:
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
-          type: string
-          example: sample
-        amount:
-          type: string
-          example: '1.95'
-    GetTradeResponse:
-      type: object
-      properties:
+        error:
+          type: boolean
+          example: true
         message:
-          $ref: '#/components/schemas/TradeResponseEntity'
+          type: string
+          example: This api key does not have write permission to this endpoint
     UnderlyingCurrency:
       type: string
       description: the underlying asset
@@ -2188,6 +2148,10 @@ components:
       - XRP
       - XTZ
       - ZUSD.ETH
+    PostTradesBatchBody:
+      type: array
+      items:
+        $ref: '#/components/schemas/PostTradesBody'
     Code503:
       type: object
       description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
@@ -2197,6 +2161,35 @@ components:
         error:
           type: string
           example: Service Unavailable
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    PostTradesBatchResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/TradeResponseEntity'
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
     GetTradesResponse:
       type: object
       properties:
@@ -2216,6 +2209,11 @@ components:
         count:
           type: number
           example: 1
+    PostTradesResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/TradeResponseEntity'
     QuotedCurrency:
       type: string
       description: the quoted asset
@@ -2227,13 +2225,15 @@ components:
       - JPY
       - MXN
       - USD
-    PostTradesBatchResponse:
+    Code404:
       type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
       properties:
-        message:
-          type: array
-          items:
-            $ref: '#/components/schemas/TradeResponseEntity'
+        error:
+          type: string
+          example: Not Found
   parameters:
     PageQuery:
       name: page
@@ -2244,21 +2244,6 @@ components:
         type: number
         minimum: 1
         example: 1
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
-    Timestamp:
-      name: X-SCX-TIMESTAMP
-      in: header
-      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
-      required: true
-      schema:
-        type: string
-        example: '1678901234'
     AccountLabelQuery:
       name: account_label
       in: query
@@ -2267,6 +2252,21 @@ components:
       schema:
         type: string
         example: general
+    Timestamp:
+      name: X-SCX-TIMESTAMP
+      in: header
+      description: Current Unix timestamp in seconds. Must be within 60 seconds of server time or the request is rejected.
+      required: true
+      schema:
+        type: string
+        example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

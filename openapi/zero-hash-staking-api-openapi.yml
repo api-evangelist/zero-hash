@@ -643,7 +643,55 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PostCancelUnstakeResponse:
+    PostUnstakeBody:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: Participant identifier
+          example: CUST01
+        account_label:
+          type: string
+          description: Settlement account label. The account must already exist for the participant.
+          example: general
+        asset:
+          type: string
+          description: Asset to unstake
+          example: ETH
+        amount:
+          type: string
+          description: Amount to unstake
+          example: '5.0'
+      required:
+      - participant_code
+      - account_label
+      - asset
+      - amount
+    PostStakeBody:
+      type: object
+      properties:
+        participant_code:
+          type: string
+          description: Participant identifier
+          example: CUST01
+        account_label:
+          type: string
+          description: Settlement account label. The account must already exist for the participant.
+          example: general
+        asset:
+          type: string
+          description: Asset to stake
+          example: ETH
+        notional:
+          type: string
+          description: Amount to stake in notional currency
+          example: '35000.00'
+      required:
+      - participant_code
+      - account_label
+      - asset
+      - notional
+    GetStakeStatusResponse:
       type: object
       properties:
         request_id:
@@ -653,19 +701,48 @@ components:
         message:
           type: object
           properties:
-            unstake_id:
+            stake_id:
               type: string
-              description: The unstake ID being cancelled
-              example: c761fc96-5c44-40d4-8eb2-3fcd5d06757d
-    Code404:
-      type: object
-      description: The requested resource does not exist or is not visible to the caller.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Not Found
+              description: The unique identifier of the stake
+              example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
+            participant_code:
+              type: string
+              description: Participant identifier
+              example: CUST01
+            asset:
+              type: string
+              description: Asset staked
+              example: ETH
+            amount:
+              type: string
+              description: Amount of asset staked
+              example: '10.5'
+            status:
+              type: string
+              description: Current status of the stake
+              enum:
+              - submitted
+              - queued
+              - canceled
+              - broadcasted
+              - confirmed
+              - staked
+              - failed
+              example: staked
+            created_at:
+              type: string
+              format: date-time
+              description: Timestamp when stake was created
+              example: '2025-08-24T16:00:00Z'
+            activated_at:
+              type: string
+              format: date-time
+              description: Timestamp when stake became active. Only present once the stake has activated on-chain.
+              example: '2025-08-25T16:00:00Z'
+            account_label:
+              type: string
+              description: Settlement account label associated with the stake. Present when returned by the upstream service.
+              example: general
     GetSummaryResponse:
       type: object
       properties:
@@ -688,6 +765,183 @@ components:
               type: string
               description: Average annual percentage yield net of fees
               example: '3.92'
+    Code403:
+      type: object
+      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: This api key does not have write permission to this endpoint
+    PostStakeResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Request identifier
+          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
+        message:
+          type: object
+          properties:
+            stake_id:
+              type: string
+              description: The unique identifier of the stake
+              example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
+            participant_code:
+              type: string
+              description: Participant identifier
+              example: CUST01
+            asset:
+              type: string
+              description: Asset staked
+              example: ETH
+            amount:
+              type: string
+              description: Amount of asset staked
+              example: '10.5'
+            status:
+              type: string
+              description: Status of the stake
+              enum:
+              - submitted
+              - queued
+              - canceled
+              - broadcasted
+              - confirmed
+              - staked
+              - failed
+              example: submitted
+            created_at:
+              type: string
+              format: date-time
+              description: Timestamp when stake was created
+              example: '2025-08-24T16:00:00Z'
+            activated_at:
+              type: string
+              format: date-time
+              description: Timestamp when stake was activated (optional)
+              example: '2025-08-25T16:00:00Z'
+    Code503:
+      type: object
+      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Service Unavailable
+    Code500:
+      type: object
+      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          example: Internal Server Error
+    StakeEntity:
+      type: object
+      properties:
+        stake_id:
+          type: string
+          description: The unique identifier of the stake
+          example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
+        participant_code:
+          type: string
+          description: Participant identifier
+          example: CUST01
+        asset:
+          type: string
+          description: Asset staked
+          example: ETH
+        amount:
+          type: string
+          description: Amount of asset staked
+          example: '10.5'
+        status:
+          type: string
+          description: Current status of the stake
+          enum:
+          - submitted
+          - queued
+          - canceled
+          - broadcasted
+          - confirmed
+          - staked
+          - failed
+          example: staked
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when stake was created
+          example: '2025-08-24T16:00:00Z'
+        activated_at:
+          type: string
+          format: date-time
+          description: Timestamp when stake was activated
+          example: '2025-08-24T12:00:00Z'
+    GetStakingRewardsResponse:
+      type: object
+      properties:
+        rewards:
+          type: array
+          items:
+            $ref: '#/components/schemas/StakingRewardEntity'
+          description: List of rewards
+        page:
+          type: integer
+          description: Current page number
+          example: 1
+        total_pages:
+          type: integer
+          description: Total number of pages
+          example: 1
+    PostCancelUnstakeResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Request identifier
+          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
+        message:
+          type: object
+          properties:
+            unstake_id:
+              type: string
+              description: The unstake ID being cancelled
+              example: c761fc96-5c44-40d4-8eb2-3fcd5d06757d
+    Code400:
+      type: object
+      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+          - body/amount must be >= 0
+          - body/asset is required
+    PostCancelStakeResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+          description: Request identifier
+          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
+        message:
+          type: object
+          properties:
+            stake_id:
+              type: string
+              description: The stake ID being cancelled
+              example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
     GetUnstakeStatusResponse:
       type: object
       properties:
@@ -790,120 +1044,6 @@ components:
           type: string
           description: User-friendly error message
           example: Please accept terms and conditions to proceed
-    Code403:
-      type: object
-      description: Authentication or authorization failed. `error` is always `true`; `message` explains which check failed (missing API key, bad signature, insufficient permission, etc.).
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: boolean
-          example: true
-        message:
-          type: string
-          example: This api key does not have write permission to this endpoint
-    Code500:
-      type: object
-      description: An unexpected error occurred on the server. The request can be retried after a short delay, but the same inputs may reproduce the error.
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Internal Server Error
-    PostUnstakeBody:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: Participant identifier
-          example: CUST01
-        account_label:
-          type: string
-          description: Settlement account label. The account must already exist for the participant.
-          example: general
-        asset:
-          type: string
-          description: Asset to unstake
-          example: ETH
-        amount:
-          type: string
-          description: Amount to unstake
-          example: '5.0'
-      required:
-      - participant_code
-      - account_label
-      - asset
-      - amount
-    GetStakeStatusResponse:
-      type: object
-      properties:
-        request_id:
-          type: string
-          description: Request identifier
-          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
-        message:
-          type: object
-          properties:
-            stake_id:
-              type: string
-              description: The unique identifier of the stake
-              example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
-            participant_code:
-              type: string
-              description: Participant identifier
-              example: CUST01
-            asset:
-              type: string
-              description: Asset staked
-              example: ETH
-            amount:
-              type: string
-              description: Amount of asset staked
-              example: '10.5'
-            status:
-              type: string
-              description: Current status of the stake
-              enum:
-              - submitted
-              - queued
-              - canceled
-              - broadcasted
-              - confirmed
-              - staked
-              - failed
-              example: staked
-            created_at:
-              type: string
-              format: date-time
-              description: Timestamp when stake was created
-              example: '2025-08-24T16:00:00Z'
-            activated_at:
-              type: string
-              format: date-time
-              description: Timestamp when stake became active. Only present once the stake has activated on-chain.
-              example: '2025-08-25T16:00:00Z'
-            account_label:
-              type: string
-              description: Settlement account label associated with the stake. Present when returned by the upstream service.
-              example: general
-    GetStakingRewardsResponse:
-      type: object
-      properties:
-        rewards:
-          type: array
-          items:
-            $ref: '#/components/schemas/StakingRewardEntity'
-          description: List of rewards
-        page:
-          type: integer
-          description: Current page number
-          example: 1
-        total_pages:
-          type: integer
-          description: Total number of pages
-          example: 1
     GetStakesResponse:
       type: object
       properties:
@@ -926,20 +1066,15 @@ components:
           type: integer
           description: Total number of pages
           example: 1
-    PostCancelStakeResponse:
+    Code404:
       type: object
+      description: The requested resource does not exist or is not visible to the caller.
+      required:
+      - error
       properties:
-        request_id:
+        error:
           type: string
-          description: Request identifier
-          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
-        message:
-          type: object
-          properties:
-            stake_id:
-              type: string
-              description: The stake ID being cancelled
-              example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
+          example: Not Found
     StakingRewardEntity:
       type: object
       properties:
@@ -963,56 +1098,6 @@ components:
           type: string
           format: date-time
           description: Timestamp when reward was created
-          example: '2025-08-24T12:00:00Z'
-    Code503:
-      type: object
-      description: 'A downstream dependency was unavailable, timed out, or returned a retryable error. Safe to retry; the response carries a `zh-allow-retry: true` header.'
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          example: Service Unavailable
-    StakeEntity:
-      type: object
-      properties:
-        stake_id:
-          type: string
-          description: The unique identifier of the stake
-          example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
-        participant_code:
-          type: string
-          description: Participant identifier
-          example: CUST01
-        asset:
-          type: string
-          description: Asset staked
-          example: ETH
-        amount:
-          type: string
-          description: Amount of asset staked
-          example: '10.5'
-        status:
-          type: string
-          description: Current status of the stake
-          enum:
-          - submitted
-          - queued
-          - canceled
-          - broadcasted
-          - confirmed
-          - staked
-          - failed
-          example: staked
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when stake was created
-          example: '2025-08-24T16:00:00Z'
-        activated_at:
-          type: string
-          format: date-time
-          description: Timestamp when stake was activated
           example: '2025-08-24T12:00:00Z'
     PostUnstakeResponse:
       type: object
@@ -1074,91 +1159,6 @@ components:
               format: date-time
               description: Timestamp when unstake was created
               example: '2025-08-24T16:00:00Z'
-    PostStakeBody:
-      type: object
-      properties:
-        participant_code:
-          type: string
-          description: Participant identifier
-          example: CUST01
-        account_label:
-          type: string
-          description: Settlement account label. The account must already exist for the participant.
-          example: general
-        asset:
-          type: string
-          description: Asset to stake
-          example: ETH
-        notional:
-          type: string
-          description: Amount to stake in notional currency
-          example: '35000.00'
-      required:
-      - participant_code
-      - account_label
-      - asset
-      - notional
-    Code400:
-      type: object
-      description: Request was rejected by validation or a downstream service. `errors` is an array of human-readable messages; each entry describes a single validation failure or business-rule violation.
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - body/amount must be >= 0
-          - body/asset is required
-    PostStakeResponse:
-      type: object
-      properties:
-        request_id:
-          type: string
-          description: Request identifier
-          example: 8bb7e203-13e0-4208-80bc-e9fdb7faa13e
-        message:
-          type: object
-          properties:
-            stake_id:
-              type: string
-              description: The unique identifier of the stake
-              example: c761fc96-5c44-40d4-8eb2-3fcd5d06754e
-            participant_code:
-              type: string
-              description: Participant identifier
-              example: CUST01
-            asset:
-              type: string
-              description: Asset staked
-              example: ETH
-            amount:
-              type: string
-              description: Amount of asset staked
-              example: '10.5'
-            status:
-              type: string
-              description: Status of the stake
-              enum:
-              - submitted
-              - queued
-              - canceled
-              - broadcasted
-              - confirmed
-              - staked
-              - failed
-              example: submitted
-            created_at:
-              type: string
-              format: date-time
-              description: Timestamp when stake was created
-              example: '2025-08-24T16:00:00Z'
-            activated_at:
-              type: string
-              format: date-time
-              description: Timestamp when stake was activated (optional)
-              example: '2025-08-25T16:00:00Z'
   parameters:
     RequestId:
       name: X-Request-Id
@@ -1168,13 +1168,6 @@ components:
       schema:
         type: string
         format: uuid
-    Signature:
-      name: X-SCX-SIGNED
-      in: header
-      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
-      required: true
-      schema:
-        type: string
     Timestamp:
       name: X-SCX-TIMESTAMP
       in: header
@@ -1183,6 +1176,13 @@ components:
       schema:
         type: string
         example: '1678901234'
+    Signature:
+      name: X-SCX-SIGNED
+      in: header
+      description: HMAC-SHA256 signature of the request, base64-encoded. See the [Authentication guide](https://docs.zerohash.com/reference/api-authentication) for the exact signing formula.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     apiKey:
       type: apiKey

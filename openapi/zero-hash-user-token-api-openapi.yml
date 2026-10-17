@@ -103,15 +103,32 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Account:
+    StartSessionRequest:
       type: object
       required:
-      - reference_id
+      - account
+      - session
       properties:
-        reference_id:
+        request_id:
           type: string
-          description: External reference ID for the account
-          example: 07NVS8
+          description: Optional request ID. If not provided, a UUID will be generated automatically
+          example: 550e8400-e29b-41d4-a716-446655440000
+        account:
+          $ref: '#/components/schemas/Account'
+        session:
+          $ref: '#/components/schemas/Session'
+          description: 'Session configuration. Note: withdrawal_details is required when ''user:withdrawal:request'' is in scopes. deposit_details is optional when ''user:deposit:send'' is in scopes.'
+        scopes:
+          type: string
+          enum:
+          - user:deposit:send
+          - user:recovery:send
+          - user:withdrawal:request
+          description: List of scopes for the session
+          example:
+          - user:deposit:send
+          - user:recovery:send
+          - user:withdrawal:request
     Error:
       type: object
       required:
@@ -152,6 +169,15 @@ components:
           description: Optional label to identify the account
           example: Main Account
       description: Required when scope includes 'user:withdrawal:request'
+    Account:
+      type: object
+      required:
+      - reference_id
+      properties:
+        reference_id:
+          type: string
+          description: External reference ID for the account
+          example: 07NVS8
     StartSessionResponse:
       type: object
       required:
@@ -167,40 +193,6 @@ components:
           format: int64
           description: Token expiration time in seconds
           example: 3600
-    DepositDetails:
-      type: object
-      properties:
-        account_label:
-          type: string
-          description: Optional label to identify the account
-          example: Main Account
-      description: Optional when scope includes 'user:deposit:send'
-    StartSessionRequest:
-      type: object
-      required:
-      - account
-      - session
-      properties:
-        request_id:
-          type: string
-          description: Optional request ID. If not provided, a UUID will be generated automatically
-          example: 550e8400-e29b-41d4-a716-446655440000
-        account:
-          $ref: '#/components/schemas/Account'
-        session:
-          $ref: '#/components/schemas/Session'
-          description: 'Session configuration. Note: withdrawal_details is required when ''user:withdrawal:request'' is in scopes. deposit_details is optional when ''user:deposit:send'' is in scopes.'
-        scopes:
-          type: string
-          enum:
-          - user:deposit:send
-          - user:recovery:send
-          - user:withdrawal:request
-          description: List of scopes for the session
-          example:
-          - user:deposit:send
-          - user:recovery:send
-          - user:withdrawal:request
     Session:
       type: object
       properties:
@@ -216,6 +208,14 @@ components:
           $ref: '#/components/schemas/WithdrawalDetails'
         deposit_details:
           $ref: '#/components/schemas/DepositDetails'
+    DepositDetails:
+      type: object
+      properties:
+        account_label:
+          type: string
+          description: Optional label to identify the account
+          example: Main Account
+      description: Optional when scope includes 'user:deposit:send'
   securitySchemes:
     BearerAuth:
       type: http
