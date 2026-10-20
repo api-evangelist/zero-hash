@@ -145,3 +145,38 @@
       evidence: https://zerohash.com/disclosures
   status: not-a-workflow
   arazzo: null
+- slug: zero-hash-fincen-msb-registration
+  label: FinCEN (MSB registration)
+  partner_name: FinCEN (MSB registration)
+  category: Money services business
+  type: contract
+  channel: regulator-register
+  evidence: https://msb.fincen.gov/
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: FinCEN MSB Registrant Search (msb.fincen.gov, full list export)
+    spec_file: null
+    standard: FinCEN MSB registration (US Bank Secrecy Act)
+    role: fincen-msb-registrant
+    registered_name: zerohash llc
+    dba_name: null
+    register_id: zerohash llc
+    matched_domain: null
+    matched_by: register-name
+    identity: 'register-name: register-name ''zerohash'' = zero-hash; no wikidata P856'
+    identity_source: register-name
+    msb_activities:
+    - 409 money transmitter
+    - 414 provider of prepaid access
+    - 415 dealer in foreign exchange
+    states_of_activity: 59
+    received_date: 10/09/2026
+    signal_note: 'participation only: an MSB registration is not a licence or a certification; activities and states
+      are context, never counted'
+    detected_by: sweep-regtech-aml.py
+    detected: '2026-10-20'
+    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
+      P856 not contradicting (Kin 2026-10-20 decision 2)
+  status: not-a-workflow
+  arazzo: null
