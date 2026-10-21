@@ -173,6 +173,31 @@ edges:
       P856 not contradicting (Kin 2026-10-20 decision 2)
   detected_by: sweep-regtech-aml.py
   first_seen: '2026-10-20'
+- partner_name: x402 Foundation
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://x402.org/members/
+  category: x402 protocol foundation membership
+  partner_tier: general
+  contract_reference:
+    register: x402 Foundation members (x402.org/members/, Linux Foundation project)
+    standard: x402
+    spec_file: null
+    role: x402-foundation-member
+    registered_name: zerohash us llc
+    register_id: http://zerohash.com
+    matched_domain: zerohash.com
+    matched_by: domain
+    signal_note: 'participation only: foundation membership (logo wall linking each member''s website); the membership
+      class is partner_tier; membership is not conformance'
+    detected_by: sweep-x402-micropayments.py
+    detected: '2026-10-21'
+  detected_by: sweep-x402-micropayments.py
+  first_seen: '2026-10-21'
 generated: '2026-10-13'
 method: searched
 checked:
@@ -189,6 +214,16 @@ checked:
 - https://kantarainitiative.org/trust-status-list/
 - https://msb.fincen.gov/
 - https://www.access-dvs-register.service.gov.uk/register/download-register
+- https://agentic.market
+- https://api.cdp.coinbase.com/platform/v2/x402/discovery/resources
+- https://app.ampersend.ai/discover
+- https://docs.cdp.coinbase.com/x402/
+- https://docs.x402.org/dev-tools/facilitators
+- https://pay.sh
+- https://www.x402.org/ecosystem
+- https://x402-list.com
+- https://x402.org/members/
+- https://x402scan.com
 source:
 - https://registry.npmjs.org
 - https://pypi.org/pypi
