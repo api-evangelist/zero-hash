@@ -64,23 +64,185 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Zero Hash is a regulated digital-asset infrastructure provider that lets banks, brokerages, fintechs,
-payroll platforms and payment service providers embed crypto, stablecoin and tokenized-asset capability
-without holding licenses or running blockchain infrastructure themselves.
+Zero Hash is a regulated digital-asset infrastructure provider that lets banks, brokerages, fintechs, payroll platforms and payment service providers embed crypto, stablecoin and tokenized-asset capability without holding licenses or running blockchain infrastructure themselves. The platform covers trading (RFQ liquidity and a central limit order book reachable over REST and FIX 5.0), qualified custody, staking, rewards and portfolio strategies, plus a Transact side that handles on/off ramps, account funding, payins, payouts, remittances and settlement across 100+ assets and 40+ chains. Participant onboarding, KYC, sanctions screening, jurisdiction evaluation and travel-rule handling are exposed as first-class API resources, and a Tokenize product line covers a tokenization engine and tokenization payment rails. Integration surfaces include a 167-operation REST API secured with HMAC-SHA256 request signing, a private WebSocket feed for balances and RFQ prices, a FIX gateway for CLOB order entry and market data, an outbound webhook catalog, and a large family of embeddable JavaScript/React SDK modules for buy, sell, onboarding, funding, withdrawals and account linking.
 
-- Website: https://zerohash.com/
-- Developer docs: https://docs.zerohash.com/
-- API reference: https://docs.zerohash.com/reference
-- Status: https://status.zerohash.com
-- Release notes: https://docs.zerohash.com/changelog
-- Security & compliance: https://zerohash.com/security
-- Trust center: https://trust.zerohash.com/
+**Areas:** Company · Crypto Infrastructure · Digital Assets · Stablecoins · Payments · Payouts · Tokenization · Custody · Staking · Settlement · Embedded Finance · On-Off Ramp
 
-## Public API surface captured in this profile
+## Zero Hash on APIs.io
 
-- **zerohash API** — OpenAPI 3.1.0 (v1.7.0), 146 paths / 167 operations, HMAC-SHA256 request signing.
-- **zerohash Auth (Connect) API** — OpenAPI 3.0.3, OAuth 2.0 client-credentials token + session issuance.
-- **Private WebSocket API** — `wss://ws.zerohash.com`, balances and RFQ price topics.
-- **Webhooks** — 9 documented event topics with retry and de-duplication semantics.
-- **FIX 5.0 gateway** — CLOB order entry, drop copy and market data (documented, no downloadable dictionary).
-- **Embedded SDK modules** — 32 first-party npm packages under `@zerohash-sdk`, plus `zh-web-sdk`.
+Everything profiled for Zero Hash is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/zero-hash/](https://apis.io/providers/zero-hash/)** — or go straight to one of the APIs or properties below.
+
+### APIs (31)
+
+- [zerohash Private WebSocket API](https://apis.io/apis/zero-hash/zerohash-private-websocket-api/) — Authenticated WebSocket feed delivering a full account-balance snapshot on subscribe followed by incremental balance-updated events, plus RFQ liquidity…
+- [Zero Hash Accounts API](https://apis.io/apis/zero-hash/zero-hash-accounts-api/) — Create and Manage Accounts
+- [Zero Hash Assets API](https://apis.io/apis/zero-hash/zero-hash-assets-api/) — View available assets
+- [Zero Hash Awards API](https://apis.io/apis/zero-hash/zero-hash-awards-api/) — Awards Distribution Service
+- [Zero Hash CLOB API](https://apis.io/apis/zero-hash/zero-hash-clob-api/) — Central Limit Order Book
+- [Zero Hash Convert and Withdraw API](https://apis.io/apis/zero-hash/zero-hash-convert-and-withdraw-api/) — Convert and Withdraw Services
+- [Zero Hash Customer Accounts (MTA) API](https://apis.io/apis/zero-hash/zero-hash-customer-accounts-mta-api/) — Create and Manage Customer Accounts (MTA)
+- [Zero Hash Deposits API](https://apis.io/apis/zero-hash/zero-hash-deposits-api/) — Create deposit addressed and monitor deposits to accounts
+- [Zero Hash Entity Participants API](https://apis.io/apis/zero-hash/zero-hash-entity-participants-api/) — Create and Manage Entity Participants
+- [Zero Hash Fund API](https://apis.io/apis/zero-hash/zero-hash-fund-api/) — Fund Services
+- [Zero Hash Index API](https://apis.io/apis/zero-hash/zero-hash-index-api/) — Obtain the index price on an instrument
+- [Zero Hash Individual Participants API](https://apis.io/apis/zero-hash/zero-hash-individual-participants-api/) — Create and Manage Individual Participants
+- [Zero Hash Liquidity API](https://apis.io/apis/zero-hash/zero-hash-liquidity-api/) — Request For Quote and Execution Services
+- [Zero Hash Market Data API](https://apis.io/apis/zero-hash/zero-hash-market-data-api/) — Market Data Services
+- [Zero Hash Movements API](https://apis.io/apis/zero-hash/zero-hash-movements-api/) — The Movements API from Zero Hash — 1 operation(s) for movements.
+- [Zero Hash Organization Token API](https://apis.io/apis/zero-hash/zero-hash-organization-token-api/) — The Organization Token API from Zero Hash — 1 operation(s) for organization token.
+- [Zero Hash Participant Jurisdictions API](https://apis.io/apis/zero-hash/zero-hash-participant-jurisdictions-api/) — Participant jurisdiction endpoints
+- [Zero Hash Payins API](https://apis.io/apis/zero-hash/zero-hash-payins-api/) — Power your checkout with crypto and stablecoins
+- [Zero Hash Payments API](https://apis.io/apis/zero-hash/zero-hash-payments-api/) — Payment Services
+- [Zero Hash Payouts API](https://apis.io/apis/zero-hash/zero-hash-payouts-api/) — Crypto payouts
+- [Zero Hash Positions API](https://apis.io/apis/zero-hash/zero-hash-positions-api/) — Positions and Balances monitoring
+- [Zero Hash Public API](https://apis.io/apis/zero-hash/zero-hash-public-api/) — Basic API Endpoints
+- [Zero Hash Query Participants API](https://apis.io/apis/zero-hash/zero-hash-query-participants-api/) — Generic Participant management endpoints
+- [Zero Hash Rewards API](https://apis.io/apis/zero-hash/zero-hash-rewards-api/) — Rewards Distribution Service
+- [Zero Hash SDK Authorization API](https://apis.io/apis/zero-hash/zero-hash-sdk-authorization-api/) — SDK Authorization Services
+- [Zero Hash Staking API](https://apis.io/apis/zero-hash/zero-hash-staking-api/) — Staking, Unstaking and associated Rewards Services
+- [Zero Hash Trade Strategy API](https://apis.io/apis/zero-hash/zero-hash-trade-strategy-api/) — The Trade Strategy API from Zero Hash — 13 operation(s) for trade strategy.
+- [Zero Hash Trades API](https://apis.io/apis/zero-hash/zero-hash-trades-api/) — Trade Settlement Services
+- [Zero Hash Transfers API](https://apis.io/apis/zero-hash/zero-hash-transfers-api/) — Initiate and monitor transfers between accounts
+- [Zero Hash User Token API](https://apis.io/apis/zero-hash/zero-hash-user-token-api/) — The User Token API from Zero Hash — 1 operation(s) for user token.
+- [Zero Hash Withdrawals API](https://apis.io/apis/zero-hash/zero-hash-withdrawals-api/) — Initiate and monitor withdrawals from accounts
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Zero Hash Webhooks](https://apis.io/asyncapis/zero-hash/zero-hash-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [zero-hash](https://apis.io/servers/zero-hash/zero-hash/)
+
+#### Collections (30)
+
+Postman and Open Collection request collections.
+
+- [zerohash Accounts API](https://apis.io/collections/zero-hash/open-zero-hash-accounts-api/)
+- [zerohash Assets API](https://apis.io/collections/zero-hash/open-zero-hash-assets-api/)
+- [zerohash Awards API](https://apis.io/collections/zero-hash/open-zero-hash-awards-api/)
+- [zerohash CLOB API](https://apis.io/collections/zero-hash/open-zero-hash-clob-api/)
+- [zerohash Convert and Withdraw API](https://apis.io/collections/zero-hash/open-zero-hash-convert-and-withdraw-api/)
+- [zerohash Customer Accounts (MTA) Customer Accounts (MTA) API](https://apis.io/collections/zero-hash/open-zero-hash-customer-accounts-mta-api/)
+- [zerohash Deposits API](https://apis.io/collections/zero-hash/open-zero-hash-deposits-api/)
+- [zerohash Entity Participants API](https://apis.io/collections/zero-hash/open-zero-hash-entity-participants-api/)
+- [zerohash Fund API](https://apis.io/collections/zero-hash/open-zero-hash-fund-api/)
+- [zerohash Index API](https://apis.io/collections/zero-hash/open-zero-hash-index-api/)
+- [zerohash Individual Participants API](https://apis.io/collections/zero-hash/open-zero-hash-individual-participants-api/)
+- [zerohash Liquidity API](https://apis.io/collections/zero-hash/open-zero-hash-liquidity-api/)
+- [zerohash Market Data API](https://apis.io/collections/zero-hash/open-zero-hash-market-data-api/)
+- [zerohash Movements API](https://apis.io/collections/zero-hash/open-zero-hash-movements-api/)
+- [Connect Organization Token API](https://apis.io/collections/zero-hash/open-zero-hash-organization-token-api/)
+- [zerohash Participant Jurisdictions API](https://apis.io/collections/zero-hash/open-zero-hash-participant-jurisdictions-api/)
+- [zerohash Payins API](https://apis.io/collections/zero-hash/open-zero-hash-payins-api/)
+- [zerohash Payments API](https://apis.io/collections/zero-hash/open-zero-hash-payments-api/)
+- [zerohash Payouts API](https://apis.io/collections/zero-hash/open-zero-hash-payouts-api/)
+- [zerohash Positions API](https://apis.io/collections/zero-hash/open-zero-hash-positions-api/)
+- [zerohash Public API](https://apis.io/collections/zero-hash/open-zero-hash-public-api/)
+- [zerohash Query Participants API](https://apis.io/collections/zero-hash/open-zero-hash-query-participants-api/)
+- [zerohash Rewards API](https://apis.io/collections/zero-hash/open-zero-hash-rewards-api/)
+- [zerohash SDK Authorization API](https://apis.io/collections/zero-hash/open-zero-hash-sdk-authorization-api/)
+- [zerohash Staking API](https://apis.io/collections/zero-hash/open-zero-hash-staking-api/)
+- …and 5 more published on APIs.io
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Zero Hash Api Overlay](https://apis.io/overlays/zero-hash/zero-hash-api-overlay/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Zero Hash Authentication](https://apis.io/security/zero-hash/zero-hash-authentication/)
+- [Zero Hash Domain Security](https://apis.io/security/zero-hash/zero-hash-domain-security/)
+- [Zero Hash Trust Center](https://apis.io/security/zero-hash/zero-hash-trust-center/)
+- [Zero Hash Vulnerability Disclosure](https://apis.io/security/zero-hash/zero-hash-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Zero Hash Scopes](https://apis.io/scopes/zero-hash/zero-hash-scopes/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://zerohash.com/)
+- [Documentation](https://docs.zerohash.com/)
+- [Getting started](https://docs.zerohash.com/docs/getting-started)
+- [API reference](https://docs.zerohash.com/reference)
+- [Pricing](https://zerohash.com/disclosures/pricing-and-fees)
+- [Sign up](https://zerohash.com/contact)
+- [Support](https://zerohash.zendesk.com/hc/en-us)
+- [Blog](https://zerohash.com/blog)
+- [Compliance](https://zerohash.com/security)
+- [Terms of service](https://docs.zerohash.com/page/terms-of-service)
+- [Privacy policy](https://docs.zerohash.com/page/privacy-policy)
+- [GitHub](https://github.com/seedcx)
+- [Status](https://status.zerohash.com)
+
+## API Evangelist rating
+
+**Kin Score 54.2** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 60.2 |
+| Contract governance | 18.2 |
+| Operational transparency | 52.6 |
+| Developer ergonomics | 54.2 |
+| Access clarity | 50.0 |
+
+**Agent readiness 36.2** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | verified |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | — |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | mostly (partial credit) |
+
+**Regulatory alignment 37.5** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/zero-hash/](https://apis.io/providers/zero-hash/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Zero Hash: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/zero-hash/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
